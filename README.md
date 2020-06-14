@@ -60,6 +60,13 @@ Spring Swing runs with java 11, so the compiler should be configured for java 11
 The spring-boot maven plugin can be used for packaging:  
 
 ```xml
+  <properties>
+    ...
+    <project.output>${project.basedir}/output</project.output>
+    <application.name>spring-swing-example</application.name>
+    ...
+  </properties>
+
   <build>
     <plugins>
       ...
