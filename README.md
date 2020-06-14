@@ -199,7 +199,7 @@ we need to pass the `-splash-progress` argument when running the application:
 ```shell_session
 $ ./spring-swing-example.jar -splash-progress
 ```
-The progress bar can be customized with dedicated arguments:
+The progress bar can be customized using dedicated arguments:
 ```shell_session
 $ ./spring-swing-example.jar \ 
 -splash-progress \ 
