@@ -263,7 +263,7 @@ $ ./spring-swing-example.sh
 The application properties, preferences, translations and menu structure 
 can now be updated directly from the output folder.
 
-## Example Source Code
+## Examples
 https://github.com/cosinus-code/spring-swing-example
 
 # License
