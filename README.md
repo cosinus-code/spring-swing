@@ -84,15 +84,15 @@ The spring-boot maven plugin can be used for packaging:
 
 Package command:
 
-```
-mvn package
+```shell_session
+$ mvn package
 ```
 
 ## Run the application
 The jar can be executed from the `${project.output}` folder:
 
-```
-./spring-swing-example.jar
+```shell_session
+$ ./spring-swing-example.jar
 ```
 
 ## Application name and icon
@@ -189,12 +189,12 @@ add it in `SplashScreen-Image` entry of jar manifest using the `maven-jar-plugin
 To add progress bar to the splash screen, 
 we need to pass the `-splash-progress` argument when running the application:
 
-```
-./spring-swing-example.jar -splash-progress
+```shell_session
+$ ./spring-swing-example.jar -splash-progress
 ```
 The progress bar can be customized with dedicated arguments:
-```
-./spring-swing-example.jar \ 
+```shell_session
+$ ./spring-swing-example.jar \ 
 -splash-progress \ 
 -splash-progress-color=56,123,44 \ 
 -splash-progress-y=245 \ 
@@ -204,7 +204,7 @@ The progress bar can be customized with dedicated arguments:
 ## Distribute the Application 
 To simplify the run of the application, 
 we can add the `spring-swing-example.sh` bash file with start command:
-```
+```bash
 #! /bin/bash
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ]; do
@@ -250,8 +250,8 @@ and use `maven-resources-plugin` to copy all resources to the output folder:
   </build>
 ```
 Now simple start the application by running the bash file from the output folder:
-```
-./spring-swing-example.sh
+```shell_session
+$ ./spring-swing-example.sh
 ```
 The application properties, preferences, translations and menu structure 
 can now be updated directly from the output folder.
