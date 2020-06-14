@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.cosinus.swing</groupId>
+        <artifactId>spring-swing-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>spring-swing-dependencies</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>11</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <commons-io.version>2.6</commons-io.version>
+        <org.apache.common.version>4.4</org.apache.common.version>
+        <log4j.version>1.2.17</log4j.version>
+        <twelvemonkeys.imageio.version>3.4.2</twelvemonkeys.imageio.version>
+        <spring-boot.version>2.3.1.RELEASE</spring-boot.version>
+        <darcula.version>2018.2</darcula.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.cosinus.swing</groupId>
+                <artifactId>spring-swing-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.cosinus.swing</groupId>
+                <artifactId>spring-swing-image</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.cosinus.swing</groupId>
+                <artifactId>spring-swing-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.twelvemonkeys.imageio</groupId>
+                <artifactId>imageio-icns</artifactId>
+                <version>${twelvemonkeys.imageio.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.twelvemonkeys.imageio</groupId>
+                <artifactId>imageio-core</artifactId>
+                <version>${twelvemonkeys.imageio.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>${org.apache.common.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.bulenkov</groupId>
+                <artifactId>darcula</artifactId>
+                <version>${darcula.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <repositories>
+        <repository>
+            <id>spring-plugins</id>
+            <url>https://repo.spring.io/plugins-release/</url>
+        </repository>
+    </repositories>
+</project>
