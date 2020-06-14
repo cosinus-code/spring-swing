@@ -32,7 +32,6 @@ public class HelloWorld extends ApplicationFrame {
 ```
 
 ## Dependencies
-
 ```xml
   <parent>
     <groupId>org.cosinus.swing</groupId>
@@ -56,7 +55,7 @@ public class HelloWorld extends ApplicationFrame {
 ```
 Spring Swing runs with java 11, so the compiler should be configured for java 11.
 
-## Package the application
+## Package the Application
 The spring-boot maven plugin can be used for packaging:  
 
 ```xml
@@ -95,14 +94,14 @@ Package command:
 $ mvn package
 ```
 
-## Run the application
+## Run the Application
 The jar can be executed from the `${project.output}` folder:
 
 ```shell_session
 $ ./spring-swing-example.jar
 ```
 
-## Application name and icon
+## Application Name and Icon
 The application name (which is the main window title) and the application icon 
 can be specified in the application properties file `application.yml`:
 
@@ -140,7 +139,6 @@ hello.world=Salut monde
 ```
 
 ## Application Menu
-
 To attach a menu to the application, add in the `conf` folder a `menu.json` file with the menu structure 
 like the following:
 ```json
