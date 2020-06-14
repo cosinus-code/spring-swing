@@ -1,7 +1,7 @@
 # Spring Swing
 Spring Swing is a framework designed for building Spring-powered swing applications.
 
-#Getting Started Using Spring Swing
+# Getting Started Using Spring Swing
 
 Here is the Java code for starting a Spring Swing application:
 
@@ -255,6 +255,9 @@ Now simple start the application by running the bash file from the output folder
 ```
 The application properties, preferences, translations and menu structure 
 can now be updated directly from the output folder.
+
+## Example Source Code
+https://github.com/cosinus-code/spring-swing-example
 
 # License
 The Spring Swing is Open Source software released under version 2.0 of the [Apache License](https://www.apache.org/licenses/LICENSE-2.0).
