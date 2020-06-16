@@ -16,7 +16,8 @@
 
 package org.cosinus.swing.util;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,7 +28,7 @@ import java.util.Optional;
  * Windows native utils
  */
 public class WindowsUtils {
-    private static final Logger LOG = Logger.getLogger(WindowsUtils.class);
+    private static final Logger LOG = LogManager.getLogger(WindowsUtils.class);
 
     private static final String REG_QUERY = "reg query ";
     private static final String REG_STR_TOKEN = "REG_SZ";

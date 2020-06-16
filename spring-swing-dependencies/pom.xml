@@ -20,7 +20,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <commons-io.version>2.6</commons-io.version>
         <org.apache.common.version>4.4</org.apache.common.version>
-        <log4j.version>1.2.17</log4j.version>
+        <log4j.version>2.13.3</log4j.version>
         <twelvemonkeys.imageio.version>3.4.2</twelvemonkeys.imageio.version>
         <spring-boot.version>2.3.1.RELEASE</spring-boot.version>
         <darcula.version>2018.2</darcula.version>
@@ -59,8 +59,13 @@
                 <version>${org.apache.common.version}</version>
             </dependency>
             <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
                 <version>${log4j.version}</version>
             </dependency>
             <dependency>

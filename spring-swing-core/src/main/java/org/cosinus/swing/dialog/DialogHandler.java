@@ -16,7 +16,8 @@
 
 package org.cosinus.swing.dialog;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.boot.SpringSwingComponent;
 import org.cosinus.swing.boot.SwingApplicationContext;
 import org.cosinus.swing.form.Dialog;
@@ -47,7 +48,7 @@ import static org.cosinus.swing.dialog.DialogOption.retryWithSkip;
 @SpringSwingComponent
 public class DialogHandler {
 
-    private static final Logger LOG = Logger.getLogger(DialogHandler.class);
+    private static final Logger LOG = LogManager.getLogger(DialogHandler.class);
 
     private static final String MESSAGE_DIALOG_TITLE = "OptionPane.messageDialogTitle";
 

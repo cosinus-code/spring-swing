@@ -16,7 +16,8 @@
 
 package org.cosinus.swing.preference;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.boot.SpringSwingComponent;
 
 import java.awt.*;
@@ -31,7 +32,7 @@ import java.util.Optional;
 @SpringSwingComponent
 public class Preferences {
 
-    private static final Logger LOG = Logger.getLogger(Preferences.class);
+    private static final Logger LOG = LogManager.getLogger(Preferences.class);
 
     public static final String LOOKANDFEEL = "lookandfeel";
     public static final String LANGUAGE = "language";

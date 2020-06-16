@@ -16,7 +16,8 @@
 
 package org.cosinus.swing.image.icon;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.util.AutoRemovableTemporaryFile;
 import org.cosinus.swing.util.WindowsUtils;
 
@@ -41,7 +42,7 @@ import static org.cosinus.swing.util.WindowsUtils.getRegistryValue;
  */
 public class WindowsIconProvider implements IconProvider {
 
-    private static final Logger LOG = Logger.getLogger(WindowsIconProvider.class);
+    private static final Logger LOG = LogManager.getLogger(WindowsIconProvider.class);
 
     private static final String REGISTRY_HKCR = "HKCR\\";
 

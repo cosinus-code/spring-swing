@@ -16,7 +16,8 @@
 
 package org.cosinus.swing.resource;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.boot.ApplicationProperties;
 import org.cosinus.swing.boot.SpringSwingComponent;
 import org.springframework.core.io.ClassPathResource;
@@ -42,7 +43,7 @@ import static org.apache.commons.io.IOUtils.toByteArray;
 @SpringSwingComponent
 public class ResourceResolver {
 
-    private static final Logger LOG = Logger.getLogger(ResourceResolver.class);
+    private static final Logger LOG = LogManager.getLogger(ResourceResolver.class);
 
     private final ResourcePatternResolver resourceLoader;
 

@@ -16,7 +16,8 @@
 
 package org.cosinus.swing.error;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.boot.SpringSwingComponent;
 import org.cosinus.swing.dialog.OptionsDialog;
 import org.cosinus.swing.form.error.ErrorFormProvider;
@@ -31,7 +32,7 @@ import java.awt.*;
 @SpringSwingComponent
 public class ErrorHandler {
 
-    private static final Logger LOG = Logger.getLogger(ErrorHandler.class);
+    private static final Logger LOG = LogManager.getLogger(ErrorHandler.class);
 
     private final Translator translator;
 

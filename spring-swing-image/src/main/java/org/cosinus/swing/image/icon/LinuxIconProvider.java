@@ -16,7 +16,8 @@
 
 package org.cosinus.swing.image.icon;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.boot.ApplicationProperties;
 import org.cosinus.swing.util.FileUtils;
 
@@ -38,7 +39,7 @@ import static java.util.function.Predicate.not;
  */
 public class LinuxIconProvider implements IconProvider {
 
-    private static final Logger LOG = Logger.getLogger(LinuxIconProvider.class);
+    private static final Logger LOG = LogManager.getLogger(LinuxIconProvider.class);
 
     private static final String DEFAULT_THEME = "Default";
 

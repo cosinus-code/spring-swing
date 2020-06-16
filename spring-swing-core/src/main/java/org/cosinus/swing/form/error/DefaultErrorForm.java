@@ -16,7 +16,8 @@
 
 package org.cosinus.swing.form.error;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.action.EscapeAction;
 import org.cosinus.swing.boot.SwingApplicationContext;
 import org.cosinus.swing.boot.SwingAutowired;
@@ -45,7 +46,7 @@ import static org.cosinus.swing.border.Borders.insetsEmpty;
  */
 public class DefaultErrorForm extends Dialog implements ErrorForm, ActionListener {
 
-    private static final Logger LOG = Logger.getLogger(DefaultErrorForm.class);
+    private static final Logger LOG = LogManager.getLogger(DefaultErrorForm.class);
 
     private static final String ERROR_WINDOW_TITLE = "Error";
 

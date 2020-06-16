@@ -114,7 +114,25 @@ swing:
 The icon file default location is in the `image` resources folder.
  
 ## Logging
-Add `log4j.properties` file to configure the logging. 
+To add Apache Log4j 2 to the application exclude the `spring-boot-starter-logging` and add `spring-boot-starter-log4j2`:
+```xml
+    <dependency>
+      <groupId>org.cosinus.swing</groupId>
+      <artifactId>spring-swing-starter</artifactId>
+      <version>${spring-swing.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-logging</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-log4j2</artifactId>
+    </dependency>
+```
+Then add log4j2 file to configure the logging. 
 
 ## Internationalization
 To translate the message, replace `"Hello World"` with `translate("hello.world")` 
@@ -216,7 +234,6 @@ while [ -h "$SOURCE" ]; do
   APPLICATION_DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
 done
 APPLICATION_DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
-echo $APPLICATION_DIR
 
 "$JAVA_HOME/bin/java" \
 -jar $APPLICATION_DIR/spring-swing-example.jar \

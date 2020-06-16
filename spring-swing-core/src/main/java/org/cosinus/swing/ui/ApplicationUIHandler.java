@@ -16,8 +16,8 @@
 
 package org.cosinus.swing.ui;
 
-import org.apache.commons.lang3.SystemUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.boot.SpringSwingComponent;
 import org.cosinus.swing.exec.ProcessExecutor;
 import org.cosinus.swing.translate.Translator;
@@ -37,8 +37,8 @@ import java.util.stream.Stream;
 import static java.awt.Font.PLAIN;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.META_DOWN_MASK;
-import static javax.swing.KeyStroke.getKeyStroke;
 import static java.util.Arrays.stream;
+import static javax.swing.KeyStroke.getKeyStroke;
 import static org.apache.commons.lang3.SystemUtils.IS_OS_MAC;
 
 /**
@@ -47,7 +47,7 @@ import static org.apache.commons.lang3.SystemUtils.IS_OS_MAC;
 @SpringSwingComponent
 public class ApplicationUIHandler {
 
-    private static final Logger LOG = Logger.getLogger(ApplicationUIHandler.class);
+    private static final Logger LOG = LogManager.getLogger(ApplicationUIHandler.class);
 
     private static final String FOLDER_ICON_KEY = "FileView.directoryIcon";
 
