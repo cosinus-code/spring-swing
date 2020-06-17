@@ -16,8 +16,8 @@
 
 package org.cosinus.swing.form.error;
 
-import org.cosinus.swing.boot.SpringSwingComponent;
-import org.cosinus.swing.boot.SwingApplicationContext;
+import org.cosinus.swing.context.SpringSwingComponent;
+import org.cosinus.swing.context.SwingApplicationContext;
 import org.cosinus.swing.form.Dialog;
 import org.cosinus.swing.form.Frame;
 

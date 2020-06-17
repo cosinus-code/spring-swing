@@ -19,7 +19,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.cosinus.swing.boot.SpringSwingComponent;
+import org.cosinus.swing.context.SpringSwingComponent;
 import org.cosinus.swing.preference.Preferences;
 import org.cosinus.swing.resource.ResourceResolver;
 import org.springframework.context.MessageSource;

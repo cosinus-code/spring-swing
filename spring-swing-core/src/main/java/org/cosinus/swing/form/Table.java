@@ -16,8 +16,8 @@
 
 package org.cosinus.swing.form;
 
-import org.cosinus.swing.boot.SwingApplicationContext;
-import org.cosinus.swing.boot.SwingInject;
+import org.cosinus.swing.context.SwingApplicationContext;
+import org.cosinus.swing.context.SwingInject;
 import org.cosinus.swing.translate.Translatable;
 import org.cosinus.swing.translate.Translator;
 

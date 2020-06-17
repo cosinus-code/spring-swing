@@ -16,8 +16,8 @@
 
 package org.cosinus.swing.worker;
 
-import org.cosinus.swing.boot.SwingApplicationContext;
-import org.cosinus.swing.boot.SwingInject;
+import org.cosinus.swing.context.SwingApplicationContext;
+import org.cosinus.swing.context.SwingInject;
 
 public abstract class SwingWorker<T, V> extends javax.swing.SwingWorker<T, V> implements SwingInject {
 

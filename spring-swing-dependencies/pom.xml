@@ -35,6 +35,11 @@
             </dependency>
             <dependency>
                 <groupId>org.cosinus.swing</groupId>
+                <artifactId>spring-swing-boot</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.cosinus.swing</groupId>
                 <artifactId>spring-swing-image</artifactId>
                 <version>${project.version}</version>
             </dependency>

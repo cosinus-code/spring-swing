@@ -20,6 +20,10 @@
             <artifactId>spring-swing-core</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.cosinus.swing</groupId>
+            <artifactId>spring-swing-boot</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.twelvemonkeys.imageio</groupId>
             <artifactId>imageio-icns</artifactId>
         </dependency>

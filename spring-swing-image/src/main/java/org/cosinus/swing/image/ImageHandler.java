@@ -16,7 +16,7 @@
 
 package org.cosinus.swing.image;
 
-import org.cosinus.swing.boot.SpringSwingComponent;
+import org.cosinus.swing.context.SpringSwingComponent;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

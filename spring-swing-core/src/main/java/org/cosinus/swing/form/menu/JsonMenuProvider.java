@@ -17,7 +17,7 @@
 package org.cosinus.swing.form.menu;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.cosinus.swing.boot.SpringSwingComponent;
+import org.cosinus.swing.context.SpringSwingComponent;
 import org.cosinus.swing.convert.JsonFileConverter;
 import org.cosinus.swing.resource.ResourceResolver;
 import org.cosinus.swing.resource.ResourceType;

@@ -16,7 +16,7 @@
 
 package org.cosinus.swing.image.config;
 
-import org.cosinus.swing.boot.ApplicationInitializer;
+import org.cosinus.swing.boot.initialize.ApplicationInitializer;
 import org.cosinus.swing.image.icon.IconProvider;
 
 /**

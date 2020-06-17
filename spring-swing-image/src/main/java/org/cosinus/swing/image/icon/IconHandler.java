@@ -16,7 +16,7 @@
 
 package org.cosinus.swing.image.icon;
 
-import org.cosinus.swing.boot.SpringSwingComponent;
+import org.cosinus.swing.context.SpringSwingComponent;
 import org.cosinus.swing.image.ImageHandler;
 import org.cosinus.swing.resource.ResourceResolver;
 import org.cosinus.swing.ui.ApplicationUIHandler;

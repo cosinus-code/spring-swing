@@ -18,8 +18,8 @@ package org.cosinus.swing.resource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.cosinus.swing.boot.ApplicationProperties;
-import org.cosinus.swing.boot.SpringSwingComponent;
+import org.cosinus.swing.context.ApplicationProperties;
+import org.cosinus.swing.context.SpringSwingComponent;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;

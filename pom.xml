@@ -17,9 +17,10 @@
 
     <modules>
         <module>spring-swing-core</module>
-        <module>spring-swing-starter</module>
-        <module>spring-swing-dependencies</module>
+        <module>spring-swing-boot</module>
         <module>spring-swing-image</module>
+        <module>spring-swing-dependencies</module>
+        <module>spring-swing-starter</module>
     </modules>
 
 </project>

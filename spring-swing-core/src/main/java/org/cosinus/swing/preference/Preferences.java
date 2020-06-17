@@ -18,7 +18,7 @@ package org.cosinus.swing.preference;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.cosinus.swing.boot.SpringSwingComponent;
+import org.cosinus.swing.context.SpringSwingComponent;
 
 import java.awt.*;
 import java.io.File;

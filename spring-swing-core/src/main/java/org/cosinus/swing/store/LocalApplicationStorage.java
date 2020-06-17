@@ -16,7 +16,7 @@
 
 package org.cosinus.swing.store;
 
-import org.cosinus.swing.boot.SpringSwingComponent;
+import org.cosinus.swing.context.SpringSwingComponent;
 
 import java.util.prefs.Preferences;
 

@@ -17,9 +17,9 @@
 package org.cosinus.swing.form;
 
 import org.cosinus.swing.action.ActionController;
-import org.cosinus.swing.boot.SwingApplicationContext;
-import org.cosinus.swing.boot.SwingAutowired;
-import org.cosinus.swing.boot.SwingInject;
+import org.cosinus.swing.context.SwingApplicationContext;
+import org.cosinus.swing.context.SwingAutowired;
+import org.cosinus.swing.context.SwingInject;
 import org.cosinus.swing.error.ErrorHandler;
 import org.cosinus.swing.form.menu.MenuBar;
 import org.cosinus.swing.form.menu.MenuProvider;

@@ -18,7 +18,7 @@ package org.cosinus.swing.ui;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.cosinus.swing.boot.SpringSwingComponent;
+import org.cosinus.swing.context.SpringSwingComponent;
 import org.cosinus.swing.exec.ProcessExecutor;
 import org.cosinus.swing.translate.Translator;
 

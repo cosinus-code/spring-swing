@@ -18,8 +18,8 @@ package org.cosinus.swing.dialog;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.cosinus.swing.boot.SpringSwingComponent;
-import org.cosinus.swing.boot.SwingApplicationContext;
+import org.cosinus.swing.context.SpringSwingComponent;
+import org.cosinus.swing.context.SwingApplicationContext;
 import org.cosinus.swing.form.Dialog;
 import org.cosinus.swing.store.ApplicationStorage;
 import org.cosinus.swing.translate.Translator;

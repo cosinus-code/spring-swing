@@ -17,10 +17,10 @@
 package org.cosinus.swing.image.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.cosinus.swing.boot.ApplicationProperties;
 import org.cosinus.swing.boot.condition.ConditionalOnLinux;
 import org.cosinus.swing.boot.condition.ConditionalOnMac;
 import org.cosinus.swing.boot.condition.ConditionalOnWindows;
+import org.cosinus.swing.context.ApplicationProperties;
 import org.cosinus.swing.image.ImageHandler;
 import org.cosinus.swing.image.icon.*;
 import org.cosinus.swing.resource.ResourceResolver;

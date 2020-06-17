@@ -18,7 +18,7 @@ package org.cosinus.swing.image.icon;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.cosinus.swing.boot.ApplicationProperties;
+import org.cosinus.swing.context.ApplicationProperties;
 import org.cosinus.swing.util.FileUtils;
 
 import javax.swing.*;

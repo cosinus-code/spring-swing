@@ -16,7 +16,7 @@
 
 package org.cosinus.swing.form;
 
-import org.cosinus.swing.boot.SpringSwingComponent;
+import org.cosinus.swing.context.SpringSwingComponent;
 import org.cosinus.swing.store.ApplicationStorage;
 
 /**

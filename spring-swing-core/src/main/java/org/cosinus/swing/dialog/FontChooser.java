@@ -16,8 +16,8 @@
 
 package org.cosinus.swing.dialog;
 
-import org.cosinus.swing.boot.SwingApplicationContext;
-import org.cosinus.swing.boot.SwingAutowired;
+import org.cosinus.swing.context.SwingApplicationContext;
+import org.cosinus.swing.context.SwingAutowired;
 import org.cosinus.swing.error.ErrorHandler;
 import org.cosinus.swing.form.Dialog;
 import org.cosinus.swing.form.Frame;

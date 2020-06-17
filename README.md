@@ -8,7 +8,7 @@ Here is the Java code for starting a Spring Swing application:
 ```java
 package org.cosinus.swing.example;
 
-import org.cosinus.swing.app.ApplicationFrame;
+import org.cosinus.swing.boot.ApplicationFrame;
 import org.cosinus.swing.boot.SpringSwingApplication;
 import org.cosinus.swing.boot.SpringSwingBootApplication;
 
