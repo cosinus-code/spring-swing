@@ -16,24 +16,12 @@
 
 package org.cosinus.swing.boot;
 
-import org.cosinus.swing.boot.event.ApplicationFrameAfterInitializeEvent;
-import org.cosinus.swing.boot.event.ApplicationFrameBeforeInitializeEvent;
-import org.cosinus.swing.form.Frame;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
-
 /**
  * Main frame of the application
  */
-public class ApplicationFrame extends Frame {
+public interface ApplicationFrame {
 
-    @Autowired
-    private ApplicationEventPublisher applicationEventPublisher;
+    void initContent();
 
-    public void start() {
-        applicationEventPublisher.publishEvent(new ApplicationFrameBeforeInitializeEvent(this));
-        super.init();
-        applicationEventPublisher.publishEvent(new ApplicationFrameAfterInitializeEvent(this));
-        setVisible(true);
-    }
+    void startApplication();
 }

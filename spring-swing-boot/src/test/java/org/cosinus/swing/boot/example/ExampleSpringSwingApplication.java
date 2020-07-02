@@ -16,12 +16,12 @@
 
 package org.cosinus.swing.boot.example;
 
-import org.cosinus.swing.boot.ApplicationFrame;
 import org.cosinus.swing.boot.SpringSwingBootApplication;
+import org.cosinus.swing.boot.SwingApplicationFrame;
 
 /**
  * Example application
  */
 @SpringSwingBootApplication
-public class ExampleSpringSwingApplication extends ApplicationFrame {
+public class ExampleSpringSwingApplication extends SwingApplicationFrame {
 }

@@ -53,11 +53,11 @@ public class SpringSwingApplication extends SpringApplication {
         context.getBean(SwingApplicationContext.class)
                 .setSwingComponents(context.getBeansWithAnnotation(SpringSwingComponent.class));
 
-        SwingUtilities.invokeLater(() -> startApplicationForm(context));
+        SwingUtilities.invokeLater(() -> startApplicationFrame(context));
     }
 
-    protected void startApplicationForm(ConfigurableApplicationContext context) {
-        context.getBean(ApplicationFrame.class).start();
+    protected void startApplicationFrame(ConfigurableApplicationContext context) {
+        context.getBean(ApplicationFrame.class).startApplication();
     }
 
     public void logStartupProgress(int percent, Supplier<String> statusSupplier) {

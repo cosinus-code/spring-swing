@@ -78,7 +78,7 @@ public class Frame extends JFrame implements Window, SwingInject, FormComponent 
         this.frameSettings = frameSettings;
     }
 
-    protected void init() {
+    public void init() {
         injectContext(context);
         if (frameSettings == null) {
             frameSettings = new WindowSettings(
