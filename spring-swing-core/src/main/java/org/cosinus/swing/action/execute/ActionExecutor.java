@@ -31,16 +31,9 @@ public interface ActionExecutor<A extends ActionModel> {
     /**
      * Cancel action execution.
      *
-     * @param copyId the id of the action to cancel
+     * @param actionId the id of the action to cancel
      */
-    void cancel(String copyId);
-
-    /**
-     * Run action in background
-     *
-     * @param copyId the id of the action to run in background
-     */
-    void runInBackground(String copyId);
+    void cancel(String actionId);
 
     /**
      * Get the action handled by this executor

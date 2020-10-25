@@ -69,7 +69,7 @@ public class Split extends JSplitPane implements SwingInject, FormComponent {
                  SwingApplicationContext context) {
         this.splitName = splitName;
         this.defaultDividerLocation = defaultDividerLocation;
-        injectContext(context);
+        injectSwingContext(context);
     }
 
     public void initComponent() {

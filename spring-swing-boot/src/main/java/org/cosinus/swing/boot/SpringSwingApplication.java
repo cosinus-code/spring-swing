@@ -34,6 +34,8 @@ import static org.springframework.boot.WebApplicationType.NONE;
  */
 public class SpringSwingApplication extends SpringApplication {
 
+    public static Class<?> applicationClass;
+
     private boolean logStartupProgress;
 
     public SpringSwingApplication(Class<?>... sources) {
@@ -45,6 +47,7 @@ public class SpringSwingApplication extends SpringApplication {
 
     public static ConfigurableApplicationContext run(Class<?> appClass,
                                                      String[] args) {
+        applicationClass = appClass;
         return new SpringSwingApplicationBuilder(appClass).run(args);
     }
 

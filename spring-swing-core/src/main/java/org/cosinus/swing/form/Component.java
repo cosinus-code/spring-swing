@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.error;
+package org.cosinus.swing.form;
 
-/**
- * Indicates that a resource was not found.
- */
-public class ResourceNotFoundException extends RuntimeException {
+import org.cosinus.swing.context.SwingApplicationContext;
+import org.cosinus.swing.context.SwingInject;
 
-    public ResourceNotFoundException() {
-        this("Resource not found");
-    }
+import javax.swing.*;
 
-    public ResourceNotFoundException(String message) {
-        this(message, null);
-    }
+public class Component extends JComponent implements SwingInject {
 
-    public ResourceNotFoundException(String message, Throwable cause) {
-        super(message, cause);
+    public Component(SwingApplicationContext context) {
+        injectSwingContext(context);
     }
 }

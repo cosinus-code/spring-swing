@@ -27,6 +27,6 @@ import javax.swing.table.AbstractTableModel;
 public abstract class TableModel extends AbstractTableModel implements SwingInject, FormComponent {
 
     protected TableModel(SwingApplicationContext context) {
-        injectContext(context);
+        injectSwingContext(context);
     }
 }

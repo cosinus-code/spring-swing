@@ -37,6 +37,7 @@ import java.util.Optional;
 
 import static org.cosinus.swing.form.WindowSettings.DEFAULT_HEIGHT;
 import static org.cosinus.swing.form.WindowSettings.DEFAULT_WIDTH;
+import static java.util.Optional.ofNullable;
 
 /**
  * Abstract frame window with basic functionality
@@ -79,10 +80,11 @@ public class Frame extends JFrame implements Window, SwingInject, FormComponent 
     }
 
     public void init() {
-        injectContext(context);
+        injectSwingContext(context);
         if (frameSettings == null) {
             frameSettings = new WindowSettings(
-                    context.applicationProperties.getFrame().getName(),
+                    ofNullable(context.applicationProperties.getFrame().getName())
+                            .orElseGet(getClass().getSimpleName()::toLowerCase),
                     context.applicationProperties.getName(),
                     context.applicationProperties.getIcon(),
                     context.applicationProperties.getMenu());

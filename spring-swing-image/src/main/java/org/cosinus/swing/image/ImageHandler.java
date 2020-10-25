@@ -25,10 +25,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.FilteredImageSource;
 import java.awt.image.ImageFilter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -108,5 +106,21 @@ public class ImageHandler {
                                                 BufferedImage.TYPE_INT_ARGB);
         icon.paintIcon(new JPanel(), image.getGraphics(), 0, 0);
         return image;
+    }
+
+    public Image bytesToImage(byte[] bytes) {
+        try (InputStream input = new ByteArrayInputStream(bytes)) {
+            return ImageIO.read(input);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public Image downloadImage(String uri) {
+        try {
+            return ImageIO.read(new URL(uri));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 }

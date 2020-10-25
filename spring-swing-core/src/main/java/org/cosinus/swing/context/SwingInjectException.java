@@ -16,15 +16,20 @@
 
 package org.cosinus.swing.context;
 
-import static org.cosinus.swing.util.ReflectionUtils.setFieldsSafe;
+public class SwingInjectException extends RuntimeException {
 
-public interface SwingInject {
-
-    default void injectSwingContext(SwingApplicationContext swingContext) {
-        setFieldsSafe(this,
-                      SwingInject.class,
-                      SwingAutowired.class,
-                      swingContext.getSwingComponents());
+    public SwingInjectException() {
     }
 
+    public SwingInjectException(String message) {
+        super(message);
+    }
+
+    public SwingInjectException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public SwingInjectException(Throwable cause) {
+        super(cause);
+    }
 }

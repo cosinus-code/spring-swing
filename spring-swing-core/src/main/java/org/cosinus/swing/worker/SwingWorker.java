@@ -19,9 +19,29 @@ package org.cosinus.swing.worker;
 import org.cosinus.swing.context.SwingApplicationContext;
 import org.cosinus.swing.context.SwingInject;
 
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
+
+import static java.util.Optional.ofNullable;
+
 public abstract class SwingWorker<T, V> extends javax.swing.SwingWorker<T, V> implements SwingInject {
 
     public SwingWorker(SwingApplicationContext context) {
-        injectContext(context);
+        injectSwingContext(context);
+    }
+
+    public Optional<T> getResult() throws ExecutionException, InterruptedException {
+        return ofNullable(get());
+    }
+
+    public void useResult(Consumer<T> consumer) throws ExecutionException, InterruptedException {
+        if (!isCancelled()) {
+            getResult().ifPresent(consumer);
+        }
+    }
+
+    public boolean cancel() {
+        return cancel(true);
     }
 }

@@ -54,6 +54,8 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 
 import java.util.Set;
 
+import static org.cosinus.swing.boot.SpringSwingApplication.applicationClass;
+
 /**
  * Application configuration
  */
@@ -97,8 +99,8 @@ public class ApplicationConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ApplicationStorage localApplicationStorage(ApplicationFrame applicationFrame) {
-        return new LocalApplicationStorage(applicationFrame.getClass());
+    public ApplicationStorage localApplicationStorage() {
+        return new LocalApplicationStorage(applicationClass);
     }
 
     @Bean
