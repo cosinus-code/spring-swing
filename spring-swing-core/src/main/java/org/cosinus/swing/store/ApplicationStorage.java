@@ -33,5 +33,9 @@ public interface ApplicationStorage {
 
     void saveBoolean(String key, boolean value);
 
+    default void save(String key, Object object) {
+        saveString(key, object.toString());
+    }
+
     String key(String... keys);
 }
