@@ -16,21 +16,33 @@
 
 package org.cosinus.swing.boot;
 
-import org.cosinus.swing.boot.example.ExampleSpringSwingApplication;
+import org.cosinus.swing.boot.app.TestSpringSwingApplication;
+import org.cosinus.swing.boot.app.TestSpringSwingComponent;
+import org.cosinus.swing.boot.app.TestSpringComponent;
 import org.cosinus.swing.boot.test.SpringSwingBootTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Test {@link SpringSwingApplication}
  */
 @RunWith(SpringRunner.class)
-@SpringSwingBootTest(classes = ExampleSpringSwingApplication.class)
+@SpringSwingBootTest(classes = TestSpringSwingApplication.class)
 public class SpringSwingApplicationTest {
+
+    @Autowired
+    private TestSpringComponent testSpringComponent;
+
+    @Autowired
+    private TestSpringSwingComponent testSpringSwingComponent;
 
     @Test
     public void testSpringSwingRunningApplication() {
-        //TODO:
+        assertNotNull(testSpringComponent);
+        assertNotNull(testSpringSwingComponent);
     }
 }

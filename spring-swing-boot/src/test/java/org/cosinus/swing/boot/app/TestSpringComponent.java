@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.translate;
+package org.cosinus.swing.boot.app;
 
-//TODO: to see if it's still needed
-public interface Translatable {
+import org.springframework.stereotype.Component;
 
-    void translate(Translator translator);
-
+@Component
+public class TestSpringComponent {
 }

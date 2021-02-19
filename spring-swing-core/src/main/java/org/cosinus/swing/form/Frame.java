@@ -44,9 +44,6 @@ import static java.util.Optional.ofNullable;
  */
 public class Frame extends JFrame implements Window, SwingInject, FormComponent {
 
-    @Autowired
-    public SwingApplicationContext swingContext;
-
     @SwingAutowired
     public ActionController<?> actionController;
 
@@ -79,7 +76,7 @@ public class Frame extends JFrame implements Window, SwingInject, FormComponent 
         this.frameSettings = frameSettings;
     }
 
-    public void init() {
+    public void init(SwingApplicationContext swingContext) {
         injectSwingContext(swingContext);
         if (frameSettings == null) {
             frameSettings = new WindowSettings(

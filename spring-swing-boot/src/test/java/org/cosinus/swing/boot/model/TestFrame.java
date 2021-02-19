@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.translate;
+package org.cosinus.swing.boot.model;
 
-//TODO: to see if it's still needed
-public interface Translatable {
+import org.cosinus.swing.boot.app.TestSpringSwingComponent;
+import org.cosinus.swing.context.SwingAutowired;
+import org.cosinus.swing.form.Frame;
 
-    void translate(Translator translator);
+public class TestFrame extends Frame {
+
+    @SwingAutowired
+    public TestSpringSwingComponent springSwingComponent;
 
 }

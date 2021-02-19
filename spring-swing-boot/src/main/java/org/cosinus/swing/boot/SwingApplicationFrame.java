@@ -18,11 +18,15 @@ package org.cosinus.swing.boot;
 
 import org.cosinus.swing.boot.event.ApplicationFrameAfterInitializeEvent;
 import org.cosinus.swing.boot.event.ApplicationFrameBeforeInitializeEvent;
+import org.cosinus.swing.context.SwingApplicationContext;
 import org.cosinus.swing.form.Frame;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 
 public class SwingApplicationFrame extends Frame implements ApplicationFrame {
+
+    @Autowired
+    public SwingApplicationContext swingContext;
 
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
@@ -37,7 +41,7 @@ public class SwingApplicationFrame extends Frame implements ApplicationFrame {
     @Override
     public void startApplication() {
         applicationEventPublisher.publishEvent(new ApplicationFrameBeforeInitializeEvent(this));
-        init();
+        init(swingContext);
         applicationEventPublisher.publishEvent(new ApplicationFrameAfterInitializeEvent(this));
 
         setVisible(true);

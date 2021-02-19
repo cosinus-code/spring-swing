@@ -16,6 +16,7 @@
 
 package org.cosinus.swing.boot.test;
 
+import org.cosinus.swing.boot.SpringSwingApplication;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.context.SpringBootTestContextBootstrapper;
 import org.springframework.test.context.ContextLoader;
@@ -42,6 +43,7 @@ public class SpringSwingBootTestContextBootstrapper extends SpringBootTestContex
 
     @Override
     protected String[] getProperties(Class<?> testClass) {
+        setSpringSwingApplicationClass(testClass);
         return Optional.ofNullable(testClass)
                 .map(this::getSpringSwingBootTestAnnotation)
                 .map(SpringSwingBootTest::properties)
@@ -50,6 +52,7 @@ public class SpringSwingBootTestContextBootstrapper extends SpringBootTestContex
 
     @Override
     protected Class<?>[] getClasses(Class<?> testClass) {
+        setSpringSwingApplicationClass(testClass);
         return Optional.ofNullable(testClass)
                 .map(this::getSpringSwingBootTestAnnotation)
                 .map(SpringSwingBootTest::classes)
@@ -62,5 +65,11 @@ public class SpringSwingBootTestContextBootstrapper extends SpringBootTestContex
 
     @Override
     protected void verifyConfiguration(Class<?> testClass) {
+    }
+
+    private void setSpringSwingApplicationClass(Class<?> testClass) {
+        if (SpringSwingApplication.applicationClass == null && testClass != null) {
+            SpringSwingApplication.applicationClass = testClass;
+        }
     }
 }

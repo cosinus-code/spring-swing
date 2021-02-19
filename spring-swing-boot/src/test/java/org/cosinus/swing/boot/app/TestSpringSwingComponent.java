@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.boot.example;
+package org.cosinus.swing.boot.app;
 
-import org.cosinus.swing.boot.SpringSwingBootApplication;
-import org.cosinus.swing.boot.SwingApplicationFrame;
+import org.cosinus.swing.context.SpringSwingComponent;
 
-/**
- * Example application
- */
-@SpringSwingBootApplication
-public class ExampleSpringSwingApplication extends SwingApplicationFrame {
+@SpringSwingComponent
+public class TestSpringSwingComponent {
 }

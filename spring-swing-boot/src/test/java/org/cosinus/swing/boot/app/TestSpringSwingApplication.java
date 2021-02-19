@@ -14,11 +14,20 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.translate;
+package org.cosinus.swing.boot.app;
 
-//TODO: to see if it's still needed
-public interface Translatable {
+import org.cosinus.swing.boot.SpringSwingBootApplication;
+import org.cosinus.swing.boot.SwingApplicationFrame;
 
-    void translate(Translator translator);
+/**
+ * Example application
+ */
+@SpringSwingBootApplication
+public class TestSpringSwingApplication extends SwingApplicationFrame {
 
+    private final TestSpringComponent springTestComponent;
+
+    public TestSpringSwingApplication(TestSpringComponent springTestComponent) {
+        this.springTestComponent = springTestComponent;
+    }
 }
