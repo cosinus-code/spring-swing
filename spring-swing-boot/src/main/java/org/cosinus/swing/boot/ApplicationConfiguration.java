@@ -23,7 +23,7 @@ import org.cosinus.swing.action.execute.ActionExecutors;
 import org.cosinus.swing.boot.condition.ConditionalOnLinux;
 import org.cosinus.swing.boot.condition.ConditionalOnMac;
 import org.cosinus.swing.boot.condition.ConditionalOnWindows;
-import org.cosinus.swing.boot.initialize.ApplicationContentInitializer;
+import org.cosinus.swing.boot.initialize.ApplicationFrameInitializer;
 import org.cosinus.swing.boot.initialize.ApplicationInitializer;
 import org.cosinus.swing.context.ApplicationProperties;
 import org.cosinus.swing.context.SwingApplicationContext;
@@ -146,8 +146,8 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public ApplicationContentInitializer applicationContentInitializer(ApplicationFrame applicationFrame) {
-        return new ApplicationContentInitializer(applicationFrame);
+    public ApplicationFrameInitializer applicationContentInitializer(ApplicationFrame applicationFrame) {
+        return new ApplicationFrameInitializer(applicationFrame);
     }
 
     @Bean

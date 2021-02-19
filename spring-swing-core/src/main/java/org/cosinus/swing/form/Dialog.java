@@ -73,12 +73,7 @@ public abstract class Dialog<T> extends JDialog implements Window, SwingInject, 
     }
 
     @Override
-    public void updateFormUI() {
-
-    }
-
-    @Override
-    public void translateForm() {
+    public void translate() {
 
     }
 

@@ -28,6 +28,13 @@ public class SwingApplicationFrame extends Frame implements ApplicationFrame {
     private ApplicationEventPublisher applicationEventPublisher;
 
     @Override
+    public void initApplication() {
+        initComponents();
+        initContent();
+        translate();
+    }
+
+    @Override
     public void startApplication() {
         applicationEventPublisher.publishEvent(new ApplicationFrameBeforeInitializeEvent(this));
         init();

@@ -17,21 +17,20 @@
 package org.cosinus.swing.boot.initialize;
 
 import org.cosinus.swing.boot.ApplicationFrame;
-import org.cosinus.swing.boot.initialize.ApplicationInitializer;
 
 /**
  * Swing UI initializer
  */
-public class ApplicationContentInitializer implements ApplicationInitializer {
+public class ApplicationFrameInitializer implements ApplicationInitializer {
 
     private final ApplicationFrame applicationFrame;
 
-    public ApplicationContentInitializer(ApplicationFrame applicationFrame) {
+    public ApplicationFrameInitializer(ApplicationFrame applicationFrame) {
         this.applicationFrame = applicationFrame;
     }
 
     @Override
     public void initialize() {
-        applicationFrame.initContent();
+        applicationFrame.initApplication();
     }
 }

@@ -97,13 +97,6 @@ public class Frame extends JFrame implements Window, SwingInject, FormComponent 
         initFrameBasicActions();
     }
 
-    @Override
-    public void initContent() {
-        initFrameMenu();
-        initComponents();
-        translateForm();
-    }
-
     private void initFramePositionAndSize() {
         setSize(frameSettings.getWidth(), frameSettings.getHeight());
         if (frameSettings.isCentered()) {
@@ -202,7 +195,7 @@ public class Frame extends JFrame implements Window, SwingInject, FormComponent 
     }
 
     @Override
-    public void translateForm() {
+    public void translate() {
         if (menuBar != null) {
             menuBar.translate(translator);
         }
@@ -210,11 +203,10 @@ public class Frame extends JFrame implements Window, SwingInject, FormComponent 
 
     @Override
     public void initComponents() {
-
+        initFrameMenu();
     }
 
     @Override
-    public void updateFormUI() {
-
+    public void initContent() {
     }
 }

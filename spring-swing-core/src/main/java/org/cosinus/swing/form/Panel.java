@@ -36,12 +36,7 @@ public class Panel extends JPanel implements SwingInject, FormComponent {
     }
 
     @Override
-    public void updateFormUI() {
-
-    }
-
-    @Override
-    public void translateForm() {
+    public void translate() {
 
     }
 

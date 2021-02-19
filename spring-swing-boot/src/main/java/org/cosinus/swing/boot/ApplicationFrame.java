@@ -21,7 +21,7 @@ package org.cosinus.swing.boot;
  */
 public interface ApplicationFrame {
 
-    void initContent();
+    void initApplication();
 
     void startApplication();
 }

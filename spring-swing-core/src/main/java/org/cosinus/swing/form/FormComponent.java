@@ -23,10 +23,7 @@ public interface FormComponent {
 
     void initComponents();
 
-    void updateFormUI();
-
-    void translateForm();
-
     void initContent();
 
+    void translate();
 }
