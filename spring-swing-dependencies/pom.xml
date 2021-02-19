@@ -22,7 +22,6 @@
         <org.apache.common.version>4.4</org.apache.common.version>
         <log4j.version>2.13.3</log4j.version>
         <twelvemonkeys.imageio.version>3.4.2</twelvemonkeys.imageio.version>
-        <spring-boot.version>2.3.1.RELEASE</spring-boot.version>
         <darcula.version>2018.2</darcula.version>
     </properties>
 
