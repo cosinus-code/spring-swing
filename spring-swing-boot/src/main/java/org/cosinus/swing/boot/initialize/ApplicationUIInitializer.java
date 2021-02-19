@@ -38,7 +38,7 @@ public class ApplicationUIInitializer implements ApplicationInitializer {
 
     @Override
     public void initialize() {
-        String lookAndFeelClassName = preferences.getStringPreference(Preferences.LOOKANDFEEL)
+        String lookAndFeelClassName = preferences.getStringPreference(Preferences.LOOK_AND_FEEL)
                 .map(lafName -> uiHandler.getAvailableLookAndFeels().get(lafName))
                 .map(LookAndFeelInfo::getClassName)
                 .orElseGet(uiHandler::getDefaultLookAndFeelClassName);

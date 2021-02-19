@@ -34,7 +34,7 @@ public class Preferences {
 
     private static final Logger LOG = LogManager.getLogger(Preferences.class);
 
-    public static final String LOOKANDFEEL = "lookandfeel";
+    public static final String LOOK_AND_FEEL = "lookandfeel";
     public static final String LANGUAGE = "language";
 
     private Map<String, Object> preferencesMap = new HashMap<>();

@@ -28,7 +28,8 @@ import java.awt.Stroke;
  * Dashed border implementation
  */
 public class DashedBorder extends LineBorder {
-    private float[] dash;
+
+    private final float[] dash;
 
     /**
      * Creates a new instance of LineBorder

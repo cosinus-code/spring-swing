@@ -28,7 +28,7 @@ import org.springframework.core.io.support.SpringFactoriesLoader;
  */
 public class SpringSwingApplicationBuilder extends SpringApplicationBuilder {
 
-    ApplicationStartupListeners startupListeners = new ApplicationStartupListeners();
+    private final ApplicationStartupListeners startupListeners = new ApplicationStartupListeners();
 
     public SpringSwingApplicationBuilder(Class<?>... sources) {
         super(sources);

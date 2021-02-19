@@ -45,10 +45,10 @@ import static java.util.Optional.ofNullable;
 public class Frame extends JFrame implements Window, SwingInject, FormComponent {
 
     @Autowired
-    public SwingApplicationContext context;
+    public SwingApplicationContext swingContext;
 
     @SwingAutowired
-    public ActionController actionController;
+    public ActionController<?> actionController;
 
     @SwingAutowired
     public Translator translator;
@@ -80,14 +80,14 @@ public class Frame extends JFrame implements Window, SwingInject, FormComponent 
     }
 
     public void init() {
-        injectSwingContext(context);
+        injectSwingContext(swingContext);
         if (frameSettings == null) {
             frameSettings = new WindowSettings(
-                    ofNullable(context.applicationProperties.getFrame().getName())
+                    ofNullable(swingContext.applicationProperties.getFrame().getName())
                             .orElseGet(getClass().getSimpleName()::toLowerCase),
-                    context.applicationProperties.getName(),
-                    context.applicationProperties.getIcon(),
-                    context.applicationProperties.getMenu());
+                    swingContext.applicationProperties.getName(),
+                    swingContext.applicationProperties.getIcon(),
+                    swingContext.applicationProperties.getMenu());
         }
 
         frameSettingsHandler.loadWindowSettings(frameSettings);

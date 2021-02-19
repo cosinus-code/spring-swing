@@ -24,7 +24,7 @@ public enum IconSize {
     X32(32),
     X48(48);
 
-    private int size;
+    private final int size;
 
     IconSize(int size) {
         this.size = size;

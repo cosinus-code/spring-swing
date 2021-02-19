@@ -56,7 +56,6 @@ public class FontChooser extends Dialog<Font> implements ActionListener, ListSel
 
     private JButton btnOK, btnCancel;
     private JLabel sample;
-    private JScrollPane scrFont, scrStyle, scrSize;
     private JList<String> lstFont, lstStyle, lstSize;
     private JTextField txtFont, txtStyle, txtSize;
     private Font font;
@@ -69,24 +68,24 @@ public class FontChooser extends Dialog<Font> implements ActionListener, ListSel
     @SwingAutowired
     private ErrorHandler errorHandler;
 
-    public FontChooser(SwingApplicationContext context,
+    public FontChooser(SwingApplicationContext swingContext,
                        Dialog dialog, String title, boolean modal, String text, Font font) {
-        super(context, dialog, title, modal);
+        super(swingContext, dialog, title, modal);
         init(text, font);
     }
 
-    public FontChooser(SwingApplicationContext context,
+    public FontChooser(SwingApplicationContext swingContext,
                        Frame frame, String title, boolean modal, String text, Font font) {
-        super(context, frame, title, modal);
+        super(swingContext, frame, title, modal);
         init(text, font);
     }
 
     public void init(String text, Font font) {
         this.font = font;
 
-        scrFont = new JScrollPane();
-        scrStyle = new JScrollPane();
-        scrSize = new JScrollPane();
+        JScrollPane scrFont = new JScrollPane();
+        JScrollPane scrStyle = new JScrollPane();
+        JScrollPane scrSize = new JScrollPane();
 
         lstFont = new JList<>();
         lstStyle = new JList<>(new String[]{

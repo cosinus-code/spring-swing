@@ -77,6 +77,6 @@ public class DefaultIconsCache extends MultiKeyMap<String, Icon> implements Icon
                 .filter(Objects::nonNull)
                 .toArray(String[]::new);
 
-        return new MultiKey(key);
+        return new MultiKey<>(key);
     }
 }

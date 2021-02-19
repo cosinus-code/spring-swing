@@ -29,7 +29,7 @@ import static java.net.http.HttpResponse.BodyHandlers.ofInputStream;
 
 public class HttpStream {
 
-    static int DEFAULT_BUFFER_SIZE = 8192;
+    public static final int DEFAULT_BUFFER_SIZE = 8192;
 
     public static Stream<byte[]> from(String uri) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()

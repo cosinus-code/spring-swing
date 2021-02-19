@@ -27,8 +27,8 @@ import java.awt.event.ActionListener;
  */
 public class CheckBoxMenuItem extends JCheckBoxMenuItem implements Translatable, ActionProducer {
 
-    private JCheckBoxMenuItem altMenuItem;
-    private String key;
+    private final JCheckBoxMenuItem altMenuItem;
+    private final String key;
 
     public CheckBoxMenuItem(ActionListener action,
                             String key) {

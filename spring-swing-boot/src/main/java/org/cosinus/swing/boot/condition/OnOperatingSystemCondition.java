@@ -15,7 +15,6 @@
  */
 package org.cosinus.swing.boot.condition;
 
-import org.apache.commons.lang3.SystemUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionMessage;
 import org.springframework.boot.autoconfigure.condition.ConditionOutcome;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnCloudPlatform;
@@ -26,12 +25,17 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
 import java.util.Map;
 import java.util.Optional;
 
+import static org.apache.commons.lang3.SystemUtils.OS_NAME;
+
 public class OnOperatingSystemCondition extends SpringBootCondition {
 
     @Override
     public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
         Map<String, Object> attributes = metadata.getAnnotationAttributes(ConditionalOnOperatingSystem.class.getName());
-        String operatingSystem = (String) attributes.get("value");
+        String operatingSystem = Optional.ofNullable(attributes)
+                .map(attrs -> attrs.get("value"))
+                .map(Object::toString)
+                .orElse(null);
 
         ConditionMessage.Builder message = ConditionMessage.forCondition(ConditionalOnCloudPlatform.class);
         return isOs(operatingSystem) ?
@@ -41,7 +45,7 @@ public class OnOperatingSystemCondition extends SpringBootCondition {
 
     public boolean isOs(String name) {
         return Optional.ofNullable(name)
-                .filter(os -> SystemUtils.OS_NAME.startsWith(os))
+                .filter(OS_NAME::startsWith)
                 .isPresent();
     }
 }

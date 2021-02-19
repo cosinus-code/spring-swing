@@ -21,6 +21,7 @@ import org.cosinus.swing.boot.SpringSwingApplication;
 import org.cosinus.swing.boot.SwingSpringApplicationStartupListener;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.boot.ConfigurableBootstrapContext;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -95,13 +96,14 @@ public class SplashApplicationStartupListener implements SwingSpringApplicationS
     }
 
     @Override
-    public void starting() {
+    public void starting(ConfigurableBootstrapContext bootstrapContext) {
         updateSplash(APPLICATION_STATUS_STARTING,
                      CONTEXT_INITIALIZATION_MIN_PERCENT / 4);
     }
 
     @Override
-    public void environmentPrepared(ConfigurableEnvironment environment) {
+    public void environmentPrepared(ConfigurableBootstrapContext bootstrapContext,
+                                    ConfigurableEnvironment environment) {
     }
 
     @Override

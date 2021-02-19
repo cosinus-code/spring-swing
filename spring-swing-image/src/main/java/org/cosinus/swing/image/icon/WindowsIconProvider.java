@@ -237,6 +237,7 @@ public class WindowsIconProvider implements IconProvider {
         return new ImageIcon(bi);
     }
 
+    //TODO:
 //    static {
 //        try {
 //            System.loadLibrary("dll/bigicons");

@@ -44,7 +44,7 @@ import static org.cosinus.swing.border.Borders.insetsEmpty;
 /**
  * Default implementation of {@link ErrorForm} as dialog
  */
-public class DefaultErrorForm extends Dialog implements ErrorForm, ActionListener {
+public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionListener {
 
     private static final Logger LOG = LogManager.getLogger(DefaultErrorForm.class);
 
@@ -71,10 +71,10 @@ public class DefaultErrorForm extends Dialog implements ErrorForm, ActionListene
     /**
      * Creates new form ErrorForm
      */
-    public DefaultErrorForm(SwingApplicationContext context,
+    public DefaultErrorForm(SwingApplicationContext swingContext,
                             Frame parent,
                             boolean modal) {
-        super(context,
+        super(swingContext,
               parent,
               ERROR_WINDOW_TITLE,
               modal);
@@ -84,10 +84,10 @@ public class DefaultErrorForm extends Dialog implements ErrorForm, ActionListene
     /**
      * Creates new form ErrorForm
      */
-    public DefaultErrorForm(SwingApplicationContext context,
+    public DefaultErrorForm(SwingApplicationContext swingContext,
                             Dialog parent,
                             boolean modal) {
-        super(context,
+        super(swingContext,
               parent,
               ERROR_WINDOW_TITLE,
               modal);
@@ -179,7 +179,7 @@ public class DefaultErrorForm extends Dialog implements ErrorForm, ActionListene
         setVisible(true);
     }
 
-    private void showDetails() throws Exception {
+    private void showDetails() {
         if (panDetails.isVisible()) {
             detailsHeight = panDetails.getHeight();
             setSize(getWidth(), getHeight() - panDetails.getHeight());

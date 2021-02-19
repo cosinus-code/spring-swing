@@ -16,6 +16,7 @@
 
 package org.cosinus.swing.boot.event;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -38,12 +39,12 @@ public class BeanFactoryProcessorListener implements BeanFactoryPostProcessor, A
     }
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(@NotNull ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
 
     @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+    public void postProcessBeanFactory(@NotNull ConfigurableListableBeanFactory beanFactory) throws BeansException {
         applicationEventPublisher.publishEvent(
                 new ApplicationContextBeforeInitializeBeansEvent(applicationContext));
     }

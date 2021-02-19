@@ -30,7 +30,7 @@ public class MenuItem extends JMenuItem implements Translatable, ActionProducer 
 
     private JMenuItem altMenuItem;
 
-    private String key;
+    private final String key;
 
     public MenuItem(ActionListener actionListener, String key) {
         this(actionListener, key, null, false);

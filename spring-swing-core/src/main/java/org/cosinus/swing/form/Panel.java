@@ -26,8 +26,8 @@ import javax.swing.*;
  */
 public class Panel extends JPanel implements SwingInject, FormComponent {
 
-    public Panel(SwingApplicationContext context) {
-        injectSwingContext(context);
+    public Panel(SwingApplicationContext swingContext) {
+        injectSwingContext(swingContext);
     }
 
     @Override

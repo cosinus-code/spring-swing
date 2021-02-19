@@ -28,8 +28,8 @@ import javax.swing.*;
  */
 public abstract class Table extends JTable implements SwingInject, Translatable, FormComponent {
 
-    protected Table(SwingApplicationContext context) {
-        injectSwingContext(context);
+    protected Table(SwingApplicationContext swingContext) {
+        injectSwingContext(swingContext);
     }
 
     @Override

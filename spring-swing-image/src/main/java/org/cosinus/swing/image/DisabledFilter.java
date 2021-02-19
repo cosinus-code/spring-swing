@@ -16,8 +16,9 @@
 
 package org.cosinus.swing.image;
 
-import java.awt.SystemColor;
 import java.awt.image.RGBImageFilter;
+
+import static java.awt.SystemColor.controlShadow;
 
 /**
  * RGB filter for disabled like images
@@ -29,22 +30,22 @@ public class DisabledFilter extends RGBImageFilter {
 
     public int filterRGB(int x, int y, int rgb) {
         int intensity = (rgb & 0xff000000);
-        int syscol = SystemColor.controlShadow.getRGB();
+        int systemColor = controlShadow.getRGB();
 
         int red = (rgb & 0x00ff0000) / 0x10000;
         int green = (rgb & 0x0000ff00) / 0x100;
         int blue = rgb & 0x000000ff;
-        int sysred = (syscol & 0x00ff0000) / 0x10000;
-        int sysgreen = (syscol & 0x0000ff00) / 0x100;
-        int sysblue = syscol & 0x000000ff;
+        int systemRed = (systemColor & 0x00ff0000) / 0x10000;
+        int systemGreen = (systemColor & 0x0000ff00) / 0x100;
+        int systemBlue = systemColor & 0x000000ff;
 
         int level = 128;
         if (red < level) red = level;
         if (green < level) green = level;
         if (blue < level) blue = level;
-        red = sysred + (255 - sysred) * (red - level) / level;
-        green = sysgreen + (255 - sysgreen) * (green - level) / level;
-        blue = sysblue + (255 - sysblue) * (blue - level) / level;
+        red = systemRed + (255 - systemRed) * (red - level) / level;
+        green = systemGreen + (255 - systemGreen) * (green - level) / level;
+        blue = systemBlue + (255 - systemBlue) * (blue - level) / level;
 
         return (intensity | (red * 0x10000) | (green * 0x100) | blue);
     }

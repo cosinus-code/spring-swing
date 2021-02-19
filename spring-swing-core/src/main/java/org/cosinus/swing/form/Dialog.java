@@ -29,17 +29,17 @@ public abstract class Dialog<T> extends JDialog implements Window, SwingInject, 
 
     private boolean cancelled;
 
-    public Dialog(SwingApplicationContext context,
+    public Dialog(SwingApplicationContext swingContext,
                   Frame frame, String title, boolean modal) {
         super(frame, title, modal);
-        injectSwingContext(context);
+        injectSwingContext(swingContext);
         init();
     }
 
-    public Dialog(SwingApplicationContext context,
+    public Dialog(SwingApplicationContext swingContext,
                   Dialog dialog, String title, boolean modal) {
         super(dialog, title, modal);
-        injectSwingContext(context);
+        injectSwingContext(swingContext);
         init();
     }
 

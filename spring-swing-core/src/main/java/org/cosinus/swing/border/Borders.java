@@ -16,16 +16,9 @@
 
 package org.cosinus.swing.border;
 
-import java.awt.Color;
-import java.awt.Insets;
-
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
-
-import org.cosinus.swing.color.Colors;
+import java.awt.*;
 
 /**
  * Helper for borders

@@ -58,7 +58,7 @@ public class DarkLookAndFeelInitializer implements ApplicationInitializer {
     }
 
     private boolean noLookAndFeelPreference() {
-        return preferences.getStringPreference(Preferences.LOOKANDFEEL)
+        return preferences.getStringPreference(Preferences.LOOK_AND_FEEL)
                 .filter(lookAndFeelName -> !lookAndFeelName.isEmpty())
                 .isEmpty();
     }

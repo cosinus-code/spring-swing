@@ -45,7 +45,7 @@ public class Split extends JSplitPane implements SwingInject, FormComponent {
 
     private static final String SPLIT_PROPERTY_NAME = "dividerLocation";
 
-    private String splitName;
+    private final String splitName;
 
     private boolean isDividerLocationLoading;
 
@@ -64,12 +64,12 @@ public class Split extends JSplitPane implements SwingInject, FormComponent {
     @SwingAutowired
     public ApplicationUIHandler uiHandler;
 
-    public Split(String splitName,
-                 int defaultDividerLocation,
-                 SwingApplicationContext context) {
+    public Split(SwingApplicationContext swingContext,
+                 String splitName,
+                 int defaultDividerLocation) {
         this.splitName = splitName;
         this.defaultDividerLocation = defaultDividerLocation;
-        injectSwingContext(context);
+        injectSwingContext(swingContext);
     }
 
     public void initComponent() {

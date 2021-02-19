@@ -30,19 +30,19 @@ import java.util.Optional;
 @SpringSwingComponent
 public class ErrorFormProvider {
 
-    private final SwingApplicationContext context;
+    private final SwingApplicationContext swingContext;
 
-    public ErrorFormProvider(SwingApplicationContext context) {
-        this.context = context;
+    public ErrorFormProvider(SwingApplicationContext swingContext) {
+        this.swingContext = swingContext;
     }
 
 
     public Optional<ErrorForm> getErrorForm(Window parent) {
-        return parent instanceof Dialog ?
-                Optional.of(new DefaultErrorForm(context,
-                                                 (Dialog) parent,
+        return parent instanceof Dialog<?> ?
+                Optional.of(new DefaultErrorForm(swingContext,
+                                                 (Dialog<?>) parent,
                                                  true)) :
-                Optional.of(new DefaultErrorForm(context,
+                Optional.of(new DefaultErrorForm(swingContext,
                                                  (Frame) parent,
                                                  true));
     }

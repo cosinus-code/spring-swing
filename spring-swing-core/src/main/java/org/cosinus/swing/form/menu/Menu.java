@@ -29,7 +29,7 @@ public class Menu extends JMenu implements Translatable {
 
     private JMenu altMenu;
 
-    private String key;
+    private final String key;
 
     /**
      * Creates a new instance of Menu

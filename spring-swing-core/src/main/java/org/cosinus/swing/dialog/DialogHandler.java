@@ -58,7 +58,7 @@ public class DialogHandler {
 
     private static final String FILE_CHOOSER = "file-chooser";
 
-    private final SwingApplicationContext context;
+    private final SwingApplicationContext swingContext;
 
     private final Translator translator;
 
@@ -66,18 +66,18 @@ public class DialogHandler {
 
     private final ApplicationStorage applicationStorage;
 
-    public DialogHandler(SwingApplicationContext context,
+    public DialogHandler(SwingApplicationContext swingContext,
                          Translator translator,
                          ApplicationUIHandler uiHandler,
                          ApplicationStorage applicationStorage) {
-        this.context = context;
+        this.swingContext = swingContext;
         this.translator = translator;
         this.uiHandler = uiHandler;
         this.applicationStorage = applicationStorage;
     }
 
     public <T> Dialog<T> showDialog(Function<SwingApplicationContext, Dialog<T>> dialogInitiator) {
-        Dialog<T> dialog = dialogInitiator.apply(context);
+        Dialog<T> dialog = dialogInitiator.apply(swingContext);
         dialog.setVisible(true);
         return dialog;
     }
@@ -304,11 +304,13 @@ public class DialogHandler {
 
         try {
             String selectedValue = show.get().toString();
-            return IntStream.range(0, options.length)
-                    .filter(i -> translatedOptions[i].equals(selectedValue))
-                    .mapToObj(i -> options[i])
-                    .findFirst()
-                    .orElse(null);
+            return options != null ?
+                    IntStream.range(0, options.length)
+                            .filter(i -> translatedOptions[i].equals(selectedValue))
+                            .mapToObj(i -> options[i])
+                            .findFirst()
+                            .orElse(null) :
+                    null;
         } catch (InterruptedException | ExecutionException ex) {
             LOG.error("Error occurred during showing dialog", ex);
             return null;

@@ -25,13 +25,13 @@ import java.awt.event.ActionListener;
  */
 public class EscapeActionListener implements ActionListener {
 
-    private Window wnd;
+    private final Window window;
 
-    public EscapeActionListener(Window wnd) {
-        this.wnd = wnd;
+    public EscapeActionListener(Window window) {
+        this.window = window;
     }
 
     public void actionPerformed(ActionEvent e) {
-        wnd.dispose();
+        window.dispose();
     }
 }

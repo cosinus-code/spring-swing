@@ -23,8 +23,10 @@ import java.awt.*;
  *
  */
 public class GTKTableHeaderBorder extends AbstractBorder {
+
     private boolean over, pressed;
-    private Insets insets;
+
+    private final Insets insets;
 
     public GTKTableHeaderBorder(Insets insets) {
         this.insets = insets;
@@ -55,7 +57,7 @@ public class GTKTableHeaderBorder extends AbstractBorder {
 
         // bottom
         g.setColor(GTKColors.getTableHeaderBottomBorderColor(1, pressed, over));
-        g.drawLine(0, height - bottom + 0, width, height - bottom + 0);
+        g.drawLine(0, height - bottom, width, height - bottom);
         g.setColor(GTKColors.getTableHeaderBottomBorderColor(2, pressed, over));
         g.drawLine(0, height - bottom + 1, width, height - bottom + 1);
         g.setColor(GTKColors.getTableHeaderBottomBorderColor(3, pressed, over));

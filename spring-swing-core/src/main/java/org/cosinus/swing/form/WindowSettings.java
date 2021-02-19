@@ -25,9 +25,9 @@ public class WindowSettings {
 
     public static final int DEFAULT_HEIGHT = 600;
 
-    private String name;
+    private final String name;
 
-    private String title;
+    private final String title;
 
     private String icon;
 

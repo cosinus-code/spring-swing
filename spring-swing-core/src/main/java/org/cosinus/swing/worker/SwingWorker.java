@@ -27,8 +27,8 @@ import static java.util.Optional.ofNullable;
 
 public abstract class SwingWorker<T, V> extends javax.swing.SwingWorker<T, V> implements SwingInject {
 
-    public SwingWorker(SwingApplicationContext context) {
-        injectSwingContext(context);
+    public SwingWorker(SwingApplicationContext swingContext) {
+        injectSwingContext(swingContext);
     }
 
     public Optional<T> getResult() throws ExecutionException, InterruptedException {

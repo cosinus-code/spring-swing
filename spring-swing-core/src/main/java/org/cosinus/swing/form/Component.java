@@ -23,7 +23,7 @@ import javax.swing.*;
 
 public class Component extends JComponent implements SwingInject {
 
-    public Component(SwingApplicationContext context) {
-        injectSwingContext(context);
+    public Component(SwingApplicationContext swingContext) {
+        injectSwingContext(swingContext);
     }
 }

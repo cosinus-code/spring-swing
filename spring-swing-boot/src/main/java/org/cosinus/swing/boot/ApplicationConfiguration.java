@@ -109,11 +109,11 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public DialogHandler dialogHandler(SwingApplicationContext context,
+    public DialogHandler dialogHandler(SwingApplicationContext swingContext,
                                        Translator translator,
                                        ApplicationUIHandler uiHandler,
                                        ApplicationStorage localStorage) {
-        return new DialogHandler(context,
+        return new DialogHandler(swingContext,
                                  translator,
                                  uiHandler,
                                  localStorage);
@@ -121,8 +121,8 @@ public class ApplicationConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ErrorFormProvider errorFormProvider(SwingApplicationContext context) {
-        return new ErrorFormProvider(context);
+    public ErrorFormProvider errorFormProvider(SwingApplicationContext swingContext) {
+        return new ErrorFormProvider(swingContext);
     }
 
     @Bean
@@ -161,7 +161,7 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public <C extends ActionContext> ActionController swingActionController(
+    public <C extends ActionContext> ActionController<C> swingActionController(
             ErrorHandler errorHandler,
             KeyMapHandler<C> keyMapHandler,
             ActionContextProvider<C> actionContextProvider,
@@ -174,7 +174,7 @@ public class ApplicationConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ActionContextProvider ActionContextProvider() {
+    public ActionContextProvider<ActionContext> ActionContextProvider() {
         return new DefaultActionContextProvider();
     }
 

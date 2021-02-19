@@ -40,6 +40,7 @@ import static java.awt.event.InputEvent.META_DOWN_MASK;
 import static java.util.Arrays.stream;
 import static javax.swing.KeyStroke.getKeyStroke;
 import static org.apache.commons.lang3.SystemUtils.IS_OS_MAC;
+import static java.awt.Toolkit.getDefaultToolkit;
 
 /**
  * UIManager handler
@@ -182,7 +183,7 @@ public class ApplicationUIHandler {
     public int controlDownKeyMask() {
         return IS_OS_MAC ?
                 META_DOWN_MASK :
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+                getDefaultToolkit().getMenuShortcutKeyMaskEx();
     }
 
     public KeyStroke getControlDownKeyStroke(int keyCode) {

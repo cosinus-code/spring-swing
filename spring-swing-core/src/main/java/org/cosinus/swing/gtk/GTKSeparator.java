@@ -26,7 +26,8 @@ import javax.swing.JToolBar;
  *
  */
 public class GTKSeparator extends JToolBar.Separator {
-    private JComponent parent;
+
+    private final JComponent parent;
 
     /**
      * Creates a new instance of GTKSeparator

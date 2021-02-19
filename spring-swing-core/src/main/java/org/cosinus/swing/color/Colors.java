@@ -20,6 +20,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Optional;
 
+import static java.lang.Math.min;
+
 /**
  * Helper for colors
  */
@@ -59,19 +61,13 @@ public final class Colors {
     }
 
     public static String getColorDescription(Color color) {
-        return color.red + COLOR_SEPARATOR + color.green + COLOR_SEPARATOR + color.blue;
+        return color.getRed() + COLOR_SEPARATOR + color.getGreen() + COLOR_SEPARATOR + color.getBlue();
     }
 
     public static Color getLighterColor(Color color) {
-        int red = color.getRed() + 12;
-        int green = color.getGreen() + 14;
-        int blue = color.getBlue() + 16;
-
-        if (red > 255) red = 255;
-        if (green > 255) green = 255;
-        if (blue > 255) blue = 255;
-
-        return new Color(red, green, blue);
+        return new Color(min(color.getRed() + 12, 255),
+                         min(color.getGreen() + 14, 255),
+                         min(color.getBlue() + 16, 255));
     }
 
     private Colors() {
