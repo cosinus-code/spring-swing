@@ -75,7 +75,6 @@ public class Split extends JSplitPane implements SwingInject, FormComponent {
     public void initComponent() {
         initDivider();
         initListeners();
-        updateForm();
         loadDividerLocation();
     }
 
@@ -97,13 +96,10 @@ public class Split extends JSplitPane implements SwingInject, FormComponent {
 
     protected void initDivider() {
         divider = Arrays.stream(getComponents())
-                .filter(component -> BasicSplitPaneDivider.class.isAssignableFrom(component.getClass()))
-                .map(BasicSplitPaneDivider.class::cast)
-                .findFirst()
-                .orElse(null);
-    }
-
-    public void updateForm() {
+            .filter(component -> BasicSplitPaneDivider.class.isAssignableFrom(component.getClass()))
+            .map(BasicSplitPaneDivider.class::cast)
+            .findFirst()
+            .orElse(null);
     }
 
     public void loadDividerLocation() {
@@ -118,8 +114,8 @@ public class Split extends JSplitPane implements SwingInject, FormComponent {
 
     public void moveSplitter(int value, boolean percent) {
         setDividerLocation(percent ?
-                                   min(max(value, 20), 80) * getWidth() / 100 :
-                                   max(value, 0));
+                               min(max(value, 20), 80) * getWidth() / 100 :
+                               max(value, 0));
 
         lastDividerLocation = value;
         lastPercentDivider = percent;

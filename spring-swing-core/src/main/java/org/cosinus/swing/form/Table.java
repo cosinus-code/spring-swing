@@ -26,13 +26,9 @@ import javax.swing.*;
 /**
  * Abstract table functionality
  */
-public abstract class Table extends JTable implements SwingInject, Translatable, FormComponent {
+public abstract class Table extends JTable implements SwingInject, FormComponent {
 
     protected Table(SwingApplicationContext swingContext) {
         injectSwingContext(swingContext);
-    }
-
-    @Override
-    public void translate(Translator translator) {
     }
 }

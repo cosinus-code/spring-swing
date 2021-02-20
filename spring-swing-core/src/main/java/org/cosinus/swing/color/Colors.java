@@ -16,6 +16,9 @@
 
 package org.cosinus.swing.color;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.Optional;
@@ -26,6 +29,8 @@ import static java.lang.Math.min;
  * Helper for colors
  */
 public final class Colors {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Colors.class);
 
     public static final String COLOR_SEPARATOR = ",";
 
@@ -54,8 +59,8 @@ public final class Colors {
                 int blue = Integer.parseInt(pieces[2].trim());
                 return Optional.of(new Color(red, green, blue));
             }
-        } catch (Exception ex) {
-            //TODO: log
+        } catch (NumberFormatException ex) {
+            LOG.error("Invalid color descriptor: " + descriptor, ex);
         }
         return Optional.empty();
     }

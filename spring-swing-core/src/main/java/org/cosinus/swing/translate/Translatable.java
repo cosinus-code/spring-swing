@@ -16,7 +16,6 @@
 
 package org.cosinus.swing.translate;
 
-//TODO: to see if it's still needed
 public interface Translatable {
 
     void translate(Translator translator);

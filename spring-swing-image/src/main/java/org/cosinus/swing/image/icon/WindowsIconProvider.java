@@ -36,6 +36,7 @@ import static org.cosinus.swing.image.icon.IconSize.X32;
 import static org.cosinus.swing.util.AutoRemovableTemporaryFile.autoRemovableTemporaryFileWithExtension;
 import static org.cosinus.swing.util.FileUtils.getExtension;
 import static org.cosinus.swing.util.WindowsUtils.getRegistryValue;
+import static java.util.Optional.ofNullable;
 
 /**
  * Implementation of {@link IconProvider} for Windows
@@ -64,33 +65,33 @@ public class WindowsIconProvider implements IconProvider {
 
     @Override
     public Optional<Icon> findIconByFile(File file, IconSize size) {
-        return Optional.ofNullable(file)
-                .map(f -> {
-                    if (size == X16) {
-                        return file.exists() || file.isDirectory() ?
-                                getSystemIcon(file) :
-                                getSystemIcon(getExtension(file));
-                    } else if (size == X32) {
-                        return getNativeSystemIcon(file, X32.getSize());
-                    } else {
-                        return null;
-                    }
-                });
+        return ofNullable(file)
+            .map(f -> {
+                if (size == X16) {
+                    return file.exists() || file.isDirectory() ?
+                        getSystemIcon(file) :
+                        getSystemIcon(getExtension(file));
+                } else if (size == X32) {
+                    return getNativeSystemIcon(file, X32.getSize());
+                } else {
+                    return null;
+                }
+            });
     }
 
     @Override
     public Optional<Icon> findIconByName(String name, IconSize size) {
         return Optional.ofNullable(getIconNameToFilePathMap().get(name))
-                .flatMap(WindowsUtils::getRegistryValue)
-                .flatMap(iconFilePath -> createIconFromSystemFile(iconFilePath, size.getSize()))
-                .map(bytes -> createIconFromBytes(bytes, size.getSize()));
+            .flatMap(WindowsUtils::getRegistryValue)
+            .flatMap(iconFilePath -> createIconFromSystemFile(iconFilePath, size.getSize()))
+            .map(bytes -> createIconFromBytes(bytes, size.getSize()));
     }
 
     private Optional<int[]> createIconFromSystemFile(String systemFilePath, int size) {
         String[] pieces = systemFilePath.split(",");
         String source = pieces[0].startsWith("\"") && pieces[0].endsWith("\"") ?
-                pieces[0].substring(1, pieces[0].length() - 1) :
-                pieces[0];
+            pieces[0].substring(1, pieces[0].length() - 1) :
+            pieces[0];
         int index = Integer.parseInt(pieces[1]);
         return Optional.ofNullable(getNativeSystemIcon(source, index, size));
     }
@@ -106,8 +107,8 @@ public class WindowsIconProvider implements IconProvider {
 
     private Icon getSystemIcon(File file) {
         return file.exists() ?
-                getSystemIconForExistingFile(file) :
-                getSystemIconForExistingFile(new File(System.getProperty("java.io.tmpdir")));
+            getSystemIconForExistingFile(file) :
+            getSystemIconForExistingFile(new File(System.getProperty("java.io.tmpdir")));
     }
 
     private Icon getSystemIconForExistingFile(File file) {
@@ -153,30 +154,25 @@ public class WindowsIconProvider implements IconProvider {
                 bytes = getNativeSystemIcon(WINDOWS_SHELL_PATH, 2, size);
             } else {
                 bytes = getRegistryValue(REGISTRY_FILE_EXTENSIONS + ext, "ProgID")
+                    .map(value -> getRegistryValue(REGISTRY_HKCR + value + "\\DefaultIcon"))
+                    .orElseGet(() -> getRegistryValue(REGISTRY_HKCR + "." + ext)
                         .map(value -> getRegistryValue(REGISTRY_HKCR + value + "\\DefaultIcon"))
-                        .orElseGet(() -> getRegistryValue(REGISTRY_HKCR + "." + ext)
-                                .map(value -> getRegistryValue(REGISTRY_HKCR + value + "\\DefaultIcon"))
-                                .orElseGet(() -> getRegistryValue(REGISTRY_HKCR + "." + ext, "PerceivedType")
-                                        .flatMap(value -> getRegistryValue(REGISTRY_HKCR_SYSTEM_FILE_ASSOCIATIONS + value + "\\DefaultIcon"))
-                                ))
-                        .flatMap(systemFilePath -> createIconFromSystemFile(systemFilePath, size))
-                        .orElse(null);
+                        .orElseGet(() -> getRegistryValue(REGISTRY_HKCR + "." + ext, "PerceivedType")
+                            .flatMap(value -> getRegistryValue(REGISTRY_HKCR_SYSTEM_FILE_ASSOCIATIONS + value + "\\DefaultIcon"))
+                        ))
+                    .flatMap(systemFilePath -> createIconFromSystemFile(systemFilePath, size))
+                    .orElse(null);
             }
         }
 
         //if after all these, nothing is found, let's try something manually
         if (bytes == null) {
             bytes = getIconIndexByExtension(ext)
-                    .map(index -> getNativeSystemIcon(WINDOWS_SHELL_PATH, index, size))
-                    .orElse(null);
+                .map(index -> getNativeSystemIcon(WINDOWS_SHELL_PATH, index, size))
+                .orElse(null);
         }
 
-        // if nothing found, give up :(
-        if (bytes == null) {
-            return null;
-        }
-
-        return createIconFromBytes(bytes, size);
+        return bytes != null ? createIconFromBytes(bytes, size) : null;
     }
 
     private Optional<Integer> getIconIndexByExtension(String extension) {
@@ -237,18 +233,8 @@ public class WindowsIconProvider implements IconProvider {
         return new ImageIcon(bi);
     }
 
-    //TODO:
-//    static {
-//        try {
-//            System.loadLibrary("dll/bigicons");
-//        } catch (Error error) {
-//            LOG.error("Failed to load native library: bigicons", error);
-//        }
-//    }
-//
-//    public static native int[] getNativeSystemIcon(String source, int index, int size);
-
     public int[] getNativeSystemIcon(String source, int index, int size) {
+        //TODO:
         return null;
     }
 }

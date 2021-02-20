@@ -27,15 +27,11 @@ import java.util.Arrays;
  */
 public class PopupMenu extends JPopupMenu implements Translatable {
 
-    public void updateForm() {
-        //TODO:
-    }
-
     @Override
     public void translate(Translator translator) {
         Arrays.stream(getSubElements())
-                .filter(menu -> Translatable.class.isAssignableFrom(Translatable.class))
-                .map(Translatable.class::cast)
-                .forEach(translatable -> translatable.translate(translator));
+            .filter(menu -> Translatable.class.isAssignableFrom(Translatable.class))
+            .map(Translatable.class::cast)
+            .forEach(translatable -> translatable.translate(translator));
     }
 }

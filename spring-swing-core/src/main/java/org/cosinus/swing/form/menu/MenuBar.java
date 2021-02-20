@@ -21,7 +21,8 @@ import org.cosinus.swing.translate.Translator;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
+
+import static java.util.Arrays.stream;
 
 /**
  * Menu bar model
@@ -72,9 +73,9 @@ public class MenuBar extends JMenuBar implements Translatable {
 
     @Override
     public void translate(Translator translator) {
-        Arrays.stream(getSubElements())
-                .filter(Translatable.class::isInstance)
-                .map(Translatable.class::cast)
-                .forEach(translatable -> translatable.translate(translator));
+        stream(getSubElements())
+            .filter(Translatable.class::isInstance)
+            .map(Translatable.class::cast)
+            .forEach(translatable -> translatable.translate(translator));
     }
 }
