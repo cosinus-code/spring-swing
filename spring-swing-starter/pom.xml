@@ -25,7 +25,6 @@
         <dependency>
             <groupId>org.cosinus.swing</groupId>
             <artifactId>spring-swing-test</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
