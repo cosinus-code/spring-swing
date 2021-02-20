@@ -14,32 +14,20 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.store;
+package org.cosinus.swing.test.boot.app;
+
+import org.cosinus.swing.boot.SpringSwingBootApplication;
+import org.cosinus.swing.boot.SwingApplicationFrame;
 
 /**
- * Interface for storage of application related data
+ * Example application
  */
-public interface ApplicationStorage {
+@SpringSwingBootApplication
+public class TestSpringSwingApplication extends SwingApplicationFrame {
 
-    String getString(String key);
+    private final TestSpringComponent springTestComponent;
 
-    void saveString(String key, String value);
-
-    int getInt(String key, int defaultValue);
-
-    void saveInt(String key, int value);
-
-    boolean getBoolean(String key, boolean defaultValue);
-
-    void saveBoolean(String key, boolean value);
-
-    default void save(String key, Object object) {
-        saveString(key, object.toString());
+    public TestSpringSwingApplication(TestSpringComponent springTestComponent) {
+        this.springTestComponent = springTestComponent;
     }
-
-    void remove(String key);
-
-    void clean();
-
-    String key(String... keys);
 }

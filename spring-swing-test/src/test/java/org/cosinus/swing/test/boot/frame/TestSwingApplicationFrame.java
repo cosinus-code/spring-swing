@@ -14,32 +14,11 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.store;
+package org.cosinus.swing.test.boot.frame;
 
-/**
- * Interface for storage of application related data
- */
-public interface ApplicationStorage {
+import org.cosinus.swing.boot.SwingApplicationFrame;
+import org.springframework.stereotype.Component;
 
-    String getString(String key);
-
-    void saveString(String key, String value);
-
-    int getInt(String key, int defaultValue);
-
-    void saveInt(String key, int value);
-
-    boolean getBoolean(String key, boolean defaultValue);
-
-    void saveBoolean(String key, boolean value);
-
-    default void save(String key, Object object) {
-        saveString(key, object.toString());
-    }
-
-    void remove(String key);
-
-    void clean();
-
-    String key(String... keys);
+@Component
+public class TestSwingApplicationFrame extends SwingApplicationFrame {
 }

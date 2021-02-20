@@ -14,32 +14,20 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.store;
+package org.cosinus.swing.test.boot;
+
+import org.cosinus.swing.boot.SpringSwingApplication;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.test.context.SpringBootContextLoader;
+import org.springframework.test.context.ContextLoader;
 
 /**
- * Interface for storage of application related data
+ * A {@link ContextLoader} that can be used to test Spring Swing Boot applications.
  */
-public interface ApplicationStorage {
+public class SpringSwingBootContextLoader extends SpringBootContextLoader {
 
-    String getString(String key);
-
-    void saveString(String key, String value);
-
-    int getInt(String key, int defaultValue);
-
-    void saveInt(String key, int value);
-
-    boolean getBoolean(String key, boolean defaultValue);
-
-    void saveBoolean(String key, boolean value);
-
-    default void save(String key, Object object) {
-        saveString(key, object.toString());
+    @Override
+    protected SpringApplication getSpringApplication() {
+        return new SpringSwingApplication();
     }
-
-    void remove(String key);
-
-    void clean();
-
-    String key(String... keys);
 }

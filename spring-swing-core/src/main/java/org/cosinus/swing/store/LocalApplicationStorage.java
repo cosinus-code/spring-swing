@@ -18,6 +18,7 @@ package org.cosinus.swing.store;
 
 import org.cosinus.swing.context.SpringSwingComponent;
 
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import static java.lang.String.join;
@@ -64,6 +65,20 @@ public class LocalApplicationStorage implements ApplicationStorage {
     @Override
     public void saveBoolean(String key, boolean value) {
         userPreferences.putInt(key, value ? 1 : 0);
+    }
+
+    @Override
+    public void remove(String key) {
+        userPreferences.remove(key);
+    }
+
+    @Override
+    public void clean() {
+        try {
+            userPreferences.clear();
+        } catch (BackingStoreException e) {
+            throw new ApplicationStorageException("Failed to clean application storage for " + userPreferences.name(), e);
+        }
     }
 
     @Override

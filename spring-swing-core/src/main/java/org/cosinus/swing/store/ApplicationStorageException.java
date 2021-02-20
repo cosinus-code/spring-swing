@@ -16,30 +16,20 @@
 
 package org.cosinus.swing.store;
 
-/**
- * Interface for storage of application related data
- */
-public interface ApplicationStorage {
+public class ApplicationStorageException extends RuntimeException {
 
-    String getString(String key);
-
-    void saveString(String key, String value);
-
-    int getInt(String key, int defaultValue);
-
-    void saveInt(String key, int value);
-
-    boolean getBoolean(String key, boolean defaultValue);
-
-    void saveBoolean(String key, boolean value);
-
-    default void save(String key, Object object) {
-        saveString(key, object.toString());
+    public ApplicationStorageException() {
     }
 
-    void remove(String key);
+    public ApplicationStorageException(String message) {
+        super(message);
+    }
 
-    void clean();
+    public ApplicationStorageException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-    String key(String... keys);
+    public ApplicationStorageException(Throwable cause) {
+        super(cause);
+    }
 }

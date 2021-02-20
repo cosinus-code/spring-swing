@@ -21,6 +21,7 @@
         <module>spring-swing-image</module>
         <module>spring-swing-dependencies</module>
         <module>spring-swing-starter</module>
+        <module>spring-swing-test</module>
     </modules>
 
 </project>

@@ -81,7 +81,7 @@ public class Frame extends JFrame implements Window, SwingInject, FormComponent 
         if (frameSettings == null) {
             frameSettings = new WindowSettings(
                     ofNullable(swingContext.applicationProperties.getFrame().getName())
-                            .orElseGet(getClass().getSimpleName()::toLowerCase),
+                            .orElseGet(this::getClassName),
                     swingContext.applicationProperties.getName(),
                     swingContext.applicationProperties.getIcon(),
                     swingContext.applicationProperties.getMenu());
@@ -92,6 +92,10 @@ public class Frame extends JFrame implements Window, SwingInject, FormComponent 
         initFrameNameAndIcon();
         initFramePositionAndSize();
         initFrameBasicActions();
+    }
+
+    private String getClassName() {
+        return getClass().getSimpleName().split("\\$\\$")[0].toLowerCase();
     }
 
     private void initFramePositionAndSize() {

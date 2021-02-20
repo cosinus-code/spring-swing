@@ -14,32 +14,23 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.store;
+package org.cosinus.swing.test.boot;
+
+import org.springframework.test.context.BootstrapWith;
+
+import java.lang.annotation.*;
 
 /**
- * Interface for storage of application related data
+ * Annotation that can be specified on a test class that runs Spring Swing Boot based tests.
  */
-public interface ApplicationStorage {
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
+@BootstrapWith(SpringSwingBootTestContextBootstrapper.class)
+public @interface SpringSwingBootTest {
 
-    String getString(String key);
+    String[] properties() default {};
 
-    void saveString(String key, String value);
-
-    int getInt(String key, int defaultValue);
-
-    void saveInt(String key, int value);
-
-    boolean getBoolean(String key, boolean defaultValue);
-
-    void saveBoolean(String key, boolean value);
-
-    default void save(String key, Object object) {
-        saveString(key, object.toString());
-    }
-
-    void remove(String key);
-
-    void clean();
-
-    String key(String... keys);
+    Class<?>[] classes() default {};
 }

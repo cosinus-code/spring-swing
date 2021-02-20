@@ -10,16 +10,25 @@
         <relativePath>../spring-swing-dependencies</relativePath>
     </parent>
 
-    <artifactId>spring-swing-boot</artifactId>
+    <artifactId>spring-swing-test</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>org.cosinus.swing</groupId>
-            <artifactId>spring-swing-core</artifactId>
+            <artifactId>spring-swing-boot</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
