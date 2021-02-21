@@ -30,4 +30,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 @Inherited
 public @interface DirtiesApplicationStorage {
+
+    boolean value() default true;
 }

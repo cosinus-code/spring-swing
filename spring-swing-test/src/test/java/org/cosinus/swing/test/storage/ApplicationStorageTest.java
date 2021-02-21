@@ -28,7 +28,6 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringSwingBootTest(classes = TestSpringSwingApplication.class)
-@DirtiesApplicationStorage
 public class ApplicationStorageTest {
 
     @Autowired

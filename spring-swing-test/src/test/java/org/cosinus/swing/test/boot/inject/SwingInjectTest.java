@@ -33,7 +33,6 @@ import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringRunner.class)
 @SpringSwingBootTest(classes = TestSpringSwingApplication.class)
-@DirtiesApplicationStorage
 public class SwingInjectTest {
 
     @Autowired

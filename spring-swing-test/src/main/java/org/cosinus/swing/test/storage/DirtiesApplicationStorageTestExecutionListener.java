@@ -1,12 +1,12 @@
 /*
  * Copyright 2020 Cosinus Software
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,7 +26,7 @@ import org.springframework.test.context.TestContext;
 import org.springframework.test.context.TestContextAnnotationUtils;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
 
-import static java.lang.String.format;
+import static java.util.Optional.ofNullable;
 
 public class DirtiesApplicationStorageTestExecutionListener extends AbstractTestExecutionListener {
 
@@ -43,16 +43,27 @@ public class DirtiesApplicationStorageTestExecutionListener extends AbstractTest
 
     @Override
     public void afterTestMethod(@NotNull TestContext testContext) {
-        boolean methodAnnotated = null != AnnotatedElementUtils
-                .findMergedAnnotation(testContext.getTestMethod(), DirtiesApplicationStorage.class);
-        boolean classAnnotated = null != TestContextAnnotationUtils
-                .findMergedAnnotation(testContext.getTestClass(), DirtiesApplicationStorage.class);
+        DirtiesApplicationStorage methodAnnotation = AnnotatedElementUtils
+            .findMergedAnnotation(testContext.getTestMethod(), DirtiesApplicationStorage.class);
 
-        if (methodAnnotated || classAnnotated) {
+        DirtiesApplicationStorage classAnnotation = TestContextAnnotationUtils
+            .findMergedAnnotation(testContext.getTestClass(), DirtiesApplicationStorage.class);
+
+        boolean dirtiesApplicationStorage =
+            ofNullable(methodAnnotation)
+                .or(() -> ofNullable(classAnnotation))
+                .map(DirtiesApplicationStorage::value)
+                .orElse(true);
+
+        if (dirtiesApplicationStorage) {
             if (logger.isDebugEnabled()) {
-                logger.debug(String.format("After test method: context %s, %s annotated with @DirtiesApplicationStorage.",
-                                           methodAnnotated ? "method" : "class",
-                                           testContext));
+                if (methodAnnotation != null) {
+                    logger.debug(String.format("After test method: context %s, method annotated with @DirtiesApplicationStorage.", testContext));
+                } else if (classAnnotation != null) {
+                    logger.debug(String.format("After test method: context %s, class annotated with @DirtiesApplicationStorage.", testContext));
+                } else {
+                    logger.debug(String.format("After test method: context %s, no @DirtiesApplicationStorage annotation.", testContext));
+                }
             }
             cleanupApplicationStorage(testContext);
         }
@@ -60,12 +71,21 @@ public class DirtiesApplicationStorageTestExecutionListener extends AbstractTest
 
     @Override
     public void afterTestClass(@NotNull TestContext testContext) {
-        boolean classAnnotated = null != TestContextAnnotationUtils
-                .findMergedAnnotation(testContext.getTestClass(), DirtiesApplicationStorage.class);
+        DirtiesApplicationStorage classAnnotation = TestContextAnnotationUtils
+            .findMergedAnnotation(testContext.getTestClass(), DirtiesApplicationStorage.class);
 
-        if (classAnnotated) {
+        boolean dirtiesApplicationStorage =
+            ofNullable(classAnnotation)
+                .map(DirtiesApplicationStorage::value)
+                .orElse(true);
+
+        if (dirtiesApplicationStorage) {
             if (logger.isDebugEnabled()) {
-                logger.debug(String.format("After test class: context %s, class annotated with @DirtiesApplicationStorage.", testContext));
+                if (classAnnotation != null) {
+                    logger.debug(String.format("After test class: context %s, class annotated with @DirtiesApplicationStorage.", testContext));
+                } else {
+                    logger.debug(String.format("After test class: context %s, no @DirtiesApplicationStorage annotation.", testContext));
+                }
             }
             cleanupApplicationStorage(testContext);
         }

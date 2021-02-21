@@ -18,9 +18,6 @@ package org.cosinus.swing.test.boot.app;
 
 import org.cosinus.swing.boot.SpringSwingApplication;
 import org.cosinus.swing.test.boot.SpringSwingBootTest;
-import org.cosinus.swing.test.boot.app.TestSpringComponent;
-import org.cosinus.swing.test.boot.app.TestSpringSwingApplication;
-import org.cosinus.swing.test.boot.app.TestSpringSwingComponent;
 import org.cosinus.swing.test.storage.DirtiesApplicationStorage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +31,6 @@ import static org.junit.Assert.assertNotNull;
  */
 @RunWith(SpringRunner.class)
 @SpringSwingBootTest(classes = TestSpringSwingApplication.class)
-@DirtiesApplicationStorage
 public class SpringSwingApplicationTest {
 
     @Autowired
