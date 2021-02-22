@@ -16,10 +16,15 @@
 
 package org.cosinus.swing.store;
 
+import static java.lang.String.join;
+import static java.util.Optional.ofNullable;
+
 /**
  * Interface for storage of application related data
  */
 public interface ApplicationStorage {
+
+    String KEY_DELIMITER = ".";
 
     String getString(String key);
 
@@ -33,13 +38,18 @@ public interface ApplicationStorage {
 
     void saveBoolean(String key, boolean value);
 
-    default void save(String key, Object object) {
-        saveString(key, object.toString());
-    }
-
     void remove(String key);
 
-    void clean();
+    void clear();
 
-    String key(String... keys);
+    default void save(String key, Object object) {
+        String value = ofNullable(object)
+            .map(Object::toString)
+            .orElse(null);
+        saveString(key, value);
+    }
+
+    default String key(String... keys) {
+        return join(KEY_DELIMITER, keys);
+    }
 }

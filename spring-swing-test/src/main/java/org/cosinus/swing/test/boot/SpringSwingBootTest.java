@@ -16,6 +16,8 @@
 
 package org.cosinus.swing.test.boot;
 
+import org.cosinus.swing.test.storage.TestApplicationStorageConfiguration;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.BootstrapWith;
 
 import java.lang.annotation.*;
@@ -28,6 +30,7 @@ import java.lang.annotation.*;
 @Documented
 @Inherited
 @BootstrapWith(SpringSwingBootTestContextBootstrapper.class)
+@Import(TestApplicationStorageConfiguration.class)
 public @interface SpringSwingBootTest {
 
     String[] properties() default {};

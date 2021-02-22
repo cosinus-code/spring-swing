@@ -18,64 +18,51 @@ package org.cosinus.swing.store;
 
 import org.cosinus.swing.context.SpringSwingComponent;
 
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
+import java.util.HashMap;
 
-/**
- * Implementation of {@link ApplicationStorage} using local preferences
- */
+import static java.util.Optional.ofNullable;
+
 @SpringSwingComponent
-public class LocalApplicationStorage implements ApplicationStorage {
-
-    private final Preferences userPreferences;
-
-    public LocalApplicationStorage(Class<?> appClass) {
-        userPreferences = Preferences.userNodeForPackage(appClass);
-    }
+public class InMemoryApplicationStorage extends HashMap<String, String> implements ApplicationStorage {
 
     @Override
     public String getString(String key) {
-        return userPreferences.get(key, null);
+        return get(key);
     }
 
     @Override
     public void saveString(String key, String value) {
         if (value != null) {
-            userPreferences.put(key, value);
+            put(key, value);
         }
     }
 
     @Override
     public int getInt(String key, int defaultValue) {
-        return userPreferences.getInt(key, defaultValue);
+        return ofNullable(get(key))
+            .map(Integer::parseInt)
+            .orElse(defaultValue);
     }
 
     @Override
     public void saveInt(String key, int value) {
-        userPreferences.putInt(key, value);
+        put(key, Integer.toString(value));
     }
 
     @Override
     public boolean getBoolean(String key, boolean defaultValue) {
-        return userPreferences.getInt(key, defaultValue ? 1 : 0) == 1;
+        return ofNullable(get(key))
+            .map(Boolean::parseBoolean)
+            .orElse(defaultValue);
     }
 
     @Override
     public void saveBoolean(String key, boolean value) {
-        userPreferences.putInt(key, value ? 1 : 0);
+        put(key, Boolean.toString(value));
     }
 
     @Override
     public void remove(String key) {
-        userPreferences.remove(key);
-    }
-
-    @Override
-    public void clear() {
-        try {
-            userPreferences.clear();
-        } catch (BackingStoreException e) {
-            throw new ApplicationStorageException("Failed to clean application storage for " + userPreferences.name(), e);
-        }
+        super.remove(key);
     }
 }

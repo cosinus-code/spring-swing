@@ -35,7 +35,7 @@ public class DirtiesApplicationStorageTestExecutionListener extends AbstractTest
     protected void cleanupApplicationStorage(TestContext testContext) {
         try {
             ApplicationStorage applicationStorage = testContext.getApplicationContext().getBean(ApplicationStorage.class);
-            applicationStorage.clean();
+            applicationStorage.clear();
         } catch (BeansException ex) {
             logger.error("Cannot find ApplicationStorage bean in context for cleaning test annotated with @DirtiesApplicationStorage", ex);
         }
