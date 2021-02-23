@@ -38,7 +38,7 @@ public class IconHandler {
 
     private final ResourceResolver resourceResolver;
 
-    private final IconsCache iconsCache;
+    private final IconCache iconsCache;
 
     private final IconProvider iconProvider;
 
@@ -47,7 +47,7 @@ public class IconHandler {
     private final ImageHandler imageHandler;
 
     public IconHandler(ResourceResolver resourceResolver,
-                       IconsCache iconsCache,
+                       IconCache iconsCache,
                        IconProvider iconProvider,
                        ApplicationUIHandler uiHandler, ImageHandler imageHandler) {
         this.resourceResolver = resourceResolver;
@@ -58,45 +58,45 @@ public class IconHandler {
     }
 
     public Optional<Icon> findIconByResource(String name) {
-        return iconsCache.getIcon(name)
-                .or(() -> createResourceIconAndCache(name));
+        return iconsCache.getValue(name)
+            .or(() -> createResourceIconAndCache(name));
     }
 
     public Optional<Icon> createResourceIconAndCache(String name) {
         return createResourceIcon(name)
-                .map(icon -> iconsCache.cache(icon, name));
+            .map(icon -> iconsCache.cache(icon, name));
     }
 
     public Optional<ImageIcon> createResourceIcon(String name) {
         return resourceResolver.resolveImageAsBytes(name)
-                .map(ImageIcon::new);
+            .map(ImageIcon::new);
     }
 
     public Optional<Icon> findIconByFile(File file, IconSize size) {
         return Optional.ofNullable(getFileIconName(file))
-                .flatMap(fileIconName -> iconsCache.getIcon(fileIconName, size, file.isHidden()))
-                .or(() -> createFileIcon(file, size));
+            .flatMap(fileIconName -> iconsCache.getValue(fileIconName, size, file.isHidden()))
+            .or(() -> createFileIcon(file, size));
     }
 
     protected String getFileIconName(File file) {
         return file.isDirectory() ?
-                iconProvider.getFolderKey() :
-                getExtension(file);
+            iconProvider.getFolderKey() :
+            getExtension(file);
     }
 
     public Optional<Icon> createFileIcon(File file, IconSize size) {
         return iconProvider.findIconByFile(file, size)
-                .or(() -> uiHandler.getDefaultFileIcon(file))
-                //.map(icon -> file.isHidden() ? getGrayFilteredIcon(icon) : icon)
-                .map(icon -> cache(icon, file, size));
+            .or(() -> uiHandler.getDefaultFileIcon(file))
+            //.map(icon -> file.isHidden() ? getGrayFilteredIcon(icon) : icon)
+            .map(icon -> cache(icon, file, size));
     }
 
     protected Icon cache(Icon icon, File file, IconSize size) {
         return Optional.ofNullable(file)
-                .filter(f -> !isIconFile(file))
-                .map(this::getFileIconName)
-                .map(fileIconName -> cache(icon, fileIconName, size, file.isHidden()))
-                .orElse(icon);
+            .filter(f -> !isIconFile(file))
+            .map(this::getFileIconName)
+            .map(fileIconName -> cache(icon, fileIconName, size, file.isHidden()))
+            .orElse(icon);
     }
 
     protected boolean isIconFile(File file) {
@@ -121,20 +121,20 @@ public class IconHandler {
 
     public Icon applyFilter(Icon iconToFilter, ImageFilter filter) {
         return Optional.ofNullable(iconToFilter)
-                .map(imageHandler::iconToImage)
-                .map(image -> imageHandler.applyFilter(image, filter))
-                .map(ImageIcon::new)
-                .map(Icon.class::cast)
-                .orElse(iconToFilter);
+            .map(imageHandler::iconToImage)
+            .map(image -> imageHandler.applyFilter(image, filter))
+            .map(ImageIcon::new)
+            .map(Icon.class::cast)
+            .orElse(iconToFilter);
     }
 
     public Optional<Icon> findIconByName(String name, IconSize size) {
-        return iconsCache.getIcon(name, size)
-                .or(() -> createNamedIconAndCache(name, size));
+        return iconsCache.getValue(name, size)
+            .or(() -> createNamedIconAndCache(name, size));
     }
 
     private Optional<Icon> createNamedIconAndCache(String name, IconSize size) {
         return iconProvider.findIconByName(name, size)
-                .map(icon -> iconsCache.cache(icon, name, size));
+            .map(icon -> iconsCache.cache(icon, name, size));
     }
 }

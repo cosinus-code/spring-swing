@@ -14,25 +14,16 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.image.icon;
+package org.cosinus.swing.cache;
 
-import javax.swing.*;
 import java.util.Optional;
 
 /**
  * Icons cache interface
  */
-public interface IconsCache {
+public interface MultiKeyCache<T> {
 
-    Icon cache(Icon icon, String name);
+    T cache(T value, Object... keys);
 
-    Icon cache(Icon icon, String name, IconSize size);
-
-    Icon cache(Icon icon, String name, IconSize size, boolean hidden);
-
-    Optional<Icon> getIcon(String name);
-
-    Optional<Icon> getIcon(String name, IconSize size);
-
-    Optional<Icon> getIcon(String name, IconSize size, boolean hidden);
+    Optional<T> getValue(Object... keys);
 }

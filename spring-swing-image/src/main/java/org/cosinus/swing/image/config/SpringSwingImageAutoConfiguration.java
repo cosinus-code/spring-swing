@@ -45,14 +45,14 @@ public class SpringSwingImageAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public IconsCache iconsCache() {
-        return new DefaultIconsCache();
+    public IconCache iconCache() {
+        return new IconCache();
     }
 
     @Bean
     @ConditionalOnMissingBean
     public IconHandler iconHandler(ResourceResolver resourceResolver,
-                                   IconsCache iconCache,
+                                   IconCache iconCache,
                                    IconProvider fileIcons,
                                    ApplicationUIHandler uiHandler,
                                    ImageHandler imageHandler) {
