@@ -20,6 +20,7 @@ import org.cosinus.swing.context.SpringSwingComponent;
 import org.cosinus.swing.image.ImageHandler;
 import org.cosinus.swing.resource.ResourceResolver;
 import org.cosinus.swing.ui.ApplicationUIHandler;
+import org.springframework.cache.annotation.Cacheable;
 
 import javax.swing.*;
 import java.awt.image.ImageFilter;
@@ -28,7 +29,6 @@ import java.util.Optional;
 
 import static org.cosinus.swing.image.ImageHandler.DISABLED_FILTER;
 import static org.cosinus.swing.image.ImageHandler.GRAY_FILTER;
-import static org.cosinus.swing.util.FileUtils.getExtension;
 
 /**
  * Icons handler
@@ -36,9 +36,9 @@ import static org.cosinus.swing.util.FileUtils.getExtension;
 @SpringSwingComponent
 public class IconHandler {
 
-    private final ResourceResolver resourceResolver;
+    private static final String SPRING_SWING_ICONS_CACHE_NAME = "spring.swing.icons";
 
-    private final IconCache iconsCache;
+    private final ResourceResolver resourceResolver;
 
     private final IconProvider iconProvider;
 
@@ -47,56 +47,32 @@ public class IconHandler {
     private final ImageHandler imageHandler;
 
     public IconHandler(ResourceResolver resourceResolver,
-                       IconCache iconsCache,
                        IconProvider iconProvider,
                        ApplicationUIHandler uiHandler, ImageHandler imageHandler) {
         this.resourceResolver = resourceResolver;
-        this.iconsCache = iconsCache;
         this.iconProvider = iconProvider;
         this.uiHandler = uiHandler;
         this.imageHandler = imageHandler;
     }
 
+    @Cacheable(value = SPRING_SWING_ICONS_CACHE_NAME)
+    public Optional<Icon> findIconByName(String name, IconSize size) {
+        return iconProvider.findIconByName(name, size);
+    }
+
+    @Cacheable(value = SPRING_SWING_ICONS_CACHE_NAME, key = "{':resource:', #name}")
     public Optional<Icon> findIconByResource(String name) {
-        return iconsCache.getValue(name)
-            .or(() -> createResourceIconAndCache(name));
-    }
-
-    public Optional<Icon> createResourceIconAndCache(String name) {
-        return createResourceIcon(name)
-            .map(icon -> iconsCache.cache(icon, name));
-    }
-
-    public Optional<ImageIcon> createResourceIcon(String name) {
         return resourceResolver.resolveImageAsBytes(name)
             .map(ImageIcon::new);
     }
 
+    @Cacheable(value = SPRING_SWING_ICONS_CACHE_NAME, keyGenerator = "fileExtensionKeyGenerator")
     public Optional<Icon> findIconByFile(File file, IconSize size) {
-        return Optional.ofNullable(getFileIconName(file))
-            .flatMap(fileIconName -> iconsCache.getValue(fileIconName, size, file.isHidden()))
-            .or(() -> createFileIcon(file, size));
-    }
-
-    protected String getFileIconName(File file) {
-        return file.isDirectory() ?
-            iconProvider.getFolderKey() :
-            getExtension(file);
-    }
-
-    public Optional<Icon> createFileIcon(File file, IconSize size) {
+        System.out.println("file: " + file);
         return iconProvider.findIconByFile(file, size)
-            .or(() -> uiHandler.getDefaultFileIcon(file))
-            //.map(icon -> file.isHidden() ? getGrayFilteredIcon(icon) : icon)
-            .map(icon -> cache(icon, file, size));
-    }
-
-    protected Icon cache(Icon icon, File file, IconSize size) {
-        return Optional.ofNullable(file)
-            .filter(f -> !isIconFile(file))
-            .map(this::getFileIconName)
-            .map(fileIconName -> cache(icon, fileIconName, size, file.isHidden()))
-            .orElse(icon);
+            .or(() -> uiHandler.getDefaultFileIcon(file));
+        //TODO
+        //.map(icon -> file.isHidden() ? getGrayFilteredIcon(icon) : icon);
     }
 
     protected boolean isIconFile(File file) {
@@ -104,11 +80,6 @@ public class IconHandler {
         //String extension = getExtension(file);
         //return extension.equals("exe") || extension.equals("ico") || extension.equals("icns");
         return false;
-    }
-
-    protected Icon cache(Icon icon, String name, IconSize size, boolean hidden) {
-        if (name == null) return null;
-        return iconsCache.cache(icon, name, size, hidden);
     }
 
     public Icon getGrayFilteredIcon(Icon icon) {
@@ -126,15 +97,5 @@ public class IconHandler {
             .map(ImageIcon::new)
             .map(Icon.class::cast)
             .orElse(iconToFilter);
-    }
-
-    public Optional<Icon> findIconByName(String name, IconSize size) {
-        return iconsCache.getValue(name, size)
-            .or(() -> createNamedIconAndCache(name, size));
-    }
-
-    private Optional<Icon> createNamedIconAndCache(String name, IconSize size) {
-        return iconProvider.findIconByName(name, size)
-            .map(icon -> iconsCache.cache(icon, name, size));
     }
 }

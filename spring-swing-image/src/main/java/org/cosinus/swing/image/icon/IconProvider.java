@@ -106,8 +106,4 @@ public interface IconProvider {
      * @return the icon
      */
     Optional<Icon> findIconByName(String name, IconSize size);
-
-    default String getFolderKey() {
-        return null;
-    }
 }

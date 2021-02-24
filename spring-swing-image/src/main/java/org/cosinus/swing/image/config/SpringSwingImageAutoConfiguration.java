@@ -27,6 +27,7 @@ import org.cosinus.swing.resource.ResourceResolver;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -52,12 +53,10 @@ public class SpringSwingImageAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public IconHandler iconHandler(ResourceResolver resourceResolver,
-                                   IconCache iconCache,
                                    IconProvider fileIcons,
                                    ApplicationUIHandler uiHandler,
                                    ImageHandler imageHandler) {
         return new IconHandler(resourceResolver,
-                               iconCache,
                                fileIcons,
                                uiHandler,
                                imageHandler);
@@ -99,5 +98,10 @@ public class SpringSwingImageAutoConfiguration {
     @ConditionalOnMissingBean
     public ApplicationImageInitializer applicationImageInitializer(IconProvider iconProvider) {
         return new ApplicationImageInitializer(iconProvider);
+    }
+
+    @Bean("fileExtensionKeyGenerator")
+    public KeyGenerator keyGenerator() {
+        return new FileExtensionKeyGenerator();
     }
 }

@@ -36,8 +36,6 @@ public class MacIconProvider implements IconProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(MacIconProvider.class);
 
-    private static final String FOLDER_KEY = ".";
-
     private static final String ICON_STORAGE_PATH = "/System/Library/Extensions/IOStorageFamily.kext/Contents/Resources/";
     private static final String ICON_SCSI_PATH = "/System/Library/Extensions/IOSCSIArchitectureModelFamily.kext/Contents/Resources";
     private static final String ICON_CORE_PATH = "/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/";
@@ -58,16 +56,11 @@ public class MacIconProvider implements IconProvider {
     @Override
     public Optional<Icon> findIconByName(String name, IconSize size) {
         return Optional.ofNullable(getIconNameToFilePathMap().get(name))
-                .map(File::new)
-                .filter(File::exists)
-                .flatMap(this::readImage)
-                .map(image -> imageHandler.scaleImage(image, size.getSize()))
-                .map(ImageIcon::new);
-    }
-
-    @Override
-    public String getFolderKey() {
-        return FOLDER_KEY;
+            .map(File::new)
+            .filter(File::exists)
+            .flatMap(this::readImage)
+            .map(image -> imageHandler.scaleImage(image, size.getSize()))
+            .map(ImageIcon::new);
     }
 
     private Optional<BufferedImage> readImage(File file) {
