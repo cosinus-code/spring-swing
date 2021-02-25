@@ -26,22 +26,22 @@ import javax.swing.*;
  */
 public class Panel extends JPanel implements SwingInject, FormComponent {
 
+    public Panel() {
+    }
+
     public Panel(SwingApplicationContext swingContext) {
         injectSwingContext(swingContext);
     }
 
     @Override
     public void initComponents() {
-
     }
 
     @Override
     public void translate() {
-
     }
 
     @Override
     public void initContent() {
-
     }
 }

@@ -16,7 +16,6 @@
 
 package org.cosinus.swing.boot.config;
 
-import org.cosinus.swing.boot.ApplicationConfiguration;
 import org.cosinus.swing.boot.SpringSwingApplication;
 import org.cosinus.swing.boot.event.ApplicationContextStartupConfiguration;
 import org.cosinus.swing.context.ApplicationProperties;
@@ -33,9 +32,9 @@ import org.springframework.context.annotation.Import;
 @ConditionalOnClass(SpringSwingApplication.class)
 @EnableConfigurationProperties(ApplicationProperties.class)
 @Import({
-        ApplicationUIConfiguration.class,
-        ApplicationConfiguration.class,
-        ApplicationContextStartupConfiguration.class,
+    ApplicationUIConfiguration.class,
+    ApplicationConfiguration.class,
+    ApplicationContextStartupConfiguration.class,
 })
 public @interface SpringSwingAutoConfiguration {
 }

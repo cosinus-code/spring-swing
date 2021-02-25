@@ -64,11 +64,16 @@ public class Split extends JSplitPane implements SwingInject, FormComponent {
     @SwingAutowired
     public ApplicationUIHandler uiHandler;
 
-    public Split(SwingApplicationContext swingContext,
-                 String splitName,
+    public Split(String splitName,
                  int defaultDividerLocation) {
         this.splitName = splitName;
         this.defaultDividerLocation = defaultDividerLocation;
+    }
+
+    public Split(SwingApplicationContext swingContext,
+                 String splitName,
+                 int defaultDividerLocation) {
+        this(splitName, defaultDividerLocation);
         injectSwingContext(swingContext);
     }
 

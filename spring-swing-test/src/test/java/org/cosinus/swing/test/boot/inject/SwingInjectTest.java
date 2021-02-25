@@ -17,13 +17,12 @@
 package org.cosinus.swing.test.boot.inject;
 
 import org.cosinus.swing.context.SwingApplicationContext;
+import org.cosinus.swing.context.SwingInjector;
 import org.cosinus.swing.form.Frame;
 import org.cosinus.swing.form.Split;
 import org.cosinus.swing.test.boot.SpringSwingBootTest;
 import org.cosinus.swing.test.boot.app.TestSpringSwingApplication;
-import org.cosinus.swing.test.model.TestSwingInjectObject;
 import org.cosinus.swing.test.model.*;
-import org.cosinus.swing.test.storage.DirtiesApplicationStorage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +37,12 @@ public class SwingInjectTest {
     @Autowired
     private SwingApplicationContext swingContext;
 
+    @Autowired
+    private SwingInjector swingInjector;
+
     @Test
     public void testSwingInject() {
-        TestSwingInjectObject swingInject = new TestSwingInjectObject(swingContext);
+        TestSwingInjectObject swingInject = swingInjector.inject(TestSwingInjectObject.class);
 
         assertNotNull(swingInject.getApplicationStorage());
         assertNotNull(swingInject.getSpringSwingComponent());
@@ -74,7 +76,7 @@ public class SwingInjectTest {
 
     @Test
     public void testSwingInjectIntoPanel() {
-        TestPanel panel = new TestPanel(swingContext);
+        TestPanel panel = swingInjector.inject(TestPanel.class);
 
         assertNotNull(panel.getApplicationStorage());
         assertNotNull(panel.getSpringSwingComponent());
@@ -82,7 +84,7 @@ public class SwingInjectTest {
 
     @Test
     public void testSwingInjectIntoTable() {
-        TestTable table = new TestTable(swingContext);
+        TestTable table = swingInjector.inject(TestTable.class);
 
         assertNotNull(table.applicationStorage);
         assertNotNull(table.springSwingComponent);
@@ -90,7 +92,7 @@ public class SwingInjectTest {
 
     @Test
     public void testSwingInjectIntoTableModel() {
-        TestTableModel tableModel = new TestTableModel(swingContext);
+        TestTableModel tableModel = swingInjector.inject(TestTableModel.class);
 
         assertNotNull(tableModel.applicationStorage);
         assertNotNull(tableModel.springSwingComponent);
@@ -98,7 +100,7 @@ public class SwingInjectTest {
 
     @Test
     public void testSwingInjectIntoSplit() {
-        Split split = new Split(swingContext, "testSplit", 100);
+        Split split = swingInjector.inject(Split.class, "testSplit", 100);
 
         assertNotNull(split.applicationStorage);
         assertNotNull(split.translator);
@@ -107,7 +109,7 @@ public class SwingInjectTest {
 
     @Test
     public void testSwingInjectIntoComponent() {
-        TestComponent component = new TestComponent(swingContext);
+        TestComponent component = swingInjector.inject(TestComponent.class);
 
         assertNotNull(component.getApplicationStorage());
         assertNotNull(component.getSpringSwingComponent());
@@ -115,7 +117,7 @@ public class SwingInjectTest {
 
     @Test
     public void testSwingInjectIntoSwingWorker() {
-        TestSwingWorker component = new TestSwingWorker(swingContext);
+        TestSwingWorker component = swingInjector.inject(TestSwingWorker.class);
 
         assertNotNull(component.errorHandler);
         assertNotNull(component.springSwingComponent);

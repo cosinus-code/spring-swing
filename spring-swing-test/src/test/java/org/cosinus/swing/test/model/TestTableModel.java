@@ -16,7 +16,6 @@
 
 package org.cosinus.swing.test.model;
 
-import org.cosinus.swing.context.SwingApplicationContext;
 import org.cosinus.swing.context.SwingAutowired;
 import org.cosinus.swing.form.TableModel;
 import org.cosinus.swing.store.ApplicationStorage;
@@ -29,10 +28,6 @@ public class TestTableModel extends TableModel {
 
     @SwingAutowired
     public TestSpringSwingComponent springSwingComponent;
-
-    public TestTableModel(SwingApplicationContext swingContext) {
-        super(swingContext);
-    }
 
     @Override
     public int getRowCount() {

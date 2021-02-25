@@ -21,8 +21,12 @@ import org.cosinus.swing.action.EscapeActionListener;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.util.Arrays;
 import java.util.Optional;
+
+import static java.util.Arrays.stream;
+import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
+import static javax.swing.KeyStroke.getKeyStroke;
+import static java.awt.Toolkit.getDefaultToolkit;
 
 /**
  * Generic window interface
@@ -31,22 +35,26 @@ public interface Window {
 
     default void registerExitOnEscapeKey() {
         getComponent().ifPresent(component -> component
-                .registerKeyboardAction(new EscapeActionListener((java.awt.Window) this),
-                                        KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
-                                        JComponent.WHEN_IN_FOCUSED_WINDOW));
+            .registerKeyboardAction(new EscapeActionListener(thisWindow()),
+                                    getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+                                    WHEN_IN_FOCUSED_WINDOW));
     }
 
     default Optional<JComponent> getComponent() {
-        return Arrays.stream(((java.awt.Window) this).getComponents())
-                .filter(comp -> JComponent.class.isAssignableFrom(comp.getClass()))
-                .map(JComponent.class::cast)
-                .findFirst();
+        return stream(thisWindow().getComponents())
+            .filter(comp -> JComponent.class.isAssignableFrom(comp.getClass()))
+            .map(JComponent.class::cast)
+            .findFirst();
     }
 
     default void centerWindow() {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        java.awt.Window window = (java.awt.Window) this;
+        Dimension screenSize = getDefaultToolkit().getScreenSize();
+        java.awt.Window window = thisWindow();
         window.setLocation((screenSize.width - window.getWidth()) / 2,
                            (screenSize.height - window.getHeight()) / 2);
+    }
+
+    default java.awt.Window thisWindow() {
+        return (java.awt.Window) this;
     }
 }

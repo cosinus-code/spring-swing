@@ -16,7 +16,6 @@
 
 package org.cosinus.swing.test.model;
 
-import org.cosinus.swing.context.SwingApplicationContext;
 import org.cosinus.swing.context.SwingAutowired;
 import org.cosinus.swing.form.Component;
 import org.cosinus.swing.store.ApplicationStorage;
@@ -29,10 +28,6 @@ public class TestComponent extends Component {
 
     @SwingAutowired
     private TestSpringSwingComponent testSpringSwingComponent;
-
-    public TestComponent(SwingApplicationContext swingContext) {
-        super(swingContext);
-    }
 
     public ApplicationStorage getApplicationStorage() {
         return applicationStorage;

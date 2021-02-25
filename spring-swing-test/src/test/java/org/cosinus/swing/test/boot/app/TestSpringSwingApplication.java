@@ -25,9 +25,13 @@ import org.cosinus.swing.boot.SwingApplicationFrame;
 @SpringSwingBootApplication
 public class TestSpringSwingApplication extends SwingApplicationFrame {
 
-    private final TestSpringComponent springTestComponent;
+    private final TestSpringComponent testSpringComponent;
 
-    public TestSpringSwingApplication(TestSpringComponent springTestComponent) {
-        this.springTestComponent = springTestComponent;
+    private final TestSpringSwingComponent testSpringSwingComponent;
+
+    public TestSpringSwingApplication(TestSpringComponent testSpringComponent,
+                                      TestSpringSwingComponent testSpringSwingComponent) {
+        this.testSpringComponent = testSpringComponent;
+        this.testSpringSwingComponent = testSpringSwingComponent;
     }
 }

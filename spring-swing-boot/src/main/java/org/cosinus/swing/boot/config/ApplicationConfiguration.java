@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.boot;
+package org.cosinus.swing.boot.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.cosinus.swing.action.*;
 import org.cosinus.swing.action.execute.ActionExecutor;
 import org.cosinus.swing.action.execute.ActionExecutors;
+import org.cosinus.swing.boot.ApplicationFrame;
+import org.cosinus.swing.boot.ApplicationInitializationHandler;
 import org.cosinus.swing.boot.condition.ConditionalOnLinux;
 import org.cosinus.swing.boot.condition.ConditionalOnMac;
 import org.cosinus.swing.boot.condition.ConditionalOnWindows;
@@ -27,6 +29,7 @@ import org.cosinus.swing.boot.initialize.ApplicationFrameInitializer;
 import org.cosinus.swing.boot.initialize.ApplicationInitializer;
 import org.cosinus.swing.context.ApplicationProperties;
 import org.cosinus.swing.context.SwingApplicationContext;
+import org.cosinus.swing.context.SwingInjector;
 import org.cosinus.swing.dialog.DialogHandler;
 import org.cosinus.swing.error.ErrorHandler;
 import org.cosinus.swing.exec.*;
@@ -94,7 +97,7 @@ public class ApplicationConfiguration {
     @ConditionalOnMissingBean
     public Preferences preferences(PreferencesProvider preferencesProvider) {
         return preferencesProvider.getPreferences()
-                .orElseGet(Preferences::new);
+            .orElseGet(Preferences::new);
     }
 
     @Bean
@@ -141,7 +144,7 @@ public class ApplicationConfiguration {
 
     @Bean
     public ApplicationInitializationHandler applicationInitializationHandler(
-            Set<ApplicationInitializer> applicationInitializers) {
+        Set<ApplicationInitializer> applicationInitializers) {
         return new ApplicationInitializationHandler(applicationInitializers);
     }
 
@@ -162,10 +165,10 @@ public class ApplicationConfiguration {
 
     @Bean
     public <C extends ActionContext> ActionController<C> swingActionController(
-            ErrorHandler errorHandler,
-            KeyMapHandler<C> keyMapHandler,
-            ActionContextProvider<C> actionContextProvider,
-            Set<ActionInContext<C>> actions) {
+        ErrorHandler errorHandler,
+        KeyMapHandler<C> keyMapHandler,
+        ActionContextProvider<C> actionContextProvider,
+        Set<ActionInContext<C>> actions) {
         return new ActionController<>(errorHandler,
                                       keyMapHandler,
                                       actionContextProvider,
@@ -186,6 +189,11 @@ public class ApplicationConfiguration {
     @Bean
     public SwingApplicationContext swingApplicationContext(ApplicationProperties applicationProperties) {
         return new SwingApplicationContext(applicationProperties);
+    }
+
+    @Bean
+    public SwingInjector swingInjector(SwingApplicationContext swingContext) {
+        return new SwingInjector(swingContext);
     }
 
     @Bean

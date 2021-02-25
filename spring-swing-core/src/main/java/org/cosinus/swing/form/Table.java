@@ -28,6 +28,9 @@ import javax.swing.*;
  */
 public abstract class Table extends JTable implements SwingInject, FormComponent {
 
+    protected Table() {
+    }
+
     protected Table(SwingApplicationContext swingContext) {
         injectSwingContext(swingContext);
     }

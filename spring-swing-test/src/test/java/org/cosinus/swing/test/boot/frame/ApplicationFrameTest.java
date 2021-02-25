@@ -41,6 +41,7 @@ public class ApplicationFrameTest {
     @Test
     public void testApplicationFrame() {
         assertNotNull(applicationFrame);
+        assertNotNull(applicationStorage);
         assertEquals(DEFAULT_WIDTH, applicationFrame.getWidth());
         assertEquals(DEFAULT_HEIGHT, applicationFrame.getHeight());
     }

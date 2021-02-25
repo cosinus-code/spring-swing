@@ -16,7 +16,6 @@
 
 package org.cosinus.swing.test.model;
 
-import org.cosinus.swing.context.SwingApplicationContext;
 import org.cosinus.swing.context.SwingAutowired;
 import org.cosinus.swing.error.ErrorHandler;
 import org.cosinus.swing.test.boot.app.TestSpringSwingComponent;
@@ -29,10 +28,6 @@ public class TestSwingWorker extends SwingWorker<String, String> {
 
     @SwingAutowired
     public TestSpringSwingComponent springSwingComponent;
-
-    public TestSwingWorker(SwingApplicationContext swingContext) {
-        super(swingContext);
-    }
 
     @Override
     protected String doInBackground() {
