@@ -29,7 +29,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringRunner.class)
-@SpringSwingBootTest(classes = TestSpringSwingApplication.class)
+@SpringSwingBootTest(classes = TestSwingInjectApplication.class)
 public class SwingInjectTest {
 
     @Autowired
