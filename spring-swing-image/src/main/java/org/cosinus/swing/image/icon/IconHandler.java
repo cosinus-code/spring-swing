@@ -68,7 +68,6 @@ public class IconHandler {
 
     @Cacheable(value = SPRING_SWING_ICONS_CACHE_NAME, keyGenerator = "fileExtensionKeyGenerator")
     public Optional<Icon> findIconByFile(File file, IconSize size) {
-        System.out.println("file: " + file);
         return iconProvider.findIconByFile(file, size)
             .or(() -> uiHandler.getDefaultFileIcon(file));
         //TODO

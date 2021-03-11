@@ -71,6 +71,11 @@ public class ApplicationConfiguration {
     }
 
     @Bean
+    public ApplicationProperties applicationProperties() {
+        return new ApplicationProperties();
+    }
+
+    @Bean
     @ConditionalOnMissingBean
     public ResourceResolver resourceResolver(ResourcePatternResolver resourceLoader,
                                              ApplicationProperties applicationProperties) {
@@ -102,7 +107,7 @@ public class ApplicationConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ApplicationStorage localApplicationStorage() {
+    public ApplicationStorage applicationStorage() {
         return new LocalApplicationStorage(applicationClass);
     }
 
@@ -164,7 +169,7 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public <C extends ActionContext> ActionController<C> swingActionController(
+    public <C extends ActionContext> ActionController<C> actionController(
         ErrorHandler errorHandler,
         KeyMapHandler<C> keyMapHandler,
         ActionContextProvider<C> actionContextProvider,

@@ -16,19 +16,20 @@
 
 package org.cosinus.swing.util;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.util.ClassUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Arrays.stream;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Stream.concat;
+import static org.springframework.beans.BeanUtils.instantiateClass;
 import static org.springframework.util.ReflectionUtils.makeAccessible;
 import static org.springframework.util.ReflectionUtils.setField;
 
@@ -45,40 +46,44 @@ public final class ReflectionUtils {
             return;
         }
 
-        List<Field> fields = getFields(target.getClass(), baseTargetClass)
-                .filter(field -> Object.class != field.getType())
-                .filter(field -> field.getAnnotation(annotation) != null)
-                .collect(Collectors.toList());
-        beansMap.forEach((beanName, bean) -> setFieldSafe(target,
-                                                          fields,
-                                                          beanName,
-                                                          bean));
+        getFields(target.getClass(), baseTargetClass)
+            .filter(field -> Object.class != field.getType())
+            .filter(field -> field.getAnnotation(annotation) != null)
+            .forEach(field -> findBeanForField(field, beansMap)
+                .ifPresent(bean -> {
+                    makeAccessible(field);
+                    setField(field, target, bean);
+                }));
+    }
 
+    private static Optional<Object> findBeanForField(Field field, Map<String, Object> beansMap) {
+        return ofNullable(beansMap.get(field.getName()))
+            .or(() -> beansMap.values()
+                .stream()
+                .filter(bean -> field.getType().isAssignableFrom(bean.getClass()))
+                .findFirst());
     }
 
     public static Stream<Field> getFields(Class<?> targetClass,
                                           Class<?> baseTargetClass) {
-        return Stream.concat(
-                Arrays.stream(targetClass.getDeclaredFields()),
-                Optional.ofNullable(targetClass.getSuperclass())
-                        .filter(c -> baseTargetClass != c)
-                        .map(c -> getFields(c, baseTargetClass))
-                        .orElseGet(Stream::empty)
+        return concat(
+            stream(targetClass.getDeclaredFields()),
+            ofNullable(targetClass.getSuperclass())
+                .filter(c -> baseTargetClass != c)
+                .map(c -> getFields(c, baseTargetClass))
+                .orElseGet(Stream::empty)
         );
     }
 
-    public static void setFieldSafe(Object target,
-                                    List<Field> fields,
-                                    String beanName,
-                                    Object bean) {
+    public static void setFieldSafe(Object target, List<Field> fields, String beanName, Object bean) {
         fields.stream()
-                .filter(field -> field.getType().isAssignableFrom(bean.getClass()) ||
-                        field.getName().equals(beanName))
-                .findFirst()
-                .ifPresent(field -> {
-                    makeAccessible(field);
-                    setField(field, target, bean);
-                });
+            .filter(field -> field.getType().isAssignableFrom(bean.getClass()) ||
+                field.getName().equals(beanName))
+            .findFirst()
+            .ifPresent(field -> {
+                makeAccessible(field);
+                setField(field, target, bean);
+            });
     }
 
     public static Class<?> getClassForName(String name, ClassLoader classLoader) {
@@ -92,7 +97,7 @@ public final class ReflectionUtils {
     public static <T> T createBean(Class<T> instanceClass, Class<?>[] parameterTypes, Object[] args) {
         try {
             Constructor<?> constructor = instanceClass.getDeclaredConstructor(parameterTypes);
-            return (T) BeanUtils.instantiateClass(constructor, args);
+            return (T) instantiateClass(constructor, args);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException("Cannot instantiate class " + instanceClass, e);
         }
