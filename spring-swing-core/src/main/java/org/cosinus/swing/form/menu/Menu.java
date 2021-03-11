@@ -16,73 +16,97 @@
 
 package org.cosinus.swing.form.menu;
 
-import org.cosinus.swing.translate.Translatable;
+import org.cosinus.swing.context.SwingAutowired;
+import org.cosinus.swing.context.SwingInject;
+import org.cosinus.swing.context.SwingInjector;
+import org.cosinus.swing.form.FormComponent;
 import org.cosinus.swing.translate.Translator;
 
 import javax.swing.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Menu list model
  */
 @SuppressWarnings("serial")
-public class Menu extends JMenu implements Translatable {
+public class Menu extends JMenu implements SwingInject, FormComponent {
 
-    private JMenu altMenu;
+    @SwingAutowired
+    protected Translator translator;
+
+    @SwingAutowired
+    protected SwingInjector swingInjector;
+
+    private JMenu duplicateMenu;
 
     private final String key;
+
+    private final List<FormComponent> formComponents;
 
     /**
      * Creates a new instance of Menu
      */
     public Menu(String key,
-                boolean alt) {
+                boolean duplicate) {
         super();
         this.key = key;
-        if (alt) {
-            altMenu = new JMenu();
+        this.formComponents = new ArrayList<>();
+
+        if (duplicate) {
+            duplicateMenu = new JMenu();
         }
     }
 
     public void add(JSeparator separator) {
-        if (altMenu != null) {
-            altMenu.add(new JSeparator());
+        if (duplicateMenu != null) {
+            duplicateMenu.add(new JSeparator());
         }
         super.add(separator);
     }
 
     public JMenuItem add(MenuItem menuItem) {
-        if (altMenu != null) {
-            altMenu.add(menuItem.getAltMenuItem());
+        if (duplicateMenu != null) {
+            duplicateMenu.add(menuItem.getAltMenuItem());
         }
+        formComponents.add(menuItem);
         return super.add(menuItem);
     }
 
     public JMenuItem add(Menu menu) {
-        if (altMenu != null) {
-            altMenu.add(menu.getAltMenu());
+        if (duplicateMenu != null) {
+            duplicateMenu.add(menu.getDuplicateMenu());
         }
+        formComponents.add(menu);
         return super.add(menu);
     }
 
     @Override
     public void setText(String text) {
-        if (altMenu != null) {
-            altMenu.setText(text);
+        if (duplicateMenu != null) {
+            duplicateMenu.setText(text);
         }
         super.setText(text);
     }
 
-    public JMenu getAltMenu() {
-        return altMenu;
+    public JMenu getDuplicateMenu() {
+        return duplicateMenu;
     }
 
     @Override
-    public void translate(Translator translator) {
+    public void initComponents() {
+
+    }
+
+    @Override
+    public void initContent() {
+
+    }
+
+    @Override
+    public void translate() {
         setText(translator.translate(key));
-        for (int i = 0; i < getItemCount(); i++) {
-            if (getItem(i) instanceof Translatable) {
-                ((Translatable) getItem(i)).translate(translator);
-            }
-        }
+        formComponents.forEach(FormComponent::translate);
     }
 }

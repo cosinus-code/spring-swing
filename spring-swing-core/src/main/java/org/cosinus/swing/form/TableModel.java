@@ -16,7 +16,6 @@
 
 package org.cosinus.swing.form;
 
-import org.cosinus.swing.context.SwingApplicationContext;
 import org.cosinus.swing.context.SwingInject;
 
 import javax.swing.table.AbstractTableModel;
@@ -25,11 +24,4 @@ import javax.swing.table.AbstractTableModel;
  * Abstract table model
  */
 public abstract class TableModel extends AbstractTableModel implements SwingInject, FormComponent {
-
-    protected TableModel() {
-    }
-
-    protected TableModel(SwingApplicationContext swingContext) {
-        injectSwingContext(swingContext);
-    }
 }

@@ -16,13 +16,52 @@
 
 package org.cosinus.swing.test.model;
 
+import org.cosinus.swing.action.ActionController;
 import org.cosinus.swing.context.SwingAutowired;
+import org.cosinus.swing.error.ErrorHandler;
 import org.cosinus.swing.form.Frame;
+import org.cosinus.swing.form.WindowSettingsHandler;
+import org.cosinus.swing.form.menu.MenuProvider;
+import org.cosinus.swing.resource.ResourceResolver;
 import org.cosinus.swing.test.boot.app.TestSpringSwingComponent;
+import org.cosinus.swing.translate.Translator;
+import org.cosinus.swing.ui.ApplicationUIHandler;
 
 public class TestFrame extends Frame {
 
     @SwingAutowired
-    public TestSpringSwingComponent springSwingComponent;
+    private TestSpringSwingComponent springSwingComponent;
+
+    public TestSpringSwingComponent getSpringSwingComponent() {
+        return springSwingComponent;
+    }
+
+    public ActionController getActionController() {
+        return actionController;
+    }
+
+    public Translator getTranslator() {
+        return translator;
+    }
+
+    public ErrorHandler getErrorHandler() {
+        return errorHandler;
+    }
+
+    public ResourceResolver getResourceResolver() {
+        return resourceResolver;
+    }
+
+    public WindowSettingsHandler getWindowSettingsHandler() {
+        return frameSettingsHandler;
+    }
+
+    public MenuProvider getMenuProvider() {
+        return menuProvider;
+    }
+
+    public ApplicationUIHandler getUIHandler() {
+        return uiHandler;
+    }
 
 }

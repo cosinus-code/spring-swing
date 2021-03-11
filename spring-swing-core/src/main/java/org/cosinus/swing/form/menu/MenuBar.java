@@ -16,6 +16,10 @@
 
 package org.cosinus.swing.form.menu;
 
+import org.cosinus.swing.context.SwingAutowired;
+import org.cosinus.swing.context.SwingInject;
+import org.cosinus.swing.context.SwingInjector;
+import org.cosinus.swing.form.FormComponent;
 import org.cosinus.swing.translate.Translatable;
 import org.cosinus.swing.translate.Translator;
 
@@ -27,41 +31,30 @@ import static java.util.Arrays.stream;
 /**
  * Menu bar model
  */
-public class MenuBar extends JMenuBar implements Translatable {
+public class MenuBar extends JMenuBar implements SwingInject, FormComponent {
 
     private static final String SEPARATOR = "separator";
 
+    @SwingAutowired
+    protected Translator translator;
+
+    @SwingAutowired
+    protected SwingInjector swingInjector;
+
     private BoxMenu boxMenu;
+
+    private final MenuModel mapModel;
+
+    private final boolean withBoxMenu;
+
+    private final ActionListener actionListener;
 
     public MenuBar(MenuModel mapModel,
                    boolean withBoxMenu,
                    ActionListener actionListener) {
-        if (withBoxMenu) {
-            boxMenu = new BoxMenu();
-        }
-        init(mapModel,
-             actionListener,
-             withBoxMenu);
-    }
-
-    protected void init(MenuModel mapModel,
-                        ActionListener actionListener,
-                        boolean withBoxMenu) {
-        mapModel.forEach((menuKey, menuMap) -> {
-            Menu menu = new Menu(menuKey,
-                                 withBoxMenu);
-            add(menu);
-            menuMap.forEach((menuItemKey, menuItemShortcut) -> {
-                if (menuItemKey.startsWith(SEPARATOR)) {
-                    menu.add(new JSeparator());
-                } else {
-                    menu.add(new MenuItem(actionListener,
-                                          menuItemKey,
-                                          KeyStroke.getKeyStroke(menuItemShortcut),
-                                          withBoxMenu));
-                }
-            });
-        });
+        this.withBoxMenu = withBoxMenu;
+        this.mapModel = mapModel;
+        this.actionListener = actionListener;
     }
 
     public void add(Menu menu) {
@@ -72,7 +65,37 @@ public class MenuBar extends JMenuBar implements Translatable {
     }
 
     @Override
-    public void translate(Translator translator) {
+    public void initComponents() {
+        if (withBoxMenu) {
+            boxMenu = swingInjector.inject(BoxMenu.class);
+        }
+
+        mapModel.forEach((menuKey, menuMap) -> {
+            Menu menu = swingInjector.inject(Menu.class,
+                                             menuKey,
+                                             withBoxMenu);
+            add(menu);
+            menuMap.forEach((menuItemKey, menuItemShortcut) -> {
+                if (menuItemKey.startsWith(SEPARATOR)) {
+                    menu.add(new JSeparator());
+                } else {
+                    menu.add(swingInjector.inject(MenuItem.class,
+                                                  actionListener,
+                                                  menuItemKey,
+                                                  KeyStroke.getKeyStroke(menuItemShortcut),
+                                                  withBoxMenu));
+                }
+            });
+        });
+    }
+
+    @Override
+    public void initContent() {
+
+    }
+
+    @Override
+    public void translate() {
         stream(getSubElements())
             .filter(Translatable.class::isInstance)
             .map(Translatable.class::cast)

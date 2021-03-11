@@ -16,13 +16,16 @@
 
 package org.cosinus.swing.form.menu;
 
+import org.cosinus.swing.context.SwingInject;
+import org.cosinus.swing.form.FormComponent;
+
 import javax.swing.*;
 import java.awt.*;
 
 /**
  * Box menu model
  */
-public class BoxMenu {
+public class BoxMenu implements SwingInject, FormComponent {
 
     public static final int BOX_MENU_SIZE = 10;
 
@@ -51,10 +54,25 @@ public class BoxMenu {
     }
 
     public void add(Menu menu) {
-        boxMenu.add(menu.getAltMenu());
+        boxMenu.add(menu.getDuplicateMenu());
     }
 
     public JMenuBar getBoxMenuBar() {
         return boxMenuBar;
+    }
+
+    @Override
+    public void initComponents() {
+
+    }
+
+    @Override
+    public void initContent() {
+
+    }
+
+    @Override
+    public void translate() {
+
     }
 }

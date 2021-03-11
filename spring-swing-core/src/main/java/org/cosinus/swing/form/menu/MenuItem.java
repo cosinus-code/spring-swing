@@ -16,17 +16,26 @@
 
 package org.cosinus.swing.form.menu;
 
-import java.awt.event.ActionListener;
-import javax.swing.*;
-
-import org.cosinus.swing.translate.Translatable;
+import org.cosinus.swing.context.SwingAutowired;
+import org.cosinus.swing.context.SwingInject;
+import org.cosinus.swing.context.SwingInjector;
+import org.cosinus.swing.form.FormComponent;
 import org.cosinus.swing.translate.Translator;
+
+import javax.swing.*;
+import java.awt.event.ActionListener;
 
 
 /**
  * Menu item model
  */
-public class MenuItem extends JMenuItem implements Translatable, ActionProducer {
+public class MenuItem extends JMenuItem implements SwingInject, FormComponent, ActionProducer {
+
+    @SwingAutowired
+    protected Translator translator;
+
+    @SwingAutowired
+    protected SwingInjector swingInjector;
 
     private JMenuItem altMenuItem;
 
@@ -39,18 +48,19 @@ public class MenuItem extends JMenuItem implements Translatable, ActionProducer 
     public MenuItem(ActionListener actionListener,
                     String key,
                     KeyStroke keyStroke,
-                    boolean alt) {
+                    boolean duplicate) {
         super();
         this.key = key;
 
         super.addActionListener(actionListener);
         super.setAccelerator(keyStroke);
 
-        if (alt) {
-            altMenuItem = new MenuItem(actionListener,
-                                       key,
-                                       keyStroke,
-                                       false);
+        if (duplicate) {
+            altMenuItem = swingInjector.inject(MenuItem.class,
+                                               actionListener,
+                                               key,
+                                               keyStroke,
+                                               false);
             altMenuItem.addActionListener(actionListener);
             altMenuItem.setAccelerator(keyStroke);
         }
@@ -73,7 +83,17 @@ public class MenuItem extends JMenuItem implements Translatable, ActionProducer 
     }
 
     @Override
-    public void translate(Translator translator) {
+    public void initComponents() {
+
+    }
+
+    @Override
+    public void initContent() {
+
+    }
+
+    @Override
+    public void translate() {
         setText(translator.translate(key));
     }
 }

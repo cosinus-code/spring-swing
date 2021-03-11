@@ -16,17 +16,9 @@
 
 package org.cosinus.swing.form;
 
-import org.cosinus.swing.context.SwingApplicationContext;
 import org.cosinus.swing.context.SwingInject;
 
 import javax.swing.*;
 
-public class Component extends JComponent implements SwingInject {
-
-    public Component() {
-    }
-
-    public Component(SwingApplicationContext swingContext) {
-        injectSwingContext(swingContext);
-    }
+public abstract class Component extends JComponent implements SwingInject, FormComponent {
 }

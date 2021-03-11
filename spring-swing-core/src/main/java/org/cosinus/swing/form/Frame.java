@@ -20,13 +20,13 @@ import org.cosinus.swing.action.ActionController;
 import org.cosinus.swing.context.SwingApplicationContext;
 import org.cosinus.swing.context.SwingAutowired;
 import org.cosinus.swing.context.SwingInject;
+import org.cosinus.swing.context.SwingInjector;
 import org.cosinus.swing.error.ErrorHandler;
 import org.cosinus.swing.form.menu.MenuBar;
 import org.cosinus.swing.form.menu.MenuProvider;
 import org.cosinus.swing.resource.ResourceResolver;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import java.awt.event.ComponentEvent;
@@ -35,9 +35,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Optional;
 
+import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.form.WindowSettings.DEFAULT_HEIGHT;
 import static org.cosinus.swing.form.WindowSettings.DEFAULT_WIDTH;
-import static java.util.Optional.ofNullable;
 
 /**
  * Abstract frame window with basic functionality
@@ -45,29 +45,32 @@ import static java.util.Optional.ofNullable;
 public class Frame extends JFrame implements Window, SwingInject, FormComponent {
 
     @SwingAutowired
-    public ActionController<?> actionController;
+    protected ActionController<?> actionController;
 
     @SwingAutowired
-    public Translator translator;
+    protected Translator translator;
 
     @SwingAutowired
-    public ErrorHandler errorHandler;
+    protected ErrorHandler errorHandler;
 
     @SwingAutowired
-    public ResourceResolver resourceResolver;
+    protected ResourceResolver resourceResolver;
 
     @SwingAutowired
-    public WindowSettingsHandler frameSettingsHandler;
+    protected WindowSettingsHandler frameSettingsHandler;
 
     @SwingAutowired
-    public MenuProvider menuProvider;
+    protected MenuProvider menuProvider;
 
     @SwingAutowired
-    public ApplicationUIHandler uiHandler;
+    protected ApplicationUIHandler uiHandler;
 
-    public WindowSettings frameSettings;
+    @SwingAutowired
+    protected SwingInjector swingInjector;
 
-    public MenuBar menuBar;
+    private WindowSettings frameSettings;
+
+    private MenuBar menuBar;
 
     protected Frame() {
     }
@@ -80,11 +83,11 @@ public class Frame extends JFrame implements Window, SwingInject, FormComponent 
         injectSwingContext(swingContext);
         if (frameSettings == null) {
             frameSettings = new WindowSettings(
-                    ofNullable(swingContext.applicationProperties.getFrame().getName())
-                            .orElseGet(this::getClassName),
-                    swingContext.applicationProperties.getName(),
-                    swingContext.applicationProperties.getIcon(),
-                    swingContext.applicationProperties.getMenu());
+                ofNullable(swingContext.applicationProperties.getFrame().getName())
+                    .orElseGet(this::getClassName),
+                swingContext.applicationProperties.getName(),
+                swingContext.applicationProperties.getIcon(),
+                swingContext.applicationProperties.getMenu());
         }
 
         frameSettingsHandler.loadWindowSettings(frameSettings);
@@ -134,8 +137,8 @@ public class Frame extends JFrame implements Window, SwingInject, FormComponent 
             public void componentMoved(ComponentEvent e) {
                 if (0 == (getExtendedState() & MAXIMIZED_BOTH)) {
                     frameSettings
-                            .setPosition(getX(), getY())
-                            .setCentered(false);
+                        .setPosition(getX(), getY())
+                        .setCentered(false);
                     frameSettingsHandler.saveWindowSettings(frameSettings);
                 }
             }
@@ -143,8 +146,8 @@ public class Frame extends JFrame implements Window, SwingInject, FormComponent 
             public void componentResized(ComponentEvent e) {
                 if (0 == (getExtendedState() & MAXIMIZED_BOTH)) {
                     frameSettings
-                            .setSize(getWidth(), getHeight())
-                            .setCentered(false);
+                        .setSize(getWidth(), getHeight())
+                        .setCentered(false);
                     frameSettingsHandler.saveWindowSettings(frameSettings);
                 }
             }
@@ -167,20 +170,22 @@ public class Frame extends JFrame implements Window, SwingInject, FormComponent 
     private void initFrameNameAndIcon() {
         setTitle(frameSettings.getTitle());
         Optional.ofNullable(frameSettings.getIcon())
-                .flatMap(resourceResolver::resolveImageAsBytes)
-                .map(ImageIcon::new)
-                .map(ImageIcon::getImage)
-                .ifPresent(this::setIconImage);
+            .flatMap(resourceResolver::resolveImageAsBytes)
+            .map(ImageIcon::new)
+            .map(ImageIcon::getImage)
+            .ifPresent(this::setIconImage);
     }
 
     private void initFrameMenu() {
         menuProvider.getMenu(frameSettings.getMenu())
-                .ifPresent(menu -> {
-                    menuBar = new MenuBar(menu,
-                                          menuProvider.hasBoxMenu(),
-                                          actionController);
-                    setJMenuBar(menuBar);
-                });
+            .ifPresent(menuModel -> {
+                menuBar = swingInjector.inject(MenuBar.class,
+                                               menuModel,
+                                               menuProvider.hasBoxMenu(),
+                                               actionController);
+                menuBar.initComponents();
+                setJMenuBar(menuBar);
+            });
     }
 
     public String translate(String key) {
@@ -207,7 +212,7 @@ public class Frame extends JFrame implements Window, SwingInject, FormComponent 
     @Override
     public void translate() {
         if (menuBar != null) {
-            menuBar.translate(translator);
+            menuBar.translate();
         }
     }
 }

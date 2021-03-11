@@ -16,6 +16,9 @@
 
 package org.cosinus.swing.context;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -28,6 +31,8 @@ import static org.springframework.util.ClassUtils.isAssignableValue;
 
 @SpringSwingComponent
 public class SwingInjector {
+
+    private static final Logger LOG = LogManager.getLogger(SwingInjector.class);
 
     private final SwingApplicationContext swingContext;
 
@@ -52,18 +57,10 @@ public class SwingInjector {
 
     private <T extends SwingInject> Constructor<T> getConstructor(Class<T> swingComponentClass,
                                                                   Object... arguments) {
-        try {
-            Class<?>[] argumentClasses = stream(arguments)
-                .map(Object::getClass)
-                .toArray(Class<?>[]::new);
-
-            return swingComponentClass.getDeclaredConstructor(argumentClasses);
-        } catch (NoSuchMethodException ex) {
-            return findConstructorForArguments(swingComponentClass, arguments)
-                .orElseThrow(() -> new SwingInjectException(format("Cannot inject %s: no constructor for arguments %s",
-                                                                   swingComponentClass,
-                                                                   Arrays.toString(arguments)), ex));
-        }
+        return findConstructorForArguments(swingComponentClass, arguments)
+            .orElseThrow(() -> new SwingInjectException(format("Cannot inject %s: no constructor for arguments %s",
+                                                               swingComponentClass,
+                                                               Arrays.toString(arguments))));
     }
 
     private <T extends SwingInject> Optional<Constructor<T>> findConstructorForArguments(Class<T> swingComponentClass,

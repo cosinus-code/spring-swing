@@ -16,7 +16,6 @@
 
 package org.cosinus.swing.form;
 
-import org.cosinus.swing.context.SwingApplicationContext;
 import org.cosinus.swing.context.SwingAutowired;
 import org.cosinus.swing.context.SwingInject;
 import org.cosinus.swing.store.ApplicationStorage;
@@ -56,25 +55,18 @@ public class Split extends JSplitPane implements SwingInject, FormComponent {
     private final int defaultDividerLocation;
 
     @SwingAutowired
-    public ApplicationStorage applicationStorage;
+    protected ApplicationStorage applicationStorage;
 
     @SwingAutowired
-    public Translator translator;
+    protected Translator translator;
 
     @SwingAutowired
-    public ApplicationUIHandler uiHandler;
+    protected ApplicationUIHandler uiHandler;
 
     public Split(String splitName,
                  int defaultDividerLocation) {
         this.splitName = splitName;
         this.defaultDividerLocation = defaultDividerLocation;
-    }
-
-    public Split(SwingApplicationContext swingContext,
-                 String splitName,
-                 int defaultDividerLocation) {
-        this(splitName, defaultDividerLocation);
-        injectSwingContext(swingContext);
     }
 
     public void initComponent() {

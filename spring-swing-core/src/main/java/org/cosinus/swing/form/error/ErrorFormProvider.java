@@ -38,12 +38,8 @@ public class ErrorFormProvider {
 
 
     public Optional<ErrorForm> getErrorForm(Window parent) {
-        return parent instanceof Dialog<?> ?
-                Optional.of(new DefaultErrorForm(swingContext,
-                                                 (Dialog<?>) parent,
-                                                 true)) :
-                Optional.of(new DefaultErrorForm(swingContext,
-                                                 (Frame) parent,
-                                                 true));
+        return Optional.of(parent instanceof Dialog<?> ?
+                               new DefaultErrorForm(swingContext, (Dialog<?>) parent, true) :
+                               new DefaultErrorForm(swingContext, (Frame) parent, true));
     }
 }

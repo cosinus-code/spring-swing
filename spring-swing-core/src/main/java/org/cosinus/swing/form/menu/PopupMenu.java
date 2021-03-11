@@ -16,22 +16,33 @@
 
 package org.cosinus.swing.form.menu;
 
-import org.cosinus.swing.translate.Translatable;
-import org.cosinus.swing.translate.Translator;
+import org.cosinus.swing.context.SwingInject;
+import org.cosinus.swing.form.FormComponent;
 
 import javax.swing.*;
-import java.util.Arrays;
+
+import static java.util.Arrays.stream;
 
 /**
  * Popup menu model
  */
-public class PopupMenu extends JPopupMenu implements Translatable {
+public class PopupMenu extends JPopupMenu implements SwingInject, FormComponent {
 
     @Override
-    public void translate(Translator translator) {
-        Arrays.stream(getSubElements())
-            .filter(menu -> Translatable.class.isAssignableFrom(Translatable.class))
-            .map(Translatable.class::cast)
-            .forEach(translatable -> translatable.translate(translator));
+    public void initComponents() {
+
+    }
+
+    @Override
+    public void initContent() {
+
+    }
+
+    @Override
+    public void translate() {
+        stream(getSubElements())
+            .filter(menu -> FormComponent.class.isAssignableFrom(menu.getClass()))
+            .map(FormComponent.class::cast)
+            .forEach(FormComponent::translate);
     }
 }

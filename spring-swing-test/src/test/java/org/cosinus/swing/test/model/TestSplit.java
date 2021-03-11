@@ -16,39 +16,26 @@
 
 package org.cosinus.swing.test.model;
 
-import org.cosinus.swing.context.SwingAutowired;
-import org.cosinus.swing.form.Component;
+import org.cosinus.swing.form.Split;
 import org.cosinus.swing.store.ApplicationStorage;
-import org.cosinus.swing.test.boot.app.TestSpringSwingComponent;
+import org.cosinus.swing.translate.Translator;
+import org.cosinus.swing.ui.ApplicationUIHandler;
 
-public class TestComponent extends Component {
+public class TestSplit extends Split {
 
-    @SwingAutowired
-    private ApplicationStorage applicationStorage;
-
-    @SwingAutowired
-    private TestSpringSwingComponent testSpringSwingComponent;
+    public TestSplit(String splitName, int defaultDividerLocation) {
+        super(splitName, defaultDividerLocation);
+    }
 
     public ApplicationStorage getApplicationStorage() {
         return applicationStorage;
     }
 
-    public TestSpringSwingComponent getSpringSwingComponent() {
-        return testSpringSwingComponent;
+    public Translator getTranslator() {
+        return translator;
     }
 
-    @Override
-    public void initComponents() {
-        
-    }
-
-    @Override
-    public void initContent() {
-
-    }
-
-    @Override
-    public void translate() {
-
+    public ApplicationUIHandler getUIHandler() {
+        return uiHandler;
     }
 }

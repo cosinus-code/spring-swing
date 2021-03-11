@@ -53,14 +53,14 @@ public class SwingInjectTest {
         TestFrame frame = new TestFrame();
         frame.init(swingContext);
 
-        assertNotNull(frame.springSwingComponent);
-        assertNotNull(frame.actionController);
-        assertNotNull(frame.translator);
-        assertNotNull(frame.errorHandler);
-        assertNotNull(frame.resourceResolver);
-        assertNotNull(frame.frameSettingsHandler);
-        assertNotNull(frame.menuProvider);
-        assertNotNull(frame.uiHandler);
+        assertNotNull(frame.getSpringSwingComponent());
+        assertNotNull(frame.getActionController());
+        assertNotNull(frame.getTranslator());
+        assertNotNull(frame.getErrorHandler());
+        assertNotNull(frame.getResourceResolver());
+        assertNotNull(frame.getWindowSettingsHandler());
+        assertNotNull(frame.getMenuProvider());
+        assertNotNull(frame.getUIHandler());
     }
 
     @Test
@@ -100,11 +100,11 @@ public class SwingInjectTest {
 
     @Test
     public void testSwingInjectIntoSplit() {
-        Split split = swingInjector.inject(Split.class, "testSplit", 100);
+        TestSplit split = swingInjector.inject(TestSplit.class, "testSplit", 100);
 
-        assertNotNull(split.applicationStorage);
-        assertNotNull(split.translator);
-        assertNotNull(split.uiHandler);
+        assertNotNull(split.getApplicationStorage());
+        assertNotNull(split.getTranslator());
+        assertNotNull(split.getUIHandler());
     }
 
     @Test
