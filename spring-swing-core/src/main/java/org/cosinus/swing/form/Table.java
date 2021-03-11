@@ -16,6 +16,7 @@
 
 package org.cosinus.swing.form;
 
+import org.cosinus.swing.context.SwingApplicationContext;
 import org.cosinus.swing.context.SwingInject;
 
 import javax.swing.*;
@@ -24,4 +25,8 @@ import javax.swing.*;
  * Abstract table functionality
  */
 public abstract class Table extends JTable implements SwingInject, FormComponent {
+
+    public Table() {
+        injectSwingContext(SwingApplicationContext.instance);
+    }
 }

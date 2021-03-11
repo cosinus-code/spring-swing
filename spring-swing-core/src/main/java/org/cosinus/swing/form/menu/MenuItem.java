@@ -16,9 +16,9 @@
 
 package org.cosinus.swing.form.menu;
 
+import org.cosinus.swing.context.SwingApplicationContext;
 import org.cosinus.swing.context.SwingAutowired;
 import org.cosinus.swing.context.SwingInject;
-import org.cosinus.swing.context.SwingInjector;
 import org.cosinus.swing.form.FormComponent;
 import org.cosinus.swing.translate.Translator;
 
@@ -34,9 +34,6 @@ public class MenuItem extends JMenuItem implements SwingInject, FormComponent, A
     @SwingAutowired
     protected Translator translator;
 
-    @SwingAutowired
-    protected SwingInjector swingInjector;
-
     private JMenuItem altMenuItem;
 
     private final String key;
@@ -50,17 +47,17 @@ public class MenuItem extends JMenuItem implements SwingInject, FormComponent, A
                     KeyStroke keyStroke,
                     boolean duplicate) {
         super();
-        this.key = key;
+        injectSwingContext(SwingApplicationContext.instance);
 
+        this.key = key;
         super.addActionListener(actionListener);
         super.setAccelerator(keyStroke);
 
         if (duplicate) {
-            altMenuItem = swingInjector.inject(MenuItem.class,
-                                               actionListener,
-                                               key,
-                                               keyStroke,
-                                               false);
+            altMenuItem = new MenuItem(actionListener,
+                                       key,
+                                       keyStroke,
+                                       false);
             altMenuItem.addActionListener(actionListener);
             altMenuItem.setAccelerator(keyStroke);
         }

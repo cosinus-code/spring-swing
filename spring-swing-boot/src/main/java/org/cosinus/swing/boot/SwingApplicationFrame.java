@@ -18,6 +18,7 @@ package org.cosinus.swing.boot;
 
 import org.cosinus.swing.boot.event.ApplicationFrameAfterInitializeEvent;
 import org.cosinus.swing.boot.event.ApplicationFrameBeforeInitializeEvent;
+import org.cosinus.swing.context.ApplicationProperties;
 import org.cosinus.swing.context.SwingApplicationContext;
 import org.cosinus.swing.form.Frame;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class SwingApplicationFrame extends Frame implements ApplicationFrame {
 
     @Autowired
     public SwingApplicationContext swingContext;
+
+    @Autowired
+    public ApplicationProperties applicationProperties;
 
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;

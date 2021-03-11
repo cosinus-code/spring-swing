@@ -16,15 +16,17 @@
 
 package org.cosinus.swing.form.menu;
 
+import org.cosinus.swing.context.SwingApplicationContext;
 import org.cosinus.swing.context.SwingAutowired;
 import org.cosinus.swing.context.SwingInject;
-import org.cosinus.swing.context.SwingInjector;
 import org.cosinus.swing.form.FormComponent;
 import org.cosinus.swing.translate.Translatable;
 import org.cosinus.swing.translate.Translator;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.util.Arrays.stream;
 
@@ -38,9 +40,6 @@ public class MenuBar extends JMenuBar implements SwingInject, FormComponent {
     @SwingAutowired
     protected Translator translator;
 
-    @SwingAutowired
-    protected SwingInjector swingInjector;
-
     private BoxMenu boxMenu;
 
     private final MenuModel mapModel;
@@ -52,6 +51,8 @@ public class MenuBar extends JMenuBar implements SwingInject, FormComponent {
     public MenuBar(MenuModel mapModel,
                    boolean withBoxMenu,
                    ActionListener actionListener) {
+        injectSwingContext(SwingApplicationContext.instance);
+
         this.withBoxMenu = withBoxMenu;
         this.mapModel = mapModel;
         this.actionListener = actionListener;
@@ -67,23 +68,20 @@ public class MenuBar extends JMenuBar implements SwingInject, FormComponent {
     @Override
     public void initComponents() {
         if (withBoxMenu) {
-            boxMenu = swingInjector.inject(BoxMenu.class);
+            boxMenu = new BoxMenu();
         }
 
         mapModel.forEach((menuKey, menuMap) -> {
-            Menu menu = swingInjector.inject(Menu.class,
-                                             menuKey,
-                                             withBoxMenu);
+            Menu menu = new Menu(menuKey, withBoxMenu);
             add(menu);
             menuMap.forEach((menuItemKey, menuItemShortcut) -> {
                 if (menuItemKey.startsWith(SEPARATOR)) {
                     menu.add(new JSeparator());
                 } else {
-                    menu.add(swingInjector.inject(MenuItem.class,
-                                                  actionListener,
-                                                  menuItemKey,
-                                                  KeyStroke.getKeyStroke(menuItemShortcut),
-                                                  withBoxMenu));
+                    menu.add(new MenuItem(actionListener,
+                                          menuItemKey,
+                                          KeyStroke.getKeyStroke(menuItemShortcut),
+                                          withBoxMenu));
                 }
             });
         });
@@ -97,8 +95,8 @@ public class MenuBar extends JMenuBar implements SwingInject, FormComponent {
     @Override
     public void translate() {
         stream(getSubElements())
-            .filter(Translatable.class::isInstance)
-            .map(Translatable.class::cast)
-            .forEach(translatable -> translatable.translate(translator));
+            .filter(FormComponent.class::isInstance)
+            .map(FormComponent.class::cast)
+            .forEach(FormComponent::translate);
     }
 }

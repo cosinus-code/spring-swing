@@ -17,10 +17,10 @@
 package org.cosinus.swing.form;
 
 import org.cosinus.swing.action.ActionController;
+import org.cosinus.swing.context.ApplicationProperties;
 import org.cosinus.swing.context.SwingApplicationContext;
 import org.cosinus.swing.context.SwingAutowired;
 import org.cosinus.swing.context.SwingInject;
-import org.cosinus.swing.context.SwingInjector;
 import org.cosinus.swing.error.ErrorHandler;
 import org.cosinus.swing.form.menu.MenuBar;
 import org.cosinus.swing.form.menu.MenuProvider;
@@ -66,28 +66,32 @@ public class Frame extends JFrame implements Window, SwingInject, FormComponent 
     protected ApplicationUIHandler uiHandler;
 
     @SwingAutowired
-    protected SwingInjector swingInjector;
+    protected ApplicationProperties applicationProperties;
 
     private WindowSettings frameSettings;
 
     private MenuBar menuBar;
 
     protected Frame() {
+        ofNullable(SwingApplicationContext.instance)
+            .ifPresent(this::init);
     }
 
     protected Frame(WindowSettings frameSettings) {
         this.frameSettings = frameSettings;
+        ofNullable(SwingApplicationContext.instance)
+            .ifPresent(this::init);
     }
 
     public void init(SwingApplicationContext swingContext) {
         injectSwingContext(swingContext);
         if (frameSettings == null) {
             frameSettings = new WindowSettings(
-                ofNullable(swingContext.applicationProperties.getFrame().getName())
+                ofNullable(applicationProperties.getFrame().getName())
                     .orElseGet(this::getClassName),
-                swingContext.applicationProperties.getName(),
-                swingContext.applicationProperties.getIcon(),
-                swingContext.applicationProperties.getMenu());
+                applicationProperties.getName(),
+                applicationProperties.getIcon(),
+                applicationProperties.getMenu());
         }
 
         frameSettingsHandler.loadWindowSettings(frameSettings);
@@ -179,10 +183,9 @@ public class Frame extends JFrame implements Window, SwingInject, FormComponent 
     private void initFrameMenu() {
         menuProvider.getMenu(frameSettings.getMenu())
             .ifPresent(menuModel -> {
-                menuBar = swingInjector.inject(MenuBar.class,
-                                               menuModel,
-                                               menuProvider.hasBoxMenu(),
-                                               actionController);
+                menuBar = new MenuBar(menuModel,
+                                      menuProvider.hasBoxMenu(),
+                                      actionController);
                 menuBar.initComponents();
                 setJMenuBar(menuBar);
             });

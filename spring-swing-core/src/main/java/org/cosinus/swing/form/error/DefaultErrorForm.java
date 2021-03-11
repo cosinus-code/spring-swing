@@ -19,7 +19,6 @@ package org.cosinus.swing.form.error;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.action.EscapeAction;
-import org.cosinus.swing.context.SwingApplicationContext;
 import org.cosinus.swing.context.SwingAutowired;
 import org.cosinus.swing.form.Dialog;
 import org.cosinus.swing.form.Frame;
@@ -71,11 +70,9 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
     /**
      * Creates new form ErrorForm
      */
-    public DefaultErrorForm(SwingApplicationContext swingContext,
-                            Frame parent,
+    public DefaultErrorForm(Frame parent,
                             boolean modal) {
-        super(swingContext,
-              parent,
+        super(parent,
               ERROR_WINDOW_TITLE,
               modal);
         initComponents();
@@ -84,11 +81,9 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
     /**
      * Creates new form ErrorForm
      */
-    public DefaultErrorForm(SwingApplicationContext swingContext,
-                            Dialog parent,
+    public DefaultErrorForm(Dialog parent,
                             boolean modal) {
-        super(swingContext,
-              parent,
+        super(parent,
               ERROR_WINDOW_TITLE,
               modal);
         initComponents();

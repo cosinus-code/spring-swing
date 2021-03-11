@@ -16,9 +16,6 @@
 
 package org.cosinus.swing.context;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -31,8 +28,6 @@ import static org.springframework.util.ClassUtils.isAssignableValue;
 
 @SpringSwingComponent
 public class SwingInjector {
-
-    private static final Logger LOG = LogManager.getLogger(SwingInjector.class);
 
     private final SwingApplicationContext swingContext;
 

@@ -22,10 +22,10 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import javax.swing.*;
 import java.util.function.Supplier;
 
 import static java.lang.String.format;
+import static javax.swing.SwingUtilities.invokeLater;
 import static org.springframework.boot.Banner.Mode.OFF;
 import static org.springframework.boot.WebApplicationType.NONE;
 
@@ -53,10 +53,11 @@ public class SpringSwingApplication extends SpringApplication {
 
     @Override
     protected void afterRefresh(ConfigurableApplicationContext context, ApplicationArguments args) {
-        context.getBean(SwingApplicationContext.class)
-                .setSwingComponents(context.getBeansWithAnnotation(SpringSwingComponent.class));
+        SwingApplicationContext.instance = context.getBean(SwingApplicationContext.class)
+            .setSwingComponents(context.getBeansWithAnnotation(SpringSwingComponent.class));
 
-        SwingUtilities.invokeLater(() -> startApplicationFrame(context));
+
+        invokeLater(() -> startApplicationFrame(context));
     }
 
     protected void startApplicationFrame(ConfigurableApplicationContext context) {

@@ -25,13 +25,9 @@ import java.util.Optional;
  */
 public class SwingApplicationContext {
 
+    public static SwingApplicationContext instance;
+
     private Map<String, Object> swingComponents = new HashMap<>();
-
-    public final ApplicationProperties applicationProperties;
-
-    public SwingApplicationContext(ApplicationProperties applicationProperties) {
-        this.applicationProperties = applicationProperties;
-    }
 
     public void addSwingComponents(String name,
                                    Object component) {
@@ -42,8 +38,9 @@ public class SwingApplicationContext {
         return swingComponents;
     }
 
-    public void setSwingComponents(Map<String, Object> swingComponents) {
+    public SwingApplicationContext setSwingComponents(Map<String, Object> swingComponents) {
         this.swingComponents = swingComponents;
+        return this;
     }
 
     public Optional<Object> findByName(String swingComponentName) {

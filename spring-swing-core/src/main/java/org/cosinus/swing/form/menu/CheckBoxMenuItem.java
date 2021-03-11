@@ -16,6 +16,10 @@
 
 package org.cosinus.swing.form.menu;
 
+import org.cosinus.swing.context.SwingApplicationContext;
+import org.cosinus.swing.context.SwingAutowired;
+import org.cosinus.swing.context.SwingInject;
+import org.cosinus.swing.form.FormComponent;
 import org.cosinus.swing.translate.Translatable;
 import org.cosinus.swing.translate.Translator;
 
@@ -25,9 +29,13 @@ import java.awt.event.ActionListener;
 /**
  * Checkbox menu model
  */
-public class CheckBoxMenuItem extends JCheckBoxMenuItem implements Translatable, ActionProducer {
+public class CheckBoxMenuItem extends JCheckBoxMenuItem implements SwingInject, FormComponent, ActionProducer {
+
+    @SwingAutowired
+    protected Translator translator;
 
     private final JCheckBoxMenuItem altMenuItem;
+
     private final String key;
 
     public CheckBoxMenuItem(ActionListener action,
@@ -52,6 +60,8 @@ public class CheckBoxMenuItem extends JCheckBoxMenuItem implements Translatable,
                             boolean selected,
                             KeyStroke keyStroke) {
         super();
+        injectSwingContext(SwingApplicationContext.instance);
+
         this.key = key;
 
         super.addActionListener(action);
@@ -77,7 +87,17 @@ public class CheckBoxMenuItem extends JCheckBoxMenuItem implements Translatable,
     }
 
     @Override
-    public void translate(Translator translator) {
+    public void initComponents() {
+
+    }
+
+    @Override
+    public void initContent() {
+
+    }
+
+    @Override
+    public void translate() {
         setText(translator.translate(key));
     }
 }

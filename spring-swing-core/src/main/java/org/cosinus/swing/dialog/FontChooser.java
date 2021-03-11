@@ -16,7 +16,6 @@
 
 package org.cosinus.swing.dialog;
 
-import org.cosinus.swing.context.SwingApplicationContext;
 import org.cosinus.swing.context.SwingAutowired;
 import org.cosinus.swing.error.ErrorHandler;
 import org.cosinus.swing.form.Dialog;
@@ -68,15 +67,13 @@ public class FontChooser extends Dialog<Font> implements ActionListener, ListSel
     @SwingAutowired
     private ErrorHandler errorHandler;
 
-    public FontChooser(SwingApplicationContext swingContext,
-                       Dialog dialog, String title, boolean modal, String text, Font font) {
-        super(swingContext, dialog, title, modal);
+    public FontChooser(Dialog dialog, String title, boolean modal, String text, Font font) {
+        super(dialog, title, modal);
         init(text, font);
     }
 
-    public FontChooser(SwingApplicationContext swingContext,
-                       Frame frame, String title, boolean modal, String text, Font font) {
-        super(swingContext, frame, title, modal);
+    public FontChooser(Frame frame, String title, boolean modal, String text, Font font) {
+        super(frame, title, modal);
         init(text, font);
     }
 
@@ -89,10 +86,10 @@ public class FontChooser extends Dialog<Font> implements ActionListener, ListSel
 
         lstFont = new JList<>();
         lstStyle = new JList<>(new String[]{
-                translate("form_font_plain"),
-                translate("form_font_bold"),
-                translate("form_font_italic"),
-                translate("form_font_bold") + " " + translate("form_font_italic"),
+            translate("form_font_plain"),
+            translate("form_font_bold"),
+            translate("form_font_italic"),
+            translate("form_font_bold") + " " + translate("form_font_italic"),
         });
         lstSize = new JList<>(new String[]{"3", "5", "8", "10", "12", "14", "18", "24", "36", "48"});
 
@@ -121,8 +118,8 @@ public class FontChooser extends Dialog<Font> implements ActionListener, ListSel
         txtSize.addActionListener(this);
 
         sample = new JLabel(isEmpty(text) ?
-                                    translate("form_font_sample") :
-                                    text.substring(0, min(40, text.length())));
+                                translate("form_font_sample") :
+                                text.substring(0, min(40, text.length())));
         sample.setBorder(createTitledBorder(" " + translate("form_font_preview") + " "));
         sample.setPreferredSize(new Dimension(0, 100));
 
@@ -204,21 +201,21 @@ public class FontChooser extends Dialog<Font> implements ActionListener, ListSel
         }
 
         int style = Optional.of(lstStyle.getSelectedIndex())
-                .map(getFontStylesMap()::get)
-                .orElse(PLAIN);
+            .map(getFontStylesMap()::get)
+            .orElse(PLAIN);
 
         int size = ofNullable(txtSize.getText())
-                .filter(not(String::isEmpty))
-                .map(text -> {
-                    try {
-                        return Integer.parseInt(txtSize.getText());
-                    } catch (NumberFormatException ex) {
-                        errorHandler.handleError(this,
-                                                 translate("form_font_not_a_number", txtSize.getText()));
-                        return null;
-                    }
-                })
-                .orElse(DEFAULT_FONT_SIZE);
+            .filter(not(String::isEmpty))
+            .map(text -> {
+                try {
+                    return Integer.parseInt(txtSize.getText());
+                } catch (NumberFormatException ex) {
+                    errorHandler.handleError(this,
+                                             translate("form_font_not_a_number", txtSize.getText()));
+                    return null;
+                }
+            })
+            .orElse(DEFAULT_FONT_SIZE);
 
         txtSize.setText(Integer.toString(size));
 
@@ -233,14 +230,14 @@ public class FontChooser extends Dialog<Font> implements ActionListener, ListSel
     private void loadFonts() {
         String[] availableFonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
         Arrays.stream(availableFonts)
-                .forEach(font -> ((DefaultListModel<String>) lstFont.getModel()).addElement(font));
+            .forEach(font -> ((DefaultListModel<String>) lstFont.getModel()).addElement(font));
         IntStream.range(0, availableFonts.length)
-                .filter(index -> availableFonts[index].equals(font.getFamily()))
-                .findFirst()
-                .ifPresent(index -> {
-                    lstFont.setSelectedIndex(index);
-                    lstFont.scrollRectToVisible(lstFont.getCellBounds(index, index));
-                });
+            .filter(index -> availableFonts[index].equals(font.getFamily()))
+            .findFirst()
+            .ifPresent(index -> {
+                lstFont.setSelectedIndex(index);
+                lstFont.scrollRectToVisible(lstFont.getCellBounds(index, index));
+            });
     }
 
     @Override

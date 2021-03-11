@@ -33,7 +33,7 @@ import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.RunnableFuture;
-import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import static javax.swing.JFileChooser.APPROVE_OPTION;
@@ -76,8 +76,8 @@ public class DialogHandler {
         this.applicationStorage = applicationStorage;
     }
 
-    public <T> Dialog<T> showDialog(Function<SwingApplicationContext, Dialog<T>> dialogInitiator) {
-        Dialog<T> dialog = dialogInitiator.apply(swingContext);
+    public <T> Dialog<T> showDialog(Supplier<Dialog<T>> dialogInitiator) {
+        Dialog<T> dialog = dialogInitiator.get();
         dialog.setVisible(true);
         return dialog;
     }
@@ -88,11 +88,10 @@ public class DialogHandler {
 
     public boolean confirm(Component comp,
                            String message) {
-        return confirm(
-                comp,
-                message,
-                translator.translate("question"),
-                YES_NO_CANCEL_OPTION);
+        return confirm(comp,
+                       message,
+                       translator.translate("question"),
+                       YES_NO_CANCEL_OPTION);
     }
 
     public boolean confirm(Component comp, String message, String title, int options) {
@@ -125,10 +124,10 @@ public class DialogHandler {
 
     public void showInfo(Component comp, String message) {
         showMessageDialog(
-                comp,
-                message,
-                translator.translate("information"),
-                INFORMATION_MESSAGE);
+            comp,
+            message,
+            translator.translate("information"),
+            INFORMATION_MESSAGE);
     }
 
     public int showConfirmation(String message) {
@@ -137,10 +136,10 @@ public class DialogHandler {
 
     public int showConfirmation(Component comp, String message) {
         return showConfirmation(
-                comp,
-                message,
-                translator.translate("question"),
-                YES_NO_CANCEL_OPTION);
+            comp,
+            message,
+            translator.translate("question"),
+            YES_NO_CANCEL_OPTION);
     }
 
     public int showConfirmation(Component comp, String message, String title, int options) {
@@ -170,7 +169,7 @@ public class DialogHandler {
                                                    null,
                                                    null,
                                                    null))
-                .map(Object::toString);
+            .map(Object::toString);
     }
 
     public Object showInputDialog(Component parentComponent,
@@ -262,14 +261,14 @@ public class DialogHandler {
         }
         if (options == null) {
             return selectedValue instanceof Integer ?
-                    (Integer) selectedValue :
-                    CLOSED_OPTION;
+                (Integer) selectedValue :
+                CLOSED_OPTION;
         }
 
         return IntStream.range(0, options.length)
-                .filter(i -> options[i].equals(selectedValue))
-                .findFirst()
-                .orElse(CLOSED_OPTION);
+            .filter(i -> options[i].equals(selectedValue))
+            .findFirst()
+            .orElse(CLOSED_OPTION);
     }
 
     public <T> T showCustomOptionDialog(Component parentComponent,
@@ -282,11 +281,11 @@ public class DialogHandler {
                                         int width,
                                         T[] options) {
         String[] translatedOptions = Optional.ofNullable(options)
-                .stream()
-                .flatMap(Arrays::stream)
-                .map(Object::toString)
-                .map(translator::translate)
-                .toArray(String[]::new);
+            .stream()
+            .flatMap(Arrays::stream)
+            .map(Object::toString)
+            .map(translator::translate)
+            .toArray(String[]::new);
         OptionsDialog dialog = new OptionsDialog(message,
                                                  messageType,
                                                  optionType,
@@ -297,20 +296,20 @@ public class DialogHandler {
         dialog.setRows(rows);
 
         RunnableFuture<Object> show = new FutureTask<>(
-                () -> dialog.showDialog(parentComponent,
-                                        title,
-                                        width));
+            () -> dialog.showDialog(parentComponent,
+                                    title,
+                                    width));
         SwingUtilities.invokeLater(show);
 
         try {
             String selectedValue = show.get().toString();
             return options != null ?
-                    IntStream.range(0, options.length)
-                            .filter(i -> translatedOptions[i].equals(selectedValue))
-                            .mapToObj(i -> options[i])
-                            .findFirst()
-                            .orElse(null) :
-                    null;
+                IntStream.range(0, options.length)
+                    .filter(i -> translatedOptions[i].equals(selectedValue))
+                    .mapToObj(i -> options[i])
+                    .findFirst()
+                    .orElse(null) :
+                null;
         } catch (InterruptedException | ExecutionException ex) {
             LOG.error("Error occurred during showing dialog", ex);
             return null;
@@ -331,12 +330,12 @@ public class DialogHandler {
 
     public File chooseFile(Window parent, boolean folderOnly, JTextField textField, File fileStart) {
         File file = Optional.ofNullable(textField)
-                .map(JTextField::getText)
-                .map(File::new)
+            .map(JTextField::getText)
+            .map(File::new)
+            .filter(File::exists)
+            .orElseGet(() -> Optional.ofNullable(fileStart)
                 .filter(File::exists)
-                .orElseGet(() -> Optional.ofNullable(fileStart)
-                        .filter(File::exists)
-                        .orElse(getCurrentFile()));
+                .orElse(getCurrentFile()));
 
         JFileChooser choose = new JFileChooser(file);
         if (folderOnly) {
@@ -372,12 +371,12 @@ public class DialogHandler {
 
     public File getCurrentFile() {
         return new File(Optional.ofNullable(applicationStorage.getString(FILE_CHOOSER))
-                                .orElse(System.getProperty("user.home")));
+                            .orElse(System.getProperty("user.home")));
     }
 
     public File saveCurrentFile(File currentFile) {
         Optional.ofNullable(currentFile)
-                .ifPresent(file -> applicationStorage.saveString(FILE_CHOOSER, file.getAbsolutePath()));
+            .ifPresent(file -> applicationStorage.saveString(FILE_CHOOSER, file.getAbsolutePath()));
         return currentFile;
     }
 }

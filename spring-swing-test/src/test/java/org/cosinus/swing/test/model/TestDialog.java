@@ -16,7 +16,6 @@
 
 package org.cosinus.swing.test.model;
 
-import org.cosinus.swing.context.SwingApplicationContext;
 import org.cosinus.swing.context.SwingAutowired;
 import org.cosinus.swing.error.ErrorHandler;
 import org.cosinus.swing.form.Dialog;
@@ -33,7 +32,7 @@ public class TestDialog extends Dialog<String> {
     @SwingAutowired
     public TestSpringSwingComponent springSwingComponent;
 
-    public TestDialog(SwingApplicationContext swingContext, Frame frame) {
-        super(swingContext, frame, TEST_DIALOG_TITLE, false);
+    public TestDialog(Frame frame) {
+        super(frame, TEST_DIALOG_TITLE, false);
     }
 }

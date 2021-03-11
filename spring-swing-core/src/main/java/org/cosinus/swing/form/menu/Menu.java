@@ -16,14 +16,13 @@
 
 package org.cosinus.swing.form.menu;
 
+import org.cosinus.swing.context.SwingApplicationContext;
 import org.cosinus.swing.context.SwingAutowired;
 import org.cosinus.swing.context.SwingInject;
-import org.cosinus.swing.context.SwingInjector;
 import org.cosinus.swing.form.FormComponent;
 import org.cosinus.swing.translate.Translator;
 
 import javax.swing.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,9 +34,6 @@ public class Menu extends JMenu implements SwingInject, FormComponent {
 
     @SwingAutowired
     protected Translator translator;
-
-    @SwingAutowired
-    protected SwingInjector swingInjector;
 
     private JMenu duplicateMenu;
 
@@ -51,6 +47,8 @@ public class Menu extends JMenu implements SwingInject, FormComponent {
     public Menu(String key,
                 boolean duplicate) {
         super();
+        injectSwingContext(SwingApplicationContext.instance);
+
         this.key = key;
         this.formComponents = new ArrayList<>();
 

@@ -16,18 +16,34 @@
 
 package org.cosinus.swing.form.menu;
 
+import org.cosinus.swing.context.SwingApplicationContext;
+import org.cosinus.swing.context.SwingInject;
+import org.cosinus.swing.form.FormComponent;
+
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 
 /**
  * Toolbar menu model
  */
-public class ToolBar extends JToolBar {
+public class ToolBar extends JToolBar implements SwingInject, FormComponent {
 
     public ToolBar() {
+        injectSwingContext(SwingApplicationContext.instance);
+    }
+
+    @Override
+    public void initComponents() {
         setOrientation(JToolBar.VERTICAL);
         setFloatable(false);
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
     }
 
+    @Override
+    public void initContent() {
+    }
+
+    @Override
+    public void translate() {
+    }
 }

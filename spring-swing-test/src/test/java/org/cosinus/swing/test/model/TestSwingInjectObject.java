@@ -16,6 +16,7 @@
 
 package org.cosinus.swing.test.model;
 
+import org.cosinus.swing.context.SwingApplicationContext;
 import org.cosinus.swing.context.SwingAutowired;
 import org.cosinus.swing.context.SwingInject;
 import org.cosinus.swing.store.ApplicationStorage;
@@ -28,6 +29,10 @@ public class TestSwingInjectObject implements SwingInject {
 
     @SwingAutowired
     private TestSpringSwingComponent testSpringSwingComponent;
+
+    public TestSwingInjectObject(SwingApplicationContext swingContext) {
+        injectSwingContext(swingContext);
+    }
 
     public ApplicationStorage getApplicationStorage() {
         return applicationStorage;

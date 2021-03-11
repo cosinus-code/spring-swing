@@ -124,8 +124,8 @@ public class ApplicationConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ErrorFormProvider errorFormProvider(SwingApplicationContext swingContext) {
-        return new ErrorFormProvider(swingContext);
+    public ErrorFormProvider errorFormProvider() {
+        return new ErrorFormProvider();
     }
 
     @Bean
@@ -187,8 +187,8 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public SwingApplicationContext swingApplicationContext(ApplicationProperties applicationProperties) {
-        return new SwingApplicationContext(applicationProperties);
+    public SwingApplicationContext swingApplicationContext() {
+        return new SwingApplicationContext();
     }
 
     @Bean

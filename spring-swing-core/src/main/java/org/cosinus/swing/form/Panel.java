@@ -16,6 +16,7 @@
 
 package org.cosinus.swing.form;
 
+import org.cosinus.swing.context.SwingApplicationContext;
 import org.cosinus.swing.context.SwingInject;
 
 import javax.swing.*;
@@ -24,6 +25,10 @@ import javax.swing.*;
  * Abstract panel functionality
  */
 public class Panel extends JPanel implements SwingInject, FormComponent {
+
+    public Panel() {
+        injectSwingContext(SwingApplicationContext.instance);
+    }
 
     @Override
     public void initComponents() {
