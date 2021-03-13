@@ -23,7 +23,5 @@ public interface FormComponent {
 
     void initComponents();
 
-    void initContent();
-
     void translate();
 }

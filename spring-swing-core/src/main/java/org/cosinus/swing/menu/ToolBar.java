@@ -40,10 +40,6 @@ public class ToolBar extends JToolBar implements SwingInject, FormComponent {
     }
 
     @Override
-    public void initContent() {
-    }
-
-    @Override
     public void translate() {
     }
 }

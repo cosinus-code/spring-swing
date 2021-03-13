@@ -31,16 +31,9 @@ public class TestTable extends Table {
 
     @Override
     public void initComponents() {
-
-    }
-
-    @Override
-    public void initContent() {
-
     }
 
     @Override
     public void translate() {
-
     }
 }

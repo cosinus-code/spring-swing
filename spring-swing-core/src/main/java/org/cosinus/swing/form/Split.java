@@ -141,9 +141,4 @@ public class Split extends JSplitPane implements SwingInject, FormComponent {
     public void translate() {
 
     }
-
-    @Override
-    public void initContent() {
-
-    }
 }

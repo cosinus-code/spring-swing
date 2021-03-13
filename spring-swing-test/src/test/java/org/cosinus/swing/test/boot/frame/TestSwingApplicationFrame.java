@@ -21,4 +21,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TestSwingApplicationFrame extends SwingApplicationFrame {
+
+    @Override
+    protected void initContent() {
+    }
 }

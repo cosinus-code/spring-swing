@@ -39,16 +39,9 @@ public class TestComponent extends Component {
 
     @Override
     public void initComponents() {
-
-    }
-
-    @Override
-    public void initContent() {
-
     }
 
     @Override
     public void translate() {
-
     }
 }

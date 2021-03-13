@@ -82,12 +82,6 @@ public class MenuItem extends JMenuItem implements SwingInject, FormComponent, A
 
     @Override
     public void initComponents() {
-
-    }
-
-    @Override
-    public void initContent() {
-
     }
 
     @Override

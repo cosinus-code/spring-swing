@@ -67,16 +67,9 @@ public abstract class Dialog<T> extends JDialog implements Window, SwingInject, 
 
     @Override
     public void initComponents() {
-
     }
 
     @Override
     public void translate() {
-
-    }
-
-    @Override
-    public void initContent() {
-
     }
 }

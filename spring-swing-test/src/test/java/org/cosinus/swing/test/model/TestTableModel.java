@@ -46,16 +46,9 @@ public class TestTableModel extends TableModel {
 
     @Override
     public void initComponents() {
-
-    }
-
-    @Override
-    public void initContent() {
-
     }
 
     @Override
     public void translate() {
-
     }
 }

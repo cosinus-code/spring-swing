@@ -213,10 +213,6 @@ public class Frame extends JFrame implements Window, SwingInject, FormComponent 
     }
 
     @Override
-    public void initContent() {
-    }
-
-    @Override
     public void translate() {
         if (menuBar != null) {
             menuBar.translate();

@@ -36,4 +36,8 @@ public class TestSwingInjectApplication extends SwingApplicationFrame {
         this.testSpringComponent = testSpringComponent;
         this.testSpringSwingComponent = testSpringSwingComponent;
     }
+
+    @Override
+    protected void initContent() {
+    }
 }

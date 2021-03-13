@@ -98,11 +98,6 @@ public class Menu extends JMenu implements SwingInject, FormComponent {
     }
 
     @Override
-    public void initContent() {
-
-    }
-
-    @Override
     public void translate() {
         setText(translator.translate(key));
         formComponents.forEach(FormComponent::translate);

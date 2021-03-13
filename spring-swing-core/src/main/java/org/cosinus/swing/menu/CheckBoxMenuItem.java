@@ -92,11 +92,6 @@ public class CheckBoxMenuItem extends JCheckBoxMenuItem implements SwingInject, 
     }
 
     @Override
-    public void initContent() {
-
-    }
-
-    @Override
     public void translate() {
         setText(translator.translate(key));
     }

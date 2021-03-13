@@ -85,11 +85,6 @@ public class MenuBar extends JMenuBar implements SwingInject, FormComponent {
     }
 
     @Override
-    public void initContent() {
-
-    }
-
-    @Override
     public void translate() {
         stream(getSubElements())
             .filter(FormComponent.class::isInstance)

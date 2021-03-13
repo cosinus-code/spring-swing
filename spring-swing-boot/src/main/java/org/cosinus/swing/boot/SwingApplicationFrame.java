@@ -24,7 +24,7 @@ import org.cosinus.swing.form.Frame;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 
-public class SwingApplicationFrame extends Frame implements ApplicationFrame {
+public abstract class SwingApplicationFrame extends Frame implements ApplicationFrame {
 
     public static Frame applicationFrame;
 
@@ -54,4 +54,5 @@ public class SwingApplicationFrame extends Frame implements ApplicationFrame {
         setVisible(true);
     }
 
+    protected abstract void initContent();
 }
