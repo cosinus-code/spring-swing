@@ -17,13 +17,13 @@
 package org.cosinus.swing.form;
 
 import org.cosinus.swing.context.SwingApplicationContext;
-import org.cosinus.swing.context.SwingAutowired;
 import org.cosinus.swing.context.SwingInject;
 import org.cosinus.swing.store.ApplicationStorage;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
@@ -55,13 +55,13 @@ public class Split extends JSplitPane implements SwingInject, FormComponent {
 
     private final int defaultDividerLocation;
 
-    @SwingAutowired
+    @Autowired
     protected ApplicationStorage applicationStorage;
 
-    @SwingAutowired
+    @Autowired
     protected Translator translator;
 
-    @SwingAutowired
+    @Autowired
     protected ApplicationUIHandler uiHandler;
 
     public Split(String splitName,

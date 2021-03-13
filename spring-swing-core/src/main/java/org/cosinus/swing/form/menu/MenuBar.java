@@ -17,16 +17,13 @@
 package org.cosinus.swing.form.menu;
 
 import org.cosinus.swing.context.SwingApplicationContext;
-import org.cosinus.swing.context.SwingAutowired;
 import org.cosinus.swing.context.SwingInject;
 import org.cosinus.swing.form.FormComponent;
-import org.cosinus.swing.translate.Translatable;
 import org.cosinus.swing.translate.Translator;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import static java.util.Arrays.stream;
 
@@ -37,7 +34,7 @@ public class MenuBar extends JMenuBar implements SwingInject, FormComponent {
 
     private static final String SEPARATOR = "separator";
 
-    @SwingAutowired
+    @Autowired
     protected Translator translator;
 
     private BoxMenu boxMenu;

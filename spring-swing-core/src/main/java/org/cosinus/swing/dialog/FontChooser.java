@@ -16,11 +16,11 @@
 
 package org.cosinus.swing.dialog;
 
-import org.cosinus.swing.context.SwingAutowired;
 import org.cosinus.swing.error.ErrorHandler;
 import org.cosinus.swing.form.Dialog;
 import org.cosinus.swing.form.Frame;
 import org.cosinus.swing.translate.Translator;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -61,10 +61,10 @@ public class FontChooser extends Dialog<Font> implements ActionListener, ListSel
 
     private Map<Integer, Integer> fontStylesMap;
 
-    @SwingAutowired
+    @Autowired
     private Translator translator;
 
-    @SwingAutowired
+    @Autowired
     private ErrorHandler errorHandler;
 
     public FontChooser(Dialog dialog, String title, boolean modal, String text, Font font) {

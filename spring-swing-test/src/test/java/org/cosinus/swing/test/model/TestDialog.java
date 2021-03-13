@@ -16,20 +16,20 @@
 
 package org.cosinus.swing.test.model;
 
-import org.cosinus.swing.context.SwingAutowired;
 import org.cosinus.swing.error.ErrorHandler;
 import org.cosinus.swing.form.Dialog;
 import org.cosinus.swing.form.Frame;
 import org.cosinus.swing.test.boot.app.TestSpringSwingComponent;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class TestDialog extends Dialog<String> {
 
     public static final String TEST_DIALOG_TITLE = "Test Dialog";
 
-    @SwingAutowired
+    @Autowired
     public ErrorHandler errorHandler;
 
-    @SwingAutowired
+    @Autowired
     public TestSpringSwingComponent springSwingComponent;
 
     public TestDialog(Frame frame) {

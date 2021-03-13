@@ -16,6 +16,8 @@
 
 package org.cosinus.swing.context;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import static org.cosinus.swing.util.ReflectionUtils.setFieldsSafe;
 
 public interface SwingInject {
@@ -23,7 +25,7 @@ public interface SwingInject {
     default void injectSwingContext(SwingApplicationContext swingContext) {
         setFieldsSafe(this,
                       SwingInject.class,
-                      SwingAutowired.class,
+                      Autowired.class,
                       swingContext.getSwingComponents());
     }
 

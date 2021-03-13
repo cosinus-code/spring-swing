@@ -26,6 +26,8 @@ import org.springframework.context.ApplicationEventPublisher;
 
 public class SwingApplicationFrame extends Frame implements ApplicationFrame {
 
+    public static Frame applicationFrame;
+
     @Autowired
     public SwingApplicationContext swingContext;
 
@@ -45,9 +47,10 @@ public class SwingApplicationFrame extends Frame implements ApplicationFrame {
     @Override
     public void startApplication() {
         applicationEventPublisher.publishEvent(new ApplicationFrameBeforeInitializeEvent(this));
-        init(swingContext);
+        init();
         applicationEventPublisher.publishEvent(new ApplicationFrameAfterInitializeEvent(this));
 
+        applicationFrame = this;
         setVisible(true);
     }
 

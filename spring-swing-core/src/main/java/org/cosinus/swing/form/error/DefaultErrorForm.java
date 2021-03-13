@@ -19,11 +19,11 @@ package org.cosinus.swing.form.error;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.action.EscapeAction;
-import org.cosinus.swing.context.SwingAutowired;
 import org.cosinus.swing.form.Dialog;
 import org.cosinus.swing.form.Frame;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import java.awt.*;
@@ -61,10 +61,10 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
 
     private int detailsHeight = 280;
 
-    @SwingAutowired
+    @Autowired
     private Translator translator;
 
-    @SwingAutowired
+    @Autowired
     private ApplicationUIHandler uiHandler;
 
     /**

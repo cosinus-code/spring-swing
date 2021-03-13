@@ -17,10 +17,10 @@
 package org.cosinus.swing.form.menu;
 
 import org.cosinus.swing.context.SwingApplicationContext;
-import org.cosinus.swing.context.SwingAutowired;
 import org.cosinus.swing.context.SwingInject;
 import org.cosinus.swing.form.FormComponent;
 import org.cosinus.swing.translate.Translator;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -31,7 +31,7 @@ import java.awt.event.ActionListener;
  */
 public class MenuItem extends JMenuItem implements SwingInject, FormComponent, ActionProducer {
 
-    @SwingAutowired
+    @Autowired
     protected Translator translator;
 
     private JMenuItem altMenuItem;

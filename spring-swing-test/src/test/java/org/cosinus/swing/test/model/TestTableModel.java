@@ -16,17 +16,17 @@
 
 package org.cosinus.swing.test.model;
 
-import org.cosinus.swing.context.SwingAutowired;
 import org.cosinus.swing.form.TableModel;
 import org.cosinus.swing.store.ApplicationStorage;
 import org.cosinus.swing.test.boot.app.TestSpringSwingComponent;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class TestTableModel extends TableModel {
 
-    @SwingAutowired
+    @Autowired
     public ApplicationStorage applicationStorage;
 
-    @SwingAutowired
+    @Autowired
     public TestSpringSwingComponent springSwingComponent;
 
     @Override

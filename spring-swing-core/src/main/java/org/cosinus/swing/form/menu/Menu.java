@@ -17,10 +17,10 @@
 package org.cosinus.swing.form.menu;
 
 import org.cosinus.swing.context.SwingApplicationContext;
-import org.cosinus.swing.context.SwingAutowired;
 import org.cosinus.swing.context.SwingInject;
 import org.cosinus.swing.form.FormComponent;
 import org.cosinus.swing.translate.Translator;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class Menu extends JMenu implements SwingInject, FormComponent {
 
-    @SwingAutowired
+    @Autowired
     protected Translator translator;
 
     private JMenu duplicateMenu;

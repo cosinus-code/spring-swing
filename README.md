@@ -5,45 +5,38 @@ Spring Swing is a framework designed for building Spring-powered Swing applicati
 
 It allows you to start a Swing application in full Spring context. Moreover, it allows injection of Swing beans into Swing components created during application run.
 
-A separate Swing context is created along with the Spring context.
-Swing components can be injected with `@SwingAutowired` in any object (not necessary a bean) that can access the SwingApplicationContext, by implementing `SwingInject` interface, and calling `injectSwingContext(context)`:
+A separate Swing context exists along with the Spring context. This swing context contains all beans annotated with `@SpringSwingComponent`.
+Theses Swing beans annotated with `@SpringSwingComponent` can be injected with `@Autowired` in any object (not necessary a bean), by implementing `SwingInject` interface, and calling `injectSwingContext(SwingApplicationContext.instance)`:
 
 ```java
 import org.cosinus.swing.context.SwingApplicationContext;
-import org.cosinus.swing.context.SwingAutowired;
 import org.cosinus.swing.context.SwingInject;
 import org.cosinus.swing.store.ApplicationStorage;
 
 public class SwingApplicationContextAware implements SwingInject {
 
-    @SwingAutowired
+    @Autowired
     public ApplicationStorage applicationStorage;
 
-
-	public SwingApplicationContextAware(SwingApplicationContext swingContext) {
-		injectSwingContext(swingContext);
+	public SwingApplicationContextAware() {
+		injectSwingContext(SwingApplicationContext.instance);
 	}
 }
 ```
 
-On Spring components, the `SwingApplicationContext` can be injected as Spring component.
-There are already Swing object rewritten to implement SwingInject interface, such that the Swing components can be injected directly with `@SwingAutowired`:
+There are already Swing object rewritten to implement SwingInject interface, such that the Swing components can be injected like any component:
 
 ```java
 import org.cosinus.swing.context.SwingApplicationContext;
-import org.cosinus.swing.context.SwingAutowired;
 import org.cosinus.swing.context.SwingInject;
 import org.cosinus.swing.form.Panel;
 import org.cosinus.swing.store.ApplicationStorage;
 
 public class MyPanel implements Panel {
 
-    @SwingAutowired
+    @Autowired
     public ApplicationStorage applicationStorage;
 
-	public MyPanel(SwingApplicationContext swingContext) {
-		super(swingContext);
-	}
 }
 ```
 # Getting Started Using Spring Swing

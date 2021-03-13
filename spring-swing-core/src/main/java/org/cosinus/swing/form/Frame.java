@@ -19,7 +19,6 @@ package org.cosinus.swing.form;
 import org.cosinus.swing.action.ActionController;
 import org.cosinus.swing.context.ApplicationProperties;
 import org.cosinus.swing.context.SwingApplicationContext;
-import org.cosinus.swing.context.SwingAutowired;
 import org.cosinus.swing.context.SwingInject;
 import org.cosinus.swing.error.ErrorHandler;
 import org.cosinus.swing.form.menu.MenuBar;
@@ -27,6 +26,7 @@ import org.cosinus.swing.form.menu.MenuProvider;
 import org.cosinus.swing.resource.ResourceResolver;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import java.awt.event.ComponentEvent;
@@ -44,28 +44,28 @@ import static org.cosinus.swing.form.WindowSettings.DEFAULT_WIDTH;
  */
 public class Frame extends JFrame implements Window, SwingInject, FormComponent {
 
-    @SwingAutowired
+    @Autowired
     protected ActionController<?> actionController;
 
-    @SwingAutowired
+    @Autowired
     protected Translator translator;
 
-    @SwingAutowired
+    @Autowired
     protected ErrorHandler errorHandler;
 
-    @SwingAutowired
+    @Autowired
     protected ResourceResolver resourceResolver;
 
-    @SwingAutowired
+    @Autowired
     protected WindowSettingsHandler frameSettingsHandler;
 
-    @SwingAutowired
+    @Autowired
     protected MenuProvider menuProvider;
 
-    @SwingAutowired
+    @Autowired
     protected ApplicationUIHandler uiHandler;
 
-    @SwingAutowired
+    @Autowired
     protected ApplicationProperties applicationProperties;
 
     private WindowSettings frameSettings;
@@ -85,6 +85,10 @@ public class Frame extends JFrame implements Window, SwingInject, FormComponent 
 
     public void init(SwingApplicationContext swingContext) {
         injectSwingContext(swingContext);
+        init();
+    }
+
+    public void init() {
         if (frameSettings == null) {
             frameSettings = new WindowSettings(
                 ofNullable(applicationProperties.getFrame().getName())
