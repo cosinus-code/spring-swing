@@ -4,7 +4,7 @@ Spring Swing is a framework designed for building Spring-powered Swing applicati
 # Description
 
 It allows you to start a Swing application in full Spring context. 
-It also allows injection of Swing beans into Swing components created during application run:
+It also allows injection of Spring beans into Swing objects created during application run:
 
 ```java
 import org.cosinus.swing.store.ApplicationStorage;
