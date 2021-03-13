@@ -18,7 +18,6 @@ package org.cosinus.swing.error;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.cosinus.swing.context.SpringSwingComponent;
 import org.cosinus.swing.dialog.OptionsDialog;
 import org.cosinus.swing.form.error.ErrorFormProvider;
 import org.cosinus.swing.translate.Translator;
@@ -29,7 +28,6 @@ import java.awt.*;
 /**
  * Generic error handler
  */
-@SpringSwingComponent
 public class ErrorHandler {
 
     private static final Logger LOG = LogManager.getLogger(ErrorHandler.class);
@@ -48,7 +46,7 @@ public class ErrorHandler {
                             Throwable throwable) {
         LOG.error(throwable.getMessage(), throwable);
         errorFormProvider.getErrorForm(parent)
-                .ifPresent(errorForm -> errorForm.showError(throwable));
+            .ifPresent(errorForm -> errorForm.showError(throwable));
     }
 
     public void handleError(Component component,

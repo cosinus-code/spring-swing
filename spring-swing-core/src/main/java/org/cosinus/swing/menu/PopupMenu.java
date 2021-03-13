@@ -16,21 +16,20 @@
 
 package org.cosinus.swing.menu;
 
-import org.cosinus.swing.context.SwingApplicationContext;
-import org.cosinus.swing.context.SwingInject;
 import org.cosinus.swing.form.FormComponent;
 
 import javax.swing.*;
 
 import static java.util.Arrays.stream;
+import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
 /**
  * Popup menu model
  */
-public class PopupMenu extends JPopupMenu implements SwingInject, FormComponent {
+public class PopupMenu extends JPopupMenu implements FormComponent {
 
     public PopupMenu() {
-        injectSwingContext(SwingApplicationContext.instance);
+        injectContext(this);
     }
 
     @Override

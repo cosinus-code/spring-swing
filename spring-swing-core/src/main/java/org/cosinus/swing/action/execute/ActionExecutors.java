@@ -16,8 +16,6 @@
 
 package org.cosinus.swing.action.execute;
 
-import org.cosinus.swing.context.SpringSwingComponent;
-
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -27,16 +25,15 @@ import java.util.stream.Collectors;
 /**
  * Handler for action executors
  */
-@SpringSwingComponent
 public class ActionExecutors {
 
     private final Map<String, ActionExecutor<? extends ActionModel>> executorsMap;
 
     public ActionExecutors(Set<ActionExecutor<?>> executors) {
         this.executorsMap = executors
-                .stream()
-                .collect(Collectors.toMap(ActionExecutor::getHandledAction,
-                                          Function.identity()));
+            .stream()
+            .collect(Collectors.toMap(ActionExecutor::getHandledAction,
+                                      Function.identity()));
     }
 
     public <A extends ActionModel>
@@ -46,6 +43,6 @@ public class ActionExecutors {
 
     public <A extends ActionModel> void execute(A actionModel) {
         getActionExecutor(actionModel.getClass())
-                .ifPresent(executor -> ((ActionExecutor<A>) executor).execute(actionModel));
+            .ifPresent(executor -> ((ActionExecutor<A>) executor).execute(actionModel));
     }
 }

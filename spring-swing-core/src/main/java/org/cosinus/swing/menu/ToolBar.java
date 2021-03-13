@@ -16,20 +16,20 @@
 
 package org.cosinus.swing.menu;
 
-import org.cosinus.swing.context.SwingApplicationContext;
-import org.cosinus.swing.context.SwingInject;
 import org.cosinus.swing.form.FormComponent;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 
+import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
+
 /**
  * Toolbar menu model
  */
-public class ToolBar extends JToolBar implements SwingInject, FormComponent {
+public class ToolBar extends JToolBar implements FormComponent {
 
     public ToolBar() {
-        injectSwingContext(SwingApplicationContext.instance);
+        injectContext(this);
     }
 
     @Override

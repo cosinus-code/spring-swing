@@ -19,7 +19,6 @@ package org.cosinus.swing.resource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.context.ApplicationProperties;
-import org.cosinus.swing.context.SpringSwingComponent;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -40,7 +39,6 @@ import static java.util.Optional.ofNullable;
 import static java.util.function.Predicate.not;
 import static org.apache.commons.io.IOUtils.toByteArray;
 
-@SpringSwingComponent
 public class ResourceResolver {
 
     private static final Logger LOG = LogManager.getLogger(ResourceResolver.class);
@@ -61,13 +59,13 @@ public class ResourceResolver {
 
     public Optional<byte[]> resolveAsBytes(ResourceLocator resourceLocator, String name) {
         return ofNullable(getResourcePath(resourceLocator, name))
-                .flatMap(this::resolveAsBytes);
+            .flatMap(this::resolveAsBytes);
     }
 
     public Optional<byte[]> resolveAsBytes(String resourcePath) {
         Optional<byte[]> bytes = ofNullable(resourcePath)
-                .flatMap(path -> resolveAsBytesFromFilesystem(path)
-                        .or(() -> resolveAsBytesFromClasspath(path)));
+            .flatMap(path -> resolveAsBytesFromFilesystem(path)
+                .or(() -> resolveAsBytesFromClasspath(path)));
         if (bytes.isEmpty()) {
             LOG.info("Resource not found: " + resourcePath);
         }
@@ -76,27 +74,27 @@ public class ResourceResolver {
 
     public Optional<byte[]> resolveAsBytesFromClasspath(String resourcePath) {
         return ofNullable(resourcePath)
-                .map(path -> path.startsWith("/") ? path : "/" + path)
-                .map(path -> {
-                    try (InputStream input = ResourceResolver.class.getResourceAsStream(path)) {
-                        return input != null ? toByteArray(input) : null;
-                    } catch (IOException ex) {
-                        return null;
-                    }
-                });
+            .map(path -> path.startsWith("/") ? path : "/" + path)
+            .map(path -> {
+                try (InputStream input = ResourceResolver.class.getResourceAsStream(path)) {
+                    return input != null ? toByteArray(input) : null;
+                } catch (IOException ex) {
+                    return null;
+                }
+            });
     }
 
     public Optional<byte[]> resolveAsBytesFromFilesystem(String resourcePath) {
         return getFilePath(resourcePath)
-                .flatMap(this::fileToBytes);
+            .flatMap(this::fileToBytes);
     }
 
     private Optional<Path> getFilePath(String resourceName) {
         String applicationHome = ofNullable(applicationProperties.getHome())
-                .orElseGet(() -> System.getProperty("user.dir"));
+            .orElseGet(() -> System.getProperty("user.dir"));
         return ofNullable(applicationHome)
-                .map(Paths::get)
-                .map(path -> path.resolve(resourceName));
+            .map(Paths::get)
+            .map(path -> path.resolve(resourceName));
     }
 
     public String getResourcePath(ResourceLocator resourceLocator, String name) {
@@ -105,20 +103,20 @@ public class ResourceResolver {
         }
 
         return ofNullable(resourceLocator)
-                .map(ResourceLocator::getLocation)
-                .filter(not(String::isEmpty))
-                .map(folder -> folder
-                        .concat("/")
-                        .concat(name))
-                .orElse(name);
+            .map(ResourceLocator::getLocation)
+            .filter(not(String::isEmpty))
+            .map(folder -> folder
+                .concat("/")
+                .concat(name))
+            .orElse(name);
     }
 
     public Stream<String> resolveResources(ResourceType type, String fileExtension) {
         return getFilePath(getResourceFolder(type))
-                .map(Path::toFile)
-                .filter(File::exists)
-                .map(parent -> findFiles(parent, fileExtension))
-                .orElseGet(() -> findResources(type, fileExtension));
+            .map(Path::toFile)
+            .filter(File::exists)
+            .map(parent -> findFiles(parent, fileExtension))
+            .orElseGet(() -> findResources(type, fileExtension));
     }
 
     private Stream<String> findResources(ResourceType type,
@@ -126,7 +124,7 @@ public class ResourceResolver {
         try {
             Resource[] resources = resourceLoader.getResources(getResourceFolder(type) + "**" + fileExtension);
             return Arrays.stream(resources)
-                    .map(Resource::getFilename);
+                .map(Resource::getFilename);
         } catch (IOException e) {
             return Stream.empty();
         }
@@ -134,25 +132,25 @@ public class ResourceResolver {
 
     private String getResourceFolder(ResourceType type) {
         return ofNullable(type)
-                .map(ResourceType::name)
-                .map(String::toLowerCase)
-                .map(folder -> folder.concat(File.separator))
-                .orElse("");
+            .map(ResourceType::name)
+            .map(String::toLowerCase)
+            .map(folder -> folder.concat(File.separator))
+            .orElse("");
     }
 
     private Stream<String> findFiles(File parent, String fileExtension) {
         return ofNullable(parent.listFiles((isDir, name) -> name.endsWith(fileExtension)))
-                .stream()
-                .flatMap(Arrays::stream)
-                .map(File::getName);
+            .stream()
+            .flatMap(Arrays::stream)
+            .map(File::getName);
     }
 
     private Optional<byte[]> fileToBytes(String path) {
         return ofNullable(path)
-                .map(File::new)
-                .filter(File::exists)
-                .map(File::toPath)
-                .flatMap(this::fileToBytes);
+            .map(File::new)
+            .filter(File::exists)
+            .map(File::toPath)
+            .flatMap(this::fileToBytes);
     }
 
     private Optional<byte[]> fileToBytes(Path filePath) {
@@ -178,8 +176,8 @@ public class ResourceResolver {
 
     public static Optional<File> resourceAsFile(String name) {
         return ofNullable(name)
-                .map(ResourceResolver.class.getClassLoader()::getResource)
-                .map(URL::getFile)
-                .map(File::new);
+            .map(ResourceResolver.class.getClassLoader()::getResource)
+            .map(URL::getFile)
+            .map(File::new);
     }
 }

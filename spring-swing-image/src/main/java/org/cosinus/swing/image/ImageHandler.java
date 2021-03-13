@@ -16,8 +16,6 @@
 
 package org.cosinus.swing.image;
 
-import org.cosinus.swing.context.SpringSwingComponent;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -34,7 +32,6 @@ import java.util.Optional;
 /**
  * Image handler
  */
-@SpringSwingComponent
 public class ImageHandler {
 
     public final Map<String, ImageIcon> previewCache = new HashMap<>();
@@ -86,10 +83,10 @@ public class ImageHandler {
 
     public Image applyFilter(Image image, ImageFilter filter) {
         return Optional.ofNullable(image)
-                .map(Image::getSource)
-                .map(imageSource -> new FilteredImageSource(imageSource, filter))
-                .map(imageSource -> Toolkit.getDefaultToolkit().createImage(imageSource))
-                .orElse(image);
+            .map(Image::getSource)
+            .map(imageSource -> new FilteredImageSource(imageSource, filter))
+            .map(imageSource -> Toolkit.getDefaultToolkit().createImage(imageSource))
+            .orElse(image);
     }
 
     public Image iconToImage(Icon icon) {

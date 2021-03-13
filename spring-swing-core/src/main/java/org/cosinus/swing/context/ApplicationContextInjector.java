@@ -16,17 +16,21 @@
 
 package org.cosinus.swing.context;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
-import static org.cosinus.swing.util.ReflectionUtils.setFieldsSafe;
+import static java.lang.String.format;
+import static java.util.Arrays.stream;
 
-public interface SwingInject {
+public class ApplicationContextInjector {
 
-    default void injectSwingContext(SwingApplicationContext swingContext) {
-        setFieldsSafe(this,
-                      SwingInject.class,
-                      Autowired.class,
-                      swingContext.getSwingComponents());
+    public static ApplicationContext applicationContext;
+
+    public ApplicationContextInjector(ApplicationContext applicationContext) {
+        ApplicationContextInjector.applicationContext = applicationContext;
+    }
+
+    public static void injectContext(Object object) {
+        applicationContext.getAutowireCapableBeanFactory().autowireBean(object);
     }
 
 }

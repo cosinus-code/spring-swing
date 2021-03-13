@@ -17,8 +17,6 @@
 package org.cosinus.swing.menu;
 
 import org.cosinus.swing.action.ActionProducer;
-import org.cosinus.swing.context.SwingApplicationContext;
-import org.cosinus.swing.context.SwingInject;
 import org.cosinus.swing.form.FormComponent;
 import org.cosinus.swing.translate.Translator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +24,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.swing.*;
 import java.awt.event.ActionListener;
 
+import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
+
 /**
  * Checkbox menu model
  */
-public class CheckBoxMenuItem extends JCheckBoxMenuItem implements SwingInject, FormComponent, ActionProducer {
+public class CheckBoxMenuItem extends JCheckBoxMenuItem implements FormComponent, ActionProducer {
 
     @Autowired
     protected Translator translator;
@@ -60,7 +60,7 @@ public class CheckBoxMenuItem extends JCheckBoxMenuItem implements SwingInject, 
                             boolean selected,
                             KeyStroke keyStroke) {
         super();
-        injectSwingContext(SwingApplicationContext.instance);
+        injectContext(this);
 
         this.key = key;
 

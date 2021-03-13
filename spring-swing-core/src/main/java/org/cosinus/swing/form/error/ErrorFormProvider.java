@@ -16,8 +16,6 @@
 
 package org.cosinus.swing.form.error;
 
-import org.cosinus.swing.context.SpringSwingComponent;
-import org.cosinus.swing.context.SwingApplicationContext;
 import org.cosinus.swing.form.Dialog;
 import org.cosinus.swing.form.Frame;
 
@@ -27,7 +25,6 @@ import java.util.Optional;
 /**
  * Error form provider
  */
-@SpringSwingComponent
 public class ErrorFormProvider {
 
     public Optional<ErrorForm> getErrorForm(Window parent) {

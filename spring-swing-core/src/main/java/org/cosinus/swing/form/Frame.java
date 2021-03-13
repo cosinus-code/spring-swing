@@ -17,9 +17,8 @@
 package org.cosinus.swing.form;
 
 import org.cosinus.swing.action.ActionController;
+import org.cosinus.swing.context.ApplicationContextInjector;
 import org.cosinus.swing.context.ApplicationProperties;
-import org.cosinus.swing.context.SwingApplicationContext;
-import org.cosinus.swing.context.SwingInject;
 import org.cosinus.swing.error.ErrorHandler;
 import org.cosinus.swing.menu.MenuBar;
 import org.cosinus.swing.menu.MenuProvider;
@@ -36,13 +35,14 @@ import java.awt.event.WindowEvent;
 import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
+import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 import static org.cosinus.swing.form.WindowSettings.DEFAULT_HEIGHT;
 import static org.cosinus.swing.form.WindowSettings.DEFAULT_WIDTH;
 
 /**
  * Abstract frame window with basic functionality
  */
-public class Frame extends JFrame implements Window, SwingInject, FormComponent {
+public class Frame extends JFrame implements Window, FormComponent {
 
     @Autowired
     protected ActionController<?> actionController;
@@ -72,23 +72,21 @@ public class Frame extends JFrame implements Window, SwingInject, FormComponent 
 
     private MenuBar menuBar;
 
-    protected Frame() {
-        ofNullable(SwingApplicationContext.instance)
-            .ifPresent(this::init);
+    public Frame() {
+        if (ApplicationContextInjector.applicationContext != null) {
+            init();
+        }
     }
 
-    protected Frame(WindowSettings frameSettings) {
+    public Frame(WindowSettings frameSettings) {
         this.frameSettings = frameSettings;
-        ofNullable(SwingApplicationContext.instance)
-            .ifPresent(this::init);
-    }
-
-    public void init(SwingApplicationContext swingContext) {
-        injectSwingContext(swingContext);
-        init();
+        if (ApplicationContextInjector.applicationContext != null) {
+            init();
+        }
     }
 
     public void init() {
+        injectContext(this);
         if (frameSettings == null) {
             frameSettings = new WindowSettings(
                 ofNullable(applicationProperties.getFrame().getName())

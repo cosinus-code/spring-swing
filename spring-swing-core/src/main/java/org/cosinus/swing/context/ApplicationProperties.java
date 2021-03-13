@@ -22,7 +22,6 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 /**
  * Application properties
  */
-@SpringSwingComponent
 @ConfigurationProperties(prefix = "swing.application")
 public class ApplicationProperties {
 

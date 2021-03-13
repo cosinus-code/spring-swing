@@ -18,7 +18,6 @@ package org.cosinus.swing.ui;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.cosinus.swing.context.SpringSwingComponent;
 import org.cosinus.swing.exec.ProcessExecutor;
 import org.cosinus.swing.translate.Translator;
 
@@ -35,17 +34,16 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.awt.Font.PLAIN;
+import static java.awt.Toolkit.getDefaultToolkit;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.META_DOWN_MASK;
 import static java.util.Arrays.stream;
 import static javax.swing.KeyStroke.getKeyStroke;
 import static org.apache.commons.lang3.SystemUtils.IS_OS_MAC;
-import static java.awt.Toolkit.getDefaultToolkit;
 
 /**
  * UIManager handler
  */
-@SpringSwingComponent
 public class ApplicationUIHandler {
 
     private static final Logger LOG = LogManager.getLogger(ApplicationUIHandler.class);
@@ -114,21 +112,21 @@ public class ApplicationUIHandler {
 
     public void setGeneralFont(Component... components) {
         Arrays.stream(components)
-                .forEach(component -> setGeneralFont(component,
-                                                     false));
+            .forEach(component -> setGeneralFont(component,
+                                                 false));
     }
 
     public void setGeneralFont(Component comp,
                                boolean normal) {
         Optional.ofNullable(getTextFont())
-                .map(f -> normal ? f.deriveFont(PLAIN) : f)
-                .ifPresent(comp::setFont);
+            .map(f -> normal ? f.deriveFont(PLAIN) : f)
+            .ifPresent(comp::setFont);
     }
 
     public Optional<Icon> getDefaultFileIcon(File file) {
         return Optional.ofNullable(UIManager.get(file.isDirectory() ? FOLDER_ICON_KEY : FILE_ICON_KEY))
-                .filter(icon -> Icon.class.isAssignableFrom(icon.getClass()))
-                .map(Icon.class::cast);
+            .filter(icon -> Icon.class.isAssignableFrom(icon.getClass()))
+            .map(Icon.class::cast);
     }
 
     public Optional<Icon> getDefaultIcon() {
@@ -162,16 +160,16 @@ public class ApplicationUIHandler {
     public Map<String, LookAndFeelInfo> getAvailableLookAndFeels() {
         if (lookAndFeelMap == null) {
             lookAndFeelMap = Arrays.stream(UIManager.getInstalledLookAndFeels())
-                    .collect(Collectors.toMap(LookAndFeelInfo::getName,
-                                              Function.identity()));
+                .collect(Collectors.toMap(LookAndFeelInfo::getName,
+                                          Function.identity()));
         }
         return lookAndFeelMap;
     }
 
     public boolean isDarkTheme() {
         return processExecutor.getOsTheme()
-                .map(theme -> theme.startsWith(OS_DARK_THEME))
-                .orElse(false);
+            .map(theme -> theme.startsWith(OS_DARK_THEME))
+            .orElse(false);
     }
 
     public boolean isLookAndFeelGTK() {
@@ -188,8 +186,8 @@ public class ApplicationUIHandler {
 
     public int controlDownKeyMask() {
         return IS_OS_MAC ?
-                META_DOWN_MASK :
-                getDefaultToolkit().getMenuShortcutKeyMaskEx();
+            META_DOWN_MASK :
+            getDefaultToolkit().getMenuShortcutKeyMaskEx();
     }
 
     public KeyStroke getControlDownKeyStroke(int keyCode) {
@@ -203,55 +201,55 @@ public class ApplicationUIHandler {
     public Map<String, String> getUILabelsMap() {
         if (labelsMap == null) {
             labelsMap = Stream.of(
-                    mapEntry("OptionPane.yesButtonText", "yes"),
-                    mapEntry("OptionPane.noButtonText", "no"),
-                    mapEntry("OptionPane.cancelButtonText", "cancel"),
-                    mapEntry("ColorChooser.okText", "ok"),
-                    mapEntry("ColorChooser.cancelText", "cancel"),
-                    mapEntry("ColorChooser.resetText", "reset"),
-                    mapEntry("ColorChooser.swatchesNameText", "colorchooser_swatchesName"),
-                    mapEntry("ColorChooser.swatchesRecentText", "colorchooser_swatchesRecentText"),
-                    mapEntry("ColorChooser.hsbNameText", "colorchooser_hsbName"),
-                    mapEntry("ColorChooser.rgbNameText", "colorchooser_rgbName"),
-                    mapEntry("ColorChooser.previewText", "colorchooser_previewName"),
-                    mapEntry("ColorChooser.rgbRedText", "colorchooser_rgbRedLabel"),
-                    mapEntry("ColorChooser.rgbGreenText", "colorchooser_rgbGreenLabel"),
-                    mapEntry("ColorChooser.rgbBlueText", "colorchooser_rgbBlueLabel"),
-                    mapEntry("ColorChooser.hsbRedText", "colorchooser_hsbRedText"),
-                    mapEntry("ColorChooser.hsbGreenText", "colorchooser_hsbGreenText"),
-                    mapEntry("ColorChooser.hsbBlueText", "colorchooser_hsbBlueText"),
-                    mapEntry("ColorChooser.hsbHueText", "colorchooser_hsbHueText"),
-                    mapEntry("ColorChooser.hsbSaturationText", "colorchooser_hsbSaturationText"),
-                    mapEntry("ColorChooser.hsbBrightnessText", "colorchooser_hsbBrightnessText"),
-                    mapEntry("ColorChooser.sampleText", "colorchooser_sampleText"),
-                    mapEntry("FileChooser.acceptAllFileFilterText", "filechooser_acceptAllFileFilterText"),
-                    mapEntry("FileChooser.cancelButtonText", "filechooser_cancelButtonText"),
-                    mapEntry("FileChooser.cancelButtonToolTipText", "filechooser_cancelButtonToolTipText"),
-                    mapEntry("FileChooser.detailsViewButtonAccessibleName", "filechooser_detailsViewButtonAccessibleName"),
-                    mapEntry("FileChooser.detailsViewButtonToolTipText", "filechooser_detailsViewButtonToolTipText"),
-                    mapEntry("FileChooser.directoryDescriptionText", "filechooser_directoryDescriptionText"),
-                    mapEntry("FileChooser.fileDescriptionText", "filechooser_fileDescriptionText"),
-                    mapEntry("FileChooser.fileNameLabelText", "filechooser_fileNameLabelText"),
-                    mapEntry("FileChooser.filesOfTypeLabelText", "filechooser_filesOfTypeLabelText"),
-                    mapEntry("FileChooser.helpButtonText", "filechooser_helpButtonText"),
-                    mapEntry("FileChooser.helpButtonToolTipText", "filechooser_helpButtonToolTipText"),
-                    mapEntry("FileChooser.homeFolderAccessibleName", "filechooser_homeFolderAccessibleName"),
-                    mapEntry("FileChooser.homeFolderToolTipText", "filechooser_homeFolderToolTipText"),
-                    mapEntry("FileChooser.listViewButtonAccessibleName", "filechooser_listViewButtonAccessibleName"),
-                    mapEntry("FileChooser.listViewButtonToolTipText", "filechooser_listViewButtonToolTipText"),
-                    mapEntry("FileChooser.lookInLabelText", "filechooser_lookInLabelText"),
-                    mapEntry("FileChooser.newFolderAccessibleName", "filechooser_newFolderAccessibleName"),
-                    mapEntry("FileChooser.newFolderErrorText", "filechooser_newFolderErrorText"),
-                    mapEntry("FileChooser.newFolderToolTipText", "filechooser_newFolderToolTipText"),
-                    mapEntry("FileChooser.openButtonText", "filechooser_openButtonText"),
-                    mapEntry("FileChooser.openButtonToolTipText", "filechooser_openButtonToolTipText"),
-                    mapEntry("FileChooser.saveButtonText", "filechooser_saveButtonText"),
-                    mapEntry("FileChooser.saveButtonToolTipText", "filechooser_saveButtonToolTipText"),
-                    mapEntry("FileChooser.updateButtonText", "filechooser_updateButtonText"),
-                    mapEntry("FileChooser.updateButtonToolTipText", "filechooser_updateButtonToolTipText"),
-                    mapEntry("FileChooser.upFolderAccessibleName", "filechooser_upFolderAccessibleName"),
-                    mapEntry("FileChooser.upFolderToolTipText", "filechooser_upFolderToolTipText"))
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                mapEntry("OptionPane.yesButtonText", "yes"),
+                mapEntry("OptionPane.noButtonText", "no"),
+                mapEntry("OptionPane.cancelButtonText", "cancel"),
+                mapEntry("ColorChooser.okText", "ok"),
+                mapEntry("ColorChooser.cancelText", "cancel"),
+                mapEntry("ColorChooser.resetText", "reset"),
+                mapEntry("ColorChooser.swatchesNameText", "colorchooser_swatchesName"),
+                mapEntry("ColorChooser.swatchesRecentText", "colorchooser_swatchesRecentText"),
+                mapEntry("ColorChooser.hsbNameText", "colorchooser_hsbName"),
+                mapEntry("ColorChooser.rgbNameText", "colorchooser_rgbName"),
+                mapEntry("ColorChooser.previewText", "colorchooser_previewName"),
+                mapEntry("ColorChooser.rgbRedText", "colorchooser_rgbRedLabel"),
+                mapEntry("ColorChooser.rgbGreenText", "colorchooser_rgbGreenLabel"),
+                mapEntry("ColorChooser.rgbBlueText", "colorchooser_rgbBlueLabel"),
+                mapEntry("ColorChooser.hsbRedText", "colorchooser_hsbRedText"),
+                mapEntry("ColorChooser.hsbGreenText", "colorchooser_hsbGreenText"),
+                mapEntry("ColorChooser.hsbBlueText", "colorchooser_hsbBlueText"),
+                mapEntry("ColorChooser.hsbHueText", "colorchooser_hsbHueText"),
+                mapEntry("ColorChooser.hsbSaturationText", "colorchooser_hsbSaturationText"),
+                mapEntry("ColorChooser.hsbBrightnessText", "colorchooser_hsbBrightnessText"),
+                mapEntry("ColorChooser.sampleText", "colorchooser_sampleText"),
+                mapEntry("FileChooser.acceptAllFileFilterText", "filechooser_acceptAllFileFilterText"),
+                mapEntry("FileChooser.cancelButtonText", "filechooser_cancelButtonText"),
+                mapEntry("FileChooser.cancelButtonToolTipText", "filechooser_cancelButtonToolTipText"),
+                mapEntry("FileChooser.detailsViewButtonAccessibleName", "filechooser_detailsViewButtonAccessibleName"),
+                mapEntry("FileChooser.detailsViewButtonToolTipText", "filechooser_detailsViewButtonToolTipText"),
+                mapEntry("FileChooser.directoryDescriptionText", "filechooser_directoryDescriptionText"),
+                mapEntry("FileChooser.fileDescriptionText", "filechooser_fileDescriptionText"),
+                mapEntry("FileChooser.fileNameLabelText", "filechooser_fileNameLabelText"),
+                mapEntry("FileChooser.filesOfTypeLabelText", "filechooser_filesOfTypeLabelText"),
+                mapEntry("FileChooser.helpButtonText", "filechooser_helpButtonText"),
+                mapEntry("FileChooser.helpButtonToolTipText", "filechooser_helpButtonToolTipText"),
+                mapEntry("FileChooser.homeFolderAccessibleName", "filechooser_homeFolderAccessibleName"),
+                mapEntry("FileChooser.homeFolderToolTipText", "filechooser_homeFolderToolTipText"),
+                mapEntry("FileChooser.listViewButtonAccessibleName", "filechooser_listViewButtonAccessibleName"),
+                mapEntry("FileChooser.listViewButtonToolTipText", "filechooser_listViewButtonToolTipText"),
+                mapEntry("FileChooser.lookInLabelText", "filechooser_lookInLabelText"),
+                mapEntry("FileChooser.newFolderAccessibleName", "filechooser_newFolderAccessibleName"),
+                mapEntry("FileChooser.newFolderErrorText", "filechooser_newFolderErrorText"),
+                mapEntry("FileChooser.newFolderToolTipText", "filechooser_newFolderToolTipText"),
+                mapEntry("FileChooser.openButtonText", "filechooser_openButtonText"),
+                mapEntry("FileChooser.openButtonToolTipText", "filechooser_openButtonToolTipText"),
+                mapEntry("FileChooser.saveButtonText", "filechooser_saveButtonText"),
+                mapEntry("FileChooser.saveButtonToolTipText", "filechooser_saveButtonToolTipText"),
+                mapEntry("FileChooser.updateButtonText", "filechooser_updateButtonText"),
+                mapEntry("FileChooser.updateButtonToolTipText", "filechooser_updateButtonToolTipText"),
+                mapEntry("FileChooser.upFolderAccessibleName", "filechooser_upFolderAccessibleName"),
+                mapEntry("FileChooser.upFolderToolTipText", "filechooser_upFolderToolTipText"))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         }
         return labelsMap;
     }
@@ -278,9 +276,9 @@ public class ApplicationUIHandler {
 
     public Rectangle getGraphicsDevicesBound() {
         return stream(GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices())
-                .map(GraphicsDevice::getDefaultConfiguration)
-                .map(GraphicsConfiguration::getBounds)
-                .reduce(new Rectangle(), this::add);
+            .map(GraphicsDevice::getDefaultConfiguration)
+            .map(GraphicsConfiguration::getBounds)
+            .reduce(new Rectangle(), this::add);
     }
 
     private Rectangle add(Rectangle r1, Rectangle r2) {

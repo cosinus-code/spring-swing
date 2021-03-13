@@ -27,9 +27,8 @@ import org.cosinus.swing.boot.condition.ConditionalOnMac;
 import org.cosinus.swing.boot.condition.ConditionalOnWindows;
 import org.cosinus.swing.boot.initialize.ApplicationFrameInitializer;
 import org.cosinus.swing.boot.initialize.ApplicationInitializer;
+import org.cosinus.swing.context.ApplicationContextInjector;
 import org.cosinus.swing.context.ApplicationProperties;
-import org.cosinus.swing.context.SwingApplicationContext;
-import org.cosinus.swing.context.SwingInjector;
 import org.cosinus.swing.dialog.DialogHandler;
 import org.cosinus.swing.error.ErrorHandler;
 import org.cosinus.swing.exec.*;
@@ -49,6 +48,7 @@ import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -188,13 +188,8 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public SwingApplicationContext swingApplicationContext() {
-        return new SwingApplicationContext();
-    }
-
-    @Bean
-    public SwingInjector swingInjector(SwingApplicationContext swingContext) {
-        return new SwingInjector(swingContext);
+    public ApplicationContextInjector swingInjector(ApplicationContext applicationContext) {
+        return new ApplicationContextInjector(applicationContext);
     }
 
     @Bean

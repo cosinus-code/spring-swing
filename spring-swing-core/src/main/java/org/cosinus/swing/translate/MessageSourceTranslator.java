@@ -19,7 +19,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.cosinus.swing.context.SpringSwingComponent;
 import org.cosinus.swing.preference.Preferences;
 import org.cosinus.swing.resource.ResourceResolver;
 import org.springframework.context.MessageSource;
@@ -35,7 +34,6 @@ import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.preference.Preferences.LANGUAGE;
 import static org.cosinus.swing.resource.ResourceType.I18N;
 
-@SpringSwingComponent
 public class MessageSourceTranslator implements Translator {
 
     private static final Logger LOG = LogManager.getLogger(MessageSourceTranslator.class);
@@ -59,8 +57,8 @@ public class MessageSourceTranslator implements Translator {
         this.baseName = baseName;
 
         Locale locale = preferences.getStringPreference(LANGUAGE)
-                .map(Locale::new)
-                .orElseGet(Locale::getDefault);
+            .map(Locale::new)
+            .orElseGet(Locale::getDefault);
         init(locale);
         getAvailableLocales();
     }
@@ -85,19 +83,19 @@ public class MessageSourceTranslator implements Translator {
     public Map<String, Locale> getAvailableLocales() {
         if (localesMap == null) {
             String fileBaseName = ofNullable(Paths.get(baseName).getFileName())
-                    .map(Object::toString)
-                    .orElse(baseName)
-                    .concat("_");
+                .map(Object::toString)
+                .orElse(baseName)
+                .concat("_");
 
             localesMap = resourceResolver.resolveResources(I18N, ".properties")
-                    .map(FilenameUtils::getBaseName)
-                    .filter(fileName -> fileName.startsWith(fileBaseName))
-                    .map(fileName -> fileName.substring(fileBaseName.length()))
-                    .map(this::toLocale)
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .collect(Collectors.toMap(Object::toString,
-                                              Function.identity()));
+                .map(FilenameUtils::getBaseName)
+                .filter(fileName -> fileName.startsWith(fileBaseName))
+                .map(fileName -> fileName.substring(fileBaseName.length()))
+                .map(this::toLocale)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toMap(Object::toString,
+                                          Function.identity()));
         }
 
         return localesMap;

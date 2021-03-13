@@ -16,7 +16,6 @@
 
 package org.cosinus.swing.menu;
 
-import org.cosinus.swing.context.SwingInject;
 import org.cosinus.swing.form.FormComponent;
 
 import javax.swing.*;
@@ -25,13 +24,12 @@ import java.awt.*;
 /**
  * Box menu model
  */
-public class BoxMenu implements SwingInject, FormComponent {
+public class BoxMenu implements FormComponent {
 
     public static final int BOX_MENU_SIZE = 10;
 
-    public static final Dimension BOX_MENU_DIMENSION =
-            new Dimension(BOX_MENU_SIZE,
-                          BOX_MENU_SIZE);
+    public static final Dimension BOX_MENU_DIMENSION = new Dimension(BOX_MENU_SIZE,
+                                                                     BOX_MENU_SIZE);
 
     private JMenuBar boxMenuBar;
 

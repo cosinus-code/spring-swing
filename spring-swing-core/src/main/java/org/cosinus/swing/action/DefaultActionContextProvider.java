@@ -16,12 +16,9 @@
 
 package org.cosinus.swing.action;
 
-import org.cosinus.swing.context.SpringSwingComponent;
-
 /**
  * The default ActionContextProvider
  */
-@SpringSwingComponent
 public class DefaultActionContextProvider implements ActionContextProvider<ActionContext> {
 
     @Override

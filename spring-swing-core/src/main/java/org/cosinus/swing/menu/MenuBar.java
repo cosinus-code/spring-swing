@@ -16,8 +16,6 @@
 
 package org.cosinus.swing.menu;
 
-import org.cosinus.swing.context.SwingApplicationContext;
-import org.cosinus.swing.context.SwingInject;
 import org.cosinus.swing.form.FormComponent;
 import org.cosinus.swing.translate.Translator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +24,12 @@ import javax.swing.*;
 import java.awt.event.ActionListener;
 
 import static java.util.Arrays.stream;
+import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
 /**
  * Menu bar model
  */
-public class MenuBar extends JMenuBar implements SwingInject, FormComponent {
+public class MenuBar extends JMenuBar implements FormComponent {
 
     private static final String SEPARATOR = "separator";
 
@@ -48,7 +47,7 @@ public class MenuBar extends JMenuBar implements SwingInject, FormComponent {
     public MenuBar(MenuModel mapModel,
                    boolean withBoxMenu,
                    ActionListener actionListener) {
-        injectSwingContext(SwingApplicationContext.instance);
+        injectContext(this);
 
         this.withBoxMenu = withBoxMenu;
         this.mapModel = mapModel;

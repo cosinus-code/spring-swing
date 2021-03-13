@@ -18,7 +18,6 @@ package org.cosinus.swing.dialog;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.cosinus.swing.context.SpringSwingComponent;
 import org.cosinus.swing.form.Dialog;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
@@ -46,7 +45,6 @@ import static org.cosinus.swing.ui.ApplicationUIHandler.OPTION_PANE_MESSAGE_DIAL
 /**
  * Handler for options panels
  */
-@SpringSwingComponent
 public class DialogHandler {
 
     private static final Logger LOG = LogManager.getLogger(DialogHandler.class);

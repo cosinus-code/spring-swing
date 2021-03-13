@@ -16,13 +16,11 @@
 
 package org.cosinus.swing.form;
 
-import org.cosinus.swing.context.SpringSwingComponent;
 import org.cosinus.swing.store.ApplicationStorage;
 
 /**
  * Implementation of {@link WindowSettingsHandler} based on local storage
  */
-@SpringSwingComponent
 public class DefaultWindowSettingsHandler implements WindowSettingsHandler {
 
     private static final String FRAME = "frame";
@@ -49,18 +47,18 @@ public class DefaultWindowSettingsHandler implements WindowSettingsHandler {
     public WindowSettings loadWindowSettings(WindowSettings defaultSettings) {
         String name = defaultSettings.getName();
         return defaultSettings
-                .setPosition(applicationStorage.getInt(key(name, KEY_X),
-                                                       defaultSettings.getX()),
-                             applicationStorage.getInt(key(name, KEY_Y),
-                                                       defaultSettings.getY()))
-                .setSize(applicationStorage.getInt(key(name, KEY_WIDTH),
-                                                   defaultSettings.getWidth()),
-                         applicationStorage.getInt(key(name, KEY_HEIGHT),
-                                                   defaultSettings.getHeight()))
-                .setCentered(applicationStorage.getBoolean(key(name, KEY_CENTERED),
-                                                           defaultSettings.isCentered()))
-                .setMaximized(applicationStorage.getBoolean(key(name, KEY_MAXIMIZED),
-                                                            defaultSettings.isMaximized()));
+            .setPosition(applicationStorage.getInt(key(name, KEY_X),
+                                                   defaultSettings.getX()),
+                         applicationStorage.getInt(key(name, KEY_Y),
+                                                   defaultSettings.getY()))
+            .setSize(applicationStorage.getInt(key(name, KEY_WIDTH),
+                                               defaultSettings.getWidth()),
+                     applicationStorage.getInt(key(name, KEY_HEIGHT),
+                                               defaultSettings.getHeight()))
+            .setCentered(applicationStorage.getBoolean(key(name, KEY_CENTERED),
+                                                       defaultSettings.isCentered()))
+            .setMaximized(applicationStorage.getBoolean(key(name, KEY_MAXIMIZED),
+                                                        defaultSettings.isMaximized()));
     }
 
     @Override

@@ -16,29 +16,22 @@
 
 package org.cosinus.swing.test.model;
 
-import org.cosinus.swing.context.SwingApplicationContext;
-import org.cosinus.swing.context.SwingInject;
 import org.cosinus.swing.store.ApplicationStorage;
-import org.cosinus.swing.test.boot.app.TestSpringSwingComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class TestSwingInjectObject implements SwingInject {
+import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
+
+public class TestSwingInjectObject {
 
     @Autowired
     private ApplicationStorage applicationStorage;
 
-    @Autowired
-    private TestSpringSwingComponent testSpringSwingComponent;
-
-    public TestSwingInjectObject(SwingApplicationContext swingContext) {
-        injectSwingContext(swingContext);
+    public TestSwingInjectObject() {
+        injectContext(this);
     }
 
     public ApplicationStorage getApplicationStorage() {
         return applicationStorage;
     }
 
-    public TestSpringSwingComponent getSpringSwingComponent() {
-        return testSpringSwingComponent;
-    }
 }

@@ -16,7 +16,6 @@
 
 package org.cosinus.swing.action;
 
-import org.cosinus.swing.context.SpringSwingComponent;
 import org.cosinus.swing.error.ActionNotFound;
 import org.cosinus.swing.error.ErrorHandler;
 
@@ -33,7 +32,6 @@ import java.util.stream.Collectors;
 /**
  * Controller for the swing actions
  */
-@SpringSwingComponent
 public class ActionController<C extends ActionContext> implements ActionListener {
 
     private final ErrorHandler errorHandler;
@@ -52,9 +50,9 @@ public class ActionController<C extends ActionContext> implements ActionListener
         this.keyMapHandler = keyMapHandler;
         this.actionContextProvider = actionContextProvider;
         this.actionMap = actions
-                .stream()
-                .collect(Collectors.toMap(ActionInContext::getId,
-                                          Function.identity()));
+            .stream()
+            .collect(Collectors.toMap(ActionInContext::getId,
+                                      Function.identity()));
 
     }
 
@@ -65,8 +63,8 @@ public class ActionController<C extends ActionContext> implements ActionListener
     public void runAction(String actionId, C context) {
         try {
             Optional.ofNullable(actionMap.get(actionId))
-                    .orElseThrow(() -> new ActionNotFound("Action not implemented (" + actionId + ")"))
-                    .run(context);
+                .orElseThrow(() -> new ActionNotFound("Action not implemented (" + actionId + ")"))
+                .run(context);
         } catch (Throwable throwable) {
             errorHandler.handleError(throwable);
         }
@@ -78,7 +76,7 @@ public class ActionController<C extends ActionContext> implements ActionListener
             KeyStroke keyStroke = KeyStroke.getKeyStroke(keyEvent.getKeyCode(),
                                                          keyEvent.getModifiersEx());
             keyMapHandler.findActionByKeyStroke(keyStroke)
-                    .ifPresent(action -> action.run(actionContextProvider.provideActionContext()));
+                .ifPresent(action -> action.run(actionContextProvider.provideActionContext()));
         } catch (Throwable throwable) {
             errorHandler.handleError(throwable);
         }

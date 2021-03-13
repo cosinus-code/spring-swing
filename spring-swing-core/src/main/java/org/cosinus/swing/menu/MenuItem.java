@@ -17,8 +17,6 @@
 package org.cosinus.swing.menu;
 
 import org.cosinus.swing.action.ActionProducer;
-import org.cosinus.swing.context.SwingApplicationContext;
-import org.cosinus.swing.context.SwingInject;
 import org.cosinus.swing.form.FormComponent;
 import org.cosinus.swing.translate.Translator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +24,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.swing.*;
 import java.awt.event.ActionListener;
 
+import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
+
 
 /**
  * Menu item model
  */
-public class MenuItem extends JMenuItem implements SwingInject, FormComponent, ActionProducer {
+public class MenuItem extends JMenuItem implements FormComponent, ActionProducer {
 
     @Autowired
     protected Translator translator;
@@ -48,7 +48,7 @@ public class MenuItem extends JMenuItem implements SwingInject, FormComponent, A
                     KeyStroke keyStroke,
                     boolean duplicate) {
         super();
-        injectSwingContext(SwingApplicationContext.instance);
+        injectContext(this);
 
         this.key = key;
         super.addActionListener(actionListener);

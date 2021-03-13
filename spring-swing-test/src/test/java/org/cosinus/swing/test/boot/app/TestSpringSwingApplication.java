@@ -27,12 +27,8 @@ public class TestSpringSwingApplication extends SwingApplicationFrame {
 
     private final TestSpringComponent testSpringComponent;
 
-    private final TestSpringSwingComponent testSpringSwingComponent;
-
-    public TestSpringSwingApplication(TestSpringComponent testSpringComponent,
-                                      TestSpringSwingComponent testSpringSwingComponent) {
+    public TestSpringSwingApplication(TestSpringComponent testSpringComponent) {
         this.testSpringComponent = testSpringComponent;
-        this.testSpringSwingComponent = testSpringSwingComponent;
     }
 
     @Override

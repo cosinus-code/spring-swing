@@ -22,19 +22,10 @@ import org.cosinus.swing.form.Frame;
 import org.cosinus.swing.form.WindowSettingsHandler;
 import org.cosinus.swing.menu.MenuProvider;
 import org.cosinus.swing.resource.ResourceResolver;
-import org.cosinus.swing.test.boot.app.TestSpringSwingComponent;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class TestFrame extends Frame {
-
-    @Autowired
-    private TestSpringSwingComponent springSwingComponent;
-
-    public TestSpringSwingComponent getSpringSwingComponent() {
-        return springSwingComponent;
-    }
 
     public ActionController getActionController() {
         return actionController;

@@ -16,8 +16,6 @@
 
 package org.cosinus.swing.menu;
 
-import org.cosinus.swing.context.SwingApplicationContext;
-import org.cosinus.swing.context.SwingInject;
 import org.cosinus.swing.form.FormComponent;
 import org.cosinus.swing.translate.Translator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +24,13 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
+
 /**
  * Menu list model
  */
 @SuppressWarnings("serial")
-public class Menu extends JMenu implements SwingInject, FormComponent {
+public class Menu extends JMenu implements FormComponent {
 
     @Autowired
     protected Translator translator;
@@ -47,7 +47,7 @@ public class Menu extends JMenu implements SwingInject, FormComponent {
     public Menu(String key,
                 boolean duplicate) {
         super();
-        injectSwingContext(SwingApplicationContext.instance);
+        injectContext(this);
 
         this.key = key;
         this.formComponents = new ArrayList<>();

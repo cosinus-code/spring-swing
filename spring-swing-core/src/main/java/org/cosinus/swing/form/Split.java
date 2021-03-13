@@ -16,8 +16,6 @@
 
 package org.cosinus.swing.form;
 
-import org.cosinus.swing.context.SwingApplicationContext;
-import org.cosinus.swing.context.SwingInject;
 import org.cosinus.swing.store.ApplicationStorage;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
@@ -33,11 +31,12 @@ import java.util.Arrays;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
+import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
 /**
  * Custom splitter
  */
-public class Split extends JSplitPane implements SwingInject, FormComponent {
+public class Split extends JSplitPane implements FormComponent {
 
     private static final Logger LOG = LoggerFactory.getLogger(Split.class);
 
@@ -66,9 +65,9 @@ public class Split extends JSplitPane implements SwingInject, FormComponent {
 
     public Split(String splitName,
                  int defaultDividerLocation) {
+        injectContext(this);
         this.splitName = splitName;
         this.defaultDividerLocation = defaultDividerLocation;
-        injectSwingContext(SwingApplicationContext.instance);
     }
 
     public void initComponent() {

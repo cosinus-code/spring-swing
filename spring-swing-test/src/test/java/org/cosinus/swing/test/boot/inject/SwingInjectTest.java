@@ -16,14 +16,11 @@
 
 package org.cosinus.swing.test.boot.inject;
 
-import org.cosinus.swing.context.SwingApplicationContext;
 import org.cosinus.swing.form.Frame;
 import org.cosinus.swing.test.boot.SpringSwingBootTest;
-import org.cosinus.swing.test.boot.app.TestSpringSwingApplication;
 import org.cosinus.swing.test.model.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.assertNotNull;
@@ -32,22 +29,17 @@ import static org.junit.Assert.assertNotNull;
 @SpringSwingBootTest(classes = TestSwingInjectApplication.class)
 public class SwingInjectTest {
 
-    @Autowired
-    private SwingApplicationContext swingContext;
-
     @Test
     public void testSwingInject() {
-        TestSwingInjectObject swingInject = new TestSwingInjectObject(swingContext);
+        TestSwingInjectObject swingInject = new TestSwingInjectObject();
 
         assertNotNull(swingInject.getApplicationStorage());
-        assertNotNull(swingInject.getSpringSwingComponent());
     }
 
     @Test
     public void testSwingInjectIntoFrame() {
         TestFrame frame = new TestFrame();
 
-        assertNotNull(frame.getSpringSwingComponent());
         assertNotNull(frame.getActionController());
         assertNotNull(frame.getTranslator());
         assertNotNull(frame.getErrorHandler());
@@ -63,7 +55,6 @@ public class SwingInjectTest {
         TestDialog dialog = new TestDialog(frame);
 
         assertNotNull(dialog.errorHandler);
-        assertNotNull(dialog.springSwingComponent);
     }
 
     @Test
@@ -71,7 +62,6 @@ public class SwingInjectTest {
         TestPanel panel = new TestPanel();
 
         assertNotNull(panel.getApplicationStorage());
-        assertNotNull(panel.getSpringSwingComponent());
     }
 
     @Test
@@ -79,7 +69,6 @@ public class SwingInjectTest {
         TestTable table = new TestTable();
 
         assertNotNull(table.applicationStorage);
-        assertNotNull(table.springSwingComponent);
     }
 
     @Test
@@ -87,7 +76,6 @@ public class SwingInjectTest {
         TestTableModel tableModel = new TestTableModel();
 
         assertNotNull(tableModel.applicationStorage);
-        assertNotNull(tableModel.springSwingComponent);
     }
 
     @Test
@@ -104,7 +92,6 @@ public class SwingInjectTest {
         TestComponent component = new TestComponent();
 
         assertNotNull(component.getApplicationStorage());
-        assertNotNull(component.getSpringSwingComponent());
     }
 
     @Test
@@ -112,6 +99,5 @@ public class SwingInjectTest {
         TestSwingWorker component = new TestSwingWorker();
 
         assertNotNull(component.errorHandler);
-        assertNotNull(component.springSwingComponent);
     }
 }

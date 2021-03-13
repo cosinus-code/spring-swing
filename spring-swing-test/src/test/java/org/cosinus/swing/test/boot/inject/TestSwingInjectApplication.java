@@ -19,7 +19,6 @@ package org.cosinus.swing.test.boot.inject;
 import org.cosinus.swing.boot.SpringSwingBootApplication;
 import org.cosinus.swing.boot.SwingApplicationFrame;
 import org.cosinus.swing.test.boot.app.TestSpringComponent;
-import org.cosinus.swing.test.boot.app.TestSpringSwingComponent;
 
 /**
  * Example application
@@ -29,12 +28,8 @@ public class TestSwingInjectApplication extends SwingApplicationFrame {
 
     private final TestSpringComponent testSpringComponent;
 
-    private final TestSpringSwingComponent testSpringSwingComponent;
-
-    public TestSwingInjectApplication(TestSpringComponent testSpringComponent,
-                                      TestSpringSwingComponent testSpringSwingComponent) {
+    public TestSwingInjectApplication(TestSpringComponent testSpringComponent) {
         this.testSpringComponent = testSpringComponent;
-        this.testSpringSwingComponent = testSpringSwingComponent;
     }
 
     @Override

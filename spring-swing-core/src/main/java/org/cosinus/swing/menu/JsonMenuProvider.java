@@ -17,7 +17,6 @@
 package org.cosinus.swing.menu;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.cosinus.swing.context.SpringSwingComponent;
 import org.cosinus.swing.convert.JsonFileConverter;
 import org.cosinus.swing.resource.ResourceResolver;
 import org.cosinus.swing.resource.ResourceType;
@@ -27,7 +26,6 @@ import java.util.Optional;
 /**
  * Menu provider from json file
  */
-@SpringSwingComponent
 public class JsonMenuProvider extends JsonFileConverter<MenuModel> implements MenuProvider {
 
     public JsonMenuProvider(ObjectMapper objectMapper,

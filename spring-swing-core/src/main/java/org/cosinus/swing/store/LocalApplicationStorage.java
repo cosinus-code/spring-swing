@@ -16,15 +16,12 @@
 
 package org.cosinus.swing.store;
 
-import org.cosinus.swing.context.SpringSwingComponent;
-
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 /**
  * Implementation of {@link ApplicationStorage} using local preferences
  */
-@SpringSwingComponent
 public class LocalApplicationStorage implements ApplicationStorage {
 
     private final Preferences userPreferences;

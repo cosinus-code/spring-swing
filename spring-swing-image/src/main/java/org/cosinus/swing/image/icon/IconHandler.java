@@ -16,7 +16,6 @@
 
 package org.cosinus.swing.image.icon;
 
-import org.cosinus.swing.context.SpringSwingComponent;
 import org.cosinus.swing.image.ImageHandler;
 import org.cosinus.swing.resource.ResourceResolver;
 import org.cosinus.swing.ui.ApplicationUIHandler;
@@ -33,7 +32,6 @@ import static org.cosinus.swing.image.ImageHandler.GRAY_FILTER;
 /**
  * Icons handler
  */
-@SpringSwingComponent
 public class IconHandler {
 
     private static final String SPRING_SWING_ICONS_CACHE_NAME = "spring.swing.icons";

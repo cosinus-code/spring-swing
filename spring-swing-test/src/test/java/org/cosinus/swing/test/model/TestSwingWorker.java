@@ -17,7 +17,6 @@
 package org.cosinus.swing.test.model;
 
 import org.cosinus.swing.error.ErrorHandler;
-import org.cosinus.swing.test.boot.app.TestSpringSwingComponent;
 import org.cosinus.swing.worker.SwingWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,9 +24,6 @@ public class TestSwingWorker extends SwingWorker<String, String> {
 
     @Autowired
     public ErrorHandler errorHandler;
-
-    @Autowired
-    public TestSpringSwingComponent springSwingComponent;
 
     @Override
     protected String doInBackground() {

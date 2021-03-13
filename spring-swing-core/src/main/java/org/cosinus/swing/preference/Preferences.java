@@ -18,7 +18,6 @@ package org.cosinus.swing.preference;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.cosinus.swing.context.SpringSwingComponent;
 
 import java.awt.*;
 import java.io.File;
@@ -29,7 +28,6 @@ import java.util.Optional;
 /**
  * Application preferences
  */
-@SpringSwingComponent
 public class Preferences {
 
     private static final Logger LOG = LogManager.getLogger(Preferences.class);
@@ -57,38 +55,38 @@ public class Preferences {
 
     public Optional<Color> getColorPreference(String key) {
         return getPreference(key)
-                .map(Object::toString)
-                .map(value -> value.split(","))
-                .map(values -> new Color(Integer.parseInt(values[0]),
-                                         Integer.parseInt(values[1]),
-                                         Integer.parseInt(values[2])));
+            .map(Object::toString)
+            .map(value -> value.split(","))
+            .map(values -> new Color(Integer.parseInt(values[0]),
+                                     Integer.parseInt(values[1]),
+                                     Integer.parseInt(values[2])));
     }
 
     public Optional<Font> getFontPreference(String key) {
         return getPreference(key)
-                .map(Object::toString)
-                .map(value -> value.split(","))
-                .map(values -> new Font(values[0],
-                                        Integer.parseInt(values[1]),
-                                        Integer.parseInt(values[2])));
+            .map(Object::toString)
+            .map(value -> value.split(","))
+            .map(values -> new Font(values[0],
+                                    Integer.parseInt(values[1]),
+                                    Integer.parseInt(values[2])));
     }
 
     public Optional<File> getFilePreference(String key) {
         return getPreference(key)
-                .map(Object::toString)
-                .map(File::new);
+            .map(Object::toString)
+            .map(File::new);
     }
 
     public Optional<Boolean> getBooleanPreference(String key) {
         return getPreference(key)
-                .filter(Boolean.class::isInstance)
-                .map(Boolean.class::cast);
+            .filter(Boolean.class::isInstance)
+            .map(Boolean.class::cast);
     }
 
     public Optional<Integer> getIntPreference(String key) {
         return getPreference(key)
-                .filter(Integer.class::isInstance)
-                .map(Integer.class::cast);
+            .filter(Integer.class::isInstance)
+            .map(Integer.class::cast);
     }
 
     public Color colorPreference(String key) {

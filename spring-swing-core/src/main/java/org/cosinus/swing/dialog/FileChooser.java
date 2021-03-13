@@ -16,8 +16,6 @@
 
 package org.cosinus.swing.dialog;
 
-import org.cosinus.swing.context.SwingApplicationContext;
-import org.cosinus.swing.context.SwingInject;
 import org.cosinus.swing.store.ApplicationStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,8 +24,9 @@ import java.io.File;
 import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
+import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
-public class FileChooser extends JFileChooser implements SwingInject {
+public class FileChooser extends JFileChooser {
 
     private static final String FILE_CHOOSER = "file-chooser";
 
@@ -39,7 +38,7 @@ public class FileChooser extends JFileChooser implements SwingInject {
     }
 
     public FileChooser(File file) {
-        injectSwingContext(SwingApplicationContext.instance);
+        injectContext(this);
         File currentFile = ofNullable(file)
             .orElseGet(() -> getLatestFilePath()
                 .map(File::new)

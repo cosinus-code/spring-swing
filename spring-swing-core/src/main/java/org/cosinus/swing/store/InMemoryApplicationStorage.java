@@ -16,13 +16,10 @@
 
 package org.cosinus.swing.store;
 
-import org.cosinus.swing.context.SpringSwingComponent;
-
 import java.util.HashMap;
 
 import static java.util.Optional.ofNullable;
 
-@SpringSwingComponent
 public class InMemoryApplicationStorage extends HashMap<String, String> implements ApplicationStorage {
 
     @Override

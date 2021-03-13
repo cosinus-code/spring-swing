@@ -16,28 +16,27 @@
 
 package org.cosinus.swing.form;
 
-import org.cosinus.swing.context.SwingApplicationContext;
-import org.cosinus.swing.context.SwingInject;
-
 import javax.swing.*;
 import java.util.Optional;
+
+import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
 /**
  * Abstract dialog window with basic functionality
  */
-public abstract class Dialog<T> extends JDialog implements Window, SwingInject, FormComponent {
+public abstract class Dialog<T> extends JDialog implements Window, FormComponent {
 
     private boolean cancelled;
 
     public Dialog(Frame frame, String title, boolean modal) {
         super(frame, title, modal);
-        injectSwingContext(SwingApplicationContext.instance);
+        injectContext(this);
         init();
     }
 
     public Dialog(Dialog dialog, String title, boolean modal) {
         super(dialog, title, modal);
-        injectSwingContext(SwingApplicationContext.instance);
+        injectContext(this);
         init();
     }
 
@@ -48,8 +47,8 @@ public abstract class Dialog<T> extends JDialog implements Window, SwingInject, 
 
     public Optional<T> response() {
         return isCancelled() ?
-                Optional.empty() :
-                Optional.ofNullable(getDialogResponse());
+            Optional.empty() :
+            Optional.ofNullable(getDialogResponse());
     }
 
     protected T getDialogResponse() {

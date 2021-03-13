@@ -3,32 +3,28 @@ Spring Swing is a framework designed for building Spring-powered Swing applicati
 
 # Description
 
-It allows you to start a Swing application in full Spring context. Moreover, it allows injection of Swing beans into Swing components created during application run.
-
-A separate Swing context exists along with the Spring context. This swing context contains all beans annotated with `@SpringSwingComponent`.
-Theses Swing beans annotated with `@SpringSwingComponent` can be injected with `@Autowired` in any object (not necessary a bean), by implementing `SwingInject` interface, and calling `injectSwingContext(SwingApplicationContext.instance)`:
+It allows you to start a Swing application in full Spring context. 
+It also allows injection of Swing beans into Swing components created during application run:
 
 ```java
-import org.cosinus.swing.context.SwingApplicationContext;
-import org.cosinus.swing.context.SwingInject;
 import org.cosinus.swing.store.ApplicationStorage;
 
-public class SwingApplicationContextAware implements SwingInject {
+import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
+
+public class SwingObject {
 
     @Autowired
     public ApplicationStorage applicationStorage;
 
 	public SwingApplicationContextAware() {
-		injectSwingContext(SwingApplicationContext.instance);
+        injectContext(this);
 	}
 }
 ```
 
-There are already Swing object rewritten to implement SwingInject interface, such that the Swing components can be injected like any component:
+There are already Swing object rewritten to auto-inject the Spring context:
 
 ```java
-import org.cosinus.swing.context.SwingApplicationContext;
-import org.cosinus.swing.context.SwingInject;
 import org.cosinus.swing.form.Panel;
 import org.cosinus.swing.store.ApplicationStorage;
 
@@ -309,7 +305,7 @@ and use `maven-resources-plugin` to copy all resources to the output folder:
     </plugins>
   </build>
 ```
-Now simple start the application by running the bash file from the output folder:
+Now simply start the application by running the bash file from the output folder:
 ```shell_session
 $ ./spring-swing-example.sh
 ```

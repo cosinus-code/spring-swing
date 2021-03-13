@@ -17,17 +17,11 @@
 package org.cosinus.swing.test.boot.inject;
 
 import org.cosinus.swing.test.boot.app.TestSpringComponent;
-import org.cosinus.swing.test.boot.app.TestSpringSwingComponent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SwingInjectTestConfiguration {
-
-    @Bean
-    public TestSpringSwingComponent testSpringSwingComponent() {
-        return new TestSpringSwingComponent();
-    }
 
     @Bean
     public TestSpringComponent testSpringComponent() {

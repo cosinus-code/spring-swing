@@ -18,7 +18,6 @@ package org.cosinus.swing.test.model;
 
 import org.cosinus.swing.form.Panel;
 import org.cosinus.swing.store.ApplicationStorage;
-import org.cosinus.swing.test.boot.app.TestSpringSwingComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class TestPanel extends Panel {
@@ -26,14 +25,7 @@ public class TestPanel extends Panel {
     @Autowired
     private ApplicationStorage applicationStorage;
 
-    @Autowired
-    private TestSpringSwingComponent testSpringSwingComponent;
-
     public ApplicationStorage getApplicationStorage() {
         return applicationStorage;
-    }
-
-    public TestSpringSwingComponent getSpringSwingComponent() {
-        return testSpringSwingComponent;
     }
 }

@@ -16,8 +16,6 @@
 
 package org.cosinus.swing.boot;
 
-import org.cosinus.swing.context.SpringSwingComponent;
-import org.cosinus.swing.context.SwingApplicationContext;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -53,10 +51,6 @@ public class SpringSwingApplication extends SpringApplication {
 
     @Override
     protected void afterRefresh(ConfigurableApplicationContext context, ApplicationArguments args) {
-        SwingApplicationContext.instance = context.getBean(SwingApplicationContext.class)
-            .setSwingComponents(context.getBeansWithAnnotation(SpringSwingComponent.class));
-
-
         invokeLater(() -> startApplicationFrame(context));
     }
 

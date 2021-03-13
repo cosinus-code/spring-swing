@@ -16,19 +16,17 @@
 
 package org.cosinus.swing.worker;
 
-import org.cosinus.swing.context.SwingApplicationContext;
-import org.cosinus.swing.context.SwingInject;
-
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
 import static java.util.Optional.ofNullable;
+import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
-public abstract class SwingWorker<T, V> extends javax.swing.SwingWorker<T, V> implements SwingInject {
+public abstract class SwingWorker<T, V> extends javax.swing.SwingWorker<T, V> {
 
     public SwingWorker() {
-        injectSwingContext(SwingApplicationContext.instance);
+        injectContext(this);
     }
 
     public Optional<T> getResult() throws ExecutionException, InterruptedException {
