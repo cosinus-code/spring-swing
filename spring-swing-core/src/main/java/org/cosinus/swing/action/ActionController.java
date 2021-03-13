@@ -19,7 +19,6 @@ package org.cosinus.swing.action;
 import org.cosinus.swing.context.SpringSwingComponent;
 import org.cosinus.swing.error.ActionNotFound;
 import org.cosinus.swing.error.ErrorHandler;
-import org.cosinus.swing.form.menu.ActionProducer;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

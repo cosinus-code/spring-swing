@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.form.menu;
+package org.cosinus.swing.menu;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

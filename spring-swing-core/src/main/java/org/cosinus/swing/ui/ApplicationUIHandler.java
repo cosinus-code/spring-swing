@@ -50,13 +50,19 @@ public class ApplicationUIHandler {
 
     private static final Logger LOG = LogManager.getLogger(ApplicationUIHandler.class);
 
-    private static final String FOLDER_ICON_KEY = "FileView.directoryIcon";
+    public static final String OPTION_PANE_MESSAGE_DIALOG_TITLE = "OptionPane.messageDialogTitle";
 
-    private static final String FILE_ICON_KEY = "FileView.fileIcon";
+    public static final String OPTION_PANE_INPUT_DIALOG_TITLE = "OptionPane.inputDialogTitle";
 
-    private static final String TEXT_FONT_KEY = "TextField.font";
+    public static final String OPTION_PANE_ERROR_ICON = "OptionPane.errorIcon";
 
-    private static final String LABEL_FONT_KEY = "Label.font";
+    public static final String FOLDER_ICON_KEY = "FileView.directoryIcon";
+
+    public static final String FILE_ICON_KEY = "FileView.fileIcon";
+
+    public static final String TEXT_FONT_KEY = "TextField.font";
+
+    public static final String LABEL_FONT_KEY = "Label.font";
 
     public static final String OS_LIGHT_THEME = "Light";
 

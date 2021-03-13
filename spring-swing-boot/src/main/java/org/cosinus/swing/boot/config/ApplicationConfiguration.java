@@ -36,8 +36,8 @@ import org.cosinus.swing.exec.*;
 import org.cosinus.swing.form.DefaultWindowSettingsHandler;
 import org.cosinus.swing.form.WindowSettingsHandler;
 import org.cosinus.swing.form.error.ErrorFormProvider;
-import org.cosinus.swing.form.menu.JsonMenuProvider;
-import org.cosinus.swing.form.menu.MenuProvider;
+import org.cosinus.swing.menu.JsonMenuProvider;
+import org.cosinus.swing.menu.MenuProvider;
 import org.cosinus.swing.preference.JsonPreferencesProvider;
 import org.cosinus.swing.preference.Preferences;
 import org.cosinus.swing.preference.PreferencesProvider;
@@ -117,14 +117,10 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public DialogHandler dialogHandler(SwingApplicationContext swingContext,
-                                       Translator translator,
-                                       ApplicationUIHandler uiHandler,
-                                       ApplicationStorage localStorage) {
-        return new DialogHandler(swingContext,
-                                 translator,
-                                 uiHandler,
-                                 localStorage);
+    public DialogHandler dialogHandler(Translator translator,
+                                       ApplicationUIHandler uiHandler) {
+        return new DialogHandler(translator,
+                                 uiHandler);
     }
 
     @Bean

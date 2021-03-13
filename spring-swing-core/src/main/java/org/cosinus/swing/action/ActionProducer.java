@@ -14,31 +14,12 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.form.menu;
-
-import java.util.Optional;
+package org.cosinus.swing.action;
 
 /**
- * Interface for a menu provider
+ * Item that produce an action. It is bound to the action by the action key;
  */
-public interface MenuProvider {
+public interface ActionProducer {
 
-    /**
-     * Provide a menu model
-     *
-     * @param name the menu name to provide
-     * @return the menu model
-     */
-    Optional<MenuModel> getMenu(String name);
-
-    /**
-     * Check if the menu should have a box containing a shadow of the menu bar.
-     * This allow to replace the menu bar with a small starting box.
-     *
-     * @return true if it has box menu
-     */
-    default boolean hasBoxMenu() {
-        return false;
-    }
-
+    String getActionKey();
 }

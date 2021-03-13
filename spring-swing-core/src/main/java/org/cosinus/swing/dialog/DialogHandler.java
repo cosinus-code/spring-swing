@@ -19,9 +19,7 @@ package org.cosinus.swing.dialog;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.context.SpringSwingComponent;
-import org.cosinus.swing.context.SwingApplicationContext;
 import org.cosinus.swing.form.Dialog;
-import org.cosinus.swing.store.ApplicationStorage;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 
@@ -34,13 +32,16 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.RunnableFuture;
 import java.util.function.Supplier;
-import java.util.stream.IntStream;
 
+import static java.util.Optional.ofNullable;
+import static java.util.stream.IntStream.range;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
 import static javax.swing.JFileChooser.DIRECTORIES_ONLY;
 import static javax.swing.JOptionPane.*;
 import static org.cosinus.swing.dialog.DialogOption.retryWithIgnore;
 import static org.cosinus.swing.dialog.DialogOption.retryWithSkip;
+import static org.cosinus.swing.ui.ApplicationUIHandler.OPTION_PANE_INPUT_DIALOG_TITLE;
+import static org.cosinus.swing.ui.ApplicationUIHandler.OPTION_PANE_MESSAGE_DIALOG_TITLE;
 
 /**
  * Handler for options panels
@@ -50,30 +51,18 @@ public class DialogHandler {
 
     private static final Logger LOG = LogManager.getLogger(DialogHandler.class);
 
-    private static final String MESSAGE_DIALOG_TITLE = "OptionPane.messageDialogTitle";
+    private static final String ERROR = "error";
 
-    private static final String INPUT_DIALOG_TITLE = "OptionPane.inputDialogTitle";
-
-    private static final String TITLE_TEXT = "OptionPane.titleText";
-
-    private static final String FILE_CHOOSER = "file-chooser";
-
-    private final SwingApplicationContext swingContext;
+    private static final String SELECT = "select";
 
     private final Translator translator;
 
     private final ApplicationUIHandler uiHandler;
 
-    private final ApplicationStorage applicationStorage;
-
-    public DialogHandler(SwingApplicationContext swingContext,
-                         Translator translator,
-                         ApplicationUIHandler uiHandler,
-                         ApplicationStorage applicationStorage) {
-        this.swingContext = swingContext;
+    public DialogHandler(Translator translator,
+                         ApplicationUIHandler uiHandler) {
         this.translator = translator;
         this.uiHandler = uiHandler;
-        this.applicationStorage = applicationStorage;
     }
 
     public <T> Dialog<T> showDialog(Supplier<Dialog<T>> dialogInitiator) {
@@ -108,11 +97,11 @@ public class DialogHandler {
 
     public DialogOption retryDialog(Window parentWindow, String message, DialogOption[] options) {
         return showCustomOptionDialog(parentWindow,
-                                      "Error",
+                                      translator.translate(ERROR),
                                       message,
                                       DEFAULT_OPTION,
                                       INFORMATION_MESSAGE,
-                                      UIManager.getIcon("OptionPane.errorIcon"),
+                                      uiHandler.getIcon("OptionPane.errorIcon"),
                                       1,
                                       0,
                                       options);
@@ -157,18 +146,18 @@ public class DialogHandler {
     public Optional<String> showInputDialog(Component parentComponent, Object message) {
         return showInputDialog(parentComponent,
                                message,
-                               uiHandler.getString(INPUT_DIALOG_TITLE),
+                               uiHandler.getString(OPTION_PANE_INPUT_DIALOG_TITLE),
                                QUESTION_MESSAGE);
     }
 
     public Optional<String> showInputDialog(Component parentComponent, Object message, String title, int messageType) {
-        return Optional.ofNullable(showInputDialog(parentComponent,
-                                                   message,
-                                                   title,
-                                                   messageType,
-                                                   null,
-                                                   null,
-                                                   null))
+        return ofNullable(showInputDialog(parentComponent,
+                                          message,
+                                          title,
+                                          messageType,
+                                          null,
+                                          null,
+                                          null))
             .map(Object::toString);
     }
 
@@ -197,7 +186,7 @@ public class DialogHandler {
     public void showMessageDialog(Component parentComponent, Object message) {
         showMessageDialog(parentComponent,
                           message,
-                          uiHandler.getString(MESSAGE_DIALOG_TITLE),
+                          uiHandler.getString(OPTION_PANE_MESSAGE_DIALOG_TITLE),
                           INFORMATION_MESSAGE);
     }
 
@@ -265,7 +254,7 @@ public class DialogHandler {
                 CLOSED_OPTION;
         }
 
-        return IntStream.range(0, options.length)
+        return range(0, options.length)
             .filter(i -> options[i].equals(selectedValue))
             .findFirst()
             .orElse(CLOSED_OPTION);
@@ -280,7 +269,7 @@ public class DialogHandler {
                                         int rows,
                                         int width,
                                         T[] options) {
-        String[] translatedOptions = Optional.ofNullable(options)
+        String[] translatedOptions = ofNullable(options)
             .stream()
             .flatMap(Arrays::stream)
             .map(Object::toString)
@@ -303,15 +292,14 @@ public class DialogHandler {
 
         try {
             String selectedValue = show.get().toString();
-            return options != null ?
-                IntStream.range(0, options.length)
+            return ofNullable(options)
+                .flatMap(opt -> range(0, options.length)
                     .filter(i -> translatedOptions[i].equals(selectedValue))
                     .mapToObj(i -> options[i])
-                    .findFirst()
-                    .orElse(null) :
-                null;
+                    .findFirst())
+                .orElse(null);
         } catch (InterruptedException | ExecutionException ex) {
-            LOG.error("Error occurred during showing dialog", ex);
+            LOG.error("Error occurred during showing custom option dialog", ex);
             return null;
         }
     }
@@ -329,54 +317,41 @@ public class DialogHandler {
     }
 
     public File chooseFile(Window parent, boolean folderOnly, JTextField textField, File fileStart) {
-        File file = Optional.ofNullable(textField)
+        File file = ofNullable(textField)
             .map(JTextField::getText)
             .map(File::new)
             .filter(File::exists)
-            .orElseGet(() -> Optional.ofNullable(fileStart)
+            .orElseGet(() -> ofNullable(fileStart)
                 .filter(File::exists)
-                .orElse(getCurrentFile()));
+                .orElse(null));
 
-        JFileChooser choose = new JFileChooser(file);
+        FileChooser choose = new FileChooser(file);
         if (folderOnly) {
             choose.setFileSelectionMode(DIRECTORIES_ONLY);
         }
-        if (choose.showDialog(parent, "Select") != APPROVE_OPTION) {
+        if (choose.showDialog(parent, translator.translate(SELECT)) != APPROVE_OPTION) {
             return null;
         }
 
-        File currentFile = saveCurrentFile(choose.getSelectedFile());
+        File currentFile = choose.getSelectedFile();
         if (textField != null) {
             textField.setText(currentFile.getPath());
         }
         return currentFile;
     }
 
-    public File getFileToSave(Window parent) {
-        JFileChooser choose = new JFileChooser(getCurrentFile());
+    public File chooseFileToSave(Window parent) {
+        FileChooser choose = new FileChooser();
         if (choose.showSaveDialog(parent) != APPROVE_OPTION) {
             return null;
         }
 
-        File currentFile = saveCurrentFile(choose.getSelectedFile());
-        if (currentFile == null || !currentFile.exists()) {
-            return currentFile;
-        }
-        String confirmationMessage = translator.translate("file_already_exists", currentFile.getName());
-        if (!confirm(parent, confirmationMessage)) {
+        File currentFile = choose.getSelectedFile();
+        if (currentFile != null &&
+            !currentFile.exists() &&
+            !confirm(parent, translator.translate("file_already_exists", currentFile.getName()))) {
             return null;
         }
-        return currentFile;
-    }
-
-    public File getCurrentFile() {
-        return new File(Optional.ofNullable(applicationStorage.getString(FILE_CHOOSER))
-                            .orElse(System.getProperty("user.home")));
-    }
-
-    public File saveCurrentFile(File currentFile) {
-        Optional.ofNullable(currentFile)
-            .ifPresent(file -> applicationStorage.saveString(FILE_CHOOSER, file.getAbsolutePath()));
         return currentFile;
     }
 }

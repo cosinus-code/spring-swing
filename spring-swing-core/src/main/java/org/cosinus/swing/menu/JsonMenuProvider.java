@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.form.menu;
+package org.cosinus.swing.menu;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.cosinus.swing.context.SpringSwingComponent;

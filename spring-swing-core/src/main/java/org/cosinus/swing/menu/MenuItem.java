@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.form.menu;
+package org.cosinus.swing.menu;
 
+import org.cosinus.swing.action.ActionProducer;
 import org.cosinus.swing.context.SwingApplicationContext;
 import org.cosinus.swing.context.SwingInject;
 import org.cosinus.swing.form.FormComponent;

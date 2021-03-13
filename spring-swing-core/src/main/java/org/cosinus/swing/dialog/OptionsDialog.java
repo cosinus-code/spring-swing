@@ -22,7 +22,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.Optional;
+
+import static java.util.Optional.ofNullable;
+import static java.util.stream.IntStream.range;
+import static javax.swing.BorderFactory.createEmptyBorder;
 
 /**
  * Custom Dialog with options to choose
@@ -89,75 +92,69 @@ public class OptionsDialog extends JOptionPane {
 
         final int n = panButtons.getComponentCount();
         final int cols = n / rows;
-        for (int i = 0; i < n; i++) {
-            if (!(panButtons.getComponent(i) instanceof JButton)) {
-                continue;
-            }
-            final JButton button = (JButton) panButtons.getComponent(i);
-            final int index = i;
-            button.addKeyListener(new KeyAdapter() {
-                @Override
-                public void keyPressed(KeyEvent e) {
-                    int new_index;
-                    if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-                        button.transferFocusBackward();
-                    } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                        button.transferFocus();
-                    } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                        dialog.dispose();
-                    } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                        button.doClick();
-                    } else if (e.getKeyCode() == KeyEvent.VK_UP) {
-                        if (index == 0) {
-                            new_index = n - 1;
-                        } else {
-                            new_index = index - rows;
-                            if (new_index < 0) {
-                                new_index = n + new_index - 1;
-                            }
-                        }
-                        panButtons.getComponent(new_index).requestFocusInWindow();
-                    } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                        if (index == n - 1) {
-                            new_index = 0;
-                        } else {
-                            new_index = index + rows;
-                            if (new_index >= n) {
-                                new_index = new_index - n + 1;
-                            }
-                        }
-                        panButtons.getComponent(new_index).requestFocusInWindow();
-                    }
-                }
-            });
-        }
 
-        panButtons.setLayout(rows > 1 ?
-                                     new GridLayout(rows,
-                                                    cols,
-                                                    5,
-                                                    5) :
-                                     new FlowLayout());
-        panButtons.setBorder(BorderFactory.createEmptyBorder(0,
-                                                             5,
-                                                             0,
-                                                             5));
+        range(0, n)
+            .filter(index -> panButtons.getComponent(index) instanceof JButton)
+            .forEach(index -> {
+                final JButton button = (JButton) panButtons.getComponent(index);
+                button.addKeyListener(new KeyAdapter() {
+                    @Override
+                    public void keyPressed(KeyEvent e) {
+                        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                            button.transferFocusBackward();
+                        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                            button.transferFocus();
+                        } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                            dialog.dispose();
+                        } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                            button.doClick();
+                        } else if (e.getKeyCode() == KeyEvent.VK_UP) {
+                            int new_index;
+                            if (index == 0) {
+                                new_index = n - 1;
+                            } else {
+                                new_index = index - rows;
+                                if (new_index < 0) {
+                                    new_index = n + new_index - 1;
+                                }
+                            }
+                            panButtons.getComponent(new_index).requestFocusInWindow();
+                        } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                            int new_index;
+                            if (index == n - 1) {
+                                new_index = 0;
+                            } else {
+                                new_index = index + rows;
+                                if (new_index >= n) {
+                                    new_index = new_index - n + 1;
+                                }
+                            }
+                            panButtons.getComponent(new_index).requestFocusInWindow();
+                        }
+                    }
+                });
+            });
+
+        panButtons.setLayout(
+            rows > 1 ?
+                new GridLayout(rows, cols, 5, 5) :
+                new FlowLayout());
+        panButtons.setBorder(createEmptyBorder(0, 5, 0, 5));
 
         dialog.setResizable(true);
         dialog.pack();
         if (width > 0) {
-            dialog.setSize(width,
-                           dialog.getHeight());
+            dialog.setSize(width, dialog.getHeight());
         }
         dialog.setLocationRelativeTo(parentComponent);
         dialog.setVisible(true);
-        //dialog.dispose();
         return getValue();
     }
 
     public void setComponentOrientation(Component parentComponent) {
-        setComponentOrientation(Optional.ofNullable(parentComponent)
-                                        .orElseGet(JOptionPane::getRootFrame)
-                                        .getComponentOrientation());
+        setComponentOrientation(
+            ofNullable(parentComponent)
+                .orElseGet(JOptionPane::getRootFrame)
+                .getComponentOrientation());
     }
 }

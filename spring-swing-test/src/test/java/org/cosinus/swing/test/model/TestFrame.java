@@ -20,7 +20,7 @@ import org.cosinus.swing.action.ActionController;
 import org.cosinus.swing.error.ErrorHandler;
 import org.cosinus.swing.form.Frame;
 import org.cosinus.swing.form.WindowSettingsHandler;
-import org.cosinus.swing.form.menu.MenuProvider;
+import org.cosinus.swing.menu.MenuProvider;
 import org.cosinus.swing.resource.ResourceResolver;
 import org.cosinus.swing.test.boot.app.TestSpringSwingComponent;
 import org.cosinus.swing.translate.Translator;
