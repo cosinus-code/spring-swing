@@ -19,7 +19,7 @@ package org.cosinus.swing.error;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.dialog.OptionsDialog;
-import org.cosinus.swing.form.error.ErrorFormProvider;
+import org.cosinus.swing.form.error.DefaultErrorFormProvider;
 import org.cosinus.swing.translate.Translator;
 
 import javax.swing.*;
@@ -34,10 +34,10 @@ public class ErrorHandler {
 
     private final Translator translator;
 
-    private final ErrorFormProvider errorFormProvider;
+    private final DefaultErrorFormProvider errorFormProvider;
 
     public ErrorHandler(Translator translator,
-                        ErrorFormProvider errorFormProvider) {
+                        DefaultErrorFormProvider errorFormProvider) {
         this.translator = translator;
         this.errorFormProvider = errorFormProvider;
     }
@@ -45,8 +45,9 @@ public class ErrorHandler {
     public void handleError(Window parent,
                             Throwable throwable) {
         LOG.error(throwable.getMessage(), throwable);
-        errorFormProvider.getErrorForm(parent)
-            .ifPresent(errorForm -> errorForm.showError(throwable));
+        errorFormProvider
+            .getErrorForm(parent)
+            .showError(throwable);
     }
 
     public void handleError(Component component,
@@ -66,8 +67,14 @@ public class ErrorHandler {
     }
 
     public void handleError(Throwable throwable) {
-        LOG.error(throwable.getMessage(), throwable);
         handleError(null,
                     throwable);
     }
+
+    public void handleSevereError(Throwable throwable) {
+        //TODO
+        handleError(null,
+                    throwable);
+    }
+
 }

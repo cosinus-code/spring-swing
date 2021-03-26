@@ -22,6 +22,7 @@ import org.cosinus.swing.resource.ResourceResolver;
 import org.cosinus.swing.resource.ResourceType;
 
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Menu provider from json file
@@ -29,8 +30,8 @@ import java.util.Optional;
 public class JsonMenuProvider extends JsonFileConverter<MenuModel> implements MenuProvider {
 
     public JsonMenuProvider(ObjectMapper objectMapper,
-                            ResourceResolver resourceResolver) {
-        super(objectMapper, MenuModel.class, resourceResolver);
+                            Set<ResourceResolver> resourceResolvers) {
+        super(objectMapper, MenuModel.class, resourceResolvers);
     }
 
     @Override

@@ -23,6 +23,7 @@ import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+import static java.awt.event.KeyEvent.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.IntStream.range;
 import static javax.swing.BorderFactory.createEmptyBorder;
@@ -90,46 +91,27 @@ public class OptionsDialog extends JOptionPane {
                                             title);
         final JPanel panButtons = (JPanel) getComponent(getComponentCount() - 1);
 
-        final int n = panButtons.getComponentCount();
-        final int cols = n / rows;
+        final int cols = panButtons.getComponentCount() / rows;
 
-        range(0, n)
+        range(0, panButtons.getComponentCount())
             .filter(index -> panButtons.getComponent(index) instanceof JButton)
             .forEach(index -> {
                 final JButton button = (JButton) panButtons.getComponent(index);
                 button.addKeyListener(new KeyAdapter() {
                     @Override
                     public void keyPressed(KeyEvent e) {
-                        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                        if (e.getKeyCode() == VK_LEFT) {
                             button.transferFocusBackward();
-                        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                        } else if (e.getKeyCode() == VK_RIGHT) {
                             button.transferFocus();
-                        } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                        } else if (e.getKeyCode() == VK_ESCAPE) {
                             dialog.dispose();
-                        } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                        } else if (e.getKeyCode() == VK_ENTER) {
                             button.doClick();
-                        } else if (e.getKeyCode() == KeyEvent.VK_UP) {
-                            int new_index;
-                            if (index == 0) {
-                                new_index = n - 1;
-                            } else {
-                                new_index = index - rows;
-                                if (new_index < 0) {
-                                    new_index = n + new_index - 1;
-                                }
-                            }
-                            panButtons.getComponent(new_index).requestFocusInWindow();
-                        } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                            int new_index;
-                            if (index == n - 1) {
-                                new_index = 0;
-                            } else {
-                                new_index = index + rows;
-                                if (new_index >= n) {
-                                    new_index = new_index - n + 1;
-                                }
-                            }
-                            panButtons.getComponent(new_index).requestFocusInWindow();
+                        } else if (e.getKeyCode() == VK_UP) {
+                            getButtonUpFromIndex(index, panButtons).requestFocusInWindow();
+                        } else if (e.getKeyCode() == VK_DOWN) {
+                            getButtonDownFromIndex(index, panButtons).requestFocusInWindow();
                         }
                     }
                 });
@@ -149,6 +131,33 @@ public class OptionsDialog extends JOptionPane {
         dialog.setLocationRelativeTo(parentComponent);
         dialog.setVisible(true);
         return getValue();
+    }
+
+    private Component getButtonUpFromIndex(int index, JPanel panButtons) {
+        int new_index;
+        if (index == 0) {
+            new_index = panButtons.getComponentCount() - 1;
+        } else {
+            new_index = index - rows;
+            if (new_index < 0) {
+                new_index = panButtons.getComponentCount() + new_index - 1;
+            }
+        }
+        return panButtons.getComponent(new_index);
+    }
+
+    private Component getButtonDownFromIndex(int index, JPanel panButtons) {
+        int new_index;
+        if (index == panButtons.getComponentCount() - 1) {
+            new_index = 0;
+        } else {
+            new_index = index + rows;
+            if (new_index >= panButtons.getComponentCount()) {
+                new_index = new_index - panButtons.getComponentCount() + 1;
+            }
+        }
+
+        return panButtons.getComponent(new_index);
     }
 
     public void setComponentOrientation(Component parentComponent) {

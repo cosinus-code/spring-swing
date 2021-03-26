@@ -77,19 +77,21 @@ public class Split extends JSplitPane implements FormComponent {
     }
 
     protected void initListeners() {
-        addPropertyChangeListener(new BasicSplitPaneDivider((BasicSplitPaneUI) getUI()) {
-            public void propertyChange(PropertyChangeEvent event) {
-                try {
-                    if (event.getPropertyName().equals(SPLIT_PROPERTY_NAME) && !isDividerLocationLoading) {
-                        applicationStorage.saveInt(applicationStorage.key(SPLIT, splitName),
-                                                   Integer.parseInt(event.getNewValue().toString()));
+        if (getUI() instanceof BasicSplitPaneUI) {
+            addPropertyChangeListener(new BasicSplitPaneDivider((BasicSplitPaneUI) getUI()) {
+                public void propertyChange(PropertyChangeEvent event) {
+                    try {
+                        if (event.getPropertyName().equals(SPLIT_PROPERTY_NAME) && !isDividerLocationLoading) {
+                            applicationStorage.saveInt(applicationStorage.key(SPLIT, splitName),
+                                                       Integer.parseInt(event.getNewValue().toString()));
+                        }
+                        super.propertyChange(event);
+                    } catch (Exception ex) {
+                        LOG.error("Cannot save divider location", ex);
                     }
-                    super.propertyChange(event);
-                } catch (Exception ex) {
-                    LOG.error("Cannot save divider location", ex);
                 }
-            }
-        });
+            });
+        }
     }
 
     protected void initDivider() {

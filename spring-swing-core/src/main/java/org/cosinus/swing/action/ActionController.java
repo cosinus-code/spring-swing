@@ -16,7 +16,7 @@
 
 package org.cosinus.swing.action;
 
-import org.cosinus.swing.error.ActionNotFound;
+import org.cosinus.swing.error.ActionNotFoundException;
 import org.cosinus.swing.error.ErrorHandler;
 
 import javax.swing.*;
@@ -63,7 +63,7 @@ public class ActionController<C extends ActionContext> implements ActionListener
     public void runAction(String actionId, C context) {
         try {
             Optional.ofNullable(actionMap.get(actionId))
-                .orElseThrow(() -> new ActionNotFound("Action not implemented (" + actionId + ")"))
+                .orElseThrow(() -> new ActionNotFoundException("Action not implemented (" + actionId + ")"))
                 .run(context);
         } catch (Throwable throwable) {
             errorHandler.handleError(throwable);

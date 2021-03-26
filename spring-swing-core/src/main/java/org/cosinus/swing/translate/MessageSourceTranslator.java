@@ -20,7 +20,7 @@ import org.apache.commons.lang3.LocaleUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.preference.Preferences;
-import org.cosinus.swing.resource.ResourceResolver;
+import org.cosinus.swing.resource.DefaultResourceResolver;
 import org.springframework.context.MessageSource;
 
 import java.nio.file.Paths;
@@ -31,7 +31,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.util.Optional.ofNullable;
-import static org.cosinus.swing.preference.Preferences.LANGUAGE;
 import static org.cosinus.swing.resource.ResourceType.I18N;
 
 public class MessageSourceTranslator implements Translator {
@@ -40,7 +39,7 @@ public class MessageSourceTranslator implements Translator {
 
     private final MessageSource messageSource;
 
-    private final ResourceResolver resourceResolver;
+    private final DefaultResourceResolver resourceResolver;
 
     private final String baseName;
 
@@ -50,17 +49,11 @@ public class MessageSourceTranslator implements Translator {
 
     public MessageSourceTranslator(MessageSource messageSource,
                                    Preferences preferences,
-                                   ResourceResolver resourceResolver,
+                                   DefaultResourceResolver resourceResolver,
                                    String baseName) {
         this.messageSource = messageSource;
         this.resourceResolver = resourceResolver;
         this.baseName = baseName;
-
-        Locale locale = preferences.getStringPreference(LANGUAGE)
-            .map(Locale::new)
-            .orElseGet(Locale::getDefault);
-        init(locale);
-        getAvailableLocales();
     }
 
     @Override

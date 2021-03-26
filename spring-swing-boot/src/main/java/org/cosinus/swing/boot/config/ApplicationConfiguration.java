@@ -34,12 +34,17 @@ import org.cosinus.swing.error.ErrorHandler;
 import org.cosinus.swing.exec.*;
 import org.cosinus.swing.form.DefaultWindowSettingsHandler;
 import org.cosinus.swing.form.WindowSettingsHandler;
-import org.cosinus.swing.form.error.ErrorFormProvider;
+import org.cosinus.swing.form.error.DefaultErrorFormProvider;
 import org.cosinus.swing.menu.JsonMenuProvider;
 import org.cosinus.swing.menu.MenuProvider;
 import org.cosinus.swing.preference.JsonPreferencesProvider;
 import org.cosinus.swing.preference.Preferences;
 import org.cosinus.swing.preference.PreferencesProvider;
+import org.cosinus.swing.preference.dialog.DefaultPreferencesDialogProvider;
+import org.cosinus.swing.preference.dialog.PreferencesDialogProvider;
+import org.cosinus.swing.resource.ClasspathResourceResolver;
+import org.cosinus.swing.resource.DefaultResourceResolver;
+import org.cosinus.swing.resource.FilesystemResourceResolver;
 import org.cosinus.swing.resource.ResourceResolver;
 import org.cosinus.swing.store.ApplicationStorage;
 import org.cosinus.swing.store.LocalApplicationStorage;
@@ -76,26 +81,35 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean
-    public ResourceResolver resourceResolver(ResourcePatternResolver resourceLoader,
-                                             ApplicationProperties applicationProperties) {
-        return new ResourceResolver(resourceLoader,
-                                    applicationProperties);
+    public FilesystemResourceResolver filesystemResourceResolver(ApplicationProperties applicationProperties) {
+        return new FilesystemResourceResolver(applicationProperties);
+    }
+
+    @Bean
+    public ClasspathResourceResolver classpathResourceResolver(ResourcePatternResolver resourceLoader) {
+        return new ClasspathResourceResolver(resourceLoader);
+    }
+
+    @Bean
+    public DefaultResourceResolver defaultResourceResolver(FilesystemResourceResolver filesystemResourceResolver,
+                                                           ClasspathResourceResolver classpathResourceResolver) {
+        return new DefaultResourceResolver(filesystemResourceResolver,
+                                           classpathResourceResolver);
     }
 
     @Bean
     @ConditionalOnMissingBean
     public MenuProvider menuProvider(ObjectMapper objectMapper,
-                                     ResourceResolver resourceResolver) {
-        return new JsonMenuProvider(objectMapper, resourceResolver);
+                                     Set<ResourceResolver> resourceResolvers) {
+        return new JsonMenuProvider(objectMapper, resourceResolvers);
     }
 
     @Bean
     @ConditionalOnMissingBean
     public PreferencesProvider preferencesProvider(ObjectMapper objectMapper,
-                                                   ResourceResolver resourceResolver) {
+                                                   Set<ResourceResolver> resourceResolvers) {
         return new JsonPreferencesProvider(objectMapper,
-                                           resourceResolver);
+                                           resourceResolvers);
     }
 
     @Bean
@@ -118,21 +132,29 @@ public class ApplicationConfiguration {
 
     @Bean
     public DialogHandler dialogHandler(Translator translator,
-                                       ApplicationUIHandler uiHandler) {
+                                       ApplicationUIHandler uiHandler,
+                                       PreferencesDialogProvider preferencesDialogProvider) {
         return new DialogHandler(translator,
-                                 uiHandler);
+                                 uiHandler,
+                                 preferencesDialogProvider);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ErrorFormProvider errorFormProvider() {
-        return new ErrorFormProvider();
+    public DefaultErrorFormProvider errorFormProvider() {
+        return new DefaultErrorFormProvider();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public PreferencesDialogProvider preferencesDialogProvider(Translator translator) {
+        return new DefaultPreferencesDialogProvider(translator);
     }
 
     @Bean
     @ConditionalOnMissingBean
     public ErrorHandler errorHandler(Translator translator,
-                                     ErrorFormProvider errorFormProvider) {
+                                     DefaultErrorFormProvider errorFormProvider) {
         return new ErrorHandler(translator,
                                 errorFormProvider);
     }
@@ -220,7 +242,7 @@ public class ApplicationConfiguration {
     @ConditionalOnMissingBean
     public Translator translator(MessageSource messageSource,
                                  Preferences preferences,
-                                 ResourceResolver resourceResolver,
+                                 DefaultResourceResolver resourceResolver,
                                  @Value("${swing.messages.basename:i18n/messages}") String baseName) {
         return new MessageSourceTranslator(messageSource, preferences, resourceResolver, baseName);
     }

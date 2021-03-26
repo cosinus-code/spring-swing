@@ -21,7 +21,7 @@ import org.cosinus.swing.error.ErrorHandler;
 import org.cosinus.swing.form.Frame;
 import org.cosinus.swing.form.WindowSettingsHandler;
 import org.cosinus.swing.menu.MenuProvider;
-import org.cosinus.swing.resource.ResourceResolver;
+import org.cosinus.swing.resource.DefaultResourceResolver;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 
@@ -39,7 +39,7 @@ public class TestFrame extends Frame {
         return errorHandler;
     }
 
-    public ResourceResolver getResourceResolver() {
+    public DefaultResourceResolver getResourceResolver() {
         return resourceResolver;
     }
 

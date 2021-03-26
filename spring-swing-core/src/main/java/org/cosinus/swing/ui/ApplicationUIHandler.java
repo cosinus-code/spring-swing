@@ -23,12 +23,13 @@ import org.cosinus.swing.translate.Translator;
 
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.io.File;
 import java.util.AbstractMap;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -38,6 +39,7 @@ import static java.awt.Toolkit.getDefaultToolkit;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.META_DOWN_MASK;
 import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toSet;
 import static javax.swing.KeyStroke.getKeyStroke;
 import static org.apache.commons.lang3.SystemUtils.IS_OS_MAC;
 
@@ -68,7 +70,7 @@ public class ApplicationUIHandler {
 
     private Map<String, LookAndFeelInfo> lookAndFeelMap;
 
-    private Map<String, String> labelsMap;
+    private Set<String> uiTranslationKeys;
 
     private final Translator translator;
 
@@ -81,16 +83,16 @@ public class ApplicationUIHandler {
     }
 
     public void translateDefaultUILabels() {
-        getUILabelsMap().forEach(this::translateDefaultUILabels);
+        getTranslationKeys().forEach(this::translateDefaultUILabels);
     }
 
-    public void translateDefaultUILabels(String key,
-                                         String value) {
+    public void translateDefaultUILabels(String key) {
         try {
-            String translation = translator.translate(value);
-            if (!translation.equals(value)) {
-                UIManager.put(key,
-                              translation);
+            String translation = translator.translate(key);
+            if (!key.equals(translation)) {
+                UIManager.getDefaults().put(key, translation);
+            } else {
+                UIManager.getDefaults().remove(key);
             }
         } catch (Exception ex) {
             LOG.error("Failed to translate ui key: " + key,
@@ -111,7 +113,7 @@ public class ApplicationUIHandler {
     }
 
     public void setGeneralFont(Component... components) {
-        Arrays.stream(components)
+        stream(components)
             .forEach(component -> setGeneralFont(component,
                                                  false));
     }
@@ -159,7 +161,7 @@ public class ApplicationUIHandler {
 
     public Map<String, LookAndFeelInfo> getAvailableLookAndFeels() {
         if (lookAndFeelMap == null) {
-            lookAndFeelMap = Arrays.stream(UIManager.getInstalledLookAndFeels())
+            lookAndFeelMap = stream(UIManager.getInstalledLookAndFeels())
                 .collect(Collectors.toMap(LookAndFeelInfo::getName,
                                           Function.identity()));
         }
@@ -198,60 +200,60 @@ public class ApplicationUIHandler {
         return getKeyStroke(keyCode, ALT_DOWN_MASK);
     }
 
-    public Map<String, String> getUILabelsMap() {
-        if (labelsMap == null) {
-            labelsMap = Stream.of(
-                mapEntry("OptionPane.yesButtonText", "yes"),
-                mapEntry("OptionPane.noButtonText", "no"),
-                mapEntry("OptionPane.cancelButtonText", "cancel"),
-                mapEntry("ColorChooser.okText", "ok"),
-                mapEntry("ColorChooser.cancelText", "cancel"),
-                mapEntry("ColorChooser.resetText", "reset"),
-                mapEntry("ColorChooser.swatchesNameText", "colorchooser_swatchesName"),
-                mapEntry("ColorChooser.swatchesRecentText", "colorchooser_swatchesRecentText"),
-                mapEntry("ColorChooser.hsbNameText", "colorchooser_hsbName"),
-                mapEntry("ColorChooser.rgbNameText", "colorchooser_rgbName"),
-                mapEntry("ColorChooser.previewText", "colorchooser_previewName"),
-                mapEntry("ColorChooser.rgbRedText", "colorchooser_rgbRedLabel"),
-                mapEntry("ColorChooser.rgbGreenText", "colorchooser_rgbGreenLabel"),
-                mapEntry("ColorChooser.rgbBlueText", "colorchooser_rgbBlueLabel"),
-                mapEntry("ColorChooser.hsbRedText", "colorchooser_hsbRedText"),
-                mapEntry("ColorChooser.hsbGreenText", "colorchooser_hsbGreenText"),
-                mapEntry("ColorChooser.hsbBlueText", "colorchooser_hsbBlueText"),
-                mapEntry("ColorChooser.hsbHueText", "colorchooser_hsbHueText"),
-                mapEntry("ColorChooser.hsbSaturationText", "colorchooser_hsbSaturationText"),
-                mapEntry("ColorChooser.hsbBrightnessText", "colorchooser_hsbBrightnessText"),
-                mapEntry("ColorChooser.sampleText", "colorchooser_sampleText"),
-                mapEntry("FileChooser.acceptAllFileFilterText", "filechooser_acceptAllFileFilterText"),
-                mapEntry("FileChooser.cancelButtonText", "filechooser_cancelButtonText"),
-                mapEntry("FileChooser.cancelButtonToolTipText", "filechooser_cancelButtonToolTipText"),
-                mapEntry("FileChooser.detailsViewButtonAccessibleName", "filechooser_detailsViewButtonAccessibleName"),
-                mapEntry("FileChooser.detailsViewButtonToolTipText", "filechooser_detailsViewButtonToolTipText"),
-                mapEntry("FileChooser.directoryDescriptionText", "filechooser_directoryDescriptionText"),
-                mapEntry("FileChooser.fileDescriptionText", "filechooser_fileDescriptionText"),
-                mapEntry("FileChooser.fileNameLabelText", "filechooser_fileNameLabelText"),
-                mapEntry("FileChooser.filesOfTypeLabelText", "filechooser_filesOfTypeLabelText"),
-                mapEntry("FileChooser.helpButtonText", "filechooser_helpButtonText"),
-                mapEntry("FileChooser.helpButtonToolTipText", "filechooser_helpButtonToolTipText"),
-                mapEntry("FileChooser.homeFolderAccessibleName", "filechooser_homeFolderAccessibleName"),
-                mapEntry("FileChooser.homeFolderToolTipText", "filechooser_homeFolderToolTipText"),
-                mapEntry("FileChooser.listViewButtonAccessibleName", "filechooser_listViewButtonAccessibleName"),
-                mapEntry("FileChooser.listViewButtonToolTipText", "filechooser_listViewButtonToolTipText"),
-                mapEntry("FileChooser.lookInLabelText", "filechooser_lookInLabelText"),
-                mapEntry("FileChooser.newFolderAccessibleName", "filechooser_newFolderAccessibleName"),
-                mapEntry("FileChooser.newFolderErrorText", "filechooser_newFolderErrorText"),
-                mapEntry("FileChooser.newFolderToolTipText", "filechooser_newFolderToolTipText"),
-                mapEntry("FileChooser.openButtonText", "filechooser_openButtonText"),
-                mapEntry("FileChooser.openButtonToolTipText", "filechooser_openButtonToolTipText"),
-                mapEntry("FileChooser.saveButtonText", "filechooser_saveButtonText"),
-                mapEntry("FileChooser.saveButtonToolTipText", "filechooser_saveButtonToolTipText"),
-                mapEntry("FileChooser.updateButtonText", "filechooser_updateButtonText"),
-                mapEntry("FileChooser.updateButtonToolTipText", "filechooser_updateButtonToolTipText"),
-                mapEntry("FileChooser.upFolderAccessibleName", "filechooser_upFolderAccessibleName"),
-                mapEntry("FileChooser.upFolderToolTipText", "filechooser_upFolderToolTipText"))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    public Set<String> getTranslationKeys() {
+        if (uiTranslationKeys == null) {
+            uiTranslationKeys = Stream.of(
+                "OptionPane.yesButtonText",
+                "OptionPane.noButtonText",
+                "OptionPane.cancelButtonText",
+                "ColorChooser.okText",
+                "ColorChooser.cancelText",
+                "ColorChooser.resetText",
+                "ColorChooser.swatchesNameText",
+                "ColorChooser.swatchesRecentText",
+                "ColorChooser.hsbNameText",
+                "ColorChooser.rgbNameText",
+                "ColorChooser.previewText",
+                "ColorChooser.rgbRedText",
+                "ColorChooser.rgbGreenText",
+                "ColorChooser.rgbBlueText",
+                "ColorChooser.hsbRedText",
+                "ColorChooser.hsbGreenText",
+                "ColorChooser.hsbBlueText",
+                "ColorChooser.hsbHueText",
+                "ColorChooser.hsbSaturationText",
+                "ColorChooser.hsbBrightnessText",
+                "ColorChooser.sampleText",
+                "FileChooser.acceptAllFileFilterText",
+                "FileChooser.cancelButtonText",
+                "FileChooser.cancelButtonToolTipText",
+                "FileChooser.detailsViewButtonAccessibleName",
+                "FileChooser.detailsViewButtonToolTipText",
+                "FileChooser.directoryDescriptionText",
+                "FileChooser.fileDescriptionText",
+                "FileChooser.fileNameLabelText",
+                "FileChooser.filesOfTypeLabelText",
+                "FileChooser.helpButtonText",
+                "FileChooser.helpButtonToolTipText",
+                "FileChooser.homeFolderAccessibleName",
+                "FileChooser.homeFolderToolTipText",
+                "FileChooser.listViewButtonAccessibleName",
+                "FileChooser.listViewButtonToolTipText",
+                "FileChooser.lookInLabelText",
+                "FileChooser.newFolderAccessibleName",
+                "FileChooser.newFolderErrorText",
+                "FileChooser.newFolderToolTipText",
+                "FileChooser.openButtonText",
+                "FileChooser.openButtonToolTipText",
+                "FileChooser.saveButtonText",
+                "FileChooser.saveButtonToolTipText",
+                "FileChooser.updateButtonText",
+                "FileChooser.updateButtonToolTipText",
+                "FileChooser.upFolderAccessibleName",
+                "FileChooser.upFolderToolTipText")
+                .collect(toSet());
         }
-        return labelsMap;
+        return uiTranslationKeys;
     }
 
     private Map.Entry<String, String> mapEntry(String key, String value) {
@@ -272,6 +274,10 @@ public class ApplicationUIHandler {
 
     public Color getColor(String key) {
         return UIManager.getColor(key);
+    }
+
+    public Border getBorder(String key) {
+        return UIManager.getBorder(key);
     }
 
     public Rectangle getGraphicsDevicesBound() {

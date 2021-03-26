@@ -18,9 +18,13 @@ package org.cosinus.swing.image.icon;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.cosinus.swing.convert.JsonFileConverter;
+import org.cosinus.swing.resource.ResourceLocator;
 import org.cosinus.swing.resource.ResourceResolver;
 
 import java.util.Map;
+import java.util.Set;
+
+import static org.cosinus.swing.resource.ResourceType.CONF;
 
 /**
  * Icons map provider
@@ -28,7 +32,12 @@ import java.util.Map;
 public class IconsMapProvider extends JsonFileConverter<Map> {
 
     public IconsMapProvider(ObjectMapper objectMapper,
-                            ResourceResolver resourceResolver) {
-        super(objectMapper, Map.class, resourceResolver);
+                            Set<ResourceResolver> resourceResolvers) {
+        super(objectMapper, Map.class, resourceResolvers);
+    }
+
+    @Override
+    protected ResourceLocator resourceLocator() {
+        return CONF;
     }
 }

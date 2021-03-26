@@ -16,10 +16,15 @@
 
 package org.cosinus.swing.boot.initialize;
 
+import org.cosinus.swing.preference.Preference;
 import org.cosinus.swing.preference.Preferences;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 
 import javax.swing.UIManager.LookAndFeelInfo;
+import java.util.Map;
+import java.util.Set;
+
+import static org.cosinus.swing.preference.Preferences.LOOK_AND_FEEL;
 
 /**
  * Swing UI initializer
@@ -30,20 +35,30 @@ public class ApplicationUIInitializer implements ApplicationInitializer {
 
     private final ApplicationUIHandler uiHandler;
 
+    private final Set<LookAndFeelInfo> lookAndFeels;
+
     public ApplicationUIInitializer(Preferences preferences,
-                                    ApplicationUIHandler uiHandler) {
+                                    ApplicationUIHandler uiHandler,
+                                    Set<LookAndFeelInfo> lookAndFeels) {
         this.preferences = preferences;
         this.uiHandler = uiHandler;
+        this.lookAndFeels = lookAndFeels;
     }
 
     @Override
     public void initialize() {
-        String lookAndFeelClassName = preferences.getStringPreference(Preferences.LOOK_AND_FEEL)
-                .map(lafName -> uiHandler.getAvailableLookAndFeels().get(lafName))
-                .map(LookAndFeelInfo::getClassName)
-                .orElseGet(uiHandler::getDefaultLookAndFeelClassName);
-        uiHandler.setLookAndFeel(lookAndFeelClassName);
+        Map<String, LookAndFeelInfo> availableLookAndFeels = uiHandler.getAvailableLookAndFeels();
+        lookAndFeels.forEach(lookAndFeel -> availableLookAndFeels.put(lookAndFeel.getName(), lookAndFeel));
 
+        String lookAndFeelClassName = preferences.findPreference(LOOK_AND_FEEL)
+            .map(Preference::getValue)
+            .map(Object::toString)
+            .map(availableLookAndFeels::get)
+            .map(LookAndFeelInfo::getClassName)
+            .orElseGet(uiHandler::getDefaultLookAndFeelClassName);
+        uiHandler.setLookAndFeel(lookAndFeelClassName);
         uiHandler.translateDefaultUILabels();
+
+        preferences.setAvailableLookAndFeels(availableLookAndFeels.values());
     }
 }

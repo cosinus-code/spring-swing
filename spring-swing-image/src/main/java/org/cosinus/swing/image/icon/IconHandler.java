@@ -17,7 +17,7 @@
 package org.cosinus.swing.image.icon;
 
 import org.cosinus.swing.image.ImageHandler;
-import org.cosinus.swing.resource.ResourceResolver;
+import org.cosinus.swing.resource.ClasspathResourceResolver;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.springframework.cache.annotation.Cacheable;
 
@@ -36,7 +36,7 @@ public class IconHandler {
 
     private static final String SPRING_SWING_ICONS_CACHE_NAME = "spring.swing.icons";
 
-    private final ResourceResolver resourceResolver;
+    private final ClasspathResourceResolver resourceResolver;
 
     private final IconProvider iconProvider;
 
@@ -44,7 +44,7 @@ public class IconHandler {
 
     private final ImageHandler imageHandler;
 
-    public IconHandler(ResourceResolver resourceResolver,
+    public IconHandler(ClasspathResourceResolver resourceResolver,
                        IconProvider iconProvider,
                        ApplicationUIHandler uiHandler, ImageHandler imageHandler) {
         this.resourceResolver = resourceResolver;

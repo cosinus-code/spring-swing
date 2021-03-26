@@ -16,20 +16,53 @@
 
 package org.cosinus.swing.preference;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.*;
+import org.cosinus.swing.preference.impl.*;
+
+import java.util.List;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(NON_NULL)
-public class Preference {
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = TextPreference.class, name = "text"),
+    @JsonSubTypes.Type(value = BooleanPreference.class, name = "boolean"),
+    @JsonSubTypes.Type(value = IntegerPreference.class, name = "int"),
+    @JsonSubTypes.Type(value = LongPreference.class, name = "long"),
+    @JsonSubTypes.Type(value = FloatPreference.class, name = "float"),
+    @JsonSubTypes.Type(value = DoublePreference.class, name = "double"),
+    @JsonSubTypes.Type(value = LanguagePreference.class, name = "language"),
+    @JsonSubTypes.Type(value = FilePreference.class, name = "file"),
+    @JsonSubTypes.Type(value = FolderPreference.class, name = "folder"),
+    @JsonSubTypes.Type(value = ColorPreference.class, name = "color"),
+    @JsonSubTypes.Type(value = FontPreference.class, name = "font"),
+    @JsonSubTypes.Type(value = LookAndFeelPreference.class, name = "laf"),
+    @JsonSubTypes.Type(value = DatePreference.class, name = "date"),
+    @JsonSubTypes.Type(value = PercentPreference.class, name = "percent"),
+    @JsonSubTypes.Type(value = CurrencyPreference.class, name = "currency")
+})
+public abstract class Preference<T, R> {
 
-    String name;
+    protected PreferenceType type;
 
-    String type;
+    @JsonIgnore
+    protected String name;
 
-    String value;
+    protected T value;
+
+    protected R realValue;
+
+    protected List<R> values;
+
+    public PreferenceType getType() {
+        return type;
+    }
+
+    public void setType(PreferenceType type) {
+        this.type = type;
+    }
 
     public String getName() {
         return name;
@@ -39,19 +72,24 @@ public class Preference {
         this.name = name;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getValue() {
+    public T getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(T value) {
         this.value = value;
     }
+
+    public List<R> getValues() {
+        return values;
+    }
+
+    public void setValues(List<R> values) {
+        this.values = values;
+    }
+
+    @JsonIgnore
+    public abstract R getRealValue();
+
+    public abstract void setRealValue(R realValue);
 }

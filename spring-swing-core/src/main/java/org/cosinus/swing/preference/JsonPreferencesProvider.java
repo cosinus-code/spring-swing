@@ -17,32 +17,47 @@
 package org.cosinus.swing.preference;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.cosinus.swing.resource.ResourceResolver;
 import org.cosinus.swing.convert.JsonFileConverter;
+import org.cosinus.swing.resource.ResourceResolver;
 import org.cosinus.swing.resource.ResourceType;
 
-import java.util.Map;
+import java.io.IOException;
 import java.util.Optional;
+import java.util.Set;
+
+import static org.cosinus.swing.resource.ResourceSource.CLASSPATH;
 
 /**
  * Preferences provider from json file
  */
-public class JsonPreferencesProvider extends JsonFileConverter<Map> implements PreferencesProvider {
+public class JsonPreferencesProvider extends JsonFileConverter<PreferencesSet> implements PreferencesProvider {
 
     private static final String PREFERENCES_FILE_NAME = "preferences.json";
 
     public JsonPreferencesProvider(ObjectMapper objectMapper,
-                                   ResourceResolver resourceResolver) {
-        super(objectMapper, Map.class, resourceResolver);
+                                   Set<ResourceResolver> resourceResolvers) {
+        super(objectMapper, PreferencesSet.class, resourceResolvers);
     }
 
+    @Override
     public Optional<Preferences> getPreferences() {
-        return convert(PREFERENCES_FILE_NAME)
-                .map(Preferences::new);
+        return convertToMapOfModels(PREFERENCES_FILE_NAME)
+            .map(Preferences::new);
+    }
+
+    @Override
+    public Optional<Preferences> getDefaultPreferences() {
+        return convertToMapOfModels(CLASSPATH, PREFERENCES_FILE_NAME)
+            .map(Preferences::new);
     }
 
     @Override
     protected ResourceType resourceLocator() {
         return ResourceType.CONF;
+    }
+
+    @Override
+    public void savePreferences(Preferences preferences) throws IOException {
+        saveModelsMap(PREFERENCES_FILE_NAME, preferences.getPreferenceSetsMap());
     }
 }

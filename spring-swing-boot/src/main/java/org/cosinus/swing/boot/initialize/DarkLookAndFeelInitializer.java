@@ -16,12 +16,15 @@
 
 package org.cosinus.swing.boot.initialize;
 
+import org.cosinus.swing.preference.Preference;
 import org.cosinus.swing.preference.Preferences;
-import org.cosinus.swing.resource.ResourceResolver;
+import org.cosinus.swing.resource.ClasspathResourceResolver;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.cosinus.swing.ui.dark.DarkLookAndFeel;
 
 import javax.swing.*;
+
+import static org.cosinus.swing.preference.Preferences.LOOK_AND_FEEL;
 
 /**
  * Application initializer for dark look-and-feel
@@ -34,11 +37,12 @@ public class DarkLookAndFeelInitializer implements ApplicationInitializer {
 
     private final DarkLookAndFeel darkLookAndFeel;
 
-    private final ResourceResolver resourceResolver;
+    private final ClasspathResourceResolver resourceResolver;
 
     public DarkLookAndFeelInitializer(Preferences preferences,
                                       ApplicationUIHandler uiHandler,
-                                      DarkLookAndFeel darkLookAndFeel, ResourceResolver resourceResolver) {
+                                      DarkLookAndFeel darkLookAndFeel,
+                                      ClasspathResourceResolver resourceResolver) {
         this.preferences = preferences;
         this.uiHandler = uiHandler;
         this.darkLookAndFeel = darkLookAndFeel;
@@ -51,15 +55,17 @@ public class DarkLookAndFeelInitializer implements ApplicationInitializer {
             uiHandler.setLookAndFeel(darkLookAndFeel.getClassName());
             if (uiHandler.getDefaultIcon().isEmpty()) {
                 resourceResolver.resolveImageAsBytes("dark/file.png")
-                        .map(ImageIcon::new)
-                        .ifPresent(uiHandler::setDefaultIcon);
+                    .map(ImageIcon::new)
+                    .ifPresent(uiHandler::setDefaultIcon);
             }
         }
     }
 
     private boolean noLookAndFeelPreference() {
-        return preferences.getStringPreference(Preferences.LOOK_AND_FEEL)
-                .filter(lookAndFeelName -> !lookAndFeelName.isEmpty())
-                .isEmpty();
+        return preferences.findPreference(LOOK_AND_FEEL)
+            .map(Preference::getValue)
+            .map(Object::toString)
+            .filter(lookAndFeelName -> !lookAndFeelName.isEmpty())
+            .isEmpty();
     }
 }

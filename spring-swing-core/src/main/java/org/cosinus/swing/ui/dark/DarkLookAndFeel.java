@@ -28,4 +28,8 @@ public class DarkLookAndFeel extends LookAndFeelInfo {
     public DarkLookAndFeel() {
         super(DarculaLaf.NAME, DarculaLaf.class.getName());
     }
+
+    public DarkLookAndFeel(String name, String className) {
+        super(name, className);
+    }
 }

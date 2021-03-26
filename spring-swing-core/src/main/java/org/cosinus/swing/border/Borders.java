@@ -17,6 +17,7 @@
 package org.cosinus.swing.border;
 
 import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
@@ -25,12 +26,32 @@ import java.awt.*;
  */
 public final class Borders {
 
-    public static Border borderEmpty(int size) {
+    public static Border emptyBorder(int size) {
         return new EmptyBorder(new Insets(size, size, size, size));
     }
 
-    public static Insets insetsEmpty() {
+    public static Border emptyBorder(int top, int left, int bottom, int right) {
+        return new EmptyBorder(new Insets(top, left, bottom, right));
+    }
+
+    public static Insets emptyInsets() {
         return new Insets(0, 0, 0, 0);
+    }
+
+    public static Border lineBorder(Color color, int top, int left, int bottom, int right) {
+        return new LineBorder(color, top, left, bottom, right);
+    }
+
+    public static Border lineBorder(Color color) {
+        return new LineBorder(color);
+    }
+
+    public static Border borderWithMargin(Border border, int margin) {
+        return new CompoundBorder(border, emptyBorder(margin));
+    }
+
+    public static Border borderWithMargin(Border border, int top, int left, int bottom, int right) {
+        return new CompoundBorder(border, emptyBorder(top, left, bottom, right));
     }
 
     private Borders() {

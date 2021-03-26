@@ -17,12 +17,11 @@
 package org.cosinus.swing.form;
 
 import org.cosinus.swing.action.ActionController;
-import org.cosinus.swing.context.ApplicationContextInjector;
 import org.cosinus.swing.context.ApplicationProperties;
 import org.cosinus.swing.error.ErrorHandler;
 import org.cosinus.swing.menu.MenuBar;
 import org.cosinus.swing.menu.MenuProvider;
-import org.cosinus.swing.resource.ResourceResolver;
+import org.cosinus.swing.resource.DefaultResourceResolver;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +34,7 @@ import java.awt.event.WindowEvent;
 import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
+import static org.cosinus.swing.context.ApplicationContextInjector.applicationContext;
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 import static org.cosinus.swing.form.WindowSettings.DEFAULT_HEIGHT;
 import static org.cosinus.swing.form.WindowSettings.DEFAULT_WIDTH;
@@ -54,7 +54,7 @@ public class Frame extends JFrame implements Window, FormComponent {
     protected ErrorHandler errorHandler;
 
     @Autowired
-    protected ResourceResolver resourceResolver;
+    protected DefaultResourceResolver resourceResolver;
 
     @Autowired
     protected WindowSettingsHandler frameSettingsHandler;
@@ -73,19 +73,17 @@ public class Frame extends JFrame implements Window, FormComponent {
     private MenuBar menuBar;
 
     public Frame() {
-        if (ApplicationContextInjector.applicationContext != null) {
-            init();
-        }
+        this(null);
     }
 
     public Frame(WindowSettings frameSettings) {
-        this.frameSettings = frameSettings;
-        if (ApplicationContextInjector.applicationContext != null) {
+        if (applicationContext != null) {
             init();
         }
+        this.frameSettings = frameSettings;
     }
 
-    public void init() {
+    protected void init() {
         injectContext(this);
         if (frameSettings == null) {
             frameSettings = new WindowSettings(
@@ -207,7 +205,11 @@ public class Frame extends JFrame implements Window, FormComponent {
 
     @Override
     public void initComponents() {
-        initFrameMenu();
+        try {
+            initFrameMenu();
+        } catch (Exception ex) {
+            errorHandler.handleSevereError(ex);
+        }
     }
 
     @Override

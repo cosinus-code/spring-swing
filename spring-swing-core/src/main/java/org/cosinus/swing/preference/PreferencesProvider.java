@@ -16,6 +16,7 @@
 
 package org.cosinus.swing.preference;
 
+import java.io.IOException;
 import java.util.Optional;
 
 /**
@@ -25,4 +26,7 @@ public interface PreferencesProvider {
 
     Optional<Preferences> getPreferences();
 
+    Optional<Preferences> getDefaultPreferences();
+
+    void savePreferences(Preferences preferences) throws IOException;
 }

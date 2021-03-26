@@ -23,6 +23,7 @@ import org.cosinus.swing.boot.condition.ConditionalOnWindows;
 import org.cosinus.swing.context.ApplicationProperties;
 import org.cosinus.swing.image.ImageHandler;
 import org.cosinus.swing.image.icon.*;
+import org.cosinus.swing.resource.ClasspathResourceResolver;
 import org.cosinus.swing.resource.ResourceResolver;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -30,6 +31,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Set;
 
 /**
  * Configuration related to images
@@ -52,7 +55,7 @@ public class SpringSwingImageAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public IconHandler iconHandler(ResourceResolver resourceResolver,
+    public IconHandler iconHandler(ClasspathResourceResolver resourceResolver,
                                    IconProvider fileIcons,
                                    ApplicationUIHandler uiHandler,
                                    ImageHandler imageHandler) {
@@ -78,8 +81,8 @@ public class SpringSwingImageAutoConfiguration {
     @Bean
     @ConditionalOnLinux
     public IconsMapProvider iconsMapProvider(ObjectMapper objectMapper,
-                                             ResourceResolver resourceResolver) {
-        return new IconsMapProvider(objectMapper, resourceResolver);
+                                             Set<ResourceResolver> resourceResolvers) {
+        return new IconsMapProvider(objectMapper, resourceResolvers);
     }
 
     @Bean

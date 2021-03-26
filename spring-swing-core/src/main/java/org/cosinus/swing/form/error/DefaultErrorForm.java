@@ -37,8 +37,8 @@ import static java.awt.BorderLayout.*;
 import static java.lang.String.format;
 import static javax.swing.JPanel.WHEN_IN_FOCUSED_WINDOW;
 import static javax.swing.KeyStroke.getKeyStroke;
-import static org.cosinus.swing.border.Borders.borderEmpty;
-import static org.cosinus.swing.border.Borders.insetsEmpty;
+import static org.cosinus.swing.border.Borders.emptyBorder;
+import static org.cosinus.swing.border.Borders.emptyInsets;
 
 /**
  * Default implementation of {@link ErrorForm} as dialog
@@ -53,7 +53,7 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
 
     private JLabel txtDescription;
 
-    private JButton btnContinue, btnExit, btnDetails;
+    private JButton continueButton, exitButton, detailsButton;
 
     private JTextArea txaDetails;
 
@@ -75,7 +75,6 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
         super(parent,
               ERROR_WINDOW_TITLE,
               modal);
-        initComponents();
     }
 
     /**
@@ -86,42 +85,42 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
         super(parent,
               ERROR_WINDOW_TITLE,
               modal);
-        initComponents();
     }
 
     @Override
     public void initComponents() {
         try {
             setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-            setTitle(translate("error"));
+            setTitle(translate("ErrorForm.title"));
 
             txtDescription = new JLabel();
 
-            btnExit = new JButton(translate("form_error_exit"));
-            btnContinue = new JButton(translate("form_error_continue"));
-            btnDetails = new JButton(translate("form_error_details"));
+            exitButton = new JButton(translate("ErrorForm.exit"));
+            continueButton = new JButton(translate("ErrorForm.continue"));
+            detailsButton = new JButton(translate("ErrorForm.details"));
 
-            btnExit.setMargin(insetsEmpty());
-            btnContinue.setMargin(insetsEmpty());
-            btnDetails.setMargin(insetsEmpty());
+            exitButton.setMargin(emptyInsets());
+            continueButton.setMargin(emptyInsets());
+            detailsButton.setMargin(emptyInsets());
 
             Dimension buttonDimension = new Dimension(90, 28);
-            btnExit.setPreferredSize(buttonDimension);
-            btnContinue.setPreferredSize(buttonDimension);
-            btnDetails.setPreferredSize(buttonDimension);
+            exitButton.setPreferredSize(buttonDimension);
+            continueButton.setPreferredSize(buttonDimension);
+            detailsButton.setPreferredSize(buttonDimension);
 
-            btnExit.addActionListener(this);
-            btnContinue.addActionListener(this);
-            btnDetails.addActionListener(this);
+            exitButton.addActionListener(this);
+            continueButton.addActionListener(this);
+            detailsButton.addActionListener(this);
 
             JPanel panImage = new JPanel(new BorderLayout());
-            panImage.setBorder(borderEmpty(10));
+            panImage.setBorder(emptyBorder(10));
             panImage.add(new JLabel(uiHandler.getErrorIcon()), NORTH);
 
             txaDetails = new JTextArea();
             txaDetails.setEditable(false);
             txaDetails.setFont(uiHandler.getLabelFont());
             txaDetails.setBackground(uiHandler.getColor("inactiveCaption"));
+            txaDetails.setForeground(uiHandler.getColor("inactiveCaptionText"));
 
             panDetails = new JScrollPane();
             panDetails.setViewportView(txaDetails);
@@ -129,18 +128,18 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
 
             JPanel panButtonsRight = new JPanel();
             panButtonsRight.setLayout(new FlowLayout(FlowLayout.RIGHT));
-            panButtonsRight.add(btnContinue);
-            panButtonsRight.add(btnExit);
+            panButtonsRight.add(continueButton);
+            panButtonsRight.add(exitButton);
 
             JPanel panButtonsLeft = new JPanel();
-            panButtonsLeft.add(btnDetails);
+            panButtonsLeft.add(detailsButton);
 
             JPanel panButtons = new JPanel(new BorderLayout());
             panButtons.add(panButtonsRight, EAST);
             panButtons.add(panButtonsLeft, WEST);
 
             JPanel panData = new JPanel(new BorderLayout(10, 10));
-            panData.setBorder(borderEmpty(2));
+            panData.setBorder(emptyBorder(2));
             panData.add(panImage, WEST);
             panData.add(txtDescription, CENTER);
             panData.add(panButtons, SOUTH);
@@ -150,7 +149,7 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
 
             panData.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("ESCAPE"), "escape");
             panData.getActionMap().put("escape", new EscapeAction(this));
-            panData.setBorder(borderEmpty(5));
+            panData.setBorder(emptyBorder(5));
         } catch (Exception ex) {
             LOG.error("Exception while initiating error form", ex);
         }
@@ -158,7 +157,7 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
 
     public void showError(Throwable throwable) {
         txtDescription.setText(format(ERROR_MESSAGE,
-                                      translate("form_error_message"),
+                                      translate("ErrorForm.message"),
                                       throwable.getLocalizedMessage()));
 
         try (StringWriter writer = new StringWriter()) {
@@ -187,7 +186,8 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
         validate();
     }
 
-    private void close() {
+    @Override
+    public void close() {
         setVisible(false);
     }
 
@@ -197,11 +197,11 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
 
     public void actionPerformed(ActionEvent e) {
         try {
-            if (e.getSource() == btnExit) {
+            if (e.getSource() == exitButton) {
                 exit();
-            } else if (e.getSource() == btnContinue) {
+            } else if (e.getSource() == continueButton) {
                 close();
-            } else if (e.getSource() == btnDetails) {
+            } else if (e.getSource() == detailsButton) {
                 showDetails();
             }
         } catch (Exception ex) {

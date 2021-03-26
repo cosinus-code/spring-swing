@@ -18,23 +18,34 @@ package org.cosinus.swing.boot.config;
 
 import com.bulenkov.darcula.DarculaLaf;
 import org.cosinus.swing.boot.initialize.ApplicationUIInitializer;
-import org.cosinus.swing.preference.Preferences;
-import org.cosinus.swing.resource.ResourceResolver;
-import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.cosinus.swing.boot.initialize.CrossPlatformLookAndFeelInitializer;
-import org.cosinus.swing.ui.dark.DarkLookAndFeel;
 import org.cosinus.swing.boot.initialize.DarkLookAndFeelInitializer;
+import org.cosinus.swing.boot.initialize.TranslatorInitializer;
+import org.cosinus.swing.preference.Preferences;
+import org.cosinus.swing.resource.ClasspathResourceResolver;
+import org.cosinus.swing.translate.Translator;
+import org.cosinus.swing.ui.ApplicationUIHandler;
+import org.cosinus.swing.ui.dark.DarkLookAndFeel;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.swing.UIManager.LookAndFeelInfo;
+import java.util.Set;
+
 /**
  * Application UI Configuration
  */
 @Configuration
 public class ApplicationUIConfiguration {
+
+    @Bean
+    public TranslatorInitializer translatorInitializer(Preferences preferences,
+                                                       Translator translator) {
+        return new TranslatorInitializer(preferences, translator);
+    }
 
     @Bean
     @ConditionalOnProperty(value = "swing.ui.theme", havingValue = "java")
@@ -45,8 +56,10 @@ public class ApplicationUIConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(value = "swing.ui.theme", havingValue = "custom", matchIfMissing = true)
-    public ApplicationUIInitializer applicationUIInitializer(Preferences preferences, ApplicationUIHandler uiHandler) {
-        return new ApplicationUIInitializer(preferences, uiHandler);
+    public ApplicationUIInitializer applicationUIInitializer(Preferences preferences,
+                                                             ApplicationUIHandler uiHandler,
+                                                             Set<LookAndFeelInfo> lookAndFeels) {
+        return new ApplicationUIInitializer(preferences, uiHandler, lookAndFeels);
     }
 
     @Bean
@@ -55,7 +68,7 @@ public class ApplicationUIConfiguration {
     public DarkLookAndFeelInitializer darkLookAndFeelInitializer(Preferences preferences,
                                                                  ApplicationUIHandler uiHandler,
                                                                  DarkLookAndFeel darkLookAndFeel,
-                                                                 ResourceResolver resourceResolver) {
+                                                                 ClasspathResourceResolver resourceResolver) {
         return new DarkLookAndFeelInitializer(preferences,
                                               uiHandler,
                                               darkLookAndFeel,
@@ -64,6 +77,7 @@ public class ApplicationUIConfiguration {
 
     @Bean
     @ConditionalOnClass(DarculaLaf.class)
+    @ConditionalOnMissingBean
     public DarkLookAndFeel darkLookAndFeel() {
         return new DarkLookAndFeel();
     }

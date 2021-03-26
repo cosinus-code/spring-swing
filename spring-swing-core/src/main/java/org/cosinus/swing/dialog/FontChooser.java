@@ -44,7 +44,7 @@ import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.BorderFactory.createTitledBorder;
 import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.cosinus.swing.util.FontUtils.getFontStyle;
+import static org.cosinus.swing.util.FontUtils.getFontStyleText;
 
 /**
  * Font chooser dialog
@@ -67,33 +67,36 @@ public class FontChooser extends Dialog<Font> implements ActionListener, ListSel
     @Autowired
     private ErrorHandler errorHandler;
 
+    private final String text;
+
     public FontChooser(Dialog dialog, String title, boolean modal, String text, Font font) {
         super(dialog, title, modal);
-        init(text, font);
+        this.text = text;
+        this.font = font;
     }
 
     public FontChooser(Frame frame, String title, boolean modal, String text, Font font) {
         super(frame, title, modal);
-        init(text, font);
+        this.text = text;
+        this.font = font;
     }
 
-    public void init(String text, Font font) {
-        this.font = font;
-
+    @Override
+    public void initComponents() {
         JScrollPane scrFont = new JScrollPane();
         JScrollPane scrStyle = new JScrollPane();
         JScrollPane scrSize = new JScrollPane();
 
         lstFont = new JList<>();
         lstStyle = new JList<>(new String[]{
-            translate("form_font_plain"),
-            translate("form_font_bold"),
-            translate("form_font_italic"),
-            translate("form_font_bold") + " " + translate("form_font_italic"),
+            translate("FontChooser.plain"),
+            translate("FontChooser.bold"),
+            translate("FontChooser.italic"),
+            translate("FontChooser.bold") + " " + translate("FontChooser.italic"),
         });
         lstSize = new JList<>(new String[]{"3", "5", "8", "10", "12", "14", "18", "24", "36", "48"});
 
-        lstStyle.setSelectedValue(getFontStyle(font), true);
+        lstStyle.setSelectedValue(getFontStyleText(font), true);
         lstSize.setSelectedValue(Integer.toString(font.getSize()), true);
 
         lstFont.getSelectionModel().addListSelectionListener(this);
@@ -103,11 +106,11 @@ public class FontChooser extends Dialog<Font> implements ActionListener, ListSel
         scrStyle.setPreferredSize(new Dimension(100, 0));
         scrSize.setPreferredSize(new Dimension(60, 0));
 
-        btnOK = new JButton(translate("form_font_ok"));
-        btnCancel = new JButton(translate("form_font_cancel"));
+        btnOK = new JButton(translate("FontChooser.ok"));
+        btnCancel = new JButton(translate("FontChooser.cancel"));
 
         txtFont = new JTextField(font.getFamily());
-        txtStyle = new JTextField(getFontStyle(font));
+        txtStyle = new JTextField(getFontStyleText(font));
         txtSize = new JTextField(Integer.toString(font.getSize()));
 
         txtFont.setEnabled(false);
@@ -118,47 +121,44 @@ public class FontChooser extends Dialog<Font> implements ActionListener, ListSel
         txtSize.addActionListener(this);
 
         sample = new JLabel(isEmpty(text) ?
-                                translate("form_font_sample") :
+                                translate("FontChooser.sample") :
                                 text.substring(0, min(40, text.length())));
-        sample.setBorder(createTitledBorder(" " + translate("form_font_preview") + " "));
+        sample.setBorder(createTitledBorder(" " + translate("FontChooser.preview") + " "));
         sample.setPreferredSize(new Dimension(0, 100));
 
-        JLabel lblFont = new JLabel(translate("form_font_fonts"));
-        JLabel lblStyle = new JLabel(translate("form_font_style"));
-        JLabel lblSize = new JLabel(translate("form_font_size"));
+        JLabel lblFont = new JLabel(translate("FontChooser.fonts"));
+        JLabel lblStyle = new JLabel(translate("FontChooser.style"));
+        JLabel lblSize = new JLabel(translate("FontChooser.size"));
 
         scrFont.getViewport().add(lstFont);
         scrStyle.getViewport().add(lstStyle);
         scrSize.getViewport().add(lstSize);
 
-        LayoutManager gridLayout = new GridLayout(2, 1);
-        LayoutManager borderLayout = new BorderLayout(5, 5);
-
-        JPanel panFontText = new JPanel(gridLayout);
+        JPanel panFontText = new JPanel(new GridLayout(2, 1));
         panFontText.add(lblFont);
         panFontText.add(txtFont);
 
-        JPanel panStyleText = new JPanel(gridLayout);
+        JPanel panStyleText = new JPanel(new GridLayout(2, 1));
         panStyleText.add(lblStyle);
         panStyleText.add(txtStyle);
 
-        JPanel panSizeText = new JPanel(gridLayout);
+        JPanel panSizeText = new JPanel(new GridLayout(2, 1));
         panSizeText.add(lblSize);
         panSizeText.add(txtSize);
 
-        JPanel panFont = new JPanel(borderLayout);
+        JPanel panFont = new JPanel(new BorderLayout(5, 5));
         panFont.add(panFontText, NORTH);
         panFont.add(scrFont, CENTER);
 
-        JPanel panStyle = new JPanel(borderLayout);
+        JPanel panStyle = new JPanel(new BorderLayout(5, 5));
         panStyle.add(panStyleText, NORTH);
         panStyle.add(scrStyle, CENTER);
 
-        JPanel panSize = new JPanel(borderLayout);
+        JPanel panSize = new JPanel(new BorderLayout(5, 5));
         panSize.add(panSizeText, NORTH);
         panSize.add(scrSize, CENTER);
 
-        JPanel panStyleSize = new JPanel(borderLayout);
+        JPanel panStyleSize = new JPanel(new BorderLayout(5, 5));
         panStyleSize.add(panStyle, WEST);
         panStyleSize.add(panSize, EAST);
 
@@ -170,7 +170,7 @@ public class FontChooser extends Dialog<Font> implements ActionListener, ListSel
         panSouth.setBorder(createEmptyBorder(0, 0, 10, 10));
         panSouth.add(panButtons);
 
-        JPanel panNorth = new JPanel(borderLayout);
+        JPanel panNorth = new JPanel(new BorderLayout(5, 5));
         panNorth.setBorder(createEmptyBorder(10, 10, 10, 10));
         panNorth.add(panFont, CENTER);
         panNorth.add(panStyleSize, EAST);
@@ -211,7 +211,7 @@ public class FontChooser extends Dialog<Font> implements ActionListener, ListSel
                     return Integer.parseInt(txtSize.getText());
                 } catch (NumberFormatException ex) {
                     errorHandler.handleError(this,
-                                             translate("form_font_not_a_number", txtSize.getText()));
+                                             translate("FontChooser.not-number", txtSize.getText()));
                     return null;
                 }
             })

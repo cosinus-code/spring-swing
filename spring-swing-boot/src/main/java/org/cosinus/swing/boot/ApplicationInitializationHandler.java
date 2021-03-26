@@ -17,6 +17,7 @@
 package org.cosinus.swing.boot;
 
 import org.cosinus.swing.boot.initialize.ApplicationInitializer;
+import org.cosinus.swing.context.ApplicationHandler;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 
@@ -26,7 +27,7 @@ import java.util.Set;
 /**
  * Application initialization handler
  */
-public class ApplicationInitializationHandler implements ApplicationRunner {
+public class ApplicationInitializationHandler implements ApplicationRunner, ApplicationHandler {
 
     private final Set<ApplicationInitializer> applicationInitializers;
 
@@ -40,6 +41,11 @@ public class ApplicationInitializationHandler implements ApplicationRunner {
     }
 
     public void initApplication() {
+        applicationInitializers.forEach(ApplicationInitializer::initialize);
+    }
+
+    @Override
+    public void reloadApplication() {
         applicationInitializers.forEach(ApplicationInitializer::initialize);
     }
 }

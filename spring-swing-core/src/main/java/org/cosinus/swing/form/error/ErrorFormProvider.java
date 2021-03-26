@@ -16,20 +16,10 @@
 
 package org.cosinus.swing.form.error;
 
-import org.cosinus.swing.form.Dialog;
-import org.cosinus.swing.form.Frame;
-
 import java.awt.*;
-import java.util.Optional;
 
-/**
- * Error form provider
- */
-public class ErrorFormProvider {
+public interface ErrorFormProvider {
 
-    public Optional<ErrorForm> getErrorForm(Window parent) {
-        return Optional.of(parent instanceof Dialog<?> ?
-                               new DefaultErrorForm((Dialog<?>) parent, true) :
-                               new DefaultErrorForm((Frame) parent, true));
-    }
+    ErrorForm getErrorForm(Window parent);
+
 }

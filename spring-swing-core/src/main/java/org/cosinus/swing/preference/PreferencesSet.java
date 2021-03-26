@@ -14,23 +14,9 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.error;
+package org.cosinus.swing.preference;
 
-/**
- * Indicates that ana action was not found.
- */
-public class ActionNotFound extends RuntimeException {
+import java.util.LinkedHashMap;
 
-    public ActionNotFound() {
-        this("Action not found");
-    }
-
-    public ActionNotFound(String message) {
-        this(message, null);
-    }
-
-    public ActionNotFound(String message, Throwable cause) {
-        super(message, cause);
-    }
-
+public class PreferencesSet extends LinkedHashMap<String, Preference> {
 }

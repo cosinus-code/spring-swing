@@ -18,12 +18,16 @@ package org.cosinus.swing.preference;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.cosinus.swing.preference.impl.*;
 
+import javax.swing.UIManager.LookAndFeelInfo;
 import java.awt.*;
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * Application preferences
@@ -32,80 +36,116 @@ public class Preferences {
 
     private static final Logger LOG = LogManager.getLogger(Preferences.class);
 
-    public static final String LOOK_AND_FEEL = "lookandfeel";
+    public static final String LOOK_AND_FEEL = "look-and-feel";
     public static final String LANGUAGE = "language";
 
-    private Map<String, Object> preferencesMap = new HashMap<>();
+    private final Map<String, PreferencesSet> preferenceSetsMap;
+
+    private final Map<String, Preference> preferencesMap;
 
     public Preferences() {
         LOG.info("No preferences for this application.");
+        preferenceSetsMap = new HashMap<>();
+        preferencesMap = new HashMap<>();
     }
 
-    public Preferences(Map<String, Object> preferencesMap) {
-        this.preferencesMap = preferencesMap;
+    public Preferences(Map<String, PreferencesSet> preferenceSetsMap) {
+        this.preferenceSetsMap = preferenceSetsMap;
+        this.preferencesMap = preferenceSetsMap
+            .values()
+            .stream()
+            .flatMap(preferencesSet -> preferencesSet.entrySet().stream())
+            .peek(entry -> entry.getValue().setName(entry.getKey()))
+            .collect(toMap(Map.Entry::getKey,
+                           Map.Entry::getValue));
     }
 
-    private Optional<Object> getPreference(String key) {
-        return Optional.ofNullable(preferencesMap.get(key));
+    public Optional<Preference> findPreference(String key) {
+        return ofNullable(preferencesMap.get(key));
     }
 
-    public Optional<String> getStringPreference(String key) {
-        return getPreference(key).map(Object::toString);
+    public Optional<String> findStringPreference(String key) {
+        return findPreference(TextPreference.class, key);
     }
 
-    public Optional<Color> getColorPreference(String key) {
-        return getPreference(key)
-            .map(Object::toString)
-            .map(value -> value.split(","))
-            .map(values -> new Color(Integer.parseInt(values[0]),
-                                     Integer.parseInt(values[1]),
-                                     Integer.parseInt(values[2])));
+    public Optional<Locale> findLanguagePreference(String key) {
+        return findPreference(LanguagePreference.class, key);
     }
 
-    public Optional<Font> getFontPreference(String key) {
-        return getPreference(key)
-            .map(Object::toString)
-            .map(value -> value.split(","))
-            .map(values -> new Font(values[0],
-                                    Integer.parseInt(values[1]),
-                                    Integer.parseInt(values[2])));
+    public Optional<Color> findColorPreference(String key) {
+        return findPreference(ColorPreference.class, key);
     }
 
-    public Optional<File> getFilePreference(String key) {
-        return getPreference(key)
-            .map(Object::toString)
-            .map(File::new);
+    public Optional<Font> findFontPreference(String key) {
+        return findPreference(FontPreference.class, key);
     }
 
-    public Optional<Boolean> getBooleanPreference(String key) {
-        return getPreference(key)
-            .filter(Boolean.class::isInstance)
-            .map(Boolean.class::cast);
+    public Optional<File> findFilePreference(String key) {
+        return findPreference(FilePreference.class, key);
     }
 
-    public Optional<Integer> getIntPreference(String key) {
-        return getPreference(key)
-            .filter(Integer.class::isInstance)
-            .map(Integer.class::cast);
+    public Optional<Boolean> findBooleanPreference(String key) {
+        return findPreference(BooleanPreference.class, key);
+    }
+
+    public Optional<Integer> findIntPreference(String key) {
+        return findPreference(IntegerPreference.class, key);
+    }
+
+    public <T, R> Optional<R> findPreference(Class<? extends Preference<T, R>> preferenceClass,
+                                             String key) {
+        return findPreference(key)
+            .filter(preferenceClass::isInstance)
+            .map(preferenceClass::cast)
+            .map(Preference::getRealValue);
     }
 
     public Color colorPreference(String key) {
-        return getColorPreference(key).orElse(null);
+        return findColorPreference(key).orElse(null);
     }
 
     public Font fontPreference(String key) {
-        return getFontPreference(key).orElse(null);
+        return findFontPreference(key).orElse(null);
     }
 
     public int intPreference(String key) {
-        return getIntPreference(key).orElse(10);
+        return findIntPreference(key).orElse(10);
     }
 
     public boolean booleanPreference(String key) {
-        return getBooleanPreference(key).orElse(false);
+        return findBooleanPreference(key).orElse(false);
     }
 
-    public Map<String, Object> getPreferencesMap() {
+    public Map<String, Preference> getPreferencesMap() {
         return preferencesMap;
+    }
+
+    public Map<String, PreferencesSet> getPreferenceSetsMap() {
+        return preferenceSetsMap;
+    }
+
+    public void setAvailableLanguages(Collection<Locale> locales) {
+        findPreference(LANGUAGE)
+            .filter(preference -> preference instanceof LanguagePreference)
+            .map(LanguagePreference.class::cast)
+            .ifPresent(preference -> preference
+                .setValues(new ArrayList<>(locales)));
+    }
+
+    public void setAvailableLookAndFeels(Collection<LookAndFeelInfo> lookAndFeels) {
+        findPreference(LOOK_AND_FEEL)
+            .filter(preference -> preference instanceof LookAndFeelPreference)
+            .map(LookAndFeelPreference.class::cast)
+            .ifPresent(preference -> preference
+                .setValues(
+                    lookAndFeels
+                        .stream()
+                        .map(LookAndFeelInfo::getName)
+                        .collect(toList())));
+    }
+
+    public <R> void updatePreference(String name, R realValue) {
+        ofNullable(preferencesMap.get(name))
+            .ifPresent(preference -> preference.setRealValue(realValue));
     }
 }

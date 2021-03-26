@@ -19,6 +19,7 @@ package org.cosinus.swing.dialog;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.form.Dialog;
+import org.cosinus.swing.preference.dialog.PreferencesDialogProvider;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 
@@ -57,14 +58,19 @@ public class DialogHandler {
 
     private final ApplicationUIHandler uiHandler;
 
+    private final PreferencesDialogProvider preferencesDialogProvider;
+
     public DialogHandler(Translator translator,
-                         ApplicationUIHandler uiHandler) {
+                         ApplicationUIHandler uiHandler,
+                         PreferencesDialogProvider preferencesDialogProvider) {
         this.translator = translator;
         this.uiHandler = uiHandler;
+        this.preferencesDialogProvider = preferencesDialogProvider;
     }
 
     public <T> Dialog<T> showDialog(Supplier<Dialog<T>> dialogInitiator) {
         Dialog<T> dialog = dialogInitiator.get();
+        dialog.init();
         dialog.setVisible(true);
         return dialog;
     }
@@ -347,9 +353,49 @@ public class DialogHandler {
         File currentFile = choose.getSelectedFile();
         if (currentFile != null &&
             !currentFile.exists() &&
-            !confirm(parent, translator.translate("file_already_exists", currentFile.getName()))) {
+            !confirm(parent, translator.translate("file-already-exists", currentFile.getName()))) {
             return null;
         }
         return currentFile;
+    }
+
+    public void showPreferencesDialog(Frame parentFrame) {
+        showDialog(() -> preferencesDialogProvider.getPreferencesDialog(parentFrame));
+    }
+
+    public Optional<Font> chooseFont(Font font) {
+        return chooseFont((org.cosinus.swing.form.Frame) null, "", true, null, font);
+    }
+
+    public Optional<Font> chooseFont(org.cosinus.swing.form.Frame frame, Font font) {
+        return chooseFont(frame, "", true, null, font);
+    }
+
+    public Optional<Font> chooseFont(org.cosinus.swing.form.Frame frame, String title, Font font) {
+        return chooseFont(frame, title, true, null, font);
+    }
+
+    public Optional<Font> chooseFont(org.cosinus.swing.form.Frame frame, String title, String text, Font font) {
+        return chooseFont(frame, title, true, text, font);
+    }
+
+    public Optional<Font> chooseFont(org.cosinus.swing.form.Frame frame, String title, boolean modal, String text, Font font) {
+        return showDialog(() -> new FontChooser(frame, title, modal, text, font)).response();
+    }
+
+    public Optional<Font> chooseFont(Dialog dialog, Font font) {
+        return showDialog(() -> new FontChooser(dialog, "", true, null, font)).response();
+    }
+
+    public Optional<Font> chooseFont(Dialog dialog, String title, Font font) {
+        return showDialog(() -> new FontChooser(dialog, title, true, null, font)).response();
+    }
+
+    public Optional<Font> chooseFont(Dialog dialog, String title, String text, Font font) {
+        return showDialog(() -> new FontChooser(dialog, title, true, text, font)).response();
+    }
+
+    public Optional<Font> chooseFont(Dialog dialog, String title, boolean modal, String text, Font font) {
+        return showDialog(() -> new FontChooser(dialog, title, modal, text, font)).response();
     }
 }

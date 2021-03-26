@@ -19,7 +19,9 @@ package org.cosinus.swing.util;
 import java.awt.*;
 import java.util.Optional;
 
+import static java.awt.Font.ITALIC;
 import static java.lang.String.join;
+import static java.awt.Font.BOLD;
 
 /**
  * Font related utils.
@@ -50,8 +52,13 @@ public final class FontUtils {
      * @param font the given font
      * @return the font style
      */
-    public static String getFontStyle(Font font) {
-        return font.isBold() ? font.isItalic() ? "Bold Italic" : "Bold" : "Plain";
+    public static String getFontStyleText(Font font) {
+        String style = (font.isBold() ? "Bold" : "") + (font.isItalic() ? "Italic" : "");
+        return !style.isEmpty() ? style : "Plain";
+    }
+
+    public static int getFontStyle(String text) {
+        return (text.startsWith("Bold") ? BOLD : 0) | (text.startsWith("Italic") ? ITALIC : 0);
     }
 
     /**
@@ -63,8 +70,8 @@ public final class FontUtils {
     public static String getFontDescription(Font font) {
         return join(",",
                     font.getFamily(),
-                    Integer.toString(font.getSize()),
-                    getFontStyle(font));
+                    getFontStyleText(font),
+                    Integer.toString(font.getSize()));
     }
 
     private FontUtils() {

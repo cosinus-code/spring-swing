@@ -17,6 +17,7 @@
 package org.cosinus.swing.form;
 
 import javax.swing.*;
+import java.awt.Frame;
 import java.util.Optional;
 
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
@@ -31,16 +32,15 @@ public abstract class Dialog<T> extends JDialog implements Window, FormComponent
     public Dialog(Frame frame, String title, boolean modal) {
         super(frame, title, modal);
         injectContext(this);
-        init();
     }
 
-    public Dialog(Dialog dialog, String title, boolean modal) {
+    public Dialog(java.awt.Dialog dialog, String title, boolean modal) {
         super(dialog, title, modal);
         injectContext(this);
-        init();
     }
 
-    private void init() {
+    public void init() {
+        initComponents();
         centerWindow();
         registerExitOnEscapeKey();
     }
@@ -57,6 +57,10 @@ public abstract class Dialog<T> extends JDialog implements Window, FormComponent
 
     public void cancel() {
         cancelled = true;
+        close();
+    }
+
+    public void close() {
         dispose();
     }
 
