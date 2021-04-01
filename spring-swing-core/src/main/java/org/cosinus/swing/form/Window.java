@@ -23,10 +23,12 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.Optional;
 
+import static java.awt.Toolkit.getDefaultToolkit;
 import static java.util.Arrays.stream;
 import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 import static javax.swing.KeyStroke.getKeyStroke;
-import static java.awt.Toolkit.getDefaultToolkit;
+import static org.cosinus.swing.form.WindowSettings.DEFAULT_HEIGHT;
+import static org.cosinus.swing.form.WindowSettings.DEFAULT_WIDTH;
 
 /**
  * Generic window interface
@@ -56,5 +58,25 @@ public interface Window {
 
     default java.awt.Window thisWindow() {
         return (java.awt.Window) this;
+    }
+
+    default String getWindowName() {
+        return getClass().getSimpleName().split("\\$\\$")[0].toLowerCase();
+    }
+
+    default void setWindowPositionAndSize(WindowSettings windowSettings, Rectangle screenBound) {
+        if (windowSettings.isCentered()) {
+            centerWindow();
+        } else {
+            thisWindow().setLocation(windowSettings.getX(), windowSettings.getY());
+        }
+
+        int defaultWith = thisWindow().getWidth() > 0 ? thisWindow().getWidth() : DEFAULT_WIDTH;
+        int defaultHeight = thisWindow().getHeight() > 0 ? thisWindow().getHeight() : DEFAULT_HEIGHT;
+        thisWindow().setSize(windowSettings.getWidth(), windowSettings.getHeight());
+        if (!screenBound.contains(thisWindow().getBounds())) {
+            thisWindow().setSize(defaultWith, defaultHeight);
+            centerWindow();
+        }
     }
 }

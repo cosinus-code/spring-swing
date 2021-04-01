@@ -16,8 +16,15 @@
 
 package org.cosinus.swing.form;
 
+import org.cosinus.swing.ui.ApplicationUIHandler;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.swing.*;
 import java.awt.Frame;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Optional;
 
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
@@ -27,22 +34,69 @@ import static org.cosinus.swing.context.ApplicationContextInjector.injectContext
  */
 public abstract class Dialog<T> extends JDialog implements Window, FormComponent {
 
+    @Autowired
+    protected WindowSettingsHandler windowSettingsHandler;
+
+    @Autowired
+    protected ApplicationUIHandler uiHandler;
+
+    private final WindowSettings windowSettings;
+
     private boolean cancelled;
 
     public Dialog(Frame frame, String title, boolean modal) {
         super(frame, title, modal);
         injectContext(this);
+        windowSettings = createWindowSettings();
     }
 
     public Dialog(java.awt.Dialog dialog, String title, boolean modal) {
         super(dialog, title, modal);
         injectContext(this);
+        windowSettings = createWindowSettings();
+    }
+
+    protected WindowSettings createWindowSettings() {
+        WindowSettings windowSettings = new WindowSettings(getWindowName(), getTitle());
+        windowSettingsHandler.loadWindowSettings(windowSettings);
+        return windowSettings;
     }
 
     public void init() {
         initComponents();
-        centerWindow();
+        initPositionAndSize();
+        initFrameBasicActions();
+    }
+
+    private void initPositionAndSize() {
+        setWindowPositionAndSize(windowSettings, uiHandler.getScreenBound());
+        windowSettingsHandler.saveWindowSettings(windowSettings);
+    }
+
+    private void initFrameBasicActions() {
         registerExitOnEscapeKey();
+
+        addComponentListener(new ComponentListener() {
+            public void componentHidden(ComponentEvent e) {
+            }
+
+            public void componentMoved(ComponentEvent e) {
+                windowSettings
+                    .setPosition(getX(), getY())
+                    .setCentered(false);
+                windowSettingsHandler.saveWindowSettings(windowSettings);
+            }
+
+            public void componentResized(ComponentEvent e) {
+                windowSettings
+                    .setSize(getWidth(), getHeight())
+                    .setCentered(false);
+                windowSettingsHandler.saveWindowSettings(windowSettings);
+            }
+
+            public void componentShown(ComponentEvent e) {
+            }
+        });
     }
 
     public Optional<T> response() {

@@ -286,7 +286,7 @@ public class ApplicationUIHandler {
         return UIManager.getBorder(key);
     }
 
-    public Rectangle getGraphicsDevicesBound() {
+    public Rectangle getScreenBound() {
         return stream(GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices())
             .map(GraphicsDevice::getDefaultConfiguration)
             .map(GraphicsConfiguration::getBounds)

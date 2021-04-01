@@ -44,7 +44,7 @@ public class TestFrame extends Frame {
     }
 
     public WindowSettingsHandler getWindowSettingsHandler() {
-        return frameSettingsHandler;
+        return windowSettingsHandler;
     }
 
     public MenuProvider getMenuProvider() {

@@ -36,8 +36,6 @@ import java.util.Optional;
 import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.context.ApplicationContextInjector.applicationContext;
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
-import static org.cosinus.swing.form.WindowSettings.DEFAULT_HEIGHT;
-import static org.cosinus.swing.form.WindowSettings.DEFAULT_WIDTH;
 
 /**
  * Abstract frame window with basic functionality
@@ -57,7 +55,7 @@ public class Frame extends JFrame implements Window, FormComponent {
     protected DefaultResourceResolver resourceResolver;
 
     @Autowired
-    protected WindowSettingsHandler frameSettingsHandler;
+    protected WindowSettingsHandler windowSettingsHandler;
 
     @Autowired
     protected MenuProvider menuProvider;
@@ -68,7 +66,7 @@ public class Frame extends JFrame implements Window, FormComponent {
     @Autowired
     protected ApplicationProperties applicationProperties;
 
-    private WindowSettings frameSettings;
+    private WindowSettings windowSettings;
 
     private MenuBar menuBar;
 
@@ -76,60 +74,46 @@ public class Frame extends JFrame implements Window, FormComponent {
         this(null);
     }
 
-    public Frame(WindowSettings frameSettings) {
+    public Frame(WindowSettings windowSettings) {
         if (applicationContext != null) {
             init();
         }
-        this.frameSettings = frameSettings;
+        this.windowSettings = windowSettings;
     }
 
     protected void init() {
         injectContext(this);
-        if (frameSettings == null) {
-            frameSettings = new WindowSettings(
+        if (windowSettings == null) {
+            windowSettings = new WindowSettings(
                 ofNullable(applicationProperties.getFrame().getName())
-                    .orElseGet(this::getClassName),
+                    .orElseGet(this::getWindowName),
                 applicationProperties.getName(),
                 applicationProperties.getIcon(),
                 applicationProperties.getMenu());
         }
 
-        frameSettingsHandler.loadWindowSettings(frameSettings);
+        windowSettingsHandler.loadWindowSettings(windowSettings);
 
         initFrameNameAndIcon();
-        initFramePositionAndSize();
+        initPositionAndSize();
         initFrameBasicActions();
     }
 
-    private String getClassName() {
-        return getClass().getSimpleName().split("\\$\\$")[0].toLowerCase();
-    }
-
-    private void initFramePositionAndSize() {
-        setSize(frameSettings.getWidth(), frameSettings.getHeight());
-        if (frameSettings.isCentered()) {
-            centerWindow();
-        } else {
-            setLocation(frameSettings.getX(), frameSettings.getY());
-        }
-
-        if (!uiHandler.getGraphicsDevicesBound().contains(getBounds())) {
-            setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-            centerWindow();
-        }
-        frameSettingsHandler.saveWindowSettings(frameSettings);
+    private void initPositionAndSize() {
+        setWindowPositionAndSize(windowSettings, uiHandler.getScreenBound());
+        windowSettingsHandler.saveWindowSettings(windowSettings);
     }
 
     private void initFrameBasicActions() {
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        if (frameSettings.isExitOnEscape()) {
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        if (windowSettings.isExitOnEscape()) {
             registerExitOnEscapeKey();
         }
 
         addWindowListener(new WindowAdapter() {
             public void windowOpened(WindowEvent e) {
-                if (frameSettings.isMaximized()) {
-                    setExtendedState(Frame.MAXIMIZED_BOTH);
+                if (windowSettings.isMaximized()) {
+                    setExtendedState(MAXIMIZED_BOTH);
                 }
             }
         });
@@ -140,19 +124,19 @@ public class Frame extends JFrame implements Window, FormComponent {
 
             public void componentMoved(ComponentEvent e) {
                 if (0 == (getExtendedState() & MAXIMIZED_BOTH)) {
-                    frameSettings
+                    windowSettings
                         .setPosition(getX(), getY())
                         .setCentered(false);
-                    frameSettingsHandler.saveWindowSettings(frameSettings);
+                    windowSettingsHandler.saveWindowSettings(windowSettings);
                 }
             }
 
             public void componentResized(ComponentEvent e) {
                 if (0 == (getExtendedState() & MAXIMIZED_BOTH)) {
-                    frameSettings
+                    windowSettings
                         .setSize(getWidth(), getHeight())
                         .setCentered(false);
-                    frameSettingsHandler.saveWindowSettings(frameSettings);
+                    windowSettingsHandler.saveWindowSettings(windowSettings);
                 }
             }
 
@@ -162,18 +146,18 @@ public class Frame extends JFrame implements Window, FormComponent {
 
         addWindowStateListener(e -> {
             if (0 != (e.getNewState() & MAXIMIZED_BOTH)) {
-                frameSettings.setMaximized(true);
-                frameSettings.resetOldPositionSize();
+                windowSettings.setMaximized(true);
+                windowSettings.resetOldPositionSize();
             } else if (e.getNewState() == NORMAL) {
-                frameSettings.setMaximized(false);
+                windowSettings.setMaximized(false);
             }
-            frameSettingsHandler.saveWindowSettings(frameSettings);
+            windowSettingsHandler.saveWindowSettings(windowSettings);
         });
     }
 
     private void initFrameNameAndIcon() {
-        setTitle(frameSettings.getTitle());
-        Optional.ofNullable(frameSettings.getIcon())
+        setTitle(windowSettings.getTitle());
+        Optional.ofNullable(windowSettings.getIcon())
             .flatMap(resourceResolver::resolveImageAsBytes)
             .map(ImageIcon::new)
             .map(ImageIcon::getImage)
@@ -181,7 +165,7 @@ public class Frame extends JFrame implements Window, FormComponent {
     }
 
     private void initFrameMenu() {
-        menuProvider.getMenu(frameSettings.getMenu())
+        menuProvider.getMenu(windowSettings.getMenu())
             .ifPresent(menuModel -> {
                 menuBar = new MenuBar(menuModel,
                                       menuProvider.hasBoxMenu(),
