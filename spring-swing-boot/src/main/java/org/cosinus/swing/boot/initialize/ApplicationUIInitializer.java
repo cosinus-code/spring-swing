@@ -35,21 +35,15 @@ public class ApplicationUIInitializer implements ApplicationInitializer {
 
     private final ApplicationUIHandler uiHandler;
 
-    private final Set<LookAndFeelInfo> lookAndFeels;
-
     public ApplicationUIInitializer(Preferences preferences,
-                                    ApplicationUIHandler uiHandler,
-                                    Set<LookAndFeelInfo> lookAndFeels) {
+                                    ApplicationUIHandler uiHandler) {
         this.preferences = preferences;
         this.uiHandler = uiHandler;
-        this.lookAndFeels = lookAndFeels;
     }
 
     @Override
     public void initialize() {
         Map<String, LookAndFeelInfo> availableLookAndFeels = uiHandler.getAvailableLookAndFeels();
-        lookAndFeels.forEach(lookAndFeel -> availableLookAndFeels.put(lookAndFeel.getName(), lookAndFeel));
-
         String lookAndFeelClassName = preferences.findPreference(LOOK_AND_FEEL)
             .map(Preference::getValue)
             .map(Object::toString)

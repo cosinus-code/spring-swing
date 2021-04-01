@@ -19,6 +19,7 @@ package org.cosinus.swing.boot.config;
 import org.cosinus.swing.boot.SpringSwingApplication;
 import org.cosinus.swing.boot.event.ApplicationContextStartupConfiguration;
 import org.cosinus.swing.context.ApplicationProperties;
+import org.cosinus.swing.context.UIProperties;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -30,7 +31,10 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration
 @ConditionalOnClass(SpringSwingApplication.class)
-@EnableConfigurationProperties(ApplicationProperties.class)
+@EnableConfigurationProperties({
+    ApplicationProperties.class,
+    UIProperties.class
+})
 @Import({
     ApplicationUIConfiguration.class,
     ApplicationConfiguration.class,

@@ -60,6 +60,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
+import javax.swing.UIManager.LookAndFeelInfo;
 import java.util.Set;
 
 import static org.cosinus.swing.boot.SpringSwingApplication.applicationClass;
@@ -161,8 +162,9 @@ public class ApplicationConfiguration {
 
     @Bean
     public ApplicationUIHandler uiHandler(Translator translator,
-                                          ProcessExecutor processExecutor) {
-        return new ApplicationUIHandler(translator, processExecutor);
+                                          ProcessExecutor processExecutor,
+                                          Set<LookAndFeelInfo> lookAndFeels) {
+        return new ApplicationUIHandler(translator, processExecutor, lookAndFeels);
     }
 
     @Bean

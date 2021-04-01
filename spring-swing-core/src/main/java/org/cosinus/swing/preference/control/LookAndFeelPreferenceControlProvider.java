@@ -17,12 +17,17 @@
 package org.cosinus.swing.preference.control;
 
 import org.cosinus.swing.form.control.Control;
+import org.cosinus.swing.form.control.Label;
 import org.cosinus.swing.preference.Preference;
+
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 public class LookAndFeelPreferenceControlProvider implements PreferenceControlProvider<String> {
 
     @Override
     public <T> Control<String> getPreferenceControl(Preference<T, String> preference) {
-        return new LookAndFeelControl(preference.getValues(), preference.getRealValue());
+        return isEmpty(preference.getValues()) ?
+            new Label(preference.getRealValue()) :
+            new LookAndFeelControl(preference.getValues(), preference.getRealValue());
     }
 }

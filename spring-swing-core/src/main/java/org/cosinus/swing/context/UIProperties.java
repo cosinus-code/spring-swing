@@ -13,20 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cosinus.swing.boot.initialize;
 
-import org.cosinus.swing.ui.ApplicationUIHandler;
+package org.cosinus.swing.context;
 
-public class CrossPlatformLookAndFeelInitializer implements ApplicationInitializer {
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
-    private final ApplicationUIHandler uiHandler;
+/**
+ * Application properties
+ */
+@ConfigurationProperties(prefix = "swing.ui")
+public class UIProperties {
 
-    public CrossPlatformLookAndFeelInitializer(ApplicationUIHandler uiHandler) {
-        this.uiHandler = uiHandler;
+    private String theme;
+
+    public String getTheme() {
+        return theme;
     }
 
-    @Override
-    public void initialize() {
-        uiHandler.setLookAndFeel(uiHandler.getCrossPlatformLookAndFeelClassName());
+    public void setTheme(String theme) {
+        this.theme = theme;
     }
 }

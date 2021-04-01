@@ -40,6 +40,7 @@ import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.META_DOWN_MASK;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Stream.concat;
 import static javax.swing.KeyStroke.getKeyStroke;
 import static org.apache.commons.lang3.SystemUtils.IS_OS_MAC;
 
@@ -76,10 +77,14 @@ public class ApplicationUIHandler {
 
     private final ProcessExecutor processExecutor;
 
+    private final Set<LookAndFeelInfo> lookAndFeels;
+
     public ApplicationUIHandler(Translator translator,
-                                ProcessExecutor processExecutor) {
+                                ProcessExecutor processExecutor,
+                                Set<LookAndFeelInfo> lookAndFeels) {
         this.translator = translator;
         this.processExecutor = processExecutor;
+        this.lookAndFeels = lookAndFeels;
     }
 
     public void translateDefaultUILabels() {
@@ -161,7 +166,8 @@ public class ApplicationUIHandler {
 
     public Map<String, LookAndFeelInfo> getAvailableLookAndFeels() {
         if (lookAndFeelMap == null) {
-            lookAndFeelMap = stream(UIManager.getInstalledLookAndFeels())
+            lookAndFeelMap = concat(stream(UIManager.getInstalledLookAndFeels()),
+                                    lookAndFeels.stream())
                 .collect(Collectors.toMap(LookAndFeelInfo::getName,
                                           Function.identity()));
         }
