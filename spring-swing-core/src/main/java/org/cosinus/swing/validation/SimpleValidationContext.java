@@ -16,5 +16,29 @@
 
 package org.cosinus.swing.validation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SimpleValidationContext implements ValidationContext {
+
+    private final List<ValidationError> errors;
+
+    public SimpleValidationContext() {
+        this.errors = new ArrayList<>();
+    }
+
+    @Override
+    public void addValidationError(ValidationError validationError) {
+        errors.add(validationError);
+    }
+
+    @Override
+    public List<ValidationError> getValidationErrors() {
+        return errors;
+    }
+
+    @Override
+    public boolean hasErrors() {
+        return !errors.isEmpty();
+    }
 }

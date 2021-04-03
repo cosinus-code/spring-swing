@@ -33,13 +33,13 @@ public class LookAndFeelControl extends ComboBox<String> {
     }
 
     @Override
-    public String getValue() {
-        String value = super.getValue();
+    public String getControlValue() {
+        String value = super.getControlValue();
         return DEFAULT_LOOK_AND_FEEL.equals(value) ? "" : value;
     }
 
     @Override
-    public void setValue(String value) {
-        super.setValue(isEmpty(value) ? DEFAULT_LOOK_AND_FEEL : value);
+    public void setControlValue(String value) {
+        super.setControlValue(isEmpty(value) ? DEFAULT_LOOK_AND_FEEL : value);
     }
 }

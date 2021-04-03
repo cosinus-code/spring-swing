@@ -43,12 +43,12 @@ public class ComboBox<T> extends JComboBox<T> implements Control<T> {
     }
 
     @Override
-    public T getValue() {
+    public T getControlValue() {
         return (T) getSelectedItem();
     }
 
     @Override
-    public void setValue(T value) {
+    public void setControlValue(T value) {
         setSelectedItem(value);
     }
 }

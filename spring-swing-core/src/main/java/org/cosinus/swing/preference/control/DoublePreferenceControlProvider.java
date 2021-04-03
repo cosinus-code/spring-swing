@@ -17,7 +17,7 @@
 package org.cosinus.swing.preference.control;
 
 import org.cosinus.swing.form.control.Control;
-import org.cosinus.swing.form.control.FormattedTextField;
+import org.cosinus.swing.form.control.NumberFormattedTextField;
 import org.cosinus.swing.preference.Preference;
 
 import static java.text.NumberFormat.getNumberInstance;
@@ -26,8 +26,8 @@ public class DoublePreferenceControlProvider implements PreferenceControlProvide
 
     @Override
     public <T> Control<Double> getPreferenceControl(Preference<T, Double> preference) {
-        FormattedTextField<Double> control = new FormattedTextField<>(getNumberInstance(), Double.class);
-        control.setValue(preference.getRealValue());
+        NumberFormattedTextField<Double> control = new NumberFormattedTextField<>(getNumberInstance(), Double.class);
+        control.setControlValue(preference.getRealValue());
         control.setColumns(10);
         return control;
     }

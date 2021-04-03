@@ -18,12 +18,18 @@ package org.cosinus.swing.error;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.cosinus.swing.dialog.OptionsDialog;
 import org.cosinus.swing.form.error.DefaultErrorFormProvider;
 import org.cosinus.swing.translate.Translator;
+import org.cosinus.swing.validation.ValidationError;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
+
+import static java.lang.Math.min;
+import static java.util.stream.Collectors.joining;
+import static org.cosinus.swing.dialog.OptionsDialog.showMessageDialog;
+import static java.lang.String.format;
 
 /**
  * Generic error handler
@@ -60,10 +66,10 @@ public class ErrorHandler {
     public void handleError(Component component,
                             String msg) {
         LOG.error(msg);
-        OptionsDialog.showMessageDialog(component,
-                                        msg,
-                                        translator.translate("error"),
-                                        JOptionPane.ERROR_MESSAGE);
+        showMessageDialog(component,
+                          msg,
+                          translator.translate("error"),
+                          JOptionPane.ERROR_MESSAGE);
     }
 
     public void handleError(Throwable throwable) {
@@ -77,4 +83,13 @@ public class ErrorHandler {
                     throwable);
     }
 
+    public void handleValidationErrors(Component component,
+                                       List<ValidationError> validationErrors) {
+        String errorMessage = format("<html><body style='width: 300px'>%s</html>",
+                                     validationErrors.subList(0, min(10, validationErrors.size()))
+                                         .stream()
+                                         .map(error -> translator.translate(error.getCode(), error.getArguments()))
+                                         .collect(joining("<br/>")));
+        handleError(component, errorMessage);
+    }
 }

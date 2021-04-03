@@ -38,12 +38,12 @@ public class ColorLabel extends JLabel implements Control<Color>, MouseListener 
     }
 
     @Override
-    public Color getValue() {
+    public Color getControlValue() {
         return getBackground();
     }
 
     @Override
-    public void setValue(Color color) {
+    public void setControlValue(Color color) {
         setBackground(color);
     }
 

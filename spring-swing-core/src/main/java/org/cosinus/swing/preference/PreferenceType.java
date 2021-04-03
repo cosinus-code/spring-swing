@@ -34,9 +34,7 @@ public enum PreferenceType {
     COLOR,
     FONT,
     LAF,
-    DATE,
-    PERCENT,
-    CURRENCY;
+    DATE;
 
     @JsonCreator
     public static PreferenceType toPreferenceType(String value) {

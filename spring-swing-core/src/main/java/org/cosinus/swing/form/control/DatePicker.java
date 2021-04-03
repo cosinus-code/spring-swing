@@ -37,12 +37,12 @@ public class DatePicker extends JDatePickerImpl implements Control<Date> {
     }
 
     @Override
-    public Date getValue() {
+    public Date getControlValue() {
         return getModel().getValue();
     }
 
     @Override
-    public void setValue(Date date) {
+    public void setControlValue(Date date) {
         getModel().setValue(date);
     }
 }

@@ -31,11 +31,11 @@ public class LanguageControl extends JComboBox<DisplayLocale> implements Control
         super(values.stream()
                   .map(DisplayLocale::new)
                   .toArray(DisplayLocale[]::new));
-        setValue(value);
+        setControlValue(value);
     }
 
     @Override
-    public Locale getValue() {
+    public Locale getControlValue() {
         return ofNullable(super.getSelectedItem())
             .map(DisplayLocale.class::cast)
             .map(DisplayLocale::getLocale)
@@ -43,7 +43,7 @@ public class LanguageControl extends JComboBox<DisplayLocale> implements Control
     }
 
     @Override
-    public void setValue(Locale locale) {
+    public void setControlValue(Locale locale) {
         setSelectedItem(new DisplayLocale(locale));
     }
 }

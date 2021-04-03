@@ -16,13 +16,22 @@
 
 package org.cosinus.swing.form.control;
 
-import org.cosinus.swing.form.control.Control;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.cosinus.swing.error.ValidationException;
+import org.cosinus.swing.validation.ValidationError;
 
 import javax.swing.*;
+import java.text.ParseException;
+import java.util.List;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
 public class Spinner<T> extends JSpinner implements Control<T> {
+
+    private static final Logger LOG = LogManager.getLogger(Spinner.class);
 
     public Spinner() {
         injectContext(this);
@@ -30,7 +39,7 @@ public class Spinner<T> extends JSpinner implements Control<T> {
 
     public Spinner(T value) {
         injectContext(this);
-        setValue(value);
+        setControlValue(value);
     }
 
     public Spinner(SpinnerModel model) {
@@ -39,7 +48,12 @@ public class Spinner<T> extends JSpinner implements Control<T> {
     }
 
     @Override
-    public T getValue() {
+    public T getControlValue() {
         return (T) super.getValue();
+    }
+
+    @Override
+    public void setControlValue(T value) {
+        super.setValue(value);
     }
 }

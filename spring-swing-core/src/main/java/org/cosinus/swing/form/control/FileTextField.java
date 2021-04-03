@@ -18,15 +18,20 @@ package org.cosinus.swing.form.control;
 
 import org.cosinus.swing.dialog.DialogHandler;
 import org.cosinus.swing.ui.ApplicationUIHandler;
+import org.cosinus.swing.validation.ValidationError;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import java.awt.*;
+import java.awt.event.FocusEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.File;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Predicate;
 
 import static java.awt.Cursor.HAND_CURSOR;
 import static java.awt.Cursor.TEXT_CURSOR;
@@ -110,13 +115,29 @@ public class FileTextField extends JTextField implements Control<File>, MouseLis
     }
 
     @Override
-    public File getValue() {
+    public File getControlValue() {
         return new File(getText());
     }
 
     @Override
-    public void setValue(File file) {
+    public void setControlValue(File file) {
         setText(file.getAbsolutePath());
+    }
+
+    @Override
+    public List<ValidationError> validateValue() {
+        return ofNullable(getControlValue())
+            .filter(Predicate.not(File::exists))
+            .map(file -> createValidationError(folderOnly ?
+                                                   "validation.file.not.found" :
+                                                   "validation.folder.not.found"))
+            .map(Collections::singletonList)
+            .orElseGet(Collections::emptyList);
+    }
+
+    @Override
+    public void processFocusEvent(FocusEvent event) {
+        processFocusEvent(event, super::processFocusEvent);
     }
 
     @Override

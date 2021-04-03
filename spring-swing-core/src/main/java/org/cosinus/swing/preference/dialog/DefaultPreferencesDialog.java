@@ -19,7 +19,6 @@ package org.cosinus.swing.preference.dialog;
 import org.cosinus.swing.border.Borders;
 import org.cosinus.swing.context.ApplicationHandler;
 import org.cosinus.swing.error.ErrorHandler;
-import org.cosinus.swing.error.ValidationException;
 import org.cosinus.swing.form.Dialog;
 import org.cosinus.swing.form.control.Control;
 import org.cosinus.swing.preference.Preference;
@@ -29,6 +28,8 @@ import org.cosinus.swing.preference.PreferencesProvider;
 import org.cosinus.swing.preference.control.*;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
+import org.cosinus.swing.validation.SimpleValidationContext;
+import org.cosinus.swing.validation.ValidationContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
@@ -40,9 +41,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION;
 import static javax.swing.SwingUtilities.updateComponentTreeUI;
@@ -229,7 +228,7 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
             .map(Preference::getValue)
             .map(Object::toString)
             .map(initialLookAndFeel -> ofNullable(preferenceControlsMap.get(LOOK_AND_FEEL))
-                .map(Control::getValue)
+                .map(Control::getControlValue)
                 .map(Object::toString)
                 .filter(initialLookAndFeel::equals)
                 .isEmpty())
@@ -247,21 +246,22 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
     }
 
     private boolean updatePreferences() {
-        AtomicBoolean success = new AtomicBoolean(true);
+        ValidationContext validationContext = new SimpleValidationContext();
         preferenceControlsMap
-            .forEach((name, preferenceControl) -> {
-                try {
-                    preferences.updatePreference(name, preferenceControl.getValue());
-                } catch (ValidationException ex) {
-                    //TODO: to collect validation errors
-                    errorHandler.handleError(this, format("Cannot update preferences '%s' with value '%s': %s",
-                                                          name,
-                                                          ex.getValue(),
-                                                          ex.getLocalizedMessage()));
-                    success.set(false);
-                }
-            });
-        return success.get();
+            .values()
+            .stream()
+            .map(Control::validateValue)
+            .forEach(validationContext::addValidationErrors);
+
+        if (validationContext.hasErrors()) {
+            errorHandler.handleValidationErrors(this, validationContext.getValidationErrors());
+            return false;
+        }
+
+        preferenceControlsMap
+            .forEach((name, preferenceControl) -> preferences
+                .updatePreference(name, preferenceControl.getControlValue()));
+        return true;
     }
 
     private void applyPreferences() {
@@ -274,7 +274,7 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
             .map(Preferences::getPreferencesMap)
             .ifPresent(preferencesMap -> preferencesMap
                 .forEach((name, preference) -> ofNullable(preferenceControlsMap.get(name))
-                    .ifPresent(control -> control.setValue(preference.getRealValue()))));
+                    .ifPresent(control -> control.setControlValue(preference.getRealValue()))));
     }
 
     public void updateUI() {

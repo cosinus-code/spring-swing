@@ -66,12 +66,12 @@ public class CheckBox extends JCheckBox implements Control<Boolean> {
     }
 
     @Override
-    public Boolean getValue() {
+    public Boolean getControlValue() {
         return isSelected();
     }
 
     @Override
-    public void setValue(Boolean selected) {
+    public void setControlValue(Boolean selected) {
         setSelected(selected);
     }
 

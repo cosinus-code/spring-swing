@@ -29,7 +29,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @JsonSubTypes({
     @JsonSubTypes.Type(value = TextPreference.class, name = "text"),
     @JsonSubTypes.Type(value = BooleanPreference.class, name = "boolean"),
-    @JsonSubTypes.Type(value = IntegerPreference.class, name = "int"),
+    @JsonSubTypes.Type(value = IntegerPreference.class, name = "integer"),
     @JsonSubTypes.Type(value = LongPreference.class, name = "long"),
     @JsonSubTypes.Type(value = FloatPreference.class, name = "float"),
     @JsonSubTypes.Type(value = DoublePreference.class, name = "double"),

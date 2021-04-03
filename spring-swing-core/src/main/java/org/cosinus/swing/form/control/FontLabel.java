@@ -43,19 +43,19 @@ public class FontLabel extends JLabel implements Control<Font>, MouseListener {
     public FontLabel(Font font) {
         injectContext(this);
 
-        setValue(font);
+        setControlValue(font);
         setBorder(borderWithMargin(lineBorder(uiHandler.getColor("controlHighlight")),
                                    3, 5, 3, 5));
         addMouseListener(this);
     }
 
     @Override
-    public Font getValue() {
+    public Font getControlValue() {
         return this.font;
     }
 
     @Override
-    public void setValue(Font font) {
+    public void setControlValue(Font font) {
         this.font = font;
         setText(getFontDescription(font));
     }
@@ -63,7 +63,7 @@ public class FontLabel extends JLabel implements Control<Font>, MouseListener {
     @Override
     public void mouseClicked(MouseEvent e) {
         dialogHandler.chooseFont(font)
-            .ifPresent(this::setValue);
+            .ifPresent(this::setControlValue);
     }
 
     @Override

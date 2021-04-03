@@ -49,12 +49,12 @@ public class Button extends JButton implements Control<String> {
     }
 
     @Override
-    public String getValue() {
+    public String getControlValue() {
         return getText();
     }
 
     @Override
-    public void setValue(String text) {
+    public void setControlValue(String text) {
         setText(text);
     }
 }

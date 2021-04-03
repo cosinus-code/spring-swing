@@ -16,30 +16,24 @@
 
 package org.cosinus.swing.error;
 
+import org.cosinus.swing.validation.ValidationError;
+
+import java.util.List;
+
 public class ValidationException extends RuntimeException {
 
-    private final String value;
-
-    public ValidationException(String value) {
-        this.value = value;
+    public ValidationException() {
     }
 
-    public ValidationException(String value, String message) {
+    public ValidationException(String message) {
         super(message);
-        this.value = value;
     }
 
-    public ValidationException(String value, String message, Throwable cause) {
+    public ValidationException(String message, Throwable cause) {
         super(message, cause);
-        this.value = value;
     }
 
-    public ValidationException(String value, Throwable cause) {
+    public ValidationException(Throwable cause) {
         super(cause);
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
     }
 }

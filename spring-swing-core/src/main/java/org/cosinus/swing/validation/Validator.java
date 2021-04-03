@@ -14,18 +14,10 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.preference.control;
+package org.cosinus.swing.validation;
 
-import org.cosinus.swing.form.control.Control;
-import org.cosinus.swing.form.control.Spinner;
-import org.cosinus.swing.preference.Preference;
+public interface Validator<T> {
 
-import static java.util.Optional.ofNullable;
+    void validate(T value, ValidationContext validationContext);
 
-public class IntegerPreferenceControlProvider implements PreferenceControlProvider<Integer> {
-
-    @Override
-    public <T> Control<Integer> getPreferenceControl(Preference<T, Integer> preference) {
-        return new Spinner<>(ofNullable(preference.getRealValue()).orElse(0));
-    }
 }

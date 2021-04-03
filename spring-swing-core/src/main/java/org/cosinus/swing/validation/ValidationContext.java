@@ -16,5 +16,33 @@
 
 package org.cosinus.swing.validation;
 
+import java.util.Arrays;
+import java.util.List;
+
 public interface ValidationContext {
+
+    void addValidationError(ValidationError validationError);
+
+    List<ValidationError> getValidationErrors();
+
+    boolean hasErrors();
+
+    default void addValidationError(String code, Object... arguments) {
+        addValidationError(new ValidationError(code, arguments));
+    }
+
+    default void addValidationErrors(List<ValidationError> errors) {
+        errors.forEach(this::addValidationError);
+    }
+
+    default void addValidationErrors(String... errorCodes) {
+        Arrays.stream(errorCodes)
+            .map(ValidationError::new)
+            .forEach(this::addValidationError);
+    }
+
+    default <T> ValidationContext validate(Validator<T> validator, T value) {
+        validator.validate(value, this);
+        return this;
+    }
 }

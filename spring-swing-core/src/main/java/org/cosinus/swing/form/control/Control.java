@@ -16,16 +16,37 @@
 
 package org.cosinus.swing.form.control;
 
-import javax.swing.*;
-import java.util.Optional;
+import org.cosinus.swing.validation.ValidationError;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
+
+import static java.awt.Color.red;
+import static java.awt.event.FocusEvent.FOCUS_LOST;
+import static java.util.Collections.emptyList;
 import static javax.accessibility.AccessibleRelation.LABELED_BY;
 
 public interface Control<T> {
 
-    T getValue();
+    String LABEL_COLOR = "labelColor";
 
-    void setValue(T realValue);
+    Color ERROR_COLOR = red;
+
+    T getControlValue();
+
+    void setControlValue(T value);
+
+    default List<ValidationError> validateValue() {
+        return emptyList();
+    }
+
+    default boolean isIgnoreValidationErrors() {
+        return false;
+    }
 
     default JLabel createAssociatedLabel(String label) {
         JLabel controlLabel = new JLabel(label);
@@ -37,11 +58,68 @@ public interface Control<T> {
     }
 
     default Optional<JLabel> getAssociatedLabel() {
+        return getClientProperty(LABELED_BY, JLabel.class);
+    }
+
+    default Optional<Color> getAssociatedLabelColor() {
+        return getClientProperty(LABEL_COLOR, Color.class);
+    }
+
+    default void setAssociatedLabelColor(Color color) {
+        setClientProperty(LABEL_COLOR, color);
+    }
+
+    default <T> Optional<T> getClientProperty(String propertyName, Class<T> propertyClass) {
         return Optional.of(this)
             .filter(control -> JComponent.class.isAssignableFrom(control.getClass()))
             .map(JComponent.class::cast)
-            .map(component -> component.getClientProperty(LABELED_BY))
-            .filter(label -> JLabel.class.isAssignableFrom(label.getClass()))
-            .map(JLabel.class::cast);
+            .map(component -> component.getClientProperty(propertyName))
+            .filter(property -> propertyClass.isAssignableFrom(property.getClass()))
+            .map(propertyClass::cast);
+    }
+
+    default <T> void setClientProperty(String propertyName, T propertyValue) {
+        Optional.of(this)
+            .filter(control -> JComponent.class.isAssignableFrom(control.getClass()))
+            .map(JComponent.class::cast)
+            .ifPresent(component -> component.putClientProperty(propertyName, propertyValue));
+    }
+
+    default void setNormalState() {
+        getAssociatedLabelColor()
+            .ifPresent(color -> getAssociatedLabel()
+                .ifPresent(label -> label.setForeground(color)));
+        setAssociatedLabelColor(null);
+    }
+
+    default void setErrorState() {
+        getAssociatedLabel().ifPresent(label -> {
+            if (getAssociatedLabelColor().isEmpty()) {
+                setAssociatedLabelColor(label.getForeground());
+            }
+            label.setForeground(getErrorColor());
+        });
+    }
+
+    default Color getErrorColor() {
+        return ERROR_COLOR;
+    }
+
+    default void processFocusEvent(FocusEvent event, Consumer<FocusEvent> focusEventProcessor) {
+        focusEventProcessor.accept(event);
+        if (!isIgnoreValidationErrors()) {
+            if (event.getID() == FOCUS_LOST && !validateValue().isEmpty()) {
+                setErrorState();
+            } else {
+                setNormalState();
+            }
+        }
+    }
+
+    default ValidationError createValidationError(String code) {
+        return getAssociatedLabel()
+            .map(JLabel::getText)
+            .map(label -> new ValidationError(code, label))
+            .orElseGet(() -> new ValidationError(code));
     }
 }
