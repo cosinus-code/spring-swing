@@ -34,5 +34,6 @@ public class TestSwingInjectApplication extends SwingApplicationFrame {
 
     @Override
     protected void initContent() {
+        testSpringComponent.testMethod();
     }
 }

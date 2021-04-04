@@ -69,7 +69,7 @@ public interface Control<T> {
         setClientProperty(LABEL_COLOR, color);
     }
 
-    default <T> Optional<T> getClientProperty(String propertyName, Class<T> propertyClass) {
+    default <P> Optional<P> getClientProperty(String propertyName, Class<P> propertyClass) {
         return Optional.of(this)
             .filter(control -> JComponent.class.isAssignableFrom(control.getClass()))
             .map(JComponent.class::cast)
@@ -78,7 +78,7 @@ public interface Control<T> {
             .map(propertyClass::cast);
     }
 
-    default <T> void setClientProperty(String propertyName, T propertyValue) {
+    default <P> void setClientProperty(String propertyName, P propertyValue) {
         Optional.of(this)
             .filter(control -> JComponent.class.isAssignableFrom(control.getClass()))
             .map(JComponent.class::cast)

@@ -26,6 +26,7 @@ import org.cosinus.swing.preference.PreferenceType;
 import org.cosinus.swing.preference.Preferences;
 import org.cosinus.swing.preference.PreferencesProvider;
 import org.cosinus.swing.preference.control.*;
+import org.cosinus.swing.translate.Translatable;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.cosinus.swing.validation.SimpleValidationContext;
@@ -167,7 +168,7 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
         preferencesScrollPane.setViewportView(preferencesCardFramePanel);
         preferencesScrollPane.setBorder(emptyBorder(1));
 
-        preferencesSetPanel.add(translatePreferenceName(setName), preferencesScrollPane);
+        preferencesSetPanel.add(setName, preferencesScrollPane);
     }
 
     private <T, R> void addPreferenceControl(JPanel preferencesPanel, String name, Preference<T, R> preference) {
@@ -187,7 +188,7 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
     public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
             ((CardLayout) preferencesSetPanel.getLayout())
-                .show(preferencesSetPanel, preferenceSetList.getSelectedValue());
+                .show(preferencesSetPanel, preferenceListModel.getKey(preferenceSetList.getSelectedIndex()));
         }
     }
 
@@ -357,7 +358,7 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
         }
     }
 
-    private class PreferenceListModel extends AbstractListModel<String> {
+    private class PreferenceListModel extends AbstractListModel<String> implements Translatable {
 
         private final List<String> preferenceNames;
 
@@ -381,9 +382,14 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
             return itemsMap.get(preferenceNames.get(index));
         }
 
+        @Override
         public void translate() {
             preferenceNames.forEach(
                 name -> itemsMap.put(name, DefaultPreferencesDialog.this.translatePreferenceName(name)));
+        }
+
+        public String getKey(int index) {
+            return preferenceNames.get(index);
         }
     }
 }

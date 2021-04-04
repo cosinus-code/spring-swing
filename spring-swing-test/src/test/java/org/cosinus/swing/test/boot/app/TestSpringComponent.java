@@ -20,4 +20,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TestSpringComponent {
+
+    public void testMethod() {
+
+    }
 }

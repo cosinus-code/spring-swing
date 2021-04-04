@@ -18,15 +18,9 @@ package org.cosinus.swing.form.control;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.cosinus.swing.error.ValidationException;
-import org.cosinus.swing.validation.ValidationError;
 
 import javax.swing.*;
-import java.text.ParseException;
-import java.util.List;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
 public class Spinner<T> extends JSpinner implements Control<T> {

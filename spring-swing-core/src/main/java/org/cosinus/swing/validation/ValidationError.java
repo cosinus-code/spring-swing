@@ -18,9 +18,9 @@ package org.cosinus.swing.validation;
 
 public class ValidationError {
 
-    private String code;
+    private final String code;
 
-    private Object[] arguments;
+    private final Object[] arguments;
 
     public ValidationError(String code, Object... arguments) {
         this.code = code;

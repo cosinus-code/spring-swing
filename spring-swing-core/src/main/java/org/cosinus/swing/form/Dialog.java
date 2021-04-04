@@ -23,8 +23,6 @@ import javax.swing.*;
 import java.awt.Frame;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.Optional;
 
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;

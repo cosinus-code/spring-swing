@@ -22,7 +22,6 @@ import org.cosinus.swing.ui.ApplicationUIHandler;
 
 import javax.swing.UIManager.LookAndFeelInfo;
 import java.util.Map;
-import java.util.Set;
 
 import static org.cosinus.swing.preference.Preferences.LOOK_AND_FEEL;
 

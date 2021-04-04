@@ -17,6 +17,7 @@
 package org.cosinus.swing.form;
 
 import org.cosinus.swing.action.EscapeActionListener;
+import org.cosinus.swing.translate.Translatable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,7 +34,7 @@ import static org.cosinus.swing.form.WindowSettings.DEFAULT_WIDTH;
 /**
  * Generic window interface
  */
-public interface Window {
+public interface Window extends Translatable {
 
     default void registerExitOnEscapeKey() {
         getComponent().ifPresent(component -> component

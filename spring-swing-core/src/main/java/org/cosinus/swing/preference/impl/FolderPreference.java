@@ -26,7 +26,6 @@ import java.io.File;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static java.util.Optional.ofNullable;
-import static org.cosinus.swing.preference.PreferenceType.FILE;
 import static org.cosinus.swing.preference.PreferenceType.FOLDER;
 
 @JsonIgnoreProperties(ignoreUnknown = true)

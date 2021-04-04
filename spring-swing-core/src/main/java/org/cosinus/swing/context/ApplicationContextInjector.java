@@ -18,9 +18,6 @@ package org.cosinus.swing.context;
 
 import org.springframework.context.ApplicationContext;
 
-import static java.lang.String.format;
-import static java.util.Arrays.stream;
-
 public class ApplicationContextInjector {
 
     public static ApplicationContext applicationContext;

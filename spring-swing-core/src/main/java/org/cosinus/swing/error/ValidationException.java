@@ -16,10 +16,6 @@
 
 package org.cosinus.swing.error;
 
-import org.cosinus.swing.validation.ValidationError;
-
-import java.util.List;
-
 public class ValidationException extends RuntimeException {
 
     public ValidationException() {

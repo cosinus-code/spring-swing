@@ -21,6 +21,8 @@ package org.cosinus.swing.error;
  */
 public class ActionNotFoundException extends RuntimeException {
 
+    private static final long serialVersionUID = -8028789626344404281L;
+
     public ActionNotFoundException() {
         this("Action not found");
     }

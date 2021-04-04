@@ -33,5 +33,6 @@ public class TestSpringSwingApplication extends SwingApplicationFrame {
 
     @Override
     protected void initContent() {
+        testSpringComponent.testMethod();
     }
 }

@@ -18,9 +18,9 @@ package org.cosinus.swing.preference;
 
 public class PreferenceException extends RuntimeException {
 
-    private String preferenceName;
+    private final String preferenceName;
 
-    private String preferenceValue;
+    private final String preferenceValue;
 
     public PreferenceException(String preferenceName, String preferenceValue, String message) {
         super(message);

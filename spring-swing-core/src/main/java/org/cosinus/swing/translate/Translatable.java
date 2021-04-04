@@ -18,6 +18,6 @@ package org.cosinus.swing.translate;
 
 public interface Translatable {
 
-    void translate(Translator translator);
+    void translate();
 
 }

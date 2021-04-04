@@ -17,7 +17,6 @@
 package org.cosinus.swing.context;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 /**
  * Application properties

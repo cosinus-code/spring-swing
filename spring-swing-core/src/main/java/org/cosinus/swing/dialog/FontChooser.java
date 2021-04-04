@@ -53,14 +53,6 @@ public class FontChooser extends Dialog<Font> implements ActionListener, ListSel
 
     private static final int DEFAULT_FONT_SIZE = 10;
 
-    private JButton btnOK, btnCancel;
-    private JLabel sample;
-    private JList<String> lstFont, lstStyle, lstSize;
-    private JTextField txtFont, txtStyle, txtSize;
-    private Font font;
-
-    private Map<Integer, Integer> fontStylesMap;
-
     @Autowired
     private Translator translator;
 
@@ -68,6 +60,18 @@ public class FontChooser extends Dialog<Font> implements ActionListener, ListSel
     private ErrorHandler errorHandler;
 
     private final String text;
+
+    private final Font font;
+
+    private JButton btnOK, btnCancel;
+
+    private JLabel sample;
+
+    private JList<String> lstFont, lstStyle, lstSize;
+
+    private JTextField txtFont, txtStyle, txtSize;
+
+    private Map<Integer, Integer> fontStylesMap;
 
     public FontChooser(Dialog dialog, String title, boolean modal, String text, Font font) {
         super(dialog, title, modal);
@@ -147,18 +151,19 @@ public class FontChooser extends Dialog<Font> implements ActionListener, ListSel
         panSizeText.add(txtSize);
 
         JPanel panFont = new JPanel(new BorderLayout(5, 5));
+        JPanel panStyle = new JPanel(new BorderLayout(5, 5));
+        JPanel panSize = new JPanel(new BorderLayout(5, 5));
+        JPanel panStyleSize = new JPanel(new BorderLayout(5, 5));
+
         panFont.add(panFontText, NORTH);
         panFont.add(scrFont, CENTER);
 
-        JPanel panStyle = new JPanel(new BorderLayout(5, 5));
         panStyle.add(panStyleText, NORTH);
         panStyle.add(scrStyle, CENTER);
 
-        JPanel panSize = new JPanel(new BorderLayout(5, 5));
         panSize.add(panSizeText, NORTH);
         panSize.add(scrSize, CENTER);
 
-        JPanel panStyleSize = new JPanel(new BorderLayout(5, 5));
         panStyleSize.add(panStyle, WEST);
         panStyleSize.add(panSize, EAST);
 

@@ -22,8 +22,6 @@ import org.cosinus.swing.preference.Preference;
 
 import java.awt.*;
 
-import static javax.swing.BorderFactory.createLineBorder;
-
 public class ColorPreferenceControlProvider implements PreferenceControlProvider<Color> {
 
     @Override
