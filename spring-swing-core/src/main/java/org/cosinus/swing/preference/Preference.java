@@ -39,9 +39,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
     @JsonSubTypes.Type(value = ColorPreference.class, name = "color"),
     @JsonSubTypes.Type(value = FontPreference.class, name = "font"),
     @JsonSubTypes.Type(value = LookAndFeelPreference.class, name = "laf"),
-    @JsonSubTypes.Type(value = DatePreference.class, name = "date"),
-    @JsonSubTypes.Type(value = PercentPreference.class, name = "percent"),
-    @JsonSubTypes.Type(value = CurrencyPreference.class, name = "currency")
+    @JsonSubTypes.Type(value = DatePreference.class, name = "date")
 })
 public abstract class Preference<T, R> {
 

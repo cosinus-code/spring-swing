@@ -122,4 +122,8 @@ public interface Control<T> {
             .map(label -> new ValidationError(code, label))
             .orElseGet(() -> new ValidationError(code));
     }
+
+    default void updateAssociatedLabel(String labelText) {
+        getAssociatedLabel().ifPresent(label -> label.setText(labelText));
+    }
 }

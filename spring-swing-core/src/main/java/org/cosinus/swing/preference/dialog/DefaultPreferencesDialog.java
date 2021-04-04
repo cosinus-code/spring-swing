@@ -39,8 +39,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static java.util.Optional.ofNullable;
 import static javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION;
@@ -70,6 +74,8 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
 
     @Autowired
     private ApplicationHandler applicationHandler;
+
+    private PreferenceListModel preferenceListModel;
 
     private JList<String> preferenceSetList;
 
@@ -132,12 +138,8 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
         getContentPane().add(preferenceSouthPanel, BorderLayout.SOUTH);
 
         if (preferences.getPreferenceSetsMap().size() > 1) {
-            preferenceSetList = new JList<>(
-                preferences.getPreferenceSetsMap()
-                    .keySet()
-                    .stream()
-                    .map(this::translatePreferenceName)
-                    .toArray(String[]::new));
+            preferenceListModel = new PreferenceListModel();
+            preferenceSetList = new JList<>(preferenceListModel);
             preferenceSetList.setCellRenderer(new PreferenceListCellRenderer());
             preferenceSetList.setSelectionMode(SINGLE_INTERVAL_SELECTION);
             preferenceSetList.addListSelectionListener(this);
@@ -205,8 +207,13 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
 
     private void apply() {
         boolean lookAndFeelChanged = isLookAndFeelChanged();
+        boolean languageChanged = isLanguageChanged();
         if (updatePreferences() && savePreferences()) {
             applyPreferences();
+            if (languageChanged) {
+                translate();
+                preferenceSetList.repaint();
+            }
             if (lookAndFeelChanged) {
                 updateLookAndFeel();
             }
@@ -224,13 +231,21 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
     }
 
     protected boolean isLookAndFeelChanged() {
-        return preferences.findPreference(LOOK_AND_FEEL)
+        return isPreferenceChanged(LOOK_AND_FEEL);
+    }
+
+    protected boolean isLanguageChanged() {
+        return isPreferenceChanged(Preferences.LANGUAGE);
+    }
+
+    protected boolean isPreferenceChanged(String preferenceName) {
+        return preferences.findPreference(preferenceName)
             .map(Preference::getValue)
             .map(Object::toString)
-            .map(initialLookAndFeel -> ofNullable(preferenceControlsMap.get(LOOK_AND_FEEL))
+            .map(initialPreference -> ofNullable(preferenceControlsMap.get(preferenceName))
                 .map(Control::getControlValue)
                 .map(Object::toString)
-                .filter(initialLookAndFeel::equals)
+                .filter(initialPreference::equals)
                 .isEmpty())
             .orElse(false);
     }
@@ -266,7 +281,6 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
 
     private void applyPreferences() {
         applicationHandler.reloadApplication();
-        //TODO: to translate whole dialog
     }
 
     protected void restoreDefaultPreferences() {
@@ -323,7 +337,14 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
 
     @Override
     public void translate() {
-
+        restoreDefaultsButton.setText(translator.translate("restore-defaults"));
+        okButton.setText(translator.translate("ok"));
+        applyButton.setText(translator.translate("apply"));
+        cancelButton.setText(translator.translate("cancel"));
+        ofNullable(preferenceListModel)
+            .ifPresent(PreferenceListModel::translate);
+        preferenceControlsMap.forEach(
+            (name, preferenceControl) -> preferenceControl.updateAssociatedLabel(translatePreferenceName(name)));
     }
 
     private static class PreferenceListCellRenderer extends DefaultListCellRenderer {
@@ -333,6 +354,36 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
             JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
             label.setBorder(Borders.emptyBorder(4, 8, 4, 8));
             return label;
+        }
+    }
+
+    private class PreferenceListModel extends AbstractListModel<String> {
+
+        private final List<String> preferenceNames;
+
+        private final Map<String, String> itemsMap;
+
+        private PreferenceListModel() {
+            this.preferenceNames = new ArrayList<>(preferences.getPreferenceSetsMap().keySet());
+            this.itemsMap = preferenceNames
+                .stream()
+                .collect(Collectors.toMap(Function.identity(),
+                                          DefaultPreferencesDialog.this::translatePreferenceName));
+        }
+
+        @Override
+        public int getSize() {
+            return preferenceNames.size();
+        }
+
+        @Override
+        public String getElementAt(int index) {
+            return itemsMap.get(preferenceNames.get(index));
+        }
+
+        public void translate() {
+            preferenceNames.forEach(
+                name -> itemsMap.put(name, DefaultPreferencesDialog.this.translatePreferenceName(name)));
         }
     }
 }

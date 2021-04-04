@@ -76,13 +76,18 @@ public class CheckBox extends JCheckBox implements Control<Boolean> {
     }
 
     @Override
-    public JLabel createAssociatedLabel(String label) {
-        setText(label);
+    public JLabel createAssociatedLabel(String labelText) {
+        updateAssociatedLabel(labelText);
         return new JLabel();
     }
 
     @Override
     public Optional<JLabel> getAssociatedLabel() {
         return Optional.empty();
+    }
+
+    @Override
+    public void updateAssociatedLabel(String labelText) {
+        setText(labelText);
     }
 }
