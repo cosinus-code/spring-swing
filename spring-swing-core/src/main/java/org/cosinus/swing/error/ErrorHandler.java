@@ -27,9 +27,9 @@ import java.awt.*;
 import java.util.List;
 
 import static java.lang.Math.min;
+import static java.lang.String.format;
 import static java.util.stream.Collectors.joining;
 import static org.cosinus.swing.dialog.OptionsDialog.showMessageDialog;
-import static java.lang.String.format;
 
 /**
  * Generic error handler
@@ -48,8 +48,7 @@ public class ErrorHandler {
         this.errorFormProvider = errorFormProvider;
     }
 
-    public void handleError(Window parent,
-                            Throwable throwable) {
+    public void handleError(Window parent, Throwable throwable) {
         LOG.error(throwable.getMessage(), throwable);
         errorFormProvider
             .getErrorForm(parent)
@@ -73,14 +72,7 @@ public class ErrorHandler {
     }
 
     public void handleError(Throwable throwable) {
-        handleError(null,
-                    throwable);
-    }
-
-    public void handleSevereError(Throwable throwable) {
-        //TODO
-        handleError(null,
-                    throwable);
+        handleError(null, throwable);
     }
 
     public void handleValidationErrors(Component component,

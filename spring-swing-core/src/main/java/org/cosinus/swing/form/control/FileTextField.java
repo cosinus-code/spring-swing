@@ -129,8 +129,8 @@ public class FileTextField extends JTextField implements Control<File>, MouseLis
         return ofNullable(getControlValue())
             .filter(Predicate.not(File::exists))
             .map(file -> createValidationError(folderOnly ?
-                                                   "validation.file.not.found" :
-                                                   "validation.folder.not.found"))
+                                                   "validation.file-not-found" :
+                                                   "validation.folder-not-found"))
             .map(Collections::singletonList)
             .orElseGet(Collections::emptyList);
     }

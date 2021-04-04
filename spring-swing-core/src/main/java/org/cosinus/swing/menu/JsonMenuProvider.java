@@ -18,6 +18,8 @@ package org.cosinus.swing.menu;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.cosinus.swing.convert.JsonFileConverter;
+import org.cosinus.swing.error.JsonConvertException;
+import org.cosinus.swing.error.SwingSevereException;
 import org.cosinus.swing.resource.ResourceResolver;
 import org.cosinus.swing.resource.ResourceType;
 
@@ -36,7 +38,11 @@ public class JsonMenuProvider extends JsonFileConverter<MenuModel> implements Me
 
     @Override
     public Optional<MenuModel> getMenu(String name) {
-        return convert(name);
+        try {
+            return convert(name);
+        } catch (JsonConvertException ex) {
+            throw new SwingSevereException("Failed to load application menu.", ex);
+        }
     }
 
     @Override

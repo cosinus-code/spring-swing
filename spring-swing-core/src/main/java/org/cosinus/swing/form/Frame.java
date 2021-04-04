@@ -192,7 +192,7 @@ public class Frame extends JFrame implements Window, FormComponent {
         try {
             initFrameMenu();
         } catch (Exception ex) {
-            errorHandler.handleSevereError(ex);
+            errorHandler.handleError(ex);
         }
     }
 

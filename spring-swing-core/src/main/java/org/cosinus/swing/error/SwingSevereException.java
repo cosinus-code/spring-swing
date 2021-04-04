@@ -14,24 +14,22 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.form.error;
+package org.cosinus.swing.error;
 
-import org.cosinus.swing.form.Dialog;
-import org.cosinus.swing.form.Frame;
+public class SwingSevereException extends RuntimeException {
 
-import java.awt.*;
+    public SwingSevereException() {
+    }
 
-/**
- * Error form provider
- */
-public class DefaultErrorFormProvider implements ErrorFormProvider {
+    public SwingSevereException(String message) {
+        super(message);
+    }
 
-    @Override
-    public ErrorForm getErrorForm(Window parent) {
-        DefaultErrorForm errorDialog = parent instanceof Dialog<?> ?
-            new DefaultErrorForm((Dialog<?>) parent) :
-            new DefaultErrorForm((Frame) parent);
-        errorDialog.init();
-        return errorDialog;
+    public SwingSevereException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public SwingSevereException(Throwable cause) {
+        super(cause);
     }
 }

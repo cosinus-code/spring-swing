@@ -14,24 +14,22 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.form.error;
+package org.cosinus.swing.error;
 
-import org.cosinus.swing.form.Dialog;
-import org.cosinus.swing.form.Frame;
+public class JsonConvertException extends RuntimeException {
 
-import java.awt.*;
+    public JsonConvertException() {
+    }
 
-/**
- * Error form provider
- */
-public class DefaultErrorFormProvider implements ErrorFormProvider {
+    public JsonConvertException(String message) {
+        super(message);
+    }
 
-    @Override
-    public ErrorForm getErrorForm(Window parent) {
-        DefaultErrorForm errorDialog = parent instanceof Dialog<?> ?
-            new DefaultErrorForm((Dialog<?>) parent) :
-            new DefaultErrorForm((Frame) parent);
-        errorDialog.init();
-        return errorDialog;
+    public JsonConvertException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public JsonConvertException(Throwable cause) {
+        super(cause);
     }
 }

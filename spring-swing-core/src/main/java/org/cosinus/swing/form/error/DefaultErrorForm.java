@@ -19,6 +19,7 @@ package org.cosinus.swing.form.error;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.action.EscapeAction;
+import org.cosinus.swing.error.SwingSevereException;
 import org.cosinus.swing.form.Dialog;
 import org.cosinus.swing.form.Frame;
 import org.cosinus.swing.translate.Translator;
@@ -70,21 +71,15 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
     /**
      * Creates new form ErrorForm
      */
-    public DefaultErrorForm(Frame parent,
-                            boolean modal) {
-        super(parent,
-              ERROR_WINDOW_TITLE,
-              modal);
+    public DefaultErrorForm(Frame parent) {
+        super(parent, ERROR_WINDOW_TITLE, true);
     }
 
     /**
      * Creates new form ErrorForm
      */
-    public DefaultErrorForm(Dialog parent,
-                            boolean modal) {
-        super(parent,
-              ERROR_WINDOW_TITLE,
-              modal);
+    public DefaultErrorForm(Dialog parent) {
+        super(parent, ERROR_WINDOW_TITLE, true);
     }
 
     @Override
@@ -155,9 +150,11 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
         }
     }
 
+    @Override
     public void showError(Throwable throwable) {
+        boolean severe = throwable instanceof SwingSevereException;
         txtDescription.setText(format(ERROR_MESSAGE,
-                                      translate("ErrorForm.message"),
+                                      translate(severe ? "ErrorForm.severe-message" : "ErrorForm.message"),
                                       throwable.getLocalizedMessage()));
 
         try (StringWriter writer = new StringWriter()) {
@@ -167,6 +164,8 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
         } catch (IOException ex) {
             LOG.error("", ex);
         }
+
+        continueButton.setVisible(!severe);
 
         pack();
         centerWindow();

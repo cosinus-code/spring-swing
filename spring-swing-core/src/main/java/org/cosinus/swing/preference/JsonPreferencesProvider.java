@@ -18,6 +18,8 @@ package org.cosinus.swing.preference;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.cosinus.swing.convert.JsonFileConverter;
+import org.cosinus.swing.error.JsonConvertException;
+import org.cosinus.swing.error.SwingSevereException;
 import org.cosinus.swing.resource.ResourceResolver;
 import org.cosinus.swing.resource.ResourceType;
 
@@ -41,8 +43,12 @@ public class JsonPreferencesProvider extends JsonFileConverter<PreferencesSet> i
 
     @Override
     public Optional<Preferences> getPreferences() {
-        return convertToMapOfModels(PREFERENCES_FILE_NAME)
-            .map(Preferences::new);
+        try {
+            return convertToMapOfModels(PREFERENCES_FILE_NAME)
+                .map(Preferences::new);
+        } catch (JsonConvertException ex) {
+            throw new SwingSevereException("Failed to load application preferences.", ex);
+        }
     }
 
     @Override

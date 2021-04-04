@@ -105,7 +105,7 @@ public class NumberFormattedTextField<T extends Number> extends JFormattedTextFi
             return emptyList();
         } catch (ValidationException e) {
             LOG.error("Invalid formatted value", e);
-            return singletonList(createValidationError("validation.invalid.number"));
+            return singletonList(createValidationError("validation.invalid-number"));
         }
     }
 

@@ -17,6 +17,7 @@
 package org.cosinus.swing.convert;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.cosinus.swing.error.JsonConvertException;
 import org.cosinus.swing.resource.ResourceLocator;
 import org.cosinus.swing.resource.ResourceResolver;
 import org.cosinus.swing.resource.ResourceSource;
@@ -100,9 +101,9 @@ public abstract class JsonFileConverter<T> {
         try {
             return objectMapper.readValue(bytes, modelClass);
         } catch (IOException e) {
-            throw new RuntimeException(format("The json file doesn't contain the expected model of type %s: %s",
-                                              modelClass,
-                                              new String(bytes)), e);
+            throw new JsonConvertException(format("The json file doesn't contain the expected model of type %s: %s",
+                                                  modelClass,
+                                                  new String(bytes)), e);
         }
     }
 
@@ -112,9 +113,9 @@ public abstract class JsonFileConverter<T> {
                 .getTypeFactory()
                 .constructParametricType(List.class, modelClass));
         } catch (IOException e) {
-            throw new RuntimeException(format("The json file doesn't contain the expected list of models of type %s: %s",
-                                              modelClass,
-                                              new String(bytes)), e);
+            throw new JsonConvertException(format("The json file doesn't contain the expected list of models of type %s: %s",
+                                                  modelClass,
+                                                  new String(bytes)), e);
         }
     }
 
@@ -124,9 +125,9 @@ public abstract class JsonFileConverter<T> {
                 .getTypeFactory()
                 .constructParametricType(Map.class, String.class, modelClass));
         } catch (IOException e) {
-            throw new RuntimeException(format("The json file doesn't contain the expected json map of models of type %s: %s",
-                                              modelClass,
-                                              new String(bytes)), e);
+            throw new JsonConvertException(format("The json file doesn't contain the expected json map of models of type %s: %s",
+                                                  modelClass,
+                                                  new String(bytes)), e);
         }
     }
 
