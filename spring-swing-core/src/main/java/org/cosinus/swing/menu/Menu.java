@@ -41,11 +41,11 @@ public class Menu extends JMenu implements FormComponent {
 
     private final List<FormComponent> formComponents;
 
-    /**
-     * Creates a new instance of Menu
-     */
-    public Menu(String key,
-                boolean duplicate) {
+    public Menu(String key) {
+        this(key, false);
+    }
+
+    public Menu(String key, boolean duplicate) {
         super();
         injectContext(this);
 

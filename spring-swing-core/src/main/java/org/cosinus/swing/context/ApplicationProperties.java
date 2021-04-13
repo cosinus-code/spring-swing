@@ -19,6 +19,8 @@ package org.cosinus.swing.context;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
+import static java.util.Optional.ofNullable;
+
 /**
  * Application properties
  */
@@ -26,6 +28,8 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 public class ApplicationProperties {
 
     private String name;
+
+    private String version;
 
     private String icon;
 
@@ -44,6 +48,15 @@ public class ApplicationProperties {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getVersion() {
+        return ofNullable(version)
+            .orElseGet(this::getManifestVersion);
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public String getIcon() {
@@ -84,6 +97,10 @@ public class ApplicationProperties {
 
     public void setIconsPath(String iconsPath) {
         this.iconsPath = iconsPath;
+    }
+
+    public String getManifestVersion() {
+        return getClass().getPackage().getImplementationVersion();
     }
 
     public static class Frame {
