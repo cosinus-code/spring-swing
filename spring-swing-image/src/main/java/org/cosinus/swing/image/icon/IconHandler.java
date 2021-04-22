@@ -64,7 +64,9 @@ public class IconHandler {
             .map(ImageIcon::new);
     }
 
-    @Cacheable(value = SPRING_SWING_ICONS_CACHE_NAME, keyGenerator = "fileExtensionKeyGenerator")
+    @Cacheable(value = SPRING_SWING_ICONS_CACHE_NAME,
+        condition = "#file.parent != null",
+        keyGenerator = "fileExtensionKeyGenerator")
     public Optional<Icon> findIconByFile(File file, IconSize size) {
         return iconProvider.findIconByFile(file, size)
             .or(() -> uiHandler.getDefaultFileIcon(file));
