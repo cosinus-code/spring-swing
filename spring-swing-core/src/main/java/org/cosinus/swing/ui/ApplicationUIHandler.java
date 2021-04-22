@@ -29,10 +29,7 @@ import javax.swing.border.Border;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
 import java.io.File;
-import java.util.AbstractMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -333,7 +330,10 @@ public class ApplicationUIHandler {
             .stream()
             .map(entry -> new ImmutablePair<>(entry.getKey().toString(), UIManager.get(entry.getKey())))
             .filter(entry -> entry.getValue() instanceof FontUIResource)
-            .collect(toMap(Pair::getKey, entry -> (FontUIResource) entry.getValue()));
+            .collect(toMap(Pair::getKey,
+                           entry -> (FontUIResource) entry.getValue(),
+                           (v1, v2) -> v1,
+                           HashMap::new));
     }
 
     public void setDefaultFont(String key, Font font) {
