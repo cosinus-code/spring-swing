@@ -31,8 +31,9 @@ public class LinuxProcessExecutor implements ProcessExecutor {
 
     @Override
     public void executeFile(File file) {
-        execute(file.getParentFile(),
-                "kfmclient", "exec", file.getName());
+//        execute(file.getParentFile(),
+//                "kfmclient", "exec", file.getName());
+        execute("xdg-open", file.getAbsolutePath());
     }
 
     @Override

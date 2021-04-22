@@ -16,10 +16,14 @@
 
 package org.cosinus.swing.preference;
 
+import static java.util.Optional.ofNullable;
+
 public abstract class ObjectPreference<R> extends Preference<String, R> {
 
     @Override
     public void setRealValue(R realValue) {
-        setValue(realValue.toString());
+        setValue(ofNullable(realValue)
+                     .map(Object::toString)
+                     .orElse(null));
     }
 }

@@ -21,6 +21,8 @@ import org.cosinus.swing.boot.condition.ConditionalOnLinux;
 import org.cosinus.swing.boot.condition.ConditionalOnMac;
 import org.cosinus.swing.boot.condition.ConditionalOnWindows;
 import org.cosinus.swing.context.ApplicationProperties;
+import org.cosinus.swing.context.UIProperties;
+import org.cosinus.swing.exec.ProcessExecutor;
 import org.cosinus.swing.image.ImageHandler;
 import org.cosinus.swing.image.icon.*;
 import org.cosinus.swing.resource.ClasspathResourceResolver;
@@ -74,15 +76,9 @@ public class SpringSwingImageAutoConfiguration {
     @Bean
     @ConditionalOnLinux
     public IconProvider linuxIconProvider(ApplicationProperties applicationProperties,
-                                          IconsMapProvider iconsMapProvider) {
-        return new LinuxIconProvider(applicationProperties, iconsMapProvider);
-    }
-
-    @Bean
-    @ConditionalOnLinux
-    public IconsMapProvider iconsMapProvider(ObjectMapper objectMapper,
-                                             Set<ResourceResolver> resourceResolvers) {
-        return new IconsMapProvider(objectMapper, resourceResolvers);
+                                          ApplicationUIHandler uiHandler,
+                                          ProcessExecutor processExecutor) {
+        return new LinuxIconProvider(applicationProperties, uiHandler, processExecutor);
     }
 
     @Bean

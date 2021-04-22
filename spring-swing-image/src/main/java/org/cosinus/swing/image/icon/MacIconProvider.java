@@ -46,6 +46,12 @@ public class MacIconProvider implements IconProvider {
 
     public MacIconProvider(ImageHandler imageHandler) {
         this.imageHandler = imageHandler;
+        this.iconNameToFilePathMap = new HashMap<>();
+    }
+
+    @Override
+    public void initialize() {
+        initIconNameToFilePathMap();
     }
 
     @Override
@@ -73,10 +79,6 @@ public class MacIconProvider implements IconProvider {
     }
 
     private Map<String, String> getIconNameToFilePathMap() {
-        if (iconNameToFilePathMap == null) {
-            iconNameToFilePathMap = new HashMap<>();
-            initIconNameToFilePathMap();
-        }
         return iconNameToFilePathMap;
     }
 

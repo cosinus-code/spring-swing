@@ -186,23 +186,31 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
 
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        if (!e.getValueIsAdjusting()) {
-            ((CardLayout) preferencesSetPanel.getLayout())
-                .show(preferencesSetPanel, preferenceListModel.getKey(preferenceSetList.getSelectedIndex()));
+        try {
+            if (!e.getValueIsAdjusting()) {
+                ((CardLayout) preferencesSetPanel.getLayout())
+                    .show(preferencesSetPanel, preferenceListModel.getKey(preferenceSetList.getSelectedIndex()));
+            }
+        } catch (Exception ex) {
+            errorHandler.handleError(ex);
         }
     }
 
     @Override
     public void actionPerformed(ActionEvent event) {
-        if (event.getSource() == okButton) {
-            apply();
-            close();
-        } else if (event.getSource() == applyButton) {
-            apply();
-        } else if (event.getSource() == cancelButton) {
-            close();
-        } else if (event.getSource() == restoreDefaultsButton) {
-            restoreDefaultPreferences();
+        try {
+            if (event.getSource() == okButton) {
+                apply();
+                close();
+            } else if (event.getSource() == applyButton) {
+                apply();
+            } else if (event.getSource() == cancelButton) {
+                close();
+            } else if (event.getSource() == restoreDefaultsButton) {
+                restoreDefaultPreferences();
+            }
+        } catch (Exception ex) {
+            errorHandler.handleError(ex);
         }
     }
 

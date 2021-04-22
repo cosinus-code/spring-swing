@@ -19,20 +19,21 @@ package org.cosinus.swing.image.icon;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.context.ApplicationProperties;
-import org.cosinus.swing.util.FileUtils;
+import org.cosinus.swing.exec.ProcessExecutor;
+import org.cosinus.swing.ui.ApplicationUIHandler;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
-import static java.util.function.Predicate.not;
+import static java.util.Optional.ofNullable;
+import static javax.imageio.ImageIO.read;
 
 /**
  * Implementation of {@link IconProvider} for Linux
@@ -41,229 +42,144 @@ public class LinuxIconProvider implements IconProvider {
 
     private static final Logger LOG = LogManager.getLogger(LinuxIconProvider.class);
 
-    private static final String DEFAULT_THEME = "Default";
-
-    private static final String GNOME_THEME_NAME_PROPERTY = "gnome.Net/IconThemeName";
-
-    private static final String LINUX_ICONS_FILE = "linux-icons";
-
-    private static final String DESKTOP_EXTENSION = ".desktop";
-
-    private static final String EXECUTABLE_MIMETYPE = "application/x-executable";
-
-    private static final String EXE = "exe";
-
-    private String pathToIcons;
-
-    private Map<String, Map<String, String[]>> iconsMap;
-
-    private Map<String, String> extensionToMimeTypeMap;
-
-    private Map<String, String> extensionToIconNameMap;
-
-    private final IconsMapProvider iconsMapProvider;
-
     private final ApplicationProperties applicationProperties;
 
+    private final ApplicationUIHandler uiHandler;
+
+    private final ProcessExecutor processExecutor;
+
+    private IconThemeIndex iconThemeIndex;
+
+    private Map<String, String> iconNamesMap;
+
     public LinuxIconProvider(ApplicationProperties applicationProperties,
-                             IconsMapProvider iconsMapProvider) {
+                             ApplicationUIHandler uiHandler,
+                             ProcessExecutor processExecutor) {
         this.applicationProperties = applicationProperties;
-        this.iconsMapProvider = iconsMapProvider;
+        this.uiHandler = uiHandler;
+        this.processExecutor = processExecutor;
+
+        this.iconThemeIndex = new IconThemeIndex();
+        this.iconNamesMap = new HashMap<>();
     }
 
     @Override
     public void initialize() {
-        initPathToIcons();
-        initIconsMap();
-        initExtensionsMaps();
+        initPathsToIcons();
+        initIconNamesMap();
     }
 
     @Override
     public Optional<Icon> findIconByFile(File file, IconSize size) {
-        return Optional.ofNullable(FileUtils.getExtension(file))
-                .filter(not(String::isEmpty))
-                .flatMap(extension -> Optional.ofNullable(getExtensionToIconNameMap().get(extension))
-                        .or(() -> file.canExecute() ? getExecutableIconName() : Optional.empty()))
-                .flatMap(iconName -> findIconByName(iconName, size))
-                .or(() -> findIconByName(file.isDirectory() ? ICON_FOLDER : ICON_FILE, size));
+        return file.isDirectory() ?
+            findIconByName(ICON_FOLDER, size) :
+            getFileMimeType(file)
+                .stream()
+                .flatMap(this::mimeTypeToIconNames)
+                .map(iconName -> findIconByName(iconName, size))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findFirst()
+                .or(() -> findIconByName(ICON_FILE, size));
+    }
+
+    protected Optional<String> getFileMimeType(File file) {
+        return processExecutor.executeAndGetOutput("file", "--mime-type", file.getAbsolutePath())
+            .map(output -> output.substring(output.lastIndexOf(" ") + 1))
+            .or(() -> processExecutor.executeAndGetOutput("xdg-mime", "query", "filetype", file.getAbsolutePath()))
+            .map(output -> output.replaceAll("\\n", ""));
+    }
+
+    protected Stream<String> mimeTypeToIconNames(String mimeType) {
+        String iconName = mimeType.replace("/", "-");
+        int index = mimeType.indexOf("/");
+        return index > 0 ?
+            Stream.of(iconName, mimeType.substring(0, index)) :
+            Stream.of(iconName);
     }
 
     @Override
     public Optional<Icon> findIconByName(String name, IconSize size) {
-        return pathToIcons()
-                .flatMap(iconsFolder -> getIconFromPath(iconsFolder, name, size));
+        String iconName = ofNullable(iconNamesMap.get(name))
+            .orElse(name);
+        return iconThemeIndex()
+            .getIconPaths()
+            .stream()
+            .map(iconsFolder -> getIconFromPath(iconsFolder, iconName, size))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .findFirst();
     }
 
-    public Optional<Icon> getIconFromPath(String path, String name, IconSize size) {
-        return Optional.ofNullable(getIconsMap().get(name))
-                .map(Map::entrySet)
-                .stream()
-                .flatMap(Collection::stream)
-                .flatMap(entry -> Arrays.stream(entry.getValue())
-                        .flatMap(key -> Stream.of("", "gnome-", "gtk-", "stock-", "gnome-fs-", "gnome-mime-", "gtk-")
-                                .flatMap(prefix -> getIconFromPath(path, size, entry.getKey(), prefix + key))))
-                .filter(File::exists)
-                .findFirst()
-                .map(File::getAbsolutePath)
+    protected Optional<Icon> getIconFromPath(Path path, String name, IconSize size) {
+        return iconThemeIndex()
+            .getIconInternalPath(size)
+            .map(path::resolve)
+            .flatMap(filePath -> Stream.of("", "gnome-", "gnome-mime-", "gtk-", "stock-")
+                .flatMap(prefix -> getIconFileName(filePath, prefix + name)))
+            .filter(File::exists)
+            .findFirst()
+            .flatMap(this::createIcon);
+    }
+
+    private Stream<File> getIconFileName(Path path, String name) {
+        return Stream.of(".svg", ".png", ".jpg")
+            .map(extension -> path.resolve(name + extension))
+            .map(Path::toFile);
+    }
+
+    protected Optional<Icon> createIcon(File file) {
+        try {
+            LOG.debug("Create icon from file: " + file.getAbsolutePath());
+            return ofNullable(read(file))
                 .map(ImageIcon::new);
-    }
-
-    private Stream<File> getIconFromPath(String path, IconSize size, String category, String name) {
-        return Stream.of(".png", ".jpg", ".gif")
-                .map(extension -> Path.of(path, size.toString(), category, name + extension))
-                .map(Path::toFile);
-    }
-
-    private Optional<String> pathToIcons() {
-        if (pathToIcons == null) {
-            initPathToIcons();
-        }
-        return Optional.ofNullable(pathToIcons);
-    }
-
-    private void initPathToIcons() {
-        pathToIcons = Stream.of(
-                applicationProperties.getIconsPath(),
-                System.getProperty("user.home") + "/.icons",
-                "/usr/share/icons", // Redhat/Debian/Solaris
-                "/opt/gnome2/share/icons", // SUSE
-                System.getProperty("swing.gtkthomedir") + "/icons")
-                .flatMap(iconsFolderName -> Stream.of(
-                        Optional.ofNullable(Toolkit.getDefaultToolkit().getDesktopProperty(GNOME_THEME_NAME_PROPERTY))
-                                .map(Object::toString)
-                                .orElse(DEFAULT_THEME),
-                        "Bluecurve",
-                        "crystalsvg")
-                        .map(themeName -> Paths.get(iconsFolderName, themeName))
-
-                )
-                .map(Path::toFile)
-                .filter(folder -> folder.exists() && folder.canRead())
-                .findFirst()
-                .map(File::getAbsolutePath)
-                .orElse(null);
-    }
-
-    private Map<String, Map<String, String[]>> getIconsMap() {
-        if (iconsMap == null) {
-            initIconsMap();
-        }
-        return iconsMap;
-    }
-
-    private void initIconsMap() {
-        iconsMap = iconsMapProvider
-                .convert(LINUX_ICONS_FILE)
-                .orElse(null);
-    }
-
-    private Map<String, String> getExtensionToMimeTypeMap() {
-        if (extensionToMimeTypeMap == null) {
-            initExtensionsMaps();
-        }
-        return extensionToMimeTypeMap;
-    }
-
-    private Map<String, String> getExtensionToIconNameMap() {
-        if (extensionToIconNameMap == null) {
-            initExtensionsMaps();
-        }
-        return extensionToIconNameMap;
-    }
-
-    private void initExtensionsMaps() {
-        extensionToMimeTypeMap = new HashMap<>();
-        extensionToIconNameMap = new HashMap<>();
-        fillExtensionToMimeTypeMap();
-        extensionToMimeTypeMap.forEach((extension, mimeType) -> findIconNameByMimeType(extension, mimeType)
-                .ifPresent(iconName -> extensionToIconNameMap.put(extension, iconName)));
-    }
-
-    private void fillExtensionToMimeTypeMap() {
-        Stream.of("/usr/share/mime-info/gnome-vfs.mime", //fedora
-                  "/opt/gnome/share/mime-info/gnome-vfs.mime", //suse
-                  "/usr/share/mime/globs", //fedora
-                  "/opt/kde3/share/mime/globs" //suse
-        )
-                .map(File::new)
-                .filter(File::exists)
-                .forEach(this::parseMimeTypeFile);
-        extensionToMimeTypeMap.put(EXE, EXECUTABLE_MIMETYPE);
-    }
-
-    private void parseMimeTypeFile(File mimeTypeFile) {
-        AtomicReference<String> mimeType = new AtomicReference<>();
-        try (Stream<String> stream = Files.lines(mimeTypeFile.toPath())) {
-            stream.map(String::trim)
-                    .filter(line -> !line.isEmpty() && !line.startsWith("#"))
-                    .forEach(line -> {
-                        if (line.startsWith("ext")) {
-                            int index = line.indexOf(':');
-                            if (index > 2) {
-                                Arrays.stream(line.substring(index + 1).split(" "))
-                                        .forEach(ext -> extensionToMimeTypeMap.put(ext, mimeType.get()));
-                            }
-                        } else if (!line.startsWith("regex")) {
-                            int index = line.indexOf(":*.");
-                            if (index > 0) {
-                                extensionToMimeTypeMap.put(line.substring(0, index), line.substring(index + 1));
-                            } else {
-                                mimeType.set(line);
-                            }
-                        }
-                    });
         } catch (IOException e) {
-            LOG.error("Cannot parse mime type file: " + mimeTypeFile.getAbsolutePath(), e);
-        }
-    }
-
-    private Optional<String> findIconNameByMimeType(String extension, String mimeType) {
-        return Stream.of("/usr/share/mimelnk/",
-                         "/opt/kde3/share/mimelnk/")
-                .flatMap(basePath -> getIconNamePathsForMimeType(basePath, extension, mimeType))
-                .map(Path::toFile)
-                .map(this::parseMimeLnkFile)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .findFirst();
-    }
-
-    public Stream<Path> getIconNamePathsForMimeType(String basePath, String extension, String mimeType) {
-        int index = mimeType.indexOf('/');
-        if (index > 0) {
-            String desk = mimeType.substring(index + 1);
-            String dir = mimeType.substring(0, index);
-
-            return Stream.of(
-                    Paths.get(basePath, mimeType + DESKTOP_EXTENSION),
-                    Paths.get(basePath, dir, desk + DESKTOP_EXTENSION),
-                    Paths.get(basePath, dir, xFileName(desk + DESKTOP_EXTENSION)),
-                    Paths.get(basePath, dir, extension + DESKTOP_EXTENSION),
-                    Paths.get(basePath, dir, xFileName(extension + DESKTOP_EXTENSION)));
-        }
-
-        return Stream.of(Paths.get(basePath, mimeType + DESKTOP_EXTENSION));
-    }
-
-    private String xFileName(String fileName) {
-        return fileName.startsWith("x-") ? fileName.substring(2) : "x-" + fileName;
-    }
-
-    private Optional<String> parseMimeLnkFile(File mimeLnkFile) {
-        try (Stream<String> stream = Files.lines(mimeLnkFile.toPath())) {
-            return stream.filter(line -> line.startsWith("Icon="))
-                    .findFirst()
-                    .map(line -> line.substring(5));
-        } catch (IOException e) {
-            LOG.error("Cannot parse mime link file: " + mimeLnkFile.getAbsolutePath(), e);
+            LOG.error("Failed to create icon from file: " + file.getAbsolutePath(), e);
             return Optional.empty();
         }
     }
 
-    private Optional<String> getExecutableIconName() {
-        if (extensionToIconNameMap == null) {
-            initExtensionsMaps();
-        }
-        return Optional.ofNullable(extensionToIconNameMap.get(EXE));
+    protected IconThemeIndex iconThemeIndex() {
+        return iconThemeIndex;
     }
+
+    protected void initPathsToIcons() {
+        this.iconThemeIndex = new IconThemeIndex();
+        getIconsThemeFolder()
+            .ifPresent(iconThemeIndex::load);
+    }
+
+    protected void initIconNamesMap() {
+        iconNamesMap.put(ICON_STORAGE_INTERNAL, "drive-harddisk");
+        iconNamesMap.put(ICON_STORAGE_EXTERNAL, "drive-removable-media");
+    }
+
+    private Optional<File> getIconsThemeFolder() {
+        Optional<File> iconsThemeFolder = ofNullable(applicationProperties.getIconsPath())
+            .map(File::new)
+            .filter(File::exists)
+            .or(() -> Stream.of(
+                System.getProperty("user.home") + "/.icons",
+                "/usr/share/icons", // Redhat/Debian/Solaris
+                "/opt/gnome2/share/icons", // SUSE
+                System.getProperty("swing.gtkthomedir") + "/icons")
+                .map(Paths::get)
+                .map(iconsFolderName -> iconsFolderName.resolve(getIconsTheme()))
+                .map(Path::toFile)
+                .filter(folder -> folder.exists() && folder.canRead())
+                .findFirst());
+
+        if (iconsThemeFolder.isPresent()) {
+            LOG.info("Path to icons resolved: " + iconsThemeFolder.get().getAbsolutePath());
+        } else {
+            LOG.warn("Path to icons unresolved");
+        }
+
+        return iconsThemeFolder;
+    }
+
+    private String getIconsTheme() {
+        return uiHandler.getGnomeIconTheme();
+    }
+
 }

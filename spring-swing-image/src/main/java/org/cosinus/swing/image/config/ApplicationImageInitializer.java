@@ -19,6 +19,8 @@ package org.cosinus.swing.image.config;
 import org.cosinus.swing.boot.initialize.ApplicationInitializer;
 import org.cosinus.swing.image.icon.IconProvider;
 
+import static javax.swing.SwingUtilities.invokeLater;
+
 /**
  * Swing UI initializer
  */
@@ -32,6 +34,6 @@ public class ApplicationImageInitializer implements ApplicationInitializer {
 
     @Override
     public void initialize() {
-        iconProvider.initialize();
+        invokeLater(iconProvider::initialize);
     }
 }

@@ -37,12 +37,16 @@ public interface ProcessExecutor {
 
     Logger logger();
 
+    default void execute(String... command) {
+        execute(new File(System.getProperty("user.home")), command);
+    }
+
     default void execute(File workingDir, String... command) {
         try {
             new ProcessBuilder(command)
-                    .inheritIO()
-                    .directory(workingDir)
-                    .start();
+                .inheritIO()
+                .directory(workingDir)
+                .start();
         } catch (IOException ex) {
             logger().error("Failed to run command: " + Arrays.toString(command), ex);
         }
@@ -51,8 +55,8 @@ public interface ProcessExecutor {
     default Optional<String> executeAndGetOutput(String... command) {
         try {
             Process process = new ProcessBuilder(command)
-                    .redirectErrorStream(true)
-                    .start();
+                .redirectErrorStream(true)
+                .start();
 
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
                 String output = IOUtils.toString(reader);

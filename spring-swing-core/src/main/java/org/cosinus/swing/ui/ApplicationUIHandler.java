@@ -16,6 +16,8 @@
 
 package org.cosinus.swing.ui;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.exec.ProcessExecutor;
@@ -24,6 +26,7 @@ import org.cosinus.swing.translate.Translator;
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.Border;
+import javax.swing.plaf.FontUIResource;
 import java.awt.*;
 import java.io.File;
 import java.util.AbstractMap;
@@ -39,6 +42,8 @@ import static java.awt.Toolkit.getDefaultToolkit;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.META_DOWN_MASK;
 import static java.util.Arrays.stream;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 import static java.util.stream.Stream.concat;
 import static javax.swing.KeyStroke.getKeyStroke;
@@ -50,6 +55,10 @@ import static org.apache.commons.lang3.SystemUtils.IS_OS_MAC;
 public class ApplicationUIHandler {
 
     private static final Logger LOG = LogManager.getLogger(ApplicationUIHandler.class);
+
+    private static final String DEFAULT_GNOME_ICON_THEME = "Default";
+
+    private static final String GNOME_ICON_THEME_NAME_PROPERTY = "gnome.Net/IconThemeName";
 
     public static final String OPTION_PANE_MESSAGE_DIALOG_TITLE = "OptionPane.messageDialogTitle";
 
@@ -296,5 +305,38 @@ public class ApplicationUIHandler {
     private Rectangle add(Rectangle r1, Rectangle r2) {
         r1.add(r2);
         return r1;
+    }
+
+    public String getGnomeIconTheme() {
+        return ofNullable(getDefaultToolkit().getDesktopProperty(GNOME_ICON_THEME_NAME_PROPERTY))
+            .map(Object::toString)
+            .orElse(DEFAULT_GNOME_ICON_THEME);
+    }
+
+    public void initializeDefaultUIFonts() {
+        if (isGTKLookAndFeel() && getDefaultToolkit().getScreenResolution() == 96) {
+            //this is an workaround for https://bugzilla.redhat.com/show_bug.cgi?id=508185
+            //still reproducible in Ubuntu
+            getDefaultFontsMap().forEach(
+                (key, font) -> setDefaultFont(key, new FontUIResource(font.deriveFont(13f))));
+        }
+    }
+
+    public boolean isGTKLookAndFeel() {
+        return UIManager.getLookAndFeel().getID().equals("GTK");
+    }
+
+    public Map<String, Font> getDefaultFontsMap() {
+        return UIManager
+            .getDefaults()
+            .entrySet()
+            .stream()
+            .map(entry -> new ImmutablePair<>(entry.getKey().toString(), UIManager.get(entry.getKey())))
+            .filter(entry -> entry.getValue() instanceof FontUIResource)
+            .collect(toMap(Pair::getKey, entry -> (FontUIResource) entry.getValue()));
+    }
+
+    public void setDefaultFont(String key, Font font) {
+        UIManager.put(key, font);
     }
 }

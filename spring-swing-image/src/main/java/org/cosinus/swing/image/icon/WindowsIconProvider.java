@@ -63,6 +63,17 @@ public class WindowsIconProvider implements IconProvider {
 
     private Map<String, Integer> extensionsToIconIndexMap;
 
+    public WindowsIconProvider() {
+        this.iconNameToFilePathMap = new HashMap<>();
+        this.extensionsToIconIndexMap = new HashMap<>();
+    }
+
+    @Override
+    public void initialize() {
+        initIconNameToFilePathMap();
+        initExtensionsToIconIndexMap();
+    }
+
     @Override
     public Optional<Icon> findIconByFile(File file, IconSize size) {
         return ofNullable(file)
@@ -116,10 +127,6 @@ public class WindowsIconProvider implements IconProvider {
     }
 
     private Map<String, String> getIconNameToFilePathMap() {
-        if (iconNameToFilePathMap == null) {
-            iconNameToFilePathMap = new HashMap<>();
-            initIconNameToFilePathMap();
-        }
         return iconNameToFilePathMap;
     }
 
@@ -180,10 +187,6 @@ public class WindowsIconProvider implements IconProvider {
     }
 
     private Map<String, Integer> getExtensionsToIconIndexMap() {
-        if (extensionsToIconIndexMap == null) {
-            extensionsToIconIndexMap = new HashMap<>();
-            initExtensionsToIconIndexMap();
-        }
         return extensionsToIconIndexMap;
     }
 

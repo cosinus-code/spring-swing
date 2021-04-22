@@ -51,6 +51,7 @@ public class ApplicationUIInitializer implements ApplicationInitializer {
             .orElseGet(uiHandler::getDefaultLookAndFeelClassName);
         uiHandler.setLookAndFeel(lookAndFeelClassName);
         uiHandler.translateDefaultUILabels();
+        uiHandler.initializeDefaultUIFonts();
 
         preferences.setAvailableLookAndFeels(availableLookAndFeels.values());
     }

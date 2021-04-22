@@ -21,7 +21,7 @@
         <commons-io.version>2.6</commons-io.version>
         <org.apache.common.version>4.4</org.apache.common.version>
         <log4j.version>2.13.3</log4j.version>
-        <twelvemonkeys.imageio.version>3.4.2</twelvemonkeys.imageio.version>
+        <twelvemonkeys.imageio.version>3.6.4</twelvemonkeys.imageio.version>
         <darcula.version>2018.2</darcula.version>
     </properties>
 
@@ -60,6 +60,11 @@
             <dependency>
                 <groupId>com.twelvemonkeys.imageio</groupId>
                 <artifactId>imageio-core</artifactId>
+                <version>${twelvemonkeys.imageio.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.twelvemonkeys.imageio</groupId>
+                <artifactId>imageio-batik</artifactId>
                 <version>${twelvemonkeys.imageio.version}</version>
             </dependency>
             <dependency>
