@@ -17,7 +17,7 @@
 package org.cosinus.swing.boot.config;
 
 import com.bulenkov.darcula.DarculaLaf;
-import org.cosinus.swing.boot.initialize.ApplicationUIInitializer;
+import org.cosinus.swing.boot.initialize.DefaultThemeInitializer;
 import org.cosinus.swing.boot.initialize.DarkLookAndFeelInitializer;
 import org.cosinus.swing.boot.initialize.LookAndFeelInitializer;
 import org.cosinus.swing.boot.initialize.TranslatorInitializer;
@@ -54,15 +54,15 @@ public class ApplicationUIConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(value = "swing.ui.theme", havingValue = "custom", matchIfMissing = true)
-    public ApplicationUIInitializer applicationUIInitializer(Preferences preferences,
-                                                             ApplicationUIHandler uiHandler) {
-        return new ApplicationUIInitializer(preferences, uiHandler);
+    @ConditionalOnProperty(value = "swing.ui.theme", havingValue = "default", matchIfMissing = true)
+    public DefaultThemeInitializer defaultThemeInitializer(Preferences preferences,
+                                                           ApplicationUIHandler uiHandler) {
+        return new DefaultThemeInitializer(preferences, uiHandler);
     }
 
     @Bean
     @ConditionalOnClass(DarculaLaf.class)
-    @ConditionalOnProperty(value = "swing.ui.theme", havingValue = "custom", matchIfMissing = true)
+    @ConditionalOnProperty(value = "swing.ui.theme", havingValue = "default", matchIfMissing = true)
     public DarkLookAndFeelInitializer darkLookAndFeelInitializer(Preferences preferences,
                                                                  ApplicationUIHandler uiHandler,
                                                                  DarkLookAndFeel darkLookAndFeel,

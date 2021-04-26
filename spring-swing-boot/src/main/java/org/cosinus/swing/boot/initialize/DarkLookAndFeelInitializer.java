@@ -16,6 +16,8 @@
 
 package org.cosinus.swing.boot.initialize;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.preference.Preference;
 import org.cosinus.swing.preference.Preferences;
 import org.cosinus.swing.resource.ClasspathResourceResolver;
@@ -30,6 +32,8 @@ import static org.cosinus.swing.preference.Preferences.LOOK_AND_FEEL;
  * Application initializer for dark look-and-feel
  */
 public class DarkLookAndFeelInitializer implements ApplicationInitializer {
+
+    private static final Logger LOG = LogManager.getLogger(DarkLookAndFeelInitializer.class);
 
     private final Preferences preferences;
 
@@ -52,6 +56,7 @@ public class DarkLookAndFeelInitializer implements ApplicationInitializer {
     @Override
     public void initialize() {
         if (uiHandler.isDarkTheme() && noLookAndFeelPreference()) {
+            LOG.info("Initializing application dark theme...");
             uiHandler.setLookAndFeel(darkLookAndFeel.getClassName());
             if (uiHandler.getDefaultIcon().isEmpty()) {
                 resourceResolver.resolveImageAsBytes("dark/file.png")

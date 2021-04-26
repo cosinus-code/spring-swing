@@ -16,12 +16,16 @@
 
 package org.cosinus.swing.boot.initialize;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.boot.ApplicationFrame;
 
 /**
  * Swing UI initializer
  */
 public class ApplicationFrameInitializer implements ApplicationInitializer {
+
+    private static final Logger LOG = LogManager.getLogger(ApplicationFrameInitializer.class);
 
     private final ApplicationFrame applicationFrame;
 
@@ -31,6 +35,7 @@ public class ApplicationFrameInitializer implements ApplicationInitializer {
 
     @Override
     public void initialize() {
+        LOG.info("Initializing application frame...");
         applicationFrame.initApplication();
     }
 }

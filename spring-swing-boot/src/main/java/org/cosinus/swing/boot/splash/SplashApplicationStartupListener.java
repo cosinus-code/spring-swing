@@ -63,7 +63,7 @@ public class SplashApplicationStartupListener implements SwingSpringApplicationS
 
     private static final int CONTEXT_INITIALIZATION_MIN_PERCENT = 5;
 
-    private static final int CONTEXT_INITIALIZATION_MAX_PERCENT = 95;
+    private static final int CONTEXT_INITIALIZATION_MAX_PERCENT = 99;
 
     private final ApplicationSplash splash;
 
@@ -160,8 +160,7 @@ public class SplashApplicationStartupListener implements SwingSpringApplicationS
     }
 
     public void applicationFrameInitializing(ApplicationFrame applicationFrame) {
-        updateSplash(APPLICATION_STATUS_INITIALIZING_FRAME,
-                     CONTEXT_INITIALIZATION_MAX_PERCENT + (100 - CONTEXT_INITIALIZATION_MAX_PERCENT) / 2);
+        updateSplash(APPLICATION_STATUS_INITIALIZING_FRAME, CONTEXT_INITIALIZATION_MAX_PERCENT);
     }
 
     @Override

@@ -15,6 +15,8 @@
  */
 package org.cosinus.swing.boot.initialize;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.context.UIProperties;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 
@@ -26,6 +28,8 @@ import static java.util.Optional.ofNullable;
 import static java.util.function.Predicate.not;
 
 public class LookAndFeelInitializer implements ApplicationInitializer {
+
+    private static final Logger LOG = LogManager.getLogger(LookAndFeelInitializer.class);
 
     private static final String CROSS_PLATFORM_UI_THEME = "cross-platform";
 
@@ -45,6 +49,7 @@ public class LookAndFeelInitializer implements ApplicationInitializer {
             .flatMap(this::getLookAndFeelClassName)
             .orElseGet(uiHandler::getCrossPlatformLookAndFeelClassName);
 
+        LOG.info("Initializing application look and feel to " + lookAndFeelClassName + "...");
         uiHandler.setLookAndFeel(lookAndFeelClassName);
     }
 

@@ -16,6 +16,8 @@
 
 package org.cosinus.swing.boot.initialize;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.preference.Preference;
 import org.cosinus.swing.preference.Preferences;
 import org.cosinus.swing.ui.ApplicationUIHandler;
@@ -28,20 +30,23 @@ import static org.cosinus.swing.preference.Preferences.LOOK_AND_FEEL;
 /**
  * Swing UI initializer
  */
-public class ApplicationUIInitializer implements ApplicationInitializer {
+public class DefaultThemeInitializer implements ApplicationInitializer {
+
+    private static final Logger LOG = LogManager.getLogger(DefaultThemeInitializer.class);
 
     private final Preferences preferences;
 
     private final ApplicationUIHandler uiHandler;
 
-    public ApplicationUIInitializer(Preferences preferences,
-                                    ApplicationUIHandler uiHandler) {
+    public DefaultThemeInitializer(Preferences preferences,
+                                   ApplicationUIHandler uiHandler) {
         this.preferences = preferences;
         this.uiHandler = uiHandler;
     }
 
     @Override
     public void initialize() {
+        LOG.info("Initializing application default theme...");
         Map<String, LookAndFeelInfo> availableLookAndFeels = uiHandler.getAvailableLookAndFeels();
         String lookAndFeelClassName = preferences.findPreference(LOOK_AND_FEEL)
             .map(Preference::getValue)

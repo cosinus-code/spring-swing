@@ -16,6 +16,8 @@
 
 package org.cosinus.swing.boot.initialize;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.preference.Preferences;
 import org.cosinus.swing.translate.Translator;
 
@@ -24,6 +26,8 @@ import java.util.Locale;
 import static org.cosinus.swing.preference.Preferences.LANGUAGE;
 
 public class TranslatorInitializer implements ApplicationInitializer {
+
+    private static final Logger LOG = LogManager.getLogger(TranslatorInitializer.class);
 
     private final Preferences preferences;
 
@@ -39,6 +43,7 @@ public class TranslatorInitializer implements ApplicationInitializer {
     public void initialize() {
         Locale locale = preferences.findLanguagePreference(LANGUAGE)
             .orElseGet(Locale::getDefault);
+        LOG.info("Initializing translator to " + locale + "...");
         translator.init(locale);
         preferences.setAvailableLanguages(translator.getAvailableLocales().values());
     }

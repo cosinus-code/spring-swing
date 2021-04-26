@@ -58,7 +58,7 @@ public class MessageSourceTranslator implements Translator {
 
     @Override
     public void init(Locale locale) {
-        LOG.info("Setting translation to locale " + locale);
+        LOG.debug("Setting translation to locale " + locale);
         this.locale = locale;
     }
 

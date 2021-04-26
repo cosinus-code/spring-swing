@@ -16,6 +16,8 @@
 
 package org.cosinus.swing.boot;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.boot.event.ApplicationFrameAfterInitializeEvent;
 import org.cosinus.swing.boot.event.ApplicationFrameBeforeInitializeEvent;
 import org.cosinus.swing.context.ApplicationProperties;
@@ -24,6 +26,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 
 public abstract class SwingApplicationFrame extends Frame implements ApplicationFrame {
+
+    private static final Logger LOG = LogManager.getLogger(SwingApplicationFrame.class);
 
     public static Frame applicationFrame;
 
@@ -38,6 +42,9 @@ public abstract class SwingApplicationFrame extends Frame implements Application
         initComponents();
         initContent();
         translate();
+
+        LOG.info("Showing application frame...");
+        setVisible(true);
     }
 
     @Override
@@ -47,7 +54,7 @@ public abstract class SwingApplicationFrame extends Frame implements Application
         applicationEventPublisher.publishEvent(new ApplicationFrameAfterInitializeEvent(this));
 
         applicationFrame = this;
-        setVisible(true);
+        LOG.info("Application started...");
     }
 
     protected abstract void initContent();

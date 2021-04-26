@@ -16,15 +16,17 @@
 
 package org.cosinus.swing.image.config;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.boot.initialize.ApplicationInitializer;
 import org.cosinus.swing.image.icon.IconProvider;
-
-import static javax.swing.SwingUtilities.invokeLater;
 
 /**
  * Swing UI initializer
  */
 public class ApplicationImageInitializer implements ApplicationInitializer {
+
+    private static final Logger LOG = LogManager.getLogger(ApplicationImageInitializer.class);
 
     private final IconProvider iconProvider;
 
@@ -34,6 +36,7 @@ public class ApplicationImageInitializer implements ApplicationInitializer {
 
     @Override
     public void initialize() {
-        invokeLater(iconProvider::initialize);
+        LOG.info("Initializing application image handlers...");
+        new Thread(iconProvider::initialize).start();
     }
 }

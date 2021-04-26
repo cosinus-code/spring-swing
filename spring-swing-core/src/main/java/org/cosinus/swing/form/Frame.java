@@ -165,14 +165,18 @@ public class Frame extends JFrame implements Window, FormComponent {
     }
 
     private void initFrameMenu() {
-        menuProvider.getMenu(windowSettings.getMenu())
-            .ifPresent(menuModel -> {
-                menuBar = new MenuBar(menuModel,
-                                      menuProvider.hasBoxMenu(),
-                                      actionController);
-                menuBar.initComponents();
-                setJMenuBar(menuBar);
-            });
+        try {
+            menuProvider.getMenu(windowSettings.getMenu())
+                .ifPresent(menuModel -> {
+                    menuBar = new MenuBar(menuModel,
+                                          menuProvider.hasBoxMenu(),
+                                          actionController);
+                    menuBar.initComponents();
+                    setJMenuBar(menuBar);
+                });
+        } catch (Exception ex) {
+            errorHandler.handleError(ex);
+        }
     }
 
     public String translate(String key) {
