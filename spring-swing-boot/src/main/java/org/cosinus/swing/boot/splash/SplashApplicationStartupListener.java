@@ -40,29 +40,20 @@ import static java.util.stream.Collectors.toMap;
 public class SplashApplicationStartupListener implements SwingSpringApplicationStartupListener {
 
     private static final String LOG_STARTUP_PROGRESS = "-log-startup-progress";
-
     private static final String SPLASH_PROGRESS = "-splash-progress";
-
     private static final String SPLASH_PROGRESS_COLOR = "-splash-progress-color";
-
     private static final String SPLASH_PROGRESS_X = "-splash-progress-x";
-
     private static final String SPLASH_PROGRESS_Y = "-splash-progress-y";
+    private static final String SPLASH_PROGRESS_WIDTH = "-splash-progress-width";
 
     private static final String APPLICATION_STATUS_STARTING = "Starting application...";
-
     private static final String APPLICATION_STATUS_PREPARED = "Application prepared";
-
     private static final String APPLICATION_STATUS_CONTEXT_INITIALING = "Initializing application context...";
-
     private static final String APPLICATION_STATUS_STARTED = "Application started";
-
     private static final String APPLICATION_STATUS_INITIALIZING_FRAME = "Initializing application frame...";
-
     private static final String APPLICATION_STATUS_BEAN_INITIALIZED = "Context bean initialized: ";
 
     private static final int CONTEXT_INITIALIZATION_MIN_PERCENT = 5;
-
     private static final int CONTEXT_INITIALIZATION_MAX_PERCENT = 99;
 
     private final ApplicationSplash splash;
@@ -75,20 +66,21 @@ public class SplashApplicationStartupListener implements SwingSpringApplicationS
 
     public SplashApplicationStartupListener(SpringApplication application, String[] arguments) {
         Map<String, String> argumentsMap = stream(arguments)
-                .map(argument -> argument.split("="))
-                .collect(toMap(
-                        argument -> argument[0],
-                        argument -> argument.length > 1 ? argument[1] : "",
-                        (k1, k2) -> k2,
-                        HashMap::new));
+            .map(argument -> argument.split("="))
+            .collect(toMap(
+                argument -> argument[0],
+                argument -> argument.length > 1 ? argument[1] : "",
+                (k1, k2) -> k2,
+                HashMap::new));
 
         boolean logStartupProgress = argumentsMap.containsKey(LOG_STARTUP_PROGRESS);
         boolean splashProgress = argumentsMap.containsKey(SPLASH_PROGRESS);
         String splashProgressColor = argumentsMap.get(SPLASH_PROGRESS_COLOR);
         String splashProgressX = argumentsMap.get(SPLASH_PROGRESS_X);
         String splashProgressY = argumentsMap.get(SPLASH_PROGRESS_Y);
+        String splashProgressWidth = argumentsMap.get(SPLASH_PROGRESS_WIDTH);
 
-        this.splash = new ApplicationSplash(splashProgress, splashProgressColor, splashProgressX, splashProgressY);
+        this.splash = new ApplicationSplash(splashProgress, splashProgressColor, splashProgressX, splashProgressY, splashProgressWidth);
         this.application = (SpringSwingApplication) application;
 
         this.application.setLogStartupProgress(logStartupProgress);
@@ -124,14 +116,14 @@ public class SplashApplicationStartupListener implements SwingSpringApplicationS
                      CONTEXT_INITIALIZATION_MIN_PERCENT);
 
         beanNames = Arrays
-                .stream(context.getBeanDefinitionNames())
-                .collect(Collectors.toSet());
+            .stream(context.getBeanDefinitionNames())
+            .collect(Collectors.toSet());
 
         Arrays.stream(context.getBeanNamesForType(BeanPostProcessor.class))
-                .forEach(beanNames::remove);
+            .forEach(beanNames::remove);
 
         Arrays.stream(context.getBeanNamesForType(BeanFactoryPostProcessor.class))
-                .forEach(beanNames::remove);
+            .forEach(beanNames::remove);
 
         totalBeansCount = beanNames.size();
     }
@@ -146,7 +138,7 @@ public class SplashApplicationStartupListener implements SwingSpringApplicationS
                                            Object bean, String beanName) {
         beanNames.remove(beanName);
         int percent = (int) ((CONTEXT_INITIALIZATION_MAX_PERCENT - CONTEXT_INITIALIZATION_MIN_PERCENT) *
-                (1 - (double) beanNames.size() / totalBeansCount));
+            (1 - (double) beanNames.size() / totalBeansCount));
         updateSplash(APPLICATION_STATUS_BEAN_INITIALIZED + beanName,
                      CONTEXT_INITIALIZATION_MIN_PERCENT + percent);
     }

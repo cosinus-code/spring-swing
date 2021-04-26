@@ -44,22 +44,28 @@ public class ApplicationSplash implements AutoCloseable {
 
     private int progressY;
 
+    private int progressWidth;
+
     public ApplicationSplash(boolean progress,
                              String progressColor,
                              String splashProgressX,
-                             String splashProgressY) {
+                             String splashProgressY,
+                             String splashProgressWidth) {
         this.splash = SplashScreen.getSplashScreen();
         this.progress = progress;
 
         if (this.splash != null) {
             this.progressColor = ofNullable(progressColor)
-                    .flatMap(Colors::toColor)
-                    .or(() -> ofNullable(UIManager.getLookAndFeelDefaults()
-                                                 .getColor("TextArea.selectionBackground")))
-                    .orElse(Color.black);
+                .flatMap(Colors::toColor)
+                .or(() -> ofNullable(UIManager.getLookAndFeelDefaults()
+                                         .getColor("TextArea.selectionBackground")))
+                .orElse(Color.black);
             this.splashBounds = splash.getBounds();
             this.progressX = parseInt(splashProgressX).orElse(0);
             this.progressY = parseInt(splashProgressY).orElse(splashBounds.height);
+            this.progressWidth = parseInt(splashProgressWidth)
+                .filter(width -> progressX + width < splashBounds.width)
+                .orElse(splashBounds.width - 2 * progressX);
         }
     }
 
@@ -77,25 +83,25 @@ public class ApplicationSplash implements AutoCloseable {
         }
 
         Optional.ofNullable(splash)
-                .filter(SplashScreen::isVisible)
-                .map(SplashScreen::createGraphics)
-                .ifPresent(g -> {
-                    g.setColor(progressColor);
-                    int progressHeight = 3;
-                    g.fillRect(progressX,
-                               progressY - progressHeight,
-                               (splashBounds.width - 2 * progressX) * percent / 100,
-                               progressHeight);
-                    splash.update();
-                    this.percent = percent;
-                });
+            .filter(SplashScreen::isVisible)
+            .map(SplashScreen::createGraphics)
+            .ifPresent(g -> {
+                g.setColor(progressColor);
+                int progressHeight = 3;
+                g.fillRect(progressX,
+                           progressY - progressHeight,
+                           progressWidth * percent / 100,
+                           progressHeight);
+                splash.update();
+                this.percent = percent;
+            });
     }
 
     @Override
     public void close() {
         Optional.ofNullable(splash)
-                .filter(SplashScreen::isVisible)
-                .ifPresent(SplashScreen::close);
+            .filter(SplashScreen::isVisible)
+            .ifPresent(SplashScreen::close);
     }
 
 
@@ -110,15 +116,15 @@ public class ApplicationSplash implements AutoCloseable {
                 builder.append(" without progress");
             } else {
                 builder.append(" with progress: color ")
-                        .append(Arrays.toString(new int[]{
-                                progressColor.getRed(),
-                                progressColor.getGreen(),
-                                progressColor.getBlue()}))
-                        .append(", position (")
-                        .append(progressX)
-                        .append(", ")
-                        .append(progressY)
-                        .append(")");
+                    .append(Arrays.toString(new int[]{
+                        progressColor.getRed(),
+                        progressColor.getGreen(),
+                        progressColor.getBlue()}))
+                    .append(", position (")
+                    .append(progressX)
+                    .append(", ")
+                    .append(progressY)
+                    .append(")");
             }
         }
         return builder.toString();
