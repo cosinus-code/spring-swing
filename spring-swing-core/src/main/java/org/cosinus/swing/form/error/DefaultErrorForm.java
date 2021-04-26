@@ -72,14 +72,14 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
      * Creates new form ErrorForm
      */
     public DefaultErrorForm(Frame parent) {
-        super(parent, ERROR_WINDOW_TITLE, true);
+        super(parent, ERROR_WINDOW_TITLE, true, false);
     }
 
     /**
      * Creates new form ErrorForm
      */
     public DefaultErrorForm(Dialog parent) {
-        super(parent, ERROR_WINDOW_TITLE, true);
+        super(parent, ERROR_WINDOW_TITLE, true, false);
     }
 
     @Override

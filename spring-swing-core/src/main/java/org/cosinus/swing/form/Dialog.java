@@ -38,20 +38,24 @@ public abstract class Dialog<T> extends JDialog implements Window, FormComponent
     @Autowired
     protected ApplicationUIHandler uiHandler;
 
-    private final WindowSettings windowSettings;
+    private WindowSettings windowSettings;
 
     private boolean cancelled;
 
-    public Dialog(Frame frame, String title, boolean modal) {
+    public Dialog(Frame frame, String title, boolean modal, boolean manageWindowSettings) {
         super(frame, title, modal);
         injectContext(this);
-        windowSettings = createWindowSettings();
+        if (manageWindowSettings) {
+            windowSettings = createWindowSettings();
+        }
     }
 
-    public Dialog(java.awt.Dialog dialog, String title, boolean modal) {
+    public Dialog(java.awt.Dialog dialog, String title, boolean modal, boolean manageWindowSettings) {
         super(dialog, title, modal);
         injectContext(this);
-        windowSettings = createWindowSettings();
+        if (manageWindowSettings) {
+            windowSettings = createWindowSettings();
+        }
     }
 
     protected WindowSettings createWindowSettings() {
@@ -67,34 +71,38 @@ public abstract class Dialog<T> extends JDialog implements Window, FormComponent
     }
 
     private void initPositionAndSize() {
-        setWindowPositionAndSize(windowSettings, uiHandler.getScreenBound());
-        windowSettingsHandler.saveWindowSettings(windowSettings);
+        if (windowSettings != null) {
+            setWindowPositionAndSize(windowSettings, uiHandler.getScreenBound());
+            windowSettingsHandler.saveWindowSettings(windowSettings);
+        }
     }
 
     private void initFrameBasicActions() {
         registerExitOnEscapeKey();
 
-        addComponentListener(new ComponentListener() {
-            public void componentHidden(ComponentEvent e) {
-            }
+        if (windowSettings != null) {
+            addComponentListener(new ComponentListener() {
+                public void componentHidden(ComponentEvent e) {
+                }
 
-            public void componentMoved(ComponentEvent e) {
-                windowSettings
-                    .setPosition(getX(), getY())
-                    .setCentered(false);
-                windowSettingsHandler.saveWindowSettings(windowSettings);
-            }
+                public void componentMoved(ComponentEvent e) {
+                    windowSettings
+                        .setPosition(getX(), getY())
+                        .setCentered(false);
+                    windowSettingsHandler.saveWindowSettings(windowSettings);
+                }
 
-            public void componentResized(ComponentEvent e) {
-                windowSettings
-                    .setSize(getWidth(), getHeight())
-                    .setCentered(false);
-                windowSettingsHandler.saveWindowSettings(windowSettings);
-            }
+                public void componentResized(ComponentEvent e) {
+                    windowSettings
+                        .setSize(getWidth(), getHeight())
+                        .setCentered(false);
+                    windowSettingsHandler.saveWindowSettings(windowSettings);
+                }
 
-            public void componentShown(ComponentEvent e) {
-            }
-        });
+                public void componentShown(ComponentEvent e) {
+                }
+            });
+        }
     }
 
     public Optional<T> response() {

@@ -97,7 +97,7 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
     private final Map<String, Control> preferenceControlsMap;
 
     public DefaultPreferencesDialog(Frame frame, String title) {
-        super(frame, title, true);
+        super(frame, title, true, true);
         this.preferenceControlProvidersMap = getPreferenceControlProvidersMap();
         preferenceControlsMap = new HashMap<>();
     }

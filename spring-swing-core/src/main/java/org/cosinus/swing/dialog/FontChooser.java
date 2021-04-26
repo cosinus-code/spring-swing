@@ -73,14 +73,14 @@ public class FontChooser extends Dialog<Font> implements ActionListener, ListSel
 
     private Map<Integer, Integer> fontStylesMap;
 
-    public FontChooser(Dialog dialog, String title, boolean modal, String text, Font font) {
-        super(dialog, title, modal);
+    public FontChooser(Dialog dialog, String title, boolean modal, boolean manageWindowSettings, String text, Font font) {
+        super(dialog, title, modal, manageWindowSettings);
         this.text = text;
         this.font = font;
     }
 
-    public FontChooser(Frame frame, String title, boolean modal, String text, Font font) {
-        super(frame, title, modal);
+    public FontChooser(Frame frame, String title, boolean modal, boolean manageWindowSettings, String text, Font font) {
+        super(frame, title, modal, manageWindowSettings);
         this.text = text;
         this.font = font;
     }

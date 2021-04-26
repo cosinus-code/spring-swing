@@ -364,38 +364,38 @@ public class DialogHandler {
     }
 
     public Optional<Font> chooseFont(Font font) {
-        return chooseFont((org.cosinus.swing.form.Frame) null, "", true, null, font);
+        return chooseFont((org.cosinus.swing.form.Frame) null, "", true, true, null, font);
     }
 
     public Optional<Font> chooseFont(org.cosinus.swing.form.Frame frame, Font font) {
-        return chooseFont(frame, "", true, null, font);
+        return chooseFont(frame, "", true, true, null, font);
     }
 
     public Optional<Font> chooseFont(org.cosinus.swing.form.Frame frame, String title, Font font) {
-        return chooseFont(frame, title, true, null, font);
+        return chooseFont(frame, title, true, true, null, font);
     }
 
     public Optional<Font> chooseFont(org.cosinus.swing.form.Frame frame, String title, String text, Font font) {
-        return chooseFont(frame, title, true, text, font);
+        return chooseFont(frame, title, true, true, text, font);
     }
 
-    public Optional<Font> chooseFont(org.cosinus.swing.form.Frame frame, String title, boolean modal, String text, Font font) {
-        return showDialog(() -> new FontChooser(frame, title, modal, text, font)).response();
+    public Optional<Font> chooseFont(org.cosinus.swing.form.Frame frame, String title, boolean modal, boolean manageWindowSettings, String text, Font font) {
+        return showDialog(() -> new FontChooser(frame, title, modal, manageWindowSettings, text, font)).response();
     }
 
     public Optional<Font> chooseFont(Dialog dialog, Font font) {
-        return showDialog(() -> new FontChooser(dialog, "", true, null, font)).response();
+        return showDialog(() -> new FontChooser(dialog, "", true, true, null, font)).response();
     }
 
     public Optional<Font> chooseFont(Dialog dialog, String title, Font font) {
-        return showDialog(() -> new FontChooser(dialog, title, true, null, font)).response();
+        return showDialog(() -> new FontChooser(dialog, title, true, true, null, font)).response();
     }
 
     public Optional<Font> chooseFont(Dialog dialog, String title, String text, Font font) {
-        return showDialog(() -> new FontChooser(dialog, title, true, text, font)).response();
+        return showDialog(() -> new FontChooser(dialog, title, true, true, text, font)).response();
     }
 
-    public Optional<Font> chooseFont(Dialog dialog, String title, boolean modal, String text, Font font) {
-        return showDialog(() -> new FontChooser(dialog, title, modal, text, font)).response();
+    public Optional<Font> chooseFont(Dialog dialog, String title, boolean modal, boolean manageWindowSettings, String text, Font font) {
+        return showDialog(() -> new FontChooser(dialog, title, modal, manageWindowSettings, text, font)).response();
     }
 }

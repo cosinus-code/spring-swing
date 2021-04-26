@@ -29,6 +29,6 @@ public class TestDialog extends Dialog<String> {
     public ErrorHandler errorHandler;
 
     public TestDialog(Frame frame) {
-        super(frame, TEST_DIALOG_TITLE, false);
+        super(frame, TEST_DIALOG_TITLE, false, false);
     }
 }
