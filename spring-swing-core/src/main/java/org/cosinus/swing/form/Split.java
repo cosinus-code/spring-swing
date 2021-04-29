@@ -16,11 +16,11 @@
 
 package org.cosinus.swing.form;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.store.ApplicationStorage;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
@@ -38,7 +38,7 @@ import static org.cosinus.swing.context.ApplicationContextInjector.injectContext
  */
 public class Split extends JSplitPane implements FormComponent {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Split.class);
+    private static final Logger LOG = LogManager.getLogger(Split.class);
 
     private static final String SPLIT = "split";
 

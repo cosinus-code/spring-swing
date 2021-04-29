@@ -77,7 +77,7 @@ public class ClasspathResourceResolver implements ResourceResolver {
                 }
             });
         if (bytes.isEmpty()) {
-            LOG.info("Resource not found: " + resourcePath);
+            LOG.debug("Resource not found: " + resourcePath);
         }
         return bytes;
     }

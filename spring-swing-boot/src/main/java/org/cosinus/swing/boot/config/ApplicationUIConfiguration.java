@@ -34,16 +34,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Application UI Configuration
+ * Application UI Configuration.
+ *
+ * This includes all UI related beans configuration.
  */
 @Configuration
 public class ApplicationUIConfiguration {
-
-    @Bean
-    public TranslatorInitializer translatorInitializer(Preferences preferences,
-                                                       Translator translator) {
-        return new TranslatorInitializer(preferences, translator);
-    }
 
     @Bean
     @ConditionalOnProperty(value = "swing.ui.theme")

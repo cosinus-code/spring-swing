@@ -23,29 +23,38 @@ import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
 import java.util.Map;
-import java.util.Optional;
 
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.SystemUtils.OS_NAME;
+import static org.springframework.boot.autoconfigure.condition.ConditionOutcome.match;
+import static org.springframework.boot.autoconfigure.condition.ConditionOutcome.noMatch;
 
+/**
+ * {@link SpringBootCondition} for controlling what implementation of beans to be instantiated
+ * based on current operating system.
+ * <p>
+ * The current value of system property "os.name" should start with the value
+ * specified in the {@link ConditionalOnOperatingSystem} annotation
+ */
 public class OnOperatingSystemCondition extends SpringBootCondition {
 
     @Override
     public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
         Map<String, Object> attributes = metadata.getAnnotationAttributes(ConditionalOnOperatingSystem.class.getName());
-        String operatingSystem = Optional.ofNullable(attributes)
-                .map(attrs -> attrs.get("value"))
-                .map(Object::toString)
-                .orElse(null);
+        String operatingSystem = ofNullable(attributes)
+            .map(attrs -> attrs.get("value"))
+            .map(Object::toString)
+            .orElse(null);
 
         ConditionMessage.Builder message = ConditionMessage.forCondition(ConditionalOnCloudPlatform.class);
         return isOs(operatingSystem) ?
-                ConditionOutcome.match(message.foundExactly(operatingSystem)) :
-                ConditionOutcome.noMatch(message.didNotFind(operatingSystem).atAll());
+            match(message.foundExactly(operatingSystem)) :
+            noMatch(message.didNotFind(operatingSystem).atAll());
     }
 
     public boolean isOs(String name) {
-        return Optional.ofNullable(name)
-                .filter(OS_NAME::startsWith)
-                .isPresent();
+        return ofNullable(name)
+            .filter(OS_NAME::startsWith)
+            .isPresent();
     }
 }

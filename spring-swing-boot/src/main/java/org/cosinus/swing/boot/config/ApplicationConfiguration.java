@@ -27,6 +27,7 @@ import org.cosinus.swing.boot.condition.ConditionalOnMac;
 import org.cosinus.swing.boot.condition.ConditionalOnWindows;
 import org.cosinus.swing.boot.initialize.ApplicationFrameInitializer;
 import org.cosinus.swing.boot.initialize.ApplicationInitializer;
+import org.cosinus.swing.boot.initialize.TranslatorInitializer;
 import org.cosinus.swing.context.ApplicationContextInjector;
 import org.cosinus.swing.context.ApplicationProperties;
 import org.cosinus.swing.dialog.DialogHandler;
@@ -66,7 +67,9 @@ import java.util.Set;
 import static org.cosinus.swing.boot.SpringSwingApplication.applicationClass;
 
 /**
- * Application configuration
+ * Application main configuration.
+ *
+ * Here the main application beans are configured.
  */
 @Configuration
 public class ApplicationConfiguration {
@@ -168,6 +171,12 @@ public class ApplicationConfiguration {
     }
 
     @Bean
+    public TranslatorInitializer translatorInitializer(Preferences preferences,
+                                                       Translator translator) {
+        return new TranslatorInitializer(preferences, translator);
+    }
+
+    @Bean
     public ApplicationInitializationHandler applicationInitializationHandler(
         Set<ApplicationInitializer> applicationInitializers) {
         return new ApplicationInitializationHandler(applicationInitializers);
@@ -189,11 +198,10 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public <C extends ActionContext> ActionController<C> actionController(
-        ErrorHandler errorHandler,
-        KeyMapHandler<C> keyMapHandler,
-        ActionContextProvider<C> actionContextProvider,
-        Set<ActionInContext<C>> actions) {
+    public <C extends ActionContext> ActionController<C> actionController(ErrorHandler errorHandler,
+                                                                          KeyMapHandler<C> keyMapHandler,
+                                                                          ActionContextProvider<C> actionContextProvider,
+                                                                          Set<ActionInContext<C>> actions) {
         return new ActionController<>(errorHandler,
                                       keyMapHandler,
                                       actionContextProvider,

@@ -16,9 +16,9 @@
 
 package org.cosinus.swing.image.icon;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.image.ImageHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -34,7 +34,7 @@ import java.util.Optional;
  */
 public class MacIconProvider implements IconProvider {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MacIconProvider.class);
+    private static final Logger LOG = LogManager.getLogger(MacIconProvider.class);
 
     private static final String ICON_STORAGE_PATH = "/System/Library/Extensions/IOStorageFamily.kext/Contents/Resources/";
     private static final String ICON_SCSI_PATH = "/System/Library/Extensions/IOSCSIArchitectureModelFamily.kext/Contents/Resources";

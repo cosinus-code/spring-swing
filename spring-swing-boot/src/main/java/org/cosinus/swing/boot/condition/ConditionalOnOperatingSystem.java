@@ -19,12 +19,19 @@ import org.springframework.context.annotation.Conditional;
 
 import java.lang.annotation.*;
 
+/**
+ * {@link Conditional @Conditional} that only matches when a particular operating system.
+ */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Conditional(OnOperatingSystemCondition.class)
 public @interface ConditionalOnOperatingSystem {
 
+    /**
+     *
+     * @return the expected operating system
+     */
     String value();
 
 }

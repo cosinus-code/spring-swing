@@ -16,8 +16,8 @@
 
 package org.cosinus.swing.color;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,7 +30,7 @@ import static java.lang.Math.min;
  */
 public final class Colors {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Colors.class);
+    private static final Logger LOG = LogManager.getLogger(Colors.class);
 
     public static final String COLOR_SEPARATOR = ",";
 

@@ -16,26 +16,26 @@
 
 package org.cosinus.swing.exec;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.util.Optional;
 
+import static org.cosinus.swing.ui.ApplicationUIHandler.OS_DARK_THEME;
 import static org.cosinus.swing.ui.ApplicationUIHandler.OS_LIGHT_THEME;
 import static org.cosinus.swing.util.WindowsUtils.getRegistryBooleanValue;
-import static org.cosinus.swing.ui.ApplicationUIHandler.OS_DARK_THEME;
 
 /**
  * Implementation of {@link ProcessExecutor} for Windows
  */
 public class WindowsProcessExecutor implements ProcessExecutor {
 
+    private static final Logger LOG = LogManager.getLogger(WindowsProcessExecutor.class);
+
     private static final String PERSONALIZE_REGISTRY = "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize";
 
     private static final String APPS_USE_LIGHT_THEME = "AppsUseLightTheme";
-
-    private static final Logger LOG = LoggerFactory.getLogger(WindowsProcessExecutor.class);
 
     @Override
     public void executeFile(File file) {
@@ -46,8 +46,8 @@ public class WindowsProcessExecutor implements ProcessExecutor {
     @Override
     public Optional<String> getOsTheme() {
         return Optional.of(getRegistryBooleanValue(PERSONALIZE_REGISTRY, APPS_USE_LIGHT_THEME) ?
-                                   OS_LIGHT_THEME :
-                                   OS_DARK_THEME);
+                               OS_LIGHT_THEME :
+                               OS_DARK_THEME);
     }
 
     @Override

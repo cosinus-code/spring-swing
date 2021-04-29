@@ -15,19 +15,25 @@
  */
 package org.cosinus.swing.boot.condition;
 
-import org.apache.commons.lang3.SystemUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionMessage;
 import org.springframework.boot.autoconfigure.condition.ConditionOutcome;
 import org.springframework.boot.autoconfigure.condition.SpringBootCondition;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
+import static org.apache.commons.lang3.SystemUtils.IS_OS_LINUX;
+import static org.springframework.boot.autoconfigure.condition.ConditionOutcome.match;
+import static org.springframework.boot.autoconfigure.condition.ConditionOutcome.noMatch;
+
+/**
+ * {@link SpringBootCondition} that check if the current operating system is Linux.
+ */
 public class OnLinuxCondition extends SpringBootCondition {
     @Override
     public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
         ConditionMessage.Builder message = ConditionMessage.forCondition(ConditionalOnLinux.class);
-        return SystemUtils.IS_OS_LINUX ?
-                ConditionOutcome.match(message.foundExactly("Linux")) :
-                ConditionOutcome.noMatch(message.didNotFind("Linux").atAll());
+        return IS_OS_LINUX ?
+            match(message.foundExactly("Linux")) :
+            noMatch(message.didNotFind("Linux").atAll());
     }
 }

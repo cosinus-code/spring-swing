@@ -22,12 +22,19 @@ import org.springframework.boot.autoconfigure.condition.SpringBootCondition;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
+import static org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS;
+import static org.springframework.boot.autoconfigure.condition.ConditionOutcome.match;
+import static org.springframework.boot.autoconfigure.condition.ConditionOutcome.noMatch;
+
+/**
+ * {@link SpringBootCondition} that check if the current operating system is Windows.
+ */
 public class OnWindowsCondition extends SpringBootCondition {
     @Override
     public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
         ConditionMessage.Builder message = ConditionMessage.forCondition(ConditionalOnWindows.class);
-        return SystemUtils.IS_OS_WINDOWS ?
-                ConditionOutcome.match(message.foundExactly("Windows")) :
-                ConditionOutcome.noMatch(message.didNotFind("Windows").atAll());
+        return IS_OS_WINDOWS ?
+                match(message.foundExactly("Windows")) :
+                noMatch(message.didNotFind("Windows").atAll());
     }
 }

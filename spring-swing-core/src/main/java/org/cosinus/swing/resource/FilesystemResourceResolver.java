@@ -79,7 +79,7 @@ public class FilesystemResourceResolver implements ResourceResolver {
             .flatMap(this::getFilePath)
             .flatMap(this::fileToBytes);
         if (bytes.isEmpty()) {
-            LOG.info("Resource not found: " + resourcePath);
+            LOG.debug("Resource not found: " + resourcePath);
         }
         return bytes;
     }

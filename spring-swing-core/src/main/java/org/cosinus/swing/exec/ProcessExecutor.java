@@ -17,7 +17,7 @@
 package org.cosinus.swing.exec;
 
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.File;
