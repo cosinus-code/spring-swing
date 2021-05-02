@@ -18,10 +18,10 @@
         <java.version>11</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <commons-io.version>2.6</commons-io.version>
+        <commons-io.version>2.8.0</commons-io.version>
         <org.apache.common.version>4.4</org.apache.common.version>
-        <log4j.version>2.13.3</log4j.version>
-        <twelvemonkeys.imageio.version>3.6.4</twelvemonkeys.imageio.version>
+        <log4j.version>2.14.1</log4j.version>
+        <twelvemonkeys.imageio.version>3.7.0</twelvemonkeys.imageio.version>
         <darcula.version>2018.2</darcula.version>
     </properties>
 
