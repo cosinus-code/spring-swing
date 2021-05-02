@@ -22,6 +22,10 @@ import org.cosinus.swing.preference.Preference;
 
 import java.util.Date;
 
+/**
+ * Implementation of {@link PreferenceControlProvider}
+ * for providing the {@link Control} corresponding to a date preference value.
+ */
 public class DatePreferenceControlProvider implements PreferenceControlProvider<Date> {
 
     @Override

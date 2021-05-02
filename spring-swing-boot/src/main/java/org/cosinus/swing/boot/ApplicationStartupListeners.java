@@ -28,16 +28,34 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Handler for {@link SwingSpringApplicationStartupListener}
+ * Handler for {@link SwingSpringApplicationStartupListener}.
+ *
+ * This allows registering {@link SwingSpringApplicationStartupListener}
+ * and propagating the events to them
  */
 class ApplicationStartupListeners {
 
     private final List<SwingSpringApplicationStartupListener> startupListeners = new ArrayList<>();
 
+    /**
+     * Register some {@link SwingSpringApplicationStartupListener}
+     * and make them eligible for startup events propagation.
+     *
+     * This is done internally from {@link SpringSwingApplicationBuilder}
+     *
+     * @param startupListeners the startup listener to register
+     */
     void register(SwingSpringApplicationStartupListener... startupListeners) {
         this.startupListeners.addAll(Arrays.asList(startupListeners));
     }
 
+    /**
+     * Get the startup listeners as {@link ApplicationListener}.
+     *
+     * It is used internally by {@link SpringSwingApplicationBuilder} when register application listeners.
+     *
+     * @return the startup listeners translated as application listeners.
+     */
     ApplicationListener<?>[] listeners() {
         return new ApplicationListener<?>[]{
                 (ApplicationListener<ApplicationContextInitializedEvent>) event ->

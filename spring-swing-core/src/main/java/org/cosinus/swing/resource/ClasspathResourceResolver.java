@@ -18,15 +18,12 @@ package org.cosinus.swing.resource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -38,6 +35,10 @@ import static java.util.function.Predicate.not;
 import static org.apache.commons.io.IOUtils.toByteArray;
 import static org.cosinus.swing.resource.ResourceSource.CLASSPATH;
 
+/**
+ * Implementation of {@link ResourceResolver}
+ * which try to resolve the resources in the application classpath
+ */
 public class ClasspathResourceResolver implements ResourceResolver {
 
     private static final Logger LOG = LogManager.getLogger(ClasspathResourceResolver.class);
@@ -48,23 +49,38 @@ public class ClasspathResourceResolver implements ResourceResolver {
         this.resourceLoader = resourceLoader;
     }
 
+    /**
+     * Resolve a resource path in the application classpath.
+     *
+     * @param resourceLocator the resource locator
+     * @param resourceName    the resource name
+     * @return the found resource path, or {@link Optional#empty()}
+     */
     @Override
     public Optional<Path> resolveResourcePath(ResourceLocator resourceLocator, String resourceName) {
         return getResourcePath(resourceLocator, resourceName)
             .map(Paths::get);
     }
 
-    @Override
-    public Optional<byte[]> resolveImageAsBytes(String name) {
-        return resolveAsBytes(ResourceType.IMAGE, name);
-    }
-
+    /**
+     * Resolve a resource as bytes array in the application classpath.
+     *
+     * @param resourceLocator the resource locator within resource source
+     * @param name            the resource name
+     * @return the found resource, or {@link Optional#empty()}
+     */
     @Override
     public Optional<byte[]> resolveAsBytes(ResourceLocator resourceLocator, String name) {
         return getResourcePath(resourceLocator, name)
             .flatMap(this::resolveAsBytes);
     }
 
+    /**
+     * Resolve a resource as bytes array in the application classpath.
+     *
+     * @param resourcePath the resource path within resource source
+     * @return the found resource, or {@link Optional#empty()}
+     */
     @Override
     public Optional<byte[]> resolveAsBytes(String resourcePath) {
         Optional<byte[]> bytes = ofNullable(resourcePath)
@@ -82,10 +98,17 @@ public class ClasspathResourceResolver implements ResourceResolver {
         return bytes;
     }
 
+    /**
+     * Resolve resource paths with a specific extension in the application classpath.
+     *
+     * @param resourceLocator the resource locator within resource source
+     * @param fileExtension   the file extension to filter the resources
+     * @return the list of found resources
+     */
     @Override
-    public Stream<String> resolveResources(ResourceType type, String fileExtension) {
+    public Stream<String> resolveResources(ResourceLocator resourceLocator, String fileExtension) {
         try {
-            Resource[] resources = resourceLoader.getResources(getResourceFolder(type) + "**" + fileExtension);
+            Resource[] resources = resourceLoader.getResources(getResourceFolder(resourceLocator) + "**" + fileExtension);
             return Arrays.stream(resources)
                 .map(Resource::getFilename);
         } catch (IOException e) {
@@ -105,33 +128,11 @@ public class ClasspathResourceResolver implements ResourceResolver {
                 .orElse(name));
     }
 
-    private String getResourceFolder(ResourceType type) {
-        return ofNullable(type)
-            .map(ResourceType::name)
-            .map(String::toLowerCase)
+    private String getResourceFolder(ResourceLocator resourceLocator) {
+        return ofNullable(resourceLocator)
+            .map(ResourceLocator::getLocation)
             .map(folder -> folder.concat(File.separator))
             .orElse("");
-    }
-
-    public static Optional<byte[]> resourceAsBytes(String path) throws IOException {
-        File file;
-        try {
-            file = new ClassPathResource(path).getFile();
-        } catch (IOException ex) {
-            LOG.error("Failed to resolve resource as bytes: " + path);
-            return Optional.empty();
-        }
-
-        try (InputStream inputStream = new FileInputStream(file)) {
-            return ofNullable(toByteArray(inputStream));
-        }
-    }
-
-    public static Optional<File> resourceAsFile(String path) {
-        return ofNullable(path)
-            .map(ClasspathResourceResolver.class.getClassLoader()::getResource)
-            .map(URL::getFile)
-            .map(File::new);
     }
 
     @Override

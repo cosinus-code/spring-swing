@@ -16,6 +16,9 @@
 
 package org.cosinus.swing.image.icon;
 
+/**
+ * Enum for icon sizes
+ */
 public enum IconSize {
     X16(16),
     X18(18),

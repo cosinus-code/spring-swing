@@ -27,7 +27,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
@@ -35,7 +38,11 @@ import static java.util.stream.Collectors.toMap;
 
 /**
  * Implementation of {@link SwingSpringApplicationStartupListener}
- * which updates the splash with the application startup progress
+ * which updates the splash with the application startup progress.
+ * <p>
+ * The splash progress bar is controlled by dedicated application arguments.
+ * The bean context initialization is covered between the bounds established by
+ * CONTEXT_INITIALIZATION_MIN_PERCENT and CONTEXT_INITIALIZATION_MAX_PERCENT constants;
  */
 public class SplashApplicationStartupListener implements SwingSpringApplicationStartupListener {
 
@@ -45,6 +52,7 @@ public class SplashApplicationStartupListener implements SwingSpringApplicationS
     private static final String SPLASH_PROGRESS_X = "-splash-progress-x";
     private static final String SPLASH_PROGRESS_Y = "-splash-progress-y";
     private static final String SPLASH_PROGRESS_WIDTH = "-splash-progress-width";
+    private static final String SPLASH_PROGRESS_HEIGHT = "-splash-progress-height";
 
     private static final String APPLICATION_STATUS_STARTING = "Starting application...";
     private static final String APPLICATION_STATUS_PREPARED = "Application prepared";
@@ -79,8 +87,10 @@ public class SplashApplicationStartupListener implements SwingSpringApplicationS
         String splashProgressX = argumentsMap.get(SPLASH_PROGRESS_X);
         String splashProgressY = argumentsMap.get(SPLASH_PROGRESS_Y);
         String splashProgressWidth = argumentsMap.get(SPLASH_PROGRESS_WIDTH);
+        String splashProgressHeight = argumentsMap.get(SPLASH_PROGRESS_HEIGHT);
 
-        this.splash = new ApplicationSplash(splashProgress, splashProgressColor, splashProgressX, splashProgressY, splashProgressWidth);
+        this.splash = new ApplicationSplash(splashProgress, splashProgressColor, splashProgressX, splashProgressY,
+                                            splashProgressWidth, splashProgressHeight);
         this.application = (SpringSwingApplication) application;
 
         this.application.setLogStartupProgress(logStartupProgress);
@@ -115,14 +125,13 @@ public class SplashApplicationStartupListener implements SwingSpringApplicationS
         updateSplash(APPLICATION_STATUS_CONTEXT_INITIALING,
                      CONTEXT_INITIALIZATION_MIN_PERCENT);
 
-        beanNames = Arrays
-            .stream(context.getBeanDefinitionNames())
+        beanNames = stream(context.getBeanDefinitionNames())
             .collect(Collectors.toSet());
 
-        Arrays.stream(context.getBeanNamesForType(BeanPostProcessor.class))
+        stream(context.getBeanNamesForType(BeanPostProcessor.class))
             .forEach(beanNames::remove);
 
-        Arrays.stream(context.getBeanNamesForType(BeanFactoryPostProcessor.class))
+        stream(context.getBeanNamesForType(BeanFactoryPostProcessor.class))
             .forEach(beanNames::remove);
 
         totalBeansCount = beanNames.size();
@@ -165,6 +174,12 @@ public class SplashApplicationStartupListener implements SwingSpringApplicationS
         splash.close();
     }
 
+    /**
+     * Log the startup Progress and update the splash.
+     *
+     * @param status  the new status
+     * @param percent the new progress percent
+     */
     protected void updateSplash(String status, int percent) {
         application.logStartupProgress(percent, status);
         splash.update(status, percent);

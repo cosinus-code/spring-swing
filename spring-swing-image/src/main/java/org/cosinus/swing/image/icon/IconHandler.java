@@ -26,6 +26,7 @@ import java.awt.image.ImageFilter;
 import java.io.File;
 import java.util.Optional;
 
+import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.image.ImageHandler.DISABLED_FILTER;
 import static org.cosinus.swing.image.ImageHandler.GRAY_FILTER;
 
@@ -53,17 +54,49 @@ public class IconHandler {
         this.imageHandler = imageHandler;
     }
 
+    /**
+     * Find an icon by name.
+     *
+     * If a cache configuration is defined in the application
+     * with the name {@value #SPRING_SWING_ICONS_CACHE_NAME},
+     * then the results are cached.
+     *
+     * @param name the name to search for
+     * @param size the size of the icon to search for
+     * @return the found icon, or {@link Optional#empty()}
+     */
     @Cacheable(value = SPRING_SWING_ICONS_CACHE_NAME)
     public Optional<Icon> findIconByName(String name, IconSize size) {
         return iconProvider.findIconByName(name, size);
     }
 
-    @Cacheable(value = SPRING_SWING_ICONS_CACHE_NAME, key = "{':resource:', #name}")
-    public Optional<Icon> findIconByResource(String name) {
-        return resourceResolver.resolveImageAsBytes(name)
+    /**
+     * Find an icon by resource name.
+     *
+     * If a cache configuration is defined in the application
+     * with the name {@value #SPRING_SWING_ICONS_CACHE_NAME},
+     * then the results are cached.
+
+     * @param resourceName the resource name
+     * @return the found icon, or {@link Optional#empty()}
+     */
+    @Cacheable(value = SPRING_SWING_ICONS_CACHE_NAME, key = "{':resource:', #resourceName}")
+    public Optional<Icon> findIconByResource(String resourceName) {
+        return resourceResolver.resolveImageAsBytes(resourceName)
             .map(ImageIcon::new);
     }
 
+    /**
+     * Find an icon by file.
+     *
+     * If a cache configuration is defined in the application
+     * with the name {@value #SPRING_SWING_ICONS_CACHE_NAME},
+     * then the results are cached.
+
+     * @param file the file
+     * @param size the size of the icon to search for
+     * @return the found icon, or {@link Optional#empty()}
+     */
     @Cacheable(value = SPRING_SWING_ICONS_CACHE_NAME,
         condition = "#file.parent != null",
         keyGenerator = "fileExtensionKeyGenerator")
@@ -90,7 +123,7 @@ public class IconHandler {
     }
 
     public Icon applyFilter(Icon iconToFilter, ImageFilter filter) {
-        return Optional.ofNullable(iconToFilter)
+        return ofNullable(iconToFilter)
             .map(imageHandler::iconToImage)
             .map(image -> imageHandler.applyFilter(image, filter))
             .map(ImageIcon::new)

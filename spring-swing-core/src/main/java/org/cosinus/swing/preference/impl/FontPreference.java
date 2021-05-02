@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.cosinus.swing.preference.ObjectPreference;
+import org.cosinus.swing.preference.Preference;
 import org.cosinus.swing.preference.PreferenceType;
 
 import java.awt.*;
@@ -31,6 +32,9 @@ import static org.cosinus.swing.preference.PreferenceType.FONT;
 import static org.cosinus.swing.util.FontUtils.getFontStyle;
 import static org.cosinus.swing.util.FontUtils.getFontStyleText;
 
+/**
+ * Implementation of {@link Preference} for font managed values.
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(NON_NULL)
 public class FontPreference extends ObjectPreference<Font> {

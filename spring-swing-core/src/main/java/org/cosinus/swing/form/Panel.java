@@ -21,7 +21,8 @@ import javax.swing.*;
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
 /**
- * Abstract panel functionality
+ * Extension of the {@link JPanel}
+ * which will automatically inject the application context.
  */
 public class Panel extends JPanel implements FormComponent {
 

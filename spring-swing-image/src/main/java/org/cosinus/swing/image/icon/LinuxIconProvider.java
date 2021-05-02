@@ -34,6 +34,7 @@ import java.util.stream.Stream;
 
 import static java.util.Optional.ofNullable;
 import static javax.imageio.ImageIO.read;
+import static org.cosinus.swing.image.icon.IconSize.X16;
 
 /**
  * Implementation of {@link IconProvider} for Linux
@@ -50,7 +51,7 @@ public class LinuxIconProvider implements IconProvider {
 
     private IconThemeIndex iconThemeIndex;
 
-    private Map<String, String> iconNamesMap;
+    private final Map<String, String> iconNamesMap;
 
     public LinuxIconProvider(ApplicationProperties applicationProperties,
                              ApplicationUIHandler uiHandler,
@@ -67,6 +68,10 @@ public class LinuxIconProvider implements IconProvider {
     public void initialize() {
         initPathsToIcons();
         initIconNamesMap();
+        ofNullable(System.getProperty("user.home"))
+            .map(File::new)
+            .flatMap(folder -> findIconByFile(folder, X16))
+            .ifPresent(uiHandler::setDefaultFolderIcon);
     }
 
     @Override

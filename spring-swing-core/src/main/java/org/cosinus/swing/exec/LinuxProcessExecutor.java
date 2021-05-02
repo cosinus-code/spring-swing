@@ -16,21 +16,17 @@
 
 package org.cosinus.swing.exec;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.File;
 import java.util.Optional;
 
 /**
- * Implementation of {@link ProcessExecutor} for Windows
+ * Implementation of {@link ProcessExecutor} for Linux
  */
 public class LinuxProcessExecutor implements ProcessExecutor {
 
-    private static final Logger LOG = LogManager.getLogger(LinuxProcessExecutor.class);
-
     @Override
     public void executeFile(File file) {
+//        TODO: to check on KDE
 //        execute(file.getParentFile(),
 //                "kfmclient", "exec", file.getName());
         execute("xdg-open", file.getAbsolutePath());
@@ -41,8 +37,4 @@ public class LinuxProcessExecutor implements ProcessExecutor {
         return Optional.empty();
     }
 
-    @Override
-    public Logger logger() {
-        return LOG;
-    }
 }

@@ -14,32 +14,37 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.menu;
-
-import org.cosinus.swing.form.FormComponent;
+package org.cosinus.swing.layout;
 
 import javax.swing.*;
-import javax.swing.border.EtchedBorder;
-
-import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
 /**
- * Toolbar menu model
+ * Encapsulation for start and size Spring dimensions.
  */
-public class ToolBar extends JToolBar implements FormComponent {
+public class SpringDimension {
 
-    public ToolBar() {
-        injectContext(this);
+    private Spring start;
+
+    private Spring size;
+
+    public SpringDimension(Spring start, Spring size) {
+        this.start = start;
+        this.size = size;
     }
 
-    @Override
-    public void initComponents() {
-        setOrientation(JToolBar.VERTICAL);
-        setFloatable(false);
-        setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+    public Spring getStart() {
+        return start;
     }
 
-    @Override
-    public void translate() {
+    public void setStart(Spring start) {
+        this.start = start;
+    }
+
+    public Spring getSize() {
+        return size;
+    }
+
+    public void setSize(Spring size) {
+        this.size = size;
     }
 }

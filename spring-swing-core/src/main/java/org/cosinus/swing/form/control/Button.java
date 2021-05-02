@@ -16,12 +16,14 @@
 
 package org.cosinus.swing.form.control;
 
-import org.cosinus.swing.form.control.Control;
-
 import javax.swing.*;
 
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
+/**
+ * Extension of the {@link JButton}
+ * which will automatically inject the application context.
+ */
 public class Button extends JButton implements Control<String> {
 
     public Button() {

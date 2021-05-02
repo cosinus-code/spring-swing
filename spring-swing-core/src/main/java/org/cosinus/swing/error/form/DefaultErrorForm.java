@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.form.error;
+package org.cosinus.swing.error.form;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.action.EscapeAction;
 import org.cosinus.swing.error.SwingSevereException;
-import org.cosinus.swing.form.Dialog;
-import org.cosinus.swing.form.Frame;
+import org.cosinus.swing.window.Dialog;
+import org.cosinus.swing.window.Frame;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,16 +68,10 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
     @Autowired
     private ApplicationUIHandler uiHandler;
 
-    /**
-     * Creates new form ErrorForm
-     */
     public DefaultErrorForm(Frame parent) {
         super(parent, ERROR_WINDOW_TITLE, true, false);
     }
 
-    /**
-     * Creates new form ErrorForm
-     */
     public DefaultErrorForm(Dialog parent) {
         super(parent, ERROR_WINDOW_TITLE, true, false);
     }

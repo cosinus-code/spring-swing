@@ -24,13 +24,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static java.util.Optional.ofNullable;
+
 /**
- * Controller for the swing actions
+ * Controller for the swing actions.
+ *
+ * It is used to control the action executions.
  */
 public class ActionController<C extends ActionContext> implements ActionListener {
 
@@ -56,13 +59,24 @@ public class ActionController<C extends ActionContext> implements ActionListener
 
     }
 
+    /**
+     * Run an action executor based on an action id.
+     *
+     * @param actionId the id of the action to execute
+     */
     public void runAction(String actionId) {
         runAction(actionId, actionContextProvider.provideActionContext());
     }
 
+    /**
+     * Run an action executor based on an action id on a specific action context.
+     *
+     * @param actionId the id of the action to execute
+     * @param context the action execution context
+     */
     public void runAction(String actionId, C context) {
         try {
-            Optional.ofNullable(actionMap.get(actionId))
+            ofNullable(actionMap.get(actionId))
                 .orElseThrow(() -> new ActionNotFoundException("Action not implemented (" + actionId + ")"))
                 .run(context);
         } catch (Throwable throwable) {
@@ -70,7 +84,14 @@ public class ActionController<C extends ActionContext> implements ActionListener
         }
     }
 
-
+    /**
+     * Run an action executor based on a key stroke defined in a key event.
+     *
+     * This will search for an action corresponding to the given key stroke
+     * and will execute it.
+     *
+     * @param keyEvent the key event to match the action
+     */
     public void runActionByKeyStroke(KeyEvent keyEvent) {
         try {
             KeyStroke keyStroke = KeyStroke.getKeyStroke(keyEvent.getKeyCode(),
@@ -83,14 +104,14 @@ public class ActionController<C extends ActionContext> implements ActionListener
     }
 
     /**
-     * Invoked when an action occurs.
+     * Run an action executor based on an action event.
      *
-     * @param e the event to be processed
+     * @param event the action event to be processed
      */
     @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() instanceof ActionProducer) {
-            runAction(((ActionProducer) e.getSource()).getActionKey());
+    public void actionPerformed(ActionEvent event) {
+        if (event.getSource() instanceof ActionProducer) {
+            runAction(((ActionProducer) event.getSource()).getActionKey());
         }
     }
 }

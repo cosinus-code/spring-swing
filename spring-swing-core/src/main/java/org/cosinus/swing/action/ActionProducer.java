@@ -17,9 +17,14 @@
 package org.cosinus.swing.action;
 
 /**
- * Item that produce an action. It is bound to the action by the action key;
+ * Item that produce an action. It is bound to the action by the action key.
  */
 public interface ActionProducer {
 
+    /**
+     * Get the action key bound to this producer.
+     *
+     * @return the action key
+     */
     String getActionKey();
 }

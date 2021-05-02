@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class TestTableModel extends TableModel {
 
+    private static final long serialVersionUID = 498716782595675499L;
+
     @Autowired
     public ApplicationStorage applicationStorage;
 

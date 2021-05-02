@@ -30,6 +30,12 @@ import static org.cosinus.swing.border.Borders.lineBorder;
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 import static org.cosinus.swing.util.FontUtils.getFontDescription;
 
+/**
+ * Extension of a {@link JLabel} used for controlling a {@link Font} value.
+ * <p>
+ * The label is used to show the color and the {@link org.cosinus.swing.dialog.FontChooser}
+ * is used to change the color, when the label is clicked.
+ */
 public class FontLabel extends JLabel implements Control<Font>, MouseListener {
 
     @Autowired

@@ -43,8 +43,13 @@ public class BeanFactoryProcessorListener implements BeanFactoryPostProcessor, A
         this.applicationContext = applicationContext;
     }
 
+    /**
+     * Used for publishing {@link ApplicationContextBeforeInitializeBeansEvent} event
+     *
+     * @param beanFactory the bean factory
+     */
     @Override
-    public void postProcessBeanFactory(@NotNull ConfigurableListableBeanFactory beanFactory) throws BeansException {
+    public void postProcessBeanFactory(@NotNull ConfigurableListableBeanFactory beanFactory) {
         applicationEventPublisher.publishEvent(
                 new ApplicationContextBeforeInitializeBeansEvent(applicationContext));
     }

@@ -16,8 +16,14 @@
 
 package org.cosinus.swing.translate;
 
+/**
+ * Interface for a translatable item.
+ */
 public interface Translatable {
 
+    /**
+     * Translate this item
+     */
     void translate();
 
 }

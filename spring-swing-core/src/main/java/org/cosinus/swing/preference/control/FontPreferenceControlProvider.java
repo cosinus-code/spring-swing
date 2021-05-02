@@ -22,6 +22,10 @@ import org.cosinus.swing.preference.Preference;
 
 import java.awt.*;
 
+/**
+ * Implementation of {@link PreferenceControlProvider}
+ * for providing the {@link Control} corresponding to a font preference value.
+ */
 public class FontPreferenceControlProvider implements PreferenceControlProvider<Font> {
 
     @Override

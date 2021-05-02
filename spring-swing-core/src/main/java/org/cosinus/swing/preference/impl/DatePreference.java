@@ -17,6 +17,7 @@
 package org.cosinus.swing.preference.impl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.cosinus.swing.preference.Preference;
 import org.cosinus.swing.preference.PreferenceType;
 import org.cosinus.swing.preference.PrimitivePreference;
 
@@ -24,6 +25,9 @@ import java.util.Date;
 
 import static org.cosinus.swing.preference.PreferenceType.DATE;
 
+/**
+ * Implementation of {@link Preference} for date managed values.
+ */
 public class DatePreference extends PrimitivePreference<Date> {
 
     @Override

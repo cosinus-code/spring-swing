@@ -17,7 +17,7 @@
 package org.cosinus.swing.error;
 
 /**
- * Indicates that ana action was not found.
+ * Indicates that an action was not found.
  */
 public class ActionNotFoundException extends RuntimeException {
 

@@ -16,8 +16,19 @@
 
 package org.cosinus.swing.validation;
 
+/**
+ * Interface for a validator.
+ *
+ * @param <T> the type of the value to validate
+ */
 public interface Validator<T> {
 
+    /**
+     * Validate a value.
+     *
+     * @param value             the value to validate
+     * @param validationContext the context of the validation
+     */
     void validate(T value, ValidationContext validationContext);
 
 }

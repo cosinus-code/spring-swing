@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.form;
+package org.cosinus.swing.window;
 
+import org.cosinus.swing.form.FormComponent;
 import org.cosinus.swing.ui.ApplicationUIHandler;
+import org.cosinus.swing.window.Window;
+import org.cosinus.swing.window.WindowSettings;
+import org.cosinus.swing.window.WindowSettingsHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
@@ -25,10 +29,12 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.Optional;
 
+import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
 /**
- * Abstract dialog window with basic functionality
+ * Wrapper over a {@link JDialog}
+ * which will automatically inject the application context.
  */
 public abstract class Dialog<T> extends JDialog implements Window, FormComponent {
 
@@ -108,7 +114,7 @@ public abstract class Dialog<T> extends JDialog implements Window, FormComponent
     public Optional<T> response() {
         return isCancelled() ?
             Optional.empty() :
-            Optional.ofNullable(getDialogResponse());
+            ofNullable(getDialogResponse());
     }
 
     protected T getDialogResponse() {

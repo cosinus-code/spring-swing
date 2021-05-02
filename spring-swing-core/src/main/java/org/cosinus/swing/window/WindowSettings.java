@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.form;
+package org.cosinus.swing.window;
 
 /**
  * Encapsulates the info about window

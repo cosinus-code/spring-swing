@@ -23,8 +23,12 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static java.util.Optional.ofNullable;
+
 /**
- * Key map handler
+ * Key maps handler.
+ *
+ * It takes all action defined in context and build a map from key strokes to actions.
  */
 public class KeyMapHandler<C extends ActionContext> {
 
@@ -38,7 +42,13 @@ public class KeyMapHandler<C extends ActionContext> {
                                           Function.identity()));
     }
 
+    /**
+     * Search for an action based on a key stroke.
+     *
+     * @param keyStroke the key stroke to search for
+     * @return the found action, or {@link Optional#empty()}
+     */
     public Optional<ActionInContext<C>> findActionByKeyStroke(KeyStroke keyStroke) {
-        return Optional.ofNullable(keyMap.get(keyStroke));
+        return ofNullable(keyMap.get(keyStroke));
     }
 }

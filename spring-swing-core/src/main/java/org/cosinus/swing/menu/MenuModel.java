@@ -24,4 +24,5 @@ import java.util.Map;
  */
 public class MenuModel extends LinkedHashMap<String, Map<String, String>> {
 
+    private static final long serialVersionUID = -2501461154269052009L;
 }

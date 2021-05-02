@@ -24,6 +24,10 @@ import java.lang.reflect.Method;
 import static java.util.Arrays.stream;
 import static org.cosinus.swing.util.FileUtils.getExtension;
 
+/**
+ * Implementation for {@link org.springframework.cache.interceptor.KeyGenerator}
+ * for generating the cache key corresponding to a file
+ */
 public class FileExtensionKeyGenerator extends SimpleKeyGenerator {
 
     private static final String FOLDER_ICON_KEY = ":folder:";

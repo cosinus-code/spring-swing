@@ -15,7 +15,15 @@
  */
 package org.cosinus.swing.resource;
 
+/**
+ * Generic interface for a resource locator within the resource source
+ */
 public interface ResourceLocator {
 
+    /**
+     * Get the resource location within the resource source.
+     *
+     * @return the resource location
+     */
     String getLocation();
 }

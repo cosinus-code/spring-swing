@@ -21,9 +21,12 @@ import javax.swing.table.AbstractTableModel;
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
 /**
- * Abstract table model
+ * Extension of the {@link AbstractTableModel}
+ * which will automatically inject the application context.
  */
 public abstract class TableModel extends AbstractTableModel implements FormComponent {
+
+    private static final long serialVersionUID = 2331650388625436833L;
 
     public TableModel() {
         injectContext(this);

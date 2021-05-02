@@ -19,6 +19,11 @@ package org.cosinus.swing.preference.control;
 import org.cosinus.swing.form.control.Control;
 import org.cosinus.swing.preference.Preference;
 
+/**
+ * Interface for providing the {@link Control} corresponding to a preference value
+ *
+ * @param <R> the type of the preference real value
+ */
 public interface PreferenceControlProvider<R> {
 
     <T> Control<R> getPreferenceControl(Preference<T, R> preference);

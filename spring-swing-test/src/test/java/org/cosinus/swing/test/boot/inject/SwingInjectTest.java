@@ -16,7 +16,7 @@
 
 package org.cosinus.swing.test.boot.inject;
 
-import org.cosinus.swing.form.Frame;
+import org.cosinus.swing.window.Frame;
 import org.cosinus.swing.test.boot.SpringSwingBootTest;
 import org.cosinus.swing.test.model.*;
 import org.junit.Test;

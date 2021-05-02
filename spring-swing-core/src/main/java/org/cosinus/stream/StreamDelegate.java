@@ -25,6 +25,13 @@ import java.util.Spliterator;
 import java.util.function.*;
 import java.util.stream.*;
 
+/**
+ * Delegate stream implementation.
+ * <p>
+ * It delegates all functionality to a delegate stream.
+ *
+ * @param <T>
+ */
 public class StreamDelegate<T> implements Stream<T> {
 
     private final Stream<T> delegate;

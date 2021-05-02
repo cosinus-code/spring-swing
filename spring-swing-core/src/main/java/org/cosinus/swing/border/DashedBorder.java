@@ -29,6 +29,8 @@ import java.awt.Stroke;
  */
 public class DashedBorder extends LineBorder {
 
+    private static final long serialVersionUID = 2998788302974704170L;
+
     private final float[] dash;
 
     /**

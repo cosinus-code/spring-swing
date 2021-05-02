@@ -25,6 +25,9 @@ import java.util.Locale;
 
 import static org.cosinus.swing.preference.Preferences.LANGUAGE;
 
+/**
+ * Implementation of {@link ApplicationInitializer} for initializing the application translator.
+ */
 public class TranslatorInitializer implements ApplicationInitializer {
 
     private static final Logger LOG = LogManager.getLogger(TranslatorInitializer.class);
@@ -43,7 +46,7 @@ public class TranslatorInitializer implements ApplicationInitializer {
     public void initialize() {
         Locale locale = preferences.findLanguagePreference(LANGUAGE)
             .orElseGet(Locale::getDefault);
-        LOG.info("Initializing translator to " + locale + "...");
+        LOG.info("Initializing application translator to " + locale + "...");
         translator.init(locale);
         preferences.setAvailableLanguages(translator.getAvailableLocales().values());
     }

@@ -20,6 +20,10 @@ import org.cosinus.swing.form.control.CheckBox;
 import org.cosinus.swing.form.control.Control;
 import org.cosinus.swing.preference.Preference;
 
+/**
+ * Implementation of {@link PreferenceControlProvider}
+ * for providing the {@link Control} corresponding to a boolean preference value.
+ */
 public class BooleanPreferenceControlProvider implements PreferenceControlProvider<Boolean> {
 
     @Override

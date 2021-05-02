@@ -23,7 +23,7 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.test.context.ContextLoader;
 import org.springframework.test.context.TestContextBootstrapper;
 
-import java.util.Optional;
+import static java.util.Optional.ofNullable;
 
 /**
  * {@link TestContextBootstrapper} for Spring Swing Boot.
@@ -43,19 +43,19 @@ public class SpringSwingBootTestContextBootstrapper extends SpringBootTestContex
     @Override
     protected String[] getProperties(Class<?> testClass) {
         setSpringSwingApplicationClass(testClass);
-        return Optional.ofNullable(testClass)
-                .map(this::getSpringSwingBootTestAnnotation)
-                .map(SpringSwingBootTest::properties)
-                .orElse(null);
+        return ofNullable(testClass)
+            .map(this::getSpringSwingBootTestAnnotation)
+            .map(SpringSwingBootTest::properties)
+            .orElse(null);
     }
 
     @Override
     protected Class<?>[] getClasses(Class<?> testClass) {
         setSpringSwingApplicationClass(testClass);
-        return Optional.ofNullable(testClass)
-                .map(this::getSpringSwingBootTestAnnotation)
-                .map(SpringSwingBootTest::classes)
-                .orElse(null);
+        return ofNullable(testClass)
+            .map(this::getSpringSwingBootTestAnnotation)
+            .map(SpringSwingBootTest::classes)
+            .orElse(null);
     }
 
     protected SpringSwingBootTest getSpringSwingBootTestAnnotation(Class<?> testClass) {

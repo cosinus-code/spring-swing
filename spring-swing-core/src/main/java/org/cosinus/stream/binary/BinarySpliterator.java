@@ -25,6 +25,11 @@ import java.util.function.Consumer;
 
 import static java.lang.Long.MAX_VALUE;
 
+/**
+ * Generic {@link java.util.Spliterator} for streaming input streams as chunks of binary data.
+ * <p>
+ * The size of chunks is configurable in the constructor.
+ */
 public class BinarySpliterator extends Spliterators.AbstractSpliterator<byte[]> {
 
     private final InputStream inputStream;
@@ -49,11 +54,18 @@ public class BinarySpliterator extends Spliterators.AbstractSpliterator<byte[]> 
         }
 
         action.accept(readSize == buffer.length ?
-                buffer :
-                Arrays.copyOf(buffer, readSize));
+                          buffer :
+                          Arrays.copyOf(buffer, readSize));
         return true;
     }
 
+    /**
+     * Try to read a new chunk of data.
+     * <p>
+     * If no data is available anymore, it should return 0;
+     *
+     * @return the size of read data
+     */
     protected int tryRead() {
         try {
             return inputStream.read(buffer);

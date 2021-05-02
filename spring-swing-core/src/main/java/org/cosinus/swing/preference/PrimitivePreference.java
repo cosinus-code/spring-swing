@@ -16,6 +16,13 @@
 
 package org.cosinus.swing.preference;
 
+/**
+ * Abstract class for {@link Preference} managing primitive values.
+ *
+ * For these preferences, the saved value and the managed value are the same type
+ *
+ * @param <T> the type of both saved and managed preference values
+ */
 public abstract class PrimitivePreference<T> extends Preference<T, T> {
 
     @Override

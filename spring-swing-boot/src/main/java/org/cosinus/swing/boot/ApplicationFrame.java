@@ -17,11 +17,22 @@
 package org.cosinus.swing.boot;
 
 /**
- * Main frame of the application
+ * Interface for the main frame of the application
  */
 public interface ApplicationFrame {
 
-    void initApplication();
+    /**
+     * Start application main frame
+     */
+    void initApplicationFrame();
 
-    void startApplication();
+    /**
+     * Show application main frame
+     */
+    void showApplicationFrame();
+
+    /**
+     * Load application main frame
+     */
+    void loadApplicationFrame();
 }

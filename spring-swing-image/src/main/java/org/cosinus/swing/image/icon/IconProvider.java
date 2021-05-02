@@ -20,7 +20,9 @@ import javax.swing.*;
 import java.io.File;
 import java.util.Optional;
 
-
+/**
+ * Interface for an icon provider
+ */
 public interface IconProvider {
 
     String ICON_FOLDER = "folder";

@@ -17,27 +17,57 @@
 package org.cosinus.swing.boot;
 
 import org.cosinus.swing.boot.event.ApplicationContextCreationEvent;
+import org.cosinus.swing.boot.event.ApplicationFrameEvent;
 import org.springframework.boot.SpringApplicationRunListener;
 import org.springframework.context.ApplicationContext;
 
 /**
  * Listener for swing spring application startup.
  * It listen for basic spring application startup events from {@link SpringApplicationRunListener}
- * along with custom {@link ApplicationContextCreationEvent} and
+ * along with custom {@link ApplicationContextCreationEvent} and {@link ApplicationFrameEvent}
  */
 public interface SwingSpringApplicationStartupListener extends SpringApplicationRunListener {
 
+    /**
+     * Called just before starting to initialize the application context.
+     *
+     * @param context the application context
+     */
     void contextBeforeInitializeBeans(ApplicationContext context);
 
+    /**
+     * Called just before a bean is initialized.
+     *
+     * @param context  the application context
+     * @param bean     the bean to be initialized
+     * @param beanName the name of the bean to be initialized
+     */
     void contextBeforeInitializeBean(ApplicationContext context,
                                      Object bean,
                                      String beanName);
 
+    /**
+     * Called immediately after a bean is initialized.
+     *
+     * @param context  the application context
+     * @param bean     the initialized bean
+     * @param beanName the name of the initialized bean
+     */
     void contextAfterInitializeBean(ApplicationContext context,
                                     Object bean,
                                     String beanName);
 
+    /**
+     * Called just before starting to initialize the application frame.
+     *
+     * @param applicationFrame the application frame
+     */
     void applicationFrameInitializing(ApplicationFrame applicationFrame);
 
+    /**
+     * Called immediately after the application frame is initialized.
+     *
+     * @param applicationFrame the application frame
+     */
     void applicationFrameInitialized(ApplicationFrame applicationFrame);
 }

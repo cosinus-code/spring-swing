@@ -28,7 +28,7 @@ import java.util.Map;
 import static org.cosinus.swing.preference.Preferences.LOOK_AND_FEEL;
 
 /**
- * Swing UI initializer
+ * Implementation of {@link ApplicationInitializer} for initializing the default application theme.
  */
 public class DefaultThemeInitializer implements ApplicationInitializer {
 
@@ -46,7 +46,6 @@ public class DefaultThemeInitializer implements ApplicationInitializer {
 
     @Override
     public void initialize() {
-        LOG.info("Initializing application default theme...");
         Map<String, LookAndFeelInfo> availableLookAndFeels = uiHandler.getAvailableLookAndFeels();
         String lookAndFeelClassName = preferences.findPreference(LOOK_AND_FEEL)
             .map(Preference::getValue)
@@ -54,6 +53,7 @@ public class DefaultThemeInitializer implements ApplicationInitializer {
             .map(availableLookAndFeels::get)
             .map(LookAndFeelInfo::getClassName)
             .orElseGet(uiHandler::getDefaultLookAndFeelClassName);
+        LOG.info("Initializing application look-and-feel to " + lookAndFeelClassName + "...");
         uiHandler.setLookAndFeel(lookAndFeelClassName);
         uiHandler.translateDefaultUILabels();
         uiHandler.initializeDefaultUIFonts();

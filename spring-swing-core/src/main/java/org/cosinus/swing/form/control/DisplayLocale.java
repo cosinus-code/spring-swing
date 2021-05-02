@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.preference.impl;
+package org.cosinus.swing.form.control;
 
 import java.util.Locale;
 import java.util.Objects;
 
+/**
+ * Wrapper for {@link Locale} used to display purposes
+ */
 public class DisplayLocale {
 
     private final Locale locale;

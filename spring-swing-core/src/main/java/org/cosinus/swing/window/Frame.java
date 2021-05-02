@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.form;
+package org.cosinus.swing.window;
 
 import org.cosinus.swing.action.ActionController;
 import org.cosinus.swing.context.ApplicationProperties;
 import org.cosinus.swing.error.ErrorHandler;
+import org.cosinus.swing.form.FormComponent;
 import org.cosinus.swing.menu.MenuBar;
 import org.cosinus.swing.menu.MenuProvider;
 import org.cosinus.swing.resource.DefaultResourceResolver;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
+import org.cosinus.swing.window.Window;
+import org.cosinus.swing.window.WindowSettings;
+import org.cosinus.swing.window.WindowSettingsHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
@@ -31,14 +35,14 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.context.ApplicationContextInjector.applicationContext;
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
 /**
- * Abstract frame window with basic functionality
+ * Wrapper over a {@link JFrame}
+ * which will automatically inject the application context.
  */
 public class Frame extends JFrame implements Window, FormComponent {
 
@@ -76,12 +80,12 @@ public class Frame extends JFrame implements Window, FormComponent {
 
     public Frame(WindowSettings windowSettings) {
         if (applicationContext != null) {
-            init();
+            initialize();
         }
         this.windowSettings = windowSettings;
     }
 
-    protected void init() {
+    protected void initialize() {
         injectContext(this);
         if (windowSettings == null) {
             windowSettings = new WindowSettings(
@@ -157,7 +161,7 @@ public class Frame extends JFrame implements Window, FormComponent {
 
     private void initFrameNameAndIcon() {
         setTitle(windowSettings.getTitle());
-        Optional.ofNullable(windowSettings.getIcon())
+        ofNullable(windowSettings.getIcon())
             .flatMap(resourceResolver::resolveImageAsBytes)
             .map(ImageIcon::new)
             .map(ImageIcon::getImage)

@@ -16,9 +16,6 @@
 
 package org.cosinus.swing.exec;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.File;
 import java.util.Optional;
 
@@ -30,8 +27,6 @@ import static org.cosinus.swing.util.WindowsUtils.getRegistryBooleanValue;
  * Implementation of {@link ProcessExecutor} for Windows
  */
 public class WindowsProcessExecutor implements ProcessExecutor {
-
-    private static final Logger LOG = LogManager.getLogger(WindowsProcessExecutor.class);
 
     private static final String PERSONALIZE_REGISTRY = "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize";
 
@@ -50,8 +45,4 @@ public class WindowsProcessExecutor implements ProcessExecutor {
                                OS_DARK_THEME);
     }
 
-    @Override
-    public Logger logger() {
-        return LOG;
-    }
 }

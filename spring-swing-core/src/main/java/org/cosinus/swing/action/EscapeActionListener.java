@@ -21,7 +21,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Listener for escape on window action
+ * Implementation of an {@link ActionListener} for "Escape" action on an window
  */
 public class EscapeActionListener implements ActionListener {
 
@@ -31,6 +31,7 @@ public class EscapeActionListener implements ActionListener {
         this.window = window;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         window.dispose();
     }

@@ -23,6 +23,14 @@ import java.util.List;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
+/**
+ * Abstract class for the application preferences.
+ *
+ * The type property is discriminating for sub-type preferences.
+ *
+ * @param <T> the type of preference value to be saved as json value
+ * @param <R> the type of the real preference value to be handled
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(NON_NULL)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")

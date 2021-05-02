@@ -16,9 +16,7 @@
 
 package org.cosinus.swing.preference.dialog;
 
-import org.cosinus.swing.form.Dialog;
-import org.cosinus.swing.preference.dialog.DefaultPreferencesDialog;
-import org.cosinus.swing.preference.dialog.PreferencesDialogProvider;
+import org.cosinus.swing.window.Dialog;
 import org.cosinus.swing.translate.Translator;
 import org.springframework.beans.factory.annotation.Autowired;
 

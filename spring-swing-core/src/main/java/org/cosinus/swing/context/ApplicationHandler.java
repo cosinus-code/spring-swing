@@ -16,8 +16,16 @@
 
 package org.cosinus.swing.context;
 
+/**
+ * Generic application handler.
+ *
+ * Used for reloading a swing configuration of the application
+ */
 public interface ApplicationHandler {
 
+    /**
+     * Reload the swing configuration of the application
+     */
     void reloadApplication();
 
 }

@@ -17,7 +17,9 @@
 package org.cosinus.swing.action;
 
 /**
- * The default ActionContextProvider
+ * Default implementation of {@link ActionContextProvider}.
+ * <p>
+ * This provides an empty context.
  */
 public class DefaultActionContextProvider implements ActionContextProvider<ActionContext> {
 

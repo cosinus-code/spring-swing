@@ -20,7 +20,12 @@ import java.util.HashMap;
 
 import static java.util.Optional.ofNullable;
 
+/**
+ * Implementation of {@link ApplicationStorage} using in-memory map (used for testing purposes).
+ */
 public class InMemoryApplicationStorage extends HashMap<String, String> implements ApplicationStorage {
+
+    private static final long serialVersionUID = -3680442662776410600L;
 
     @Override
     public String getString(String key) {

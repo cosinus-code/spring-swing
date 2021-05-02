@@ -16,7 +16,12 @@
 
 package org.cosinus.swing.store;
 
+/**
+ * Dedicated exception for errors on application storage operations
+ */
 public class ApplicationStorageException extends RuntimeException {
+
+    private static final long serialVersionUID = 7993605611363152201L;
 
     public ApplicationStorageException() {
     }

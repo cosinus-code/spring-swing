@@ -24,6 +24,10 @@ import java.util.Vector;
 
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
+/**
+ * Extension of the {@link JTree}
+ * which will automatically inject the application context.
+ */
 public class Tree extends JTree {
 
     public Tree() {

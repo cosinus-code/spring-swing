@@ -21,11 +21,13 @@ import org.cosinus.swing.context.ApplicationHandler;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 
-import javax.swing.*;
 import java.util.Set;
 
+import static javax.swing.SwingUtilities.invokeLater;
+
 /**
- * Application initialization handler
+ * An {@link ApplicationRunner} which handle application initializers.
+ * Also, as an {@link ApplicationHandler} it can reload the swing configuration
  */
 public class ApplicationInitializationHandler implements ApplicationRunner, ApplicationHandler {
 
@@ -37,15 +39,21 @@ public class ApplicationInitializationHandler implements ApplicationRunner, Appl
 
     @Override
     public void run(ApplicationArguments args) {
-        SwingUtilities.invokeLater(this::initApplication);
+        invokeLater(this::initApplication);
     }
 
+    /**
+     * Run all {@link ApplicationInitializer} beans from application context
+     */
     public void initApplication() {
         applicationInitializers.forEach(ApplicationInitializer::initialize);
     }
 
+    /**
+     * Reload the swing configuration of the application
+     */
     @Override
     public void reloadApplication() {
-        applicationInitializers.forEach(ApplicationInitializer::initialize);
+        run(null);
     }
 }

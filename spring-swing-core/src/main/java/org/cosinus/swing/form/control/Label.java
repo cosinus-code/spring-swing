@@ -16,12 +16,14 @@
 
 package org.cosinus.swing.form.control;
 
-import org.cosinus.swing.form.control.Control;
-
 import javax.swing.*;
 
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
+/**
+ * Extension of the {@link JLabel}
+ * which will automatically inject the application context.
+ */
 public class Label extends JLabel implements Control<String> {
 
     public Label(String text, Icon icon, int horizontalAlignment) {

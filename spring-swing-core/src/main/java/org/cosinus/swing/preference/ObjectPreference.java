@@ -18,6 +18,13 @@ package org.cosinus.swing.preference;
 
 import static java.util.Optional.ofNullable;
 
+/**
+ * Abstract class for {@link Preference} managing not primitive values.
+ *
+ * For these preferences, the saved value is always a string
+ *
+ * @param <R> the type of the managed preference value
+ */
 public abstract class ObjectPreference<R> extends Preference<String, R> {
 
     @Override

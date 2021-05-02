@@ -20,6 +20,12 @@ import javax.swing.*;
 
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
+/**
+ * Extension of the {@link JComboBox}
+ * which will automatically inject the application context.
+ *
+ * @param <T> the type of the value
+ */
 public class ComboBox<T> extends JComboBox<T> implements Control<T> {
 
     public ComboBox(ComboBoxModel<T> aModel) {

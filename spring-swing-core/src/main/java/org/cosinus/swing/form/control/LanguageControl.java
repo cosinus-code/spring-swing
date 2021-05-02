@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.preference.control;
-
-import org.cosinus.swing.form.control.Control;
-import org.cosinus.swing.preference.impl.DisplayLocale;
+package org.cosinus.swing.form.control;
 
 import javax.swing.*;
 import java.util.List;
@@ -25,6 +22,9 @@ import java.util.Locale;
 
 import static java.util.Optional.ofNullable;
 
+/**
+ * Extension of the {@link JComboBox} for controlling a list of languages.
+ */
 public class LanguageControl extends JComboBox<DisplayLocale> implements Control<Locale> {
 
     public LanguageControl(List<Locale> values, Locale value) {

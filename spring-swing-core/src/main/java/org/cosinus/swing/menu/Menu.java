@@ -29,7 +29,6 @@ import static org.cosinus.swing.context.ApplicationContextInjector.injectContext
 /**
  * Menu list model
  */
-@SuppressWarnings("serial")
 public class Menu extends JMenu implements FormComponent {
 
     @Autowired

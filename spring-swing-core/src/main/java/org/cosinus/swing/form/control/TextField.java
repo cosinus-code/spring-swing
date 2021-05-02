@@ -21,6 +21,10 @@ import javax.swing.text.Document;
 
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
+/**
+ * Extension of the {@link JTextField}
+ * which will automatically inject the application context.
+ */
 public class TextField extends JTextField implements Control<String> {
 
     public TextField() {

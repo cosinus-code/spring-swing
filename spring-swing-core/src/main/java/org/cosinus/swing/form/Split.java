@@ -34,7 +34,8 @@ import static java.lang.Math.min;
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
 /**
- * Custom splitter
+ * Extension of the {@link JSplitPane}
+ * which will automatically inject the application context.
  */
 public class Split extends JSplitPane implements FormComponent {
 

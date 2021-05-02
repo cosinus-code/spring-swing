@@ -59,9 +59,9 @@ public class WindowsIconProvider implements IconProvider {
 
     private static final String EXTENSION_EXE = "exe";
 
-    private Map<String, String> iconNameToFilePathMap;
+    private final Map<String, String> iconNameToFilePathMap;
 
-    private Map<String, Integer> extensionsToIconIndexMap;
+    private final Map<String, Integer> extensionsToIconIndexMap;
 
     public WindowsIconProvider() {
         this.iconNameToFilePathMap = new HashMap<>();
@@ -92,7 +92,7 @@ public class WindowsIconProvider implements IconProvider {
 
     @Override
     public Optional<Icon> findIconByName(String name, IconSize size) {
-        return Optional.ofNullable(getIconNameToFilePathMap().get(name))
+        return ofNullable(getIconNameToFilePathMap().get(name))
             .flatMap(WindowsUtils::getRegistryValue)
             .flatMap(iconFilePath -> createIconFromSystemFile(iconFilePath, size.getSize()))
             .map(bytes -> createIconFromBytes(bytes, size.getSize()));
@@ -104,7 +104,7 @@ public class WindowsIconProvider implements IconProvider {
             pieces[0].substring(1, pieces[0].length() - 1) :
             pieces[0];
         int index = Integer.parseInt(pieces[1]);
-        return Optional.ofNullable(getNativeSystemIcon(source, index, size));
+        return ofNullable(getNativeSystemIcon(source, index, size));
     }
 
     private Icon getSystemIcon(String fileExtension) {
@@ -183,7 +183,7 @@ public class WindowsIconProvider implements IconProvider {
     }
 
     private Optional<Integer> getIconIndexByExtension(String extension) {
-        return Optional.ofNullable(getExtensionsToIconIndexMap().get(extension));
+        return ofNullable(getExtensionsToIconIndexMap().get(extension));
     }
 
     private Map<String, Integer> getExtensionsToIconIndexMap() {

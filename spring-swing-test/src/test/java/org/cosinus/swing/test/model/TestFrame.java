@@ -18,8 +18,8 @@ package org.cosinus.swing.test.model;
 
 import org.cosinus.swing.action.ActionController;
 import org.cosinus.swing.error.ErrorHandler;
-import org.cosinus.swing.form.Frame;
-import org.cosinus.swing.form.WindowSettingsHandler;
+import org.cosinus.swing.window.Frame;
+import org.cosinus.swing.window.WindowSettingsHandler;
 import org.cosinus.swing.menu.MenuProvider;
 import org.cosinus.swing.resource.DefaultResourceResolver;
 import org.cosinus.swing.translate.Translator;

@@ -18,5 +18,14 @@ package org.cosinus.swing.preference;
 
 import java.util.LinkedHashMap;
 
+/**
+ * A group of preferences;
+ *
+ * This allows to group {@link Preferences} objects per logical sections
+ * that will be shown on different panels in the preferences dialog form.
+ */
 public class PreferencesSet extends LinkedHashMap<String, Preference> {
+
+    private static final long serialVersionUID = -4430681695930280454L;
+
 }

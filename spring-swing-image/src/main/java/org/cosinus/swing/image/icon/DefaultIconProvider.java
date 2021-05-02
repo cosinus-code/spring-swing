@@ -40,6 +40,6 @@ public class DefaultIconProvider implements IconProvider {
 
     @Override
     public Optional<Icon> findIconByName(String name, IconSize size) {
-        return uiHandler.getDefaultIcon();
+        return uiHandler.getDefaultFileIcon();
     }
 }

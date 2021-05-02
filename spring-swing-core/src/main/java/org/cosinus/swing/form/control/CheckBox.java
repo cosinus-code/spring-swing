@@ -16,14 +16,15 @@
 
 package org.cosinus.swing.form.control;
 
-import org.cosinus.swing.form.control.Control;
-
 import javax.swing.*;
-
 import java.util.Optional;
 
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
+/**
+ * Extension of the {@link JCheckBox}
+ * which will automatically inject the application context.
+ */
 public class CheckBox extends JCheckBox implements Control<Boolean> {
 
     public CheckBox() {

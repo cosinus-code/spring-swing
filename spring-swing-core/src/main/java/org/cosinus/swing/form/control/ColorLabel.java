@@ -26,6 +26,12 @@ import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.border.Borders.lineBorder;
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
+/**
+ * Extension of a {@link JLabel} used for controlling a {@link Color} value.
+ *
+ * The label is used to show the color and the {@link JColorChooser} is used to change the color,
+ * when the label is clicked.
+ */
 public class ColorLabel extends JLabel implements Control<Color>, MouseListener {
 
     public ColorLabel(Color color) {

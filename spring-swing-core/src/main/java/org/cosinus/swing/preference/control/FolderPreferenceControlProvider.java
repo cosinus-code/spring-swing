@@ -22,6 +22,10 @@ import org.cosinus.swing.preference.Preference;
 
 import java.io.File;
 
+/**
+ * Implementation of {@link PreferenceControlProvider}
+ * for providing the {@link Control} corresponding to a folder preference value.
+ */
 public class FolderPreferenceControlProvider implements PreferenceControlProvider<File> {
 
     @Override

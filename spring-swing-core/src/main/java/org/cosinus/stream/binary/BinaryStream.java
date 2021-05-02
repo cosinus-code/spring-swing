@@ -24,10 +24,14 @@ import java.io.UncheckedIOException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.Checksum;
 
+import static java.util.stream.StreamSupport.stream;
+
+/**
+ * A {@link Stream} of chunks of byte arrays read from an input stream
+ */
 public class BinaryStream extends StreamDelegate<byte[]> {
 
     private final InputStream inputStream;
@@ -38,26 +42,50 @@ public class BinaryStream extends StreamDelegate<byte[]> {
         this.inputStream = inputStream;
     }
 
+    /**
+     * Provide a {@link BinaryStream} based on a {@link BinarySpliterator}.
+     *
+     * @param inputStream the input stream source to stream
+     * @param bufferSize  the size of the chunks of data
+     * @return the binary stream
+     */
     public static BinaryStream of(InputStream inputStream, int bufferSize) {
         Objects.requireNonNull(inputStream);
         BinarySpliterator spliterator = new BinarySpliterator(inputStream, bufferSize);
-        return new BinaryStream(StreamSupport.stream(spliterator, false), inputStream);
+        return new BinaryStream(stream(spliterator, false), inputStream);
     }
 
+    /**
+     * Allows to skip a number of bytes from the input stream source.
+     *
+     * @param n the number of bytes to be skipped
+     * @return the actual number of bytes skipped.
+     * @throws IOException if an I/O error occurs during skip.
+     */
     public long skipBytes(long n) throws IOException {
         return inputStream.skip(n);
     }
 
+    /**
+     * Retrieve the checksum of the input stream content
+     * if the source input stream is of {@link CheckedInputStream} type.
+     *
+     * @return the checksum of the input stream content
+     */
     public Optional<String> checksum() {
         return Optional.of(inputStream)
-                .filter(input -> CheckedInputStream.class.isAssignableFrom(input.getClass()))
-                .map(CheckedInputStream.class::cast)
-                .map(CheckedInputStream::getChecksum)
-                .map(Checksum::getValue)
-                .map(Objects::toString);
+            .filter(input -> CheckedInputStream.class.isAssignableFrom(input.getClass()))
+            .map(CheckedInputStream.class::cast)
+            .map(CheckedInputStream::getChecksum)
+            .map(Checksum::getValue)
+            .map(Objects::toString);
 
     }
 
+    /**
+     * Closes this input stream and releases any system resources associated
+     * with the stream.
+     */
     @Override
     public void close() {
         super.close();

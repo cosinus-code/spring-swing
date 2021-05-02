@@ -29,12 +29,14 @@ import javax.swing.border.Border;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
 import java.io.File;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.awt.Font.PLAIN;
 import static java.awt.Toolkit.getDefaultToolkit;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.META_DOWN_MASK;
@@ -47,7 +49,10 @@ import static javax.swing.KeyStroke.getKeyStroke;
 import static org.apache.commons.lang3.SystemUtils.IS_OS_MAC;
 
 /**
- * UIManager handler
+ * UIManager handler.
+ * <p>
+ * The intention is to use this handler methods instead UIManager static methods,
+ * to isolate UIManager for easier reimplementation.
  */
 public class ApplicationUIHandler {
 
@@ -93,11 +98,19 @@ public class ApplicationUIHandler {
         this.lookAndFeels = lookAndFeels;
     }
 
+    /**
+     * Translate default UI related texts.
+     */
     public void translateDefaultUILabels() {
-        getTranslationKeys().forEach(this::translateDefaultUILabels);
+        getTranslationKeys().forEach(this::translateDefaultUILabel);
     }
 
-    public void translateDefaultUILabels(String key) {
+    /**
+     * Translate default UI related texts.
+     *
+     * @param key the key of the text to translate
+     */
+    public void translateDefaultUILabel(String key) {
         try {
             String translation = translator.translate(key);
             if (!key.equals(translation)) {
@@ -111,53 +124,96 @@ public class ApplicationUIHandler {
         }
     }
 
+    /**
+     * Get an UI text.
+     *
+     * @param key the key of the text
+     * @return the text
+     */
     public String getString(String key) {
         return UIManager.getString(key);
     }
 
+    /**
+     * Get the UI text font.
+     *
+     * @return the text font
+     */
     public Font getTextFont() {
         return getFont(TEXT_FONT_KEY);
     }
 
+    /**
+     * Get the UI label font.
+     *
+     * @return the label font
+     */
     public Font getLabelFont() {
         return getFont(LABEL_FONT_KEY);
     }
 
-    public void setGeneralFont(Component... components) {
-        stream(components)
-            .forEach(component -> setGeneralFont(component,
-                                                 false));
-    }
-
-    public void setGeneralFont(Component comp,
-                               boolean normal) {
-        Optional.ofNullable(getTextFont())
-            .map(f -> normal ? f.deriveFont(PLAIN) : f)
-            .ifPresent(comp::setFont);
-    }
-
+    /**
+     * Get default icon for a file.
+     *
+     * @param file the file
+     * @return the default icon of the file
+     */
     public Optional<Icon> getDefaultFileIcon(File file) {
-        return Optional.ofNullable(UIManager.get(file.isDirectory() ? FOLDER_ICON_KEY : FILE_ICON_KEY))
+        return ofNullable(UIManager.get(file.isDirectory() ? FOLDER_ICON_KEY : FILE_ICON_KEY))
             .filter(icon -> Icon.class.isAssignableFrom(icon.getClass()))
             .map(Icon.class::cast);
     }
 
-    public Optional<Icon> getDefaultIcon() {
-        return Optional.ofNullable(UIManager.getIcon(FILE_ICON_KEY));
+    /**
+     * Get the default file icon.
+     *
+     * @return the file icon
+     */
+    public Optional<Icon> getDefaultFileIcon() {
+        return ofNullable(UIManager.getIcon(FILE_ICON_KEY));
     }
 
-    public void setDefaultIcon(Icon icon) {
+    /**
+     * Set the default file icon.
+     *
+     * @param icon the icon to set as default
+     */
+    public void setDefaultFileIcon(Icon icon) {
         UIManager.put(FILE_ICON_KEY, icon);
     }
 
+    /**
+     * Set the default folder icon.
+     *
+     * @param icon the icon to set as default
+     */
+    public void setDefaultFolderIcon(Icon icon) {
+        UIManager.put(FOLDER_ICON_KEY, icon);
+    }
+
+    /**
+     * Get the default look-and-feel class name.
+     *
+     * @return the look-and-feel class name
+     */
     public String getDefaultLookAndFeelClassName() {
         return UIManager.getSystemLookAndFeelClassName();
     }
 
+    /**
+     * Get the cross-platform look-and-feel class name.
+     *
+     * @return the look-and-feel class name
+     */
     public String getCrossPlatformLookAndFeelClassName() {
         return UIManager.getCrossPlatformLookAndFeelClassName();
     }
 
+    /**
+     * Set the current look-and-feel of the application.
+     *
+     * @param lookAndFeel the look-and-feel to set
+     */
     public void setLookAndFeel(String lookAndFeel) {
         try {
             UIManager.setLookAndFeel(lookAndFeel);
@@ -166,10 +222,20 @@ public class ApplicationUIHandler {
         }
     }
 
+    /**
+     * Get the name of the current look-and-feel.
+     *
+     * @return the name of the current look-and-feel
+     */
     public String getLookAndFeel() {
         return UIManager.getLookAndFeel().getName();
     }
 
+    /**
+     * Get the map of available look-and-feels.
+     *
+     * @return the map of available look-and-feels
+     */
     public Map<String, LookAndFeelInfo> getAvailableLookAndFeels() {
         if (lookAndFeelMap == null) {
             lookAndFeelMap = concat(stream(UIManager.getInstalledLookAndFeels()),
@@ -180,38 +246,71 @@ public class ApplicationUIHandler {
         return lookAndFeelMap;
     }
 
+    /**
+     * Check if the current theme of the Operating System is dark.
+     *
+     * @return true if the current OS theme is dark
+     */
     public boolean isDarkTheme() {
         return processExecutor.getOsTheme()
             .map(theme -> theme.startsWith(OS_DARK_THEME))
             .orElse(false);
     }
 
+    /**
+     * Check if the current look-and-feel is GTK.
+     *
+     * @return true if the current look-and-feel is GTK
+     */
     public boolean isLookAndFeelGTK() {
         return getLookAndFeel().startsWith("GTK");
     }
 
+    /**
+     * Check if the current look-and-feel is Windows.
+     *
+     * @return true if the current look-and-feel is Windows
+     */
     public boolean isLookAndFeelWindows() {
         return getLookAndFeel().startsWith("Windows");
     }
 
-    public Color getControlDarkColor() {
-        return getColor("controlDkShadow");
-    }
-
-    public int controlDownKeyMask() {
+    /**
+     * Get the current control down key mask.
+     *
+     * @return the current control down key mask
+     */
+    public int getControlDownKeyMask() {
         return IS_OS_MAC ?
             META_DOWN_MASK :
             getDefaultToolkit().getMenuShortcutKeyMaskEx();
     }
 
+    /**
+     * Get the current control down key stroke for key code
+     *
+     * @param keyCode the key code
+     * @return the current control down key stroke
+     */
     public KeyStroke getControlDownKeyStroke(int keyCode) {
-        return getKeyStroke(keyCode, controlDownKeyMask());
+        return getKeyStroke(keyCode, getControlDownKeyMask());
     }
 
+    /**
+     * Get the alt down key stroke for key code
+     *
+     * @param keyCode the key code
+     * @return the alt down key stroke
+     */
     public KeyStroke getAltDownKeyStroke(int keyCode) {
         return getKeyStroke(keyCode, ALT_DOWN_MASK);
     }
 
+    /**
+     * Get UI default translation keys.
+     *
+     * @return the UI default translation keys
+     */
     public Set<String> getTranslationKeys() {
         if (uiTranslationKeys == null) {
             uiTranslationKeys = Stream.of(
@@ -268,30 +367,60 @@ public class ApplicationUIHandler {
         return uiTranslationKeys;
     }
 
-    private Map.Entry<String, String> mapEntry(String key, String value) {
-        return new AbstractMap.SimpleImmutableEntry<>(key, value);
-    }
-
+    /**
+     * Get default error icon.
+     *
+     * @return get default error icon
+     */
     public Icon getErrorIcon() {
         return getIcon("OptionPane.errorIcon");
     }
 
+    /**
+     * Get an UI default icon.
+     *
+     * @param key the icon key
+     * @return the icon
+     */
     public Icon getIcon(String key) {
         return UIManager.getIcon(key);
     }
 
+    /**
+     * Get an UI default font.
+     *
+     * @param key the icon key
+     * @return the font
+     */
     public Font getFont(String key) {
         return UIManager.getFont(key);
     }
 
+    /**
+     * Get an UI default color.
+     *
+     * @param key the icon key
+     * @return the color
+     */
     public Color getColor(String key) {
         return UIManager.getColor(key);
     }
 
+    /**
+     * Get an UI default border.
+     *
+     * @param key the icon key
+     * @return the border
+     */
     public Border getBorder(String key) {
         return UIManager.getBorder(key);
     }
 
+    /**
+     * Get the current screen bound.
+     *
+     * @return the current screen bound
+     */
     public Rectangle getScreenBound() {
         return stream(GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices())
             .map(GraphicsDevice::getDefaultConfiguration)
@@ -304,14 +433,22 @@ public class ApplicationUIHandler {
         return r1;
     }
 
+    /**
+     * Get the Gnome icon theme.
+     *
+     * @return the Gnome icon theme
+     */
     public String getGnomeIconTheme() {
         return ofNullable(getDefaultToolkit().getDesktopProperty(GNOME_ICON_THEME_NAME_PROPERTY))
             .map(Object::toString)
             .orElse(DEFAULT_GNOME_ICON_THEME);
     }
 
+    /**
+     * Initialize default UI fonts.
+     */
     public void initializeDefaultUIFonts() {
-        if (isGTKLookAndFeel() && getDefaultToolkit().getScreenResolution() == 96) {
+        if (isLookAndFeelGTK() && getDefaultToolkit().getScreenResolution() == 96) {
             //this is an workaround for https://bugzilla.redhat.com/show_bug.cgi?id=508185
             //still reproducible in Ubuntu
             getDefaultFontsMap().forEach(
@@ -319,10 +456,11 @@ public class ApplicationUIHandler {
         }
     }
 
-    public boolean isGTKLookAndFeel() {
-        return UIManager.getLookAndFeel().getID().equals("GTK");
-    }
-
+    /**
+     * Get the UI default fonts map.
+     *
+     * @return the UI default fonts map
+     */
     public Map<String, Font> getDefaultFontsMap() {
         return UIManager
             .getDefaults()
@@ -336,6 +474,12 @@ public class ApplicationUIHandler {
                            HashMap::new));
     }
 
+    /**
+     * Set default UI font.
+     *
+     * @param key the key of the font to set
+     * @param font the font to set
+     */
     public void setDefaultFont(String key, Font font) {
         UIManager.put(key, font);
     }

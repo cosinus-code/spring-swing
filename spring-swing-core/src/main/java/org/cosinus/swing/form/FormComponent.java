@@ -21,7 +21,13 @@ package org.cosinus.swing.form;
  */
 public interface FormComponent {
 
+    /**
+     * Initialize form components.
+     */
     void initComponents();
 
+    /**
+     * Translate form.
+     */
     void translate();
 }

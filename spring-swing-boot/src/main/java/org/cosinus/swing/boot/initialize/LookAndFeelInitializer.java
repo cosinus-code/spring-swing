@@ -27,6 +27,9 @@ import java.util.Optional;
 import static java.util.Optional.ofNullable;
 import static java.util.function.Predicate.not;
 
+/**
+ * Implementation of {@link ApplicationInitializer} for initializing the custom look-and-feel of the application.
+ */
 public class LookAndFeelInitializer implements ApplicationInitializer {
 
     private static final Logger LOG = LogManager.getLogger(LookAndFeelInitializer.class);
@@ -49,7 +52,7 @@ public class LookAndFeelInitializer implements ApplicationInitializer {
             .flatMap(this::getLookAndFeelClassName)
             .orElseGet(uiHandler::getCrossPlatformLookAndFeelClassName);
 
-        LOG.info("Initializing application look and feel to " + lookAndFeelClassName + "...");
+        LOG.info("Initializing application look-and-feel to " + lookAndFeelClassName + "...");
         uiHandler.setLookAndFeel(lookAndFeelClassName);
     }
 

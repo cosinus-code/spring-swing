@@ -42,17 +42,31 @@ public class BeanProcessorListener implements BeanPostProcessor, ApplicationCont
         this.applicationContext = applicationContext;
     }
 
+    /**
+     * Used for publishing {@link ApplicationContextBeforeInitializeBeanEvent} event for every bean.
+     *
+     * @param bean     the current bean
+     * @param beanName the bean name
+     * @return the bean
+     */
     @Override
-    public Object postProcessBeforeInitialization(@NotNull Object bean, @NotNull String beanName) throws BeansException {
+    public Object postProcessBeforeInitialization(@NotNull Object bean, @NotNull String beanName) {
         applicationEventPublisher.publishEvent(
-                new ApplicationContextBeforeInitializeBeanEvent(applicationContext, bean, beanName));
-        return null;
+            new ApplicationContextBeforeInitializeBeanEvent(applicationContext, bean, beanName));
+        return bean;
     }
 
+    /**
+     * Used for publishing {@link ApplicationContextAfterInitializeBeanEvent} event for every bean.
+     *
+     * @param bean     the current bean
+     * @param beanName the bean name
+     * @return the bean
+     */
     @Override
     public Object postProcessAfterInitialization(@NotNull Object bean, @NotNull String beanName) {
         applicationEventPublisher.publishEvent(
-                new ApplicationContextAfterInitializeBeanEvent(applicationContext, bean, beanName));
+            new ApplicationContextAfterInitializeBeanEvent(applicationContext, bean, beanName));
         return bean;
     }
 }

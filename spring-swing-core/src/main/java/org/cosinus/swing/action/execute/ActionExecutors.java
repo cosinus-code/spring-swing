@@ -22,6 +22,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static java.util.Optional.ofNullable;
+
 /**
  * Handler for action executors
  */
@@ -36,11 +38,24 @@ public class ActionExecutors {
                                       Function.identity()));
     }
 
+    /**
+     * Get the action executor corresponding to an action model class.
+     *
+     * @param actionClass the action model class to search for
+     * @param <A> the type of action model
+     * @return the found action executor, or {@link Optional#empty}
+     */
     public <A extends ActionModel>
     Optional<ActionExecutor<? extends ActionModel>> getActionExecutor(Class<A> actionClass) {
-        return Optional.ofNullable(executorsMap.get(actionClass.getName()));
+        return ofNullable(executorsMap.get(actionClass.getName()));
     }
 
+    /**
+     * Execute an action.
+     *
+     * @param actionModel the action model to execute
+     * @param <A> the type of the action model
+     */
     public <A extends ActionModel> void execute(A actionModel) {
         getActionExecutor(actionModel.getClass())
             .ifPresent(executor -> ((ActionExecutor<A>) executor).execute(actionModel));

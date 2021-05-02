@@ -30,7 +30,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 /**
- * Application preferences
+ * Application preferences handler.
  */
 public class Preferences {
 

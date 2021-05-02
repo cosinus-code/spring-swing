@@ -24,9 +24,11 @@ import java.util.Optional;
 import static java.util.Optional.ofNullable;
 
 /**
- * Hash map {@link MultiKeyCache} implementation
+ * In memory hash map {@link MultiKeyCache} based implementation for a {@link MultiKeyCache} interface
  */
 public class InMemoryMultiKeyCache<T> extends MultiKeyMap<Object, T> implements MultiKeyCache<T> {
+
+    private static final long serialVersionUID = 1970762625157829923L;
 
     @Override
     public T cache(T value, Object... keys) {

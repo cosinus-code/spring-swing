@@ -18,22 +18,24 @@ package org.cosinus.swing.boot;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.admin.SpringApplicationAdminJmxAutoConfiguration;
-import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.*;
 
 /**
- * Annotation for Spring Swing Applications
+ * Annotation for Spring Swing Applications.
+ * <p>
+ * It copies the functionality of scanBasePackages from {@link SpringBootApplication}
+ * and exclude {@link SpringApplicationAdminJmxAutoConfiguration} auto configurations
+ * to solve circular reference.
+ * <p>
+ * It is used to mark a class as a {@link SpringSwingApplication}
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@SpringBootApplication(exclude = {
-        SpringApplicationAdminJmxAutoConfiguration.class,
-        JacksonAutoConfiguration.class
-})
+@SpringBootApplication(exclude = SpringApplicationAdminJmxAutoConfiguration.class)
 public @interface SpringSwingBootApplication {
 
     @AliasFor(annotation = SpringBootApplication.class, attribute = "scanBasePackages")

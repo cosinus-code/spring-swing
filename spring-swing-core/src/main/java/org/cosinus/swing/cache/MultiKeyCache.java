@@ -19,11 +19,24 @@ package org.cosinus.swing.cache;
 import java.util.Optional;
 
 /**
- * Icons cache interface
+ * Multi key cache interface
  */
 public interface MultiKeyCache<T> {
 
+    /**
+     * Cache a value.
+     *
+     * @param value the value to cache
+     * @param keys  the keys to identify the cache
+     * @return the cached value
+     */
     T cache(T value, Object... keys);
 
+    /**
+     * Get a cached value.
+     *
+     * @param keys the keys to search the cache
+     * @return the found value, or {@link Optional#empty()}
+     */
     Optional<T> getValue(Object... keys);
 }

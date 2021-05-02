@@ -21,7 +21,8 @@ import javax.swing.*;
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
 /**
- * Abstract table functionality
+ * Extension of the {@link JTable}
+ * which will automatically inject the application context.
  */
 public abstract class Table extends JTable implements FormComponent {
 

@@ -38,9 +38,6 @@ public class GrayFilter extends RGBImageFilter {
         return a | (r << 16) | (g << 8) | b;
     }
 
-    public String toString() {
-        return "Colors/Gray Out";
-    }
 }
 
 

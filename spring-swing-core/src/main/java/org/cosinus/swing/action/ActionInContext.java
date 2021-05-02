@@ -20,14 +20,29 @@ import javax.swing.*;
 import java.util.Optional;
 
 /**
- * Interface for a swing action
+ * Interface for a swing action in context
  */
 public interface ActionInContext<C extends ActionContext> {
 
+    /**
+     * Run the action in the given context.
+     *
+     * @param context the context to run the action
+     */
     void run(C context);
 
+    /**
+     * Get the id of the action.
+     *
+     * @return the id of the action
+     */
     String getId();
 
+    /**
+     * Get the key stroke corresponding to the action.
+     *
+     * @return {@link Optional#empty()}
+     */
     default Optional<KeyStroke> getKeyStroke() {
         return Optional.empty();
     }

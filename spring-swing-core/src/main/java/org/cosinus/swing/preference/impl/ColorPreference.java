@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.cosinus.swing.preference.ObjectPreference;
+import org.cosinus.swing.preference.Preference;
 import org.cosinus.swing.preference.PreferenceType;
 
 import java.awt.*;
@@ -29,6 +30,9 @@ import static java.lang.String.join;
 import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.preference.PreferenceType.COLOR;
 
+/**
+ * Implementation of {@link Preference} for color managed values.
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(NON_NULL)
 public class ColorPreference extends ObjectPreference<Color> {

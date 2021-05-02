@@ -16,7 +16,12 @@
 
 package org.cosinus.swing.preference;
 
+/**
+ * Preferences related exception
+ */
 public class PreferenceException extends RuntimeException {
+
+    private static final long serialVersionUID = 8993008481605759004L;
 
     private final String preferenceName;
 

@@ -16,7 +16,12 @@
 
 package org.cosinus.swing.error;
 
+/**
+ * Swing severe exception
+ */
 public class SwingSevereException extends RuntimeException {
+
+    private static final long serialVersionUID = -1511690664217068720L;
 
     public SwingSevereException() {
     }

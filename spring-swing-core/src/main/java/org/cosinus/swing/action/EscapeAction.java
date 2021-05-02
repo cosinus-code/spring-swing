@@ -21,6 +21,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
 
+/**
+ * Implementation of an {@link Action} to be bound to an "Escape" meaning
+ */
 public class EscapeAction implements Action {
 
     private boolean enabled = true;
@@ -31,27 +34,34 @@ public class EscapeAction implements Action {
         this.window = window;
     }
 
+    @Override
     public Object getValue(String key) {
         return null;
     }
 
+    @Override
     public void putValue(String key, Object value) {
     }
 
+    @Override
     public void setEnabled(boolean b) {
         enabled = b;
     }
 
+    @Override
     public boolean isEnabled() {
         return enabled;
     }
 
+    @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
     }
 
+    @Override
     public void removePropertyChangeListener(PropertyChangeListener listener) {
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         window.dispose();
     }

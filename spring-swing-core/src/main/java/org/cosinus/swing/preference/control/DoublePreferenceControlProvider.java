@@ -22,6 +22,10 @@ import org.cosinus.swing.preference.Preference;
 
 import static java.text.NumberFormat.getNumberInstance;
 
+/**
+ * Implementation of {@link PreferenceControlProvider}
+ * for providing the {@link Control} corresponding to a double preference value.
+ */
 public class DoublePreferenceControlProvider implements PreferenceControlProvider<Double> {
 
     @Override

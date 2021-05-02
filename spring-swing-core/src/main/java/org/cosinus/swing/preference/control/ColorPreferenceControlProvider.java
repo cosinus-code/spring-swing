@@ -22,6 +22,10 @@ import org.cosinus.swing.preference.Preference;
 
 import java.awt.*;
 
+/**
+ * Implementation of {@link PreferenceControlProvider}
+ * for providing the {@link Control} corresponding to a color preference value.
+ */
 public class ColorPreferenceControlProvider implements PreferenceControlProvider<Color> {
 
     @Override

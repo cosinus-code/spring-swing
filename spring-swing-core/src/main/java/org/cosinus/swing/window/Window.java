@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.form;
+package org.cosinus.swing.window;
 
 import org.cosinus.swing.action.EscapeActionListener;
 import org.cosinus.swing.translate.Translatable;
@@ -28,14 +28,17 @@ import static java.awt.Toolkit.getDefaultToolkit;
 import static java.util.Arrays.stream;
 import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 import static javax.swing.KeyStroke.getKeyStroke;
-import static org.cosinus.swing.form.WindowSettings.DEFAULT_HEIGHT;
-import static org.cosinus.swing.form.WindowSettings.DEFAULT_WIDTH;
+import static org.cosinus.swing.window.WindowSettings.DEFAULT_HEIGHT;
+import static org.cosinus.swing.window.WindowSettings.DEFAULT_WIDTH;
 
 /**
  * Generic window interface
  */
 public interface Window extends Translatable {
 
+    /**
+     * Register the exit on escape key for this window
+     */
     default void registerExitOnEscapeKey() {
         getComponent().ifPresent(component -> component
             .registerKeyboardAction(new EscapeActionListener(thisWindow()),
@@ -43,6 +46,11 @@ public interface Window extends Translatable {
                                     WHEN_IN_FOCUSED_WINDOW));
     }
 
+    /**
+     * Get the first component of this window.
+     *
+     * @return the first component
+     */
     default Optional<JComponent> getComponent() {
         return stream(thisWindow().getComponents())
             .filter(comp -> JComponent.class.isAssignableFrom(comp.getClass()))
@@ -50,6 +58,9 @@ public interface Window extends Translatable {
             .findFirst();
     }
 
+    /**
+     * Center this window on the current screen bounds
+     */
     default void centerWindow() {
         Dimension screenSize = getDefaultToolkit().getScreenSize();
         java.awt.Window window = thisWindow();
@@ -57,14 +68,30 @@ public interface Window extends Translatable {
                            (screenSize.height - window.getHeight()) / 2);
     }
 
+    /**
+     * Get this window.
+     *
+     * @return this
+     */
     default java.awt.Window thisWindow() {
         return (java.awt.Window) this;
     }
 
+    /**
+     * Get the window name from class name.
+     *
+     * @return the window name
+     */
     default String getWindowName() {
         return getClass().getSimpleName().split("\\$\\$")[0].toLowerCase();
     }
 
+    /**
+     * Set window position and size.
+     *
+     * @param windowSettings the window settings to read position and size
+     * @param screenBound the screen bounds
+     */
     default void setWindowPositionAndSize(WindowSettings windowSettings, Rectangle screenBound) {
         if (windowSettings.isCentered()) {
             centerWindow();

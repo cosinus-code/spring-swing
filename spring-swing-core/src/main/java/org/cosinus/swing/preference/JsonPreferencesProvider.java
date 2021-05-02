@@ -30,7 +30,7 @@ import java.util.Set;
 import static org.cosinus.swing.resource.ResourceSource.CLASSPATH;
 
 /**
- * Preferences provider from json file
+ * Implementation of {@link PreferencesProvider} to provide preferences from a  json file
  */
 public class JsonPreferencesProvider extends JsonFileConverter<PreferencesSet> implements PreferencesProvider {
 

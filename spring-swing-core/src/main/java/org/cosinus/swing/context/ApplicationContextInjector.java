@@ -18,7 +18,15 @@ package org.cosinus.swing.context;
 
 import org.springframework.context.ApplicationContext;
 
-public class ApplicationContextInjector {
+/**
+ * Application context injector.
+ * <p>
+ * A static instance of {@link ApplicationContext} is used
+ * to explicitly inject the context in objects after they are instantiated.
+ * <p>
+ * This is a helper class and cannot be instantiated.
+ */
+public final class ApplicationContextInjector {
 
     public static ApplicationContext applicationContext;
 
@@ -26,8 +34,16 @@ public class ApplicationContextInjector {
         ApplicationContextInjector.applicationContext = applicationContext;
     }
 
+    /**
+     * Inject the application into an object.
+     *
+     * @param object the object to inject the context into
+     */
     public static void injectContext(Object object) {
         applicationContext.getAutowireCapableBeanFactory().autowireBean(object);
     }
 
+    private ApplicationContextInjector() {
+
+    }
 }

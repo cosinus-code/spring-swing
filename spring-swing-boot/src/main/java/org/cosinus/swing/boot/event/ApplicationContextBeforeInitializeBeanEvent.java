@@ -23,6 +23,8 @@ import org.springframework.context.ApplicationContext;
  */
 public class ApplicationContextBeforeInitializeBeanEvent extends ApplicationContextCreationEvent {
 
+    private static final long serialVersionUID = -8241566660318313969L;
+
     private final Object bean;
 
     private final String beanName;

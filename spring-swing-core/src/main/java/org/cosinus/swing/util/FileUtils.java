@@ -19,8 +19,8 @@ package org.cosinus.swing.util;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
-import java.util.Optional;
 
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.io.FilenameUtils.EXTENSION_SEPARATOR;
 import static org.apache.commons.io.FilenameUtils.removeExtension;
 
@@ -39,11 +39,11 @@ public final class FileUtils {
 
     public static String setExtension(String filename,
                                       String extension) {
-        return Optional.ofNullable(extension)
-                .map(FileUtils::fullExtension)
-                .filter(ext -> !filename.endsWith(ext))
-                .map(fullExtension -> removeExtension(filename) + fullExtension)
-                .orElse(filename);
+        return ofNullable(extension)
+            .map(FileUtils::fullExtension)
+            .filter(ext -> !filename.endsWith(ext))
+            .map(fullExtension -> removeExtension(filename) + fullExtension)
+            .orElse(filename);
     }
 
     public static String fullExtension(String extension) {

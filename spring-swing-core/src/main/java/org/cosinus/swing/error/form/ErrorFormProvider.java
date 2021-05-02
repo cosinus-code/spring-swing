@@ -14,12 +14,21 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.form.error;
+package org.cosinus.swing.error.form;
 
 import java.awt.*;
 
+/**
+ * Error form provider interface.
+ */
 public interface ErrorFormProvider {
 
+    /**
+     * Get error form.
+     *
+     * @param parent the parent of the error form.
+     * @return the error form
+     */
     ErrorForm getErrorForm(Window parent);
 
 }

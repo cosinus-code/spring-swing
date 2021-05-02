@@ -17,37 +17,28 @@
 package org.cosinus.swing.form;
 
 import javax.swing.*;
+import javax.swing.border.EtchedBorder;
 
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
-public class Slider extends JSlider {
+/**
+ * Extension of the {@link JToolBar}
+ * which will automatically inject the application context.
+ */
+public class ToolBar extends JToolBar implements FormComponent {
 
-    public Slider() {
+    public ToolBar() {
         injectContext(this);
     }
 
-    public Slider(int orientation) {
-        super(orientation);
-        injectContext(this);
+    @Override
+    public void initComponents() {
+        setOrientation(JToolBar.VERTICAL);
+        setFloatable(false);
+        setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
     }
 
-    public Slider(int min, int max) {
-        super(min, max);
-        injectContext(this);
-    }
-
-    public Slider(int min, int max, int value) {
-        super(min, max, value);
-        injectContext(this);
-    }
-
-    public Slider(int orientation, int min, int max, int value) {
-        super(orientation, min, max, value);
-        injectContext(this);
-    }
-
-    public Slider(BoundedRangeModel brm) {
-        super(brm);
-        injectContext(this);
+    @Override
+    public void translate() {
     }
 }

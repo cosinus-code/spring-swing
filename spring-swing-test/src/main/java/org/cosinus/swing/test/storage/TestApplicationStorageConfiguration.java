@@ -21,6 +21,11 @@ import org.cosinus.swing.store.InMemoryApplicationStorage;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 
+/**
+ * Test spring swing configuration.
+ *
+ * It is used to override beans from the real application context.
+ */
 @TestConfiguration
 public class TestApplicationStorageConfiguration {
 

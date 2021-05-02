@@ -14,25 +14,17 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.form;
+package org.cosinus.swing.error.form;
 
 /**
- * Interface for handling the window settings
+ * Interface for an error form
  */
-public interface WindowSettingsHandler {
+public interface ErrorForm {
 
     /**
-     * Get frame settings
+     * Show error form for an error
      *
-     * @param defaultSettings the default window settings
-     * @return the frame settings
+     * @param throwable the error to show
      */
-    WindowSettings loadWindowSettings(WindowSettings defaultSettings);
-
-    /**
-     * Save the provided window settings
-     *
-     * @param settings the frame settings to save
-     */
-    void saveWindowSettings(WindowSettings settings);
+    void showError(Throwable throwable);
 }

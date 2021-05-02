@@ -14,11 +14,25 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.image.icon;
+package org.cosinus.swing.window;
 
-import org.cosinus.swing.cache.InMemoryMultiKeyCache;
+/**
+ * Interface for handling the window settings
+ */
+public interface WindowSettingsHandler {
 
-import javax.swing.*;
+    /**
+     * Get frame settings
+     *
+     * @param defaultSettings the default window settings
+     * @return the frame settings
+     */
+    WindowSettings loadWindowSettings(WindowSettings defaultSettings);
 
-public class IconCache extends InMemoryMultiKeyCache<Icon> {
+    /**
+     * Save the provided window settings
+     *
+     * @param settings the frame settings to save
+     */
+    void saveWindowSettings(WindowSettings settings);
 }

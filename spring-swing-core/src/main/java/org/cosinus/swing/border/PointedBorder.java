@@ -23,6 +23,8 @@ import java.awt.Color;
  */
 public class PointedBorder extends DashedBorder {
 
+    private static final long serialVersionUID = 436421094793927346L;
+
     /**
      * Creates a new instance of PointedBorder
      */

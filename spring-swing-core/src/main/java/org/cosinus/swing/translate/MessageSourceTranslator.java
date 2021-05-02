@@ -33,6 +33,9 @@ import java.util.stream.Collectors;
 import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.resource.ResourceType.I18N;
 
+/**
+ * Implementation of {@link Translator}  based on Spring {@link MessageSource}.
+ */
 public class MessageSourceTranslator implements Translator {
 
     private static final Logger LOG = LogManager.getLogger(MessageSourceTranslator.class);
@@ -56,22 +59,44 @@ public class MessageSourceTranslator implements Translator {
         this.baseName = baseName;
     }
 
+    /**
+     * Initialize the translator with a locale
+     *
+     * @param locale the locale to initialize the translator
+     */
     @Override
     public void init(Locale locale) {
         LOG.debug("Setting translation to locale " + locale);
         this.locale = locale;
     }
 
+    /**
+     * Translate a key with parameters
+     *
+     * @param key        the key to translate
+     * @param parameters the parameters for translation
+     * @return the translation
+     */
     @Override
     public String translate(String key, Object... parameters) {
         return messageSource.getMessage(key, parameters, locale);
     }
 
+    /**
+     * Get current locale of the translator.
+     *
+     * @return the current locale
+     */
     @Override
     public Optional<Locale> getLocale() {
         return ofNullable(locale);
     }
 
+    /**
+     * Get the available locales of the translator.
+     *
+     * @return the available locales
+     */
     @Override
     public Map<String, Locale> getAvailableLocales() {
         if (localesMap == null) {
@@ -96,7 +121,7 @@ public class MessageSourceTranslator implements Translator {
 
     private Optional<Locale> toLocale(String filename) {
         try {
-            return Optional.ofNullable(LocaleUtils.toLocale(filename));
+            return ofNullable(LocaleUtils.toLocale(filename));
         } catch (IllegalArgumentException ex) {
             return Optional.empty();
         }

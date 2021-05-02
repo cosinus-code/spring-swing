@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.preference.control;
-
-import org.cosinus.swing.form.control.ComboBox;
+package org.cosinus.swing.form.control;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -24,6 +22,9 @@ import java.util.stream.Stream;
 import static java.util.stream.Stream.concat;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
+/**
+ * Extension of the {@link ComboBox} for controlling a list of look-and-feel names.
+ */
 public class LookAndFeelControl extends ComboBox<String> {
 
     private static final String DEFAULT_LOOK_AND_FEEL = "Default";

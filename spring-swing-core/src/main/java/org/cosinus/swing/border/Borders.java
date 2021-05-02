@@ -22,7 +22,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 /**
- * Helper for borders
+ * Handler for borders
  */
 public final class Borders {
 

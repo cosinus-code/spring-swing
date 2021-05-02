@@ -16,6 +16,14 @@
 
 package org.cosinus.swing.resource;
 
+/**
+ * Enum for identifying the resource sources.
+ * <lu>
+ * <li>FILESYSTEM: search in filesystem looking in the locations dedicated to the this application</li>
+ * <li>CLASSPATH: search in the application classpath</li>
+ * <li>FILESYSTEM_BEFORE_CLASSPATH: search first in filesystem and next, if not found, in the classpath</li>
+ * </lu>
+ */
 public enum ResourceSource {
 
     FILESYSTEM,

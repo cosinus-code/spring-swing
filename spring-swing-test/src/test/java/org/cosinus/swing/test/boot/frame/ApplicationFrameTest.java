@@ -23,8 +23,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.cosinus.swing.form.WindowSettings.DEFAULT_HEIGHT;
-import static org.cosinus.swing.form.WindowSettings.DEFAULT_WIDTH;
+import static org.cosinus.swing.window.WindowSettings.DEFAULT_HEIGHT;
+import static org.cosinus.swing.window.WindowSettings.DEFAULT_WIDTH;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 

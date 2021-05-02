@@ -25,43 +25,57 @@ import java.awt.image.FilteredImageSource;
 import java.awt.image.ImageFilter;
 import java.io.*;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+
+import static java.lang.Math.max;
+import static java.util.Optional.ofNullable;
 
 /**
  * Image handler
  */
 public class ImageHandler {
 
-    public final Map<String, ImageIcon> previewCache = new HashMap<>();
-
     public static final ImageFilter GRAY_FILTER = new GrayFilter();
 
     public static final ImageFilter DISABLED_FILTER = new javax.swing.GrayFilter(true, 50);
 
+    /**
+     * Get the preview image of a file.
+     *
+     * @param file the file to preview
+     * @param size the size of the preview image
+     * @return the preview image
+     * @throws IOException if an IO error occurs
+     */
     public ImageIcon getPreviewImage(File file, int size) throws IOException {
-        String key = file.getPath();
-        if (previewCache.containsKey(key)) return previewCache.get(key);
-
         try (InputStream in = new FileInputStream(file)) {
-            ImageIcon icon = new ImageIcon(scaleImage(ImageIO.read(in), size));
-            previewCache.put(key, icon);
-            return icon;
+            return new ImageIcon(scaleImage(ImageIO.read(in), size));
         }
     }
 
+    /**
+     * Scale image to a new size.
+     * <p>
+     * New size is relative to the maximum between with and height.
+     *
+     * @param image the image to scale
+     * @param size  the new size
+     * @return the new scaled image
+     */
     public Image scaleImage(Image image, int size) {
         if (image == null) return null;
         int width = image.getWidth(null);
         int height = image.getHeight(null);
         if (width <= 0 || height <= 0) return null;
 
-        double scale = (double) size / Math.max(width, height);
-        if (scale <= 0) return null;
+        double scale = (double) size / max(width, height);
+        if (scale <= 0) {
+            return null;
+        }
 
         // If the image is smaller than the desired image size, don't bother scaling.
-        if (scale >= 1.0d) return image;
+        if (scale >= 1.0d) {
+            return image;
+        }
 
         AffineTransform tx = new AffineTransform();
         tx.scale(scale, scale);
@@ -81,14 +95,27 @@ public class ImageHandler {
         return outImage;
     }
 
+    /**
+     * Apply a filter to an image.
+     *
+     * @param image  the image
+     * @param filter the filter
+     * @return the new filtered image
+     */
     public Image applyFilter(Image image, ImageFilter filter) {
-        return Optional.ofNullable(image)
+        return ofNullable(image)
             .map(Image::getSource)
             .map(imageSource -> new FilteredImageSource(imageSource, filter))
             .map(imageSource -> Toolkit.getDefaultToolkit().createImage(imageSource))
             .orElse(image);
     }
 
+    /**
+     * Get the image from an icon.
+     *
+     * @param icon the icon
+     * @return the image
+     */
     public Image iconToImage(Icon icon) {
         if (icon == null) {
             return null;
@@ -105,6 +132,12 @@ public class ImageHandler {
         return image;
     }
 
+    /**
+     * Convert bytes array to an image.
+     *
+     * @param bytes the bytes to convert
+     * @return the created image
+     */
     public Image bytesToImage(byte[] bytes) {
         try (InputStream input = new ByteArrayInputStream(bytes)) {
             return ImageIO.read(input);
@@ -113,7 +146,13 @@ public class ImageHandler {
         }
     }
 
-    public Image downloadImage(String uri) {
+    /**
+     * Create an image from an image uri.
+     *
+     * @param uri the image uri
+     * @return the created image
+     */
+    public Image createImage(String uri) {
         try {
             return ImageIO.read(new URL(uri));
         } catch (IOException e) {

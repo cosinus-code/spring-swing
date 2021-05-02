@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.form.error;
+package org.cosinus.swing.error.form;
 
-import org.cosinus.swing.form.Dialog;
-import org.cosinus.swing.form.Frame;
+import org.cosinus.swing.window.Dialog;
+import org.cosinus.swing.window.Frame;
 
 import java.awt.*;
 
@@ -26,6 +26,9 @@ import java.awt.*;
  */
 public class DefaultErrorFormProvider implements ErrorFormProvider {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ErrorForm getErrorForm(Window parent) {
         DefaultErrorForm errorDialog = parent instanceof Dialog<?> ?

@@ -29,7 +29,7 @@ import javax.swing.*;
 import static org.cosinus.swing.preference.Preferences.LOOK_AND_FEEL;
 
 /**
- * Application initializer for dark look-and-feel
+ * Implementation of {@link ApplicationInitializer} for initializing the dark theme of the application.
  */
 public class DarkLookAndFeelInitializer implements ApplicationInitializer {
 
@@ -58,10 +58,10 @@ public class DarkLookAndFeelInitializer implements ApplicationInitializer {
         if (uiHandler.isDarkTheme() && noLookAndFeelPreference()) {
             LOG.info("Initializing application dark theme...");
             uiHandler.setLookAndFeel(darkLookAndFeel.getClassName());
-            if (uiHandler.getDefaultIcon().isEmpty()) {
+            if (uiHandler.getDefaultFileIcon().isEmpty()) {
                 resourceResolver.resolveImageAsBytes("dark/file.png")
                     .map(ImageIcon::new)
-                    .ifPresent(uiHandler::setDefaultIcon);
+                    .ifPresent(uiHandler::setDefaultFileIcon);
             }
         }
     }

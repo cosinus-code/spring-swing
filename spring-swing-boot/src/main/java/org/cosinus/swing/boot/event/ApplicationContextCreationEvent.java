@@ -24,6 +24,8 @@ import org.springframework.context.ApplicationEvent;
  */
 public class ApplicationContextCreationEvent extends ApplicationEvent {
 
+    private static final long serialVersionUID = -3286810344691878532L;
+
     private final ApplicationContext applicationContext;
 
     public ApplicationContextCreationEvent(ApplicationContext applicationContext) {

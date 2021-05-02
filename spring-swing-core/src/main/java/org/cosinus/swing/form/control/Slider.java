@@ -14,19 +14,44 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.form;
+package org.cosinus.swing.form.control;
 
 import javax.swing.*;
 
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
 /**
- * Extension of the {@link JComponent}
+ * Extension of the {@link JSlider}
  * which will automatically inject the application context.
  */
-public abstract class Component extends JComponent implements FormComponent {
+public class Slider extends JSlider {
 
-    public Component() {
+    public Slider() {
+        injectContext(this);
+    }
+
+    public Slider(int orientation) {
+        super(orientation);
+        injectContext(this);
+    }
+
+    public Slider(int min, int max) {
+        super(min, max);
+        injectContext(this);
+    }
+
+    public Slider(int min, int max, int value) {
+        super(min, max, value);
+        injectContext(this);
+    }
+
+    public Slider(int orientation, int min, int max, int value) {
+        super(orientation, min, max, value);
+        injectContext(this);
+    }
+
+    public Slider(BoundedRangeModel brm) {
+        super(brm);
         injectContext(this);
     }
 }

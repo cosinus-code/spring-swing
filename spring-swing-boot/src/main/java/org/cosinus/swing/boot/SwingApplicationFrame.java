@@ -21,10 +21,16 @@ import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.boot.event.ApplicationFrameAfterInitializeEvent;
 import org.cosinus.swing.boot.event.ApplicationFrameBeforeInitializeEvent;
 import org.cosinus.swing.context.ApplicationProperties;
-import org.cosinus.swing.form.Frame;
+import org.cosinus.swing.window.Frame;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 
+/**
+ * Implementation of {@link ApplicationFrame} as Swing {@link Frame}.
+ *
+ * Keeping this application frame instance as static field is a compromise
+ * to avoid circular dependencies when the main frame is needed as parent for other windows.
+ */
 public abstract class SwingApplicationFrame extends Frame implements ApplicationFrame {
 
     private static final Logger LOG = LogManager.getLogger(SwingApplicationFrame.class);
@@ -37,25 +43,42 @@ public abstract class SwingApplicationFrame extends Frame implements Application
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
 
+    /**
+     * Initialize the application frame.
+     *
+     * It also publish the {@link ApplicationFrameBeforeInitializeEvent} and
+     * {@link ApplicationFrameAfterInitializeEvent} before and after initialization.
+     */
     @Override
-    public void initApplication() {
+    public void initApplicationFrame() {
+        LOG.info("Initializing application frame...");
+        applicationEventPublisher.publishEvent(new ApplicationFrameBeforeInitializeEvent(this));
+        initialize();
+        applicationEventPublisher.publishEvent(new ApplicationFrameAfterInitializeEvent(this));
+
+        applicationFrame = this;
+    }
+
+    /**
+     * Initialize frame swing components and show the frame.
+     */
+    @Override
+    public void showApplicationFrame() {
         initComponents();
-        initContent();
-        translate();
 
         LOG.info("Showing application frame...");
         setVisible(true);
     }
 
+    /**
+     * Load the application frame content and do eventual translations.
+     */
     @Override
-    public void startApplication() {
-        applicationEventPublisher.publishEvent(new ApplicationFrameBeforeInitializeEvent(this));
-        init();
-        applicationEventPublisher.publishEvent(new ApplicationFrameAfterInitializeEvent(this));
-
-        applicationFrame = this;
-        LOG.info("Application started...");
+    public void loadApplicationFrame() {
+        LOG.info("Loading application frame...");
+        loadContent();
+        translate();
     }
 
-    protected abstract void initContent();
+    protected abstract void loadContent();
 }

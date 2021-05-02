@@ -17,8 +17,8 @@
 package org.cosinus.swing.test.model;
 
 import org.cosinus.swing.error.ErrorHandler;
-import org.cosinus.swing.form.Dialog;
-import org.cosinus.swing.form.Frame;
+import org.cosinus.swing.window.Dialog;
+import org.cosinus.swing.window.Frame;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class TestDialog extends Dialog<String> {

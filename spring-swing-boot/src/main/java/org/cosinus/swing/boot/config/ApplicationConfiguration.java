@@ -33,9 +33,9 @@ import org.cosinus.swing.context.ApplicationProperties;
 import org.cosinus.swing.dialog.DialogHandler;
 import org.cosinus.swing.error.ErrorHandler;
 import org.cosinus.swing.exec.*;
-import org.cosinus.swing.form.DefaultWindowSettingsHandler;
-import org.cosinus.swing.form.WindowSettingsHandler;
-import org.cosinus.swing.form.error.DefaultErrorFormProvider;
+import org.cosinus.swing.window.DefaultWindowSettingsHandler;
+import org.cosinus.swing.window.WindowSettingsHandler;
+import org.cosinus.swing.error.form.DefaultErrorFormProvider;
 import org.cosinus.swing.menu.JsonMenuProvider;
 import org.cosinus.swing.menu.MenuProvider;
 import org.cosinus.swing.preference.JsonPreferencesProvider;
@@ -119,7 +119,8 @@ public class ApplicationConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public Preferences preferences(PreferencesProvider preferencesProvider) {
-        return preferencesProvider.getPreferences()
+        return preferencesProvider
+            .getPreferences()
             .orElseGet(Preferences::new);
     }
 

@@ -17,7 +17,15 @@
 package org.cosinus.swing.resource;
 
 /**
- * Enum for application resource types
+ * Enum for application resource types.
+ * <p>
+ * Also implementation of {@link ResourceLocator}.
+ *
+ * <lu>
+ * <li>CONF: configuration resources</li>
+ * <li>I18N: translation resources</li>
+ * <li>IMAGE: image resources</li>
+ * </lu>
  */
 public enum ResourceType implements ResourceLocator {
     CONF,

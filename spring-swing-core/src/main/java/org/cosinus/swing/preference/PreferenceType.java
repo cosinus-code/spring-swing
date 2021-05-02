@@ -21,6 +21,10 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 import static java.util.Arrays.stream;
 
+/**
+ * Preference type that will be reflected on the real managed value of the preference
+ * and function as discriminating for the preference implementation to be instantiated.
+ */
 public enum PreferenceType {
     TEXT,
     BOOLEAN,

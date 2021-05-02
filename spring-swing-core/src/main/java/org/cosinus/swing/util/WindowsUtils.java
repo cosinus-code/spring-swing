@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Optional;
 
+import static java.util.Optional.ofNullable;
+
 /**
  * Windows native utils
  */
@@ -60,7 +62,7 @@ public class WindowsUtils {
             String line;
             while (null != (line = buff.readLine())) {
                 if (line.contains(REG_EXP_TOKEN) || line.contains(REG_STR_TOKEN) || line.contains(REG_DWORD)) {
-                    return Optional.ofNullable(line.split("\\s+"))
+                    return ofNullable(line.split("\\s+"))
                             .filter(values -> values.length > 0)
                             .map(values -> values[values.length - 1]);
                 }

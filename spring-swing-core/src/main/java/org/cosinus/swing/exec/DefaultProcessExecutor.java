@@ -16,9 +16,6 @@
 
 package org.cosinus.swing.exec;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.File;
 import java.util.Optional;
 
@@ -26,8 +23,6 @@ import java.util.Optional;
  * Implementation of {@link ProcessExecutor} for Windows
  */
 public class DefaultProcessExecutor implements ProcessExecutor {
-
-    private static final Logger LOG = LogManager.getLogger(DefaultProcessExecutor.class);
 
     @Override
     public void executeFile(File file) {
@@ -38,10 +33,5 @@ public class DefaultProcessExecutor implements ProcessExecutor {
     @Override
     public Optional<String> getOsTheme() {
         return Optional.empty();
-    }
-
-    @Override
-    public Logger logger() {
-        return LOG;
     }
 }

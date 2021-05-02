@@ -16,6 +16,9 @@
 
 package org.cosinus.swing.validation;
 
+/**
+ * Model for a generic validation error
+ */
 public class ValidationError {
 
     private final String code;

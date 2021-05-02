@@ -25,6 +25,10 @@ import org.jdatepicker.impl.UtilDateModel;
 import java.util.Date;
 import java.util.Properties;
 
+/**
+ * Extension of the {@link JDatePickerImpl}
+ * which will automatically inject the application context.
+ */
 public class DatePicker extends JDatePickerImpl implements Control<Date> {
 
     public DatePicker(Date date) {

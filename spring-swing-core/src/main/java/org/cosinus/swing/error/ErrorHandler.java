@@ -18,7 +18,7 @@ package org.cosinus.swing.error;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.cosinus.swing.form.error.DefaultErrorFormProvider;
+import org.cosinus.swing.error.form.DefaultErrorFormProvider;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.validation.ValidationError;
 
@@ -48,33 +48,38 @@ public class ErrorHandler {
         this.errorFormProvider = errorFormProvider;
     }
 
-    public void handleError(Window parent, Throwable throwable) {
-        LOG.error(throwable.getMessage(), throwable);
-        errorFormProvider
-            .getErrorForm(parent)
-            .showError(throwable);
-    }
-
-    public void handleError(Component component,
-                            Throwable throwable) {
+    /**
+     * Handle an error by showing the error message in an error message dialog.
+     *
+     * @param component the parent component
+     * @param throwable the error to handle
+     */
+    public void handleError(Component component, Throwable throwable) {
         LOG.error(throwable.getMessage(), throwable);
         handleError(component,
                     throwable.getLocalizedMessage());
     }
 
-    public void handleError(Component component,
-                            String msg) {
-        LOG.error(msg);
+    /**
+     * Handle an error message by showing the error message in an error message dialog.
+     *
+     * @param component    the parent component
+     * @param errorMessage the error message to handle
+     */
+    public void handleError(Component component, String errorMessage) {
+        LOG.error(errorMessage);
         showMessageDialog(component,
-                          msg,
+                          errorMessage,
                           translator.translate("error"),
                           JOptionPane.ERROR_MESSAGE);
     }
 
-    public void handleError(Throwable throwable) {
-        handleError(null, throwable);
-    }
-
+    /**
+     * Handle validation errors by showing them combined in an error message dialog.
+     *
+     * @param component        the parent component
+     * @param validationErrors the validation errors to handle
+     */
     public void handleValidationErrors(Component component,
                                        List<ValidationError> validationErrors) {
         String errorMessage = format("<html><body style='width: 300px'>%s</html>",
@@ -83,5 +88,27 @@ public class ErrorHandler {
                                          .map(error -> translator.translate(error.getCode(), error.getArguments()))
                                          .collect(joining("<br/>")));
         handleError(component, errorMessage);
+    }
+
+    /**
+     * Handle an error by showing it in the error form.
+     *
+     * @param parent    the parent window for error form
+     * @param throwable the error to handle
+     */
+    public void handleError(Window parent, Throwable throwable) {
+        LOG.error(throwable.getMessage(), throwable);
+        errorFormProvider
+            .getErrorForm(parent)
+            .showError(throwable);
+    }
+
+    /**
+     * Handle an error by showing it in the error form without parent window.
+     *
+     * @param throwable the error to handle
+     */
+    public void handleError(Throwable throwable) {
+        handleError(null, throwable);
     }
 }

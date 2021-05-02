@@ -20,17 +20,60 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+/**
+ * Resource resolver interface.
+ */
 public interface ResourceResolver {
 
+    /**
+     * Resolve a resource path given the resource locator and the resource name.
+     *
+     * @param resourceLocator the resource locator
+     * @param name            the resource name
+     * @return the found resource path, or {@link Optional#empty()}
+     */
     Optional<Path> resolveResourcePath(ResourceLocator resourceLocator, String name);
 
-    Optional<byte[]> resolveImageAsBytes(String name);
-
+    /**
+     * Resolve a resource as bytes array.
+     *
+     * @param resourceLocator the resource locator within resource source
+     * @param name            the resource name
+     * @return the found resource, or {@link Optional#empty()}
+     */
     Optional<byte[]> resolveAsBytes(ResourceLocator resourceLocator, String name);
 
+    /**
+     * Resolve a resource as bytes array.
+     *
+     * @param resourcePath the resource path within resource source
+     * @return the found resource, or {@link Optional#empty()}
+     */
     Optional<byte[]> resolveAsBytes(String resourcePath);
 
-    Stream<String> resolveResources(ResourceType type, String fileExtension);
+    /**
+     * Resolve resource paths with a specific extension.
+     *
+     * @param resourceLocator the resource locator within resource source
+     * @param fileExtension   the file extension to filter the resources
+     * @return the list of found resources
+     */
+    Stream<String> resolveResources(ResourceLocator resourceLocator, String fileExtension);
 
+    /**
+     * Get the resource source of this resolver.
+     *
+     * @return the resource source
+     */
     ResourceSource getResourceSource();
+
+    /**
+     * Resolve an image resource.
+     *
+     * @param name the image resource name
+     * @return the found image resource, or {@link Optional#empty()}
+     */
+    default Optional<byte[]> resolveImageAsBytes(String name) {
+        return resolveAsBytes(ResourceType.IMAGE, name);
+    }
 }

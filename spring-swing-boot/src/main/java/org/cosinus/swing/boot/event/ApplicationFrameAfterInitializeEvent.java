@@ -23,6 +23,8 @@ import org.cosinus.swing.boot.ApplicationFrame;
  */
 public class ApplicationFrameAfterInitializeEvent extends ApplicationFrameEvent {
 
+    private static final long serialVersionUID = -2794765409937843589L;
+
     public ApplicationFrameAfterInitializeEvent(ApplicationFrame applicationFrame) {
         super(applicationFrame);
     }

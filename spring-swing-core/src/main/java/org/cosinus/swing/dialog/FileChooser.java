@@ -26,6 +26,10 @@ import java.util.Optional;
 import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
+/**
+ * Extension of the {@link JFileChooser}
+ * which will automatically inject the application context.
+ */
 public class FileChooser extends JFileChooser {
 
     private static final String FILE_CHOOSER = "file-chooser";

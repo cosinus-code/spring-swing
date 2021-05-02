@@ -19,28 +19,70 @@ package org.cosinus.swing.validation;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Validation context interface to be used in link with a {@link Validator}
+ */
 public interface ValidationContext {
 
+    /**
+     * Add a validation error to the context.
+     *
+     * @param validationError the validation error to add
+     */
     void addValidationError(ValidationError validationError);
 
+    /**
+     * Get the current validation errors.
+     *
+     * @return the validation errors
+     */
     List<ValidationError> getValidationErrors();
 
+    /**
+     * Check if there are validation errors in context.
+     *
+     * @return true if there are validation errors in context
+     */
     boolean hasErrors();
 
+    /**
+     * Add validation error to the context.
+     *
+     * @param code      the code of error
+     * @param arguments the arguments of the error
+     */
     default void addValidationError(String code, Object... arguments) {
         addValidationError(new ValidationError(code, arguments));
     }
 
+    /**
+     * Add validation errors to the context.
+     *
+     * @param errors the validation errors to add
+     */
     default void addValidationErrors(List<ValidationError> errors) {
         errors.forEach(this::addValidationError);
     }
 
+    /**
+     * Add validation errors to the context.
+     *
+     * @param errorCodes the codes of the validation errors
+     */
     default void addValidationErrors(String... errorCodes) {
         Arrays.stream(errorCodes)
             .map(ValidationError::new)
             .forEach(this::addValidationError);
     }
 
+    /**
+     * Intermediate a validator validation in this validation context.
+     *
+     * @param validator the validator to intermediate
+     * @param value     the value to validate
+     * @param <T>       the type of the value to validate
+     * @return this
+     */
     default <T> ValidationContext validate(Validator<T> validator, T value) {
         validator.validate(value, this);
         return this;

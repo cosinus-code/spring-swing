@@ -16,7 +16,12 @@
 
 package org.cosinus.swing.error;
 
+/**
+ * Validation exception
+ */
 public class ValidationException extends RuntimeException {
+
+    private static final long serialVersionUID = 8686533729779039030L;
 
     public ValidationException() {
     }

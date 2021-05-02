@@ -23,6 +23,12 @@ import javax.swing.*;
 
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
+/**
+ * Extension of the {@link JSpinner}
+ * which will automatically inject the application context.
+ *
+ * @param <T> the type of the value
+ */
 public class Spinner<T> extends JSpinner implements Control<T> {
 
     private static final Logger LOG = LogManager.getLogger(Spinner.class);

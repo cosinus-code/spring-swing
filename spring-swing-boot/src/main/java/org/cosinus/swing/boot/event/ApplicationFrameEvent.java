@@ -24,6 +24,8 @@ import org.springframework.context.ApplicationEvent;
  */
 public class ApplicationFrameEvent extends ApplicationEvent {
 
+    private static final long serialVersionUID = 1968956426121243290L;
+
     private final ApplicationFrame applicationFrame;
 
     public ApplicationFrameEvent(ApplicationFrame applicationFrame) {

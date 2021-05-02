@@ -41,6 +41,14 @@ import static org.cosinus.swing.border.Borders.emptyBorder;
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 import static org.cosinus.swing.ui.ApplicationUIHandler.FOLDER_ICON_KEY;
 
+/**
+ * Extension of {@link JTextField} used for controlling a {@link File} object.
+ * <p>
+ * The {@link org.cosinus.swing.dialog.FileChooser} is used to browse for files,
+ * when "folder" icon painted on the right part of the control is clicked.
+ * <p>
+ * It supports the full {@link Control} functionality of highlighting the validation errors.
+ */
 public class FileTextField extends JTextField implements Control<File>, MouseListener, MouseMotionListener {
 
     private static final int ICON_X_GAP = 2;
@@ -129,8 +137,8 @@ public class FileTextField extends JTextField implements Control<File>, MouseLis
         return ofNullable(getControlValue())
             .filter(Predicate.not(File::exists))
             .map(file -> createValidationError(folderOnly ?
-                                                   "validation.file-not-found" :
-                                                   "validation.folder-not-found"))
+                                                   "validation.fileNotFound" :
+                                                   "validation.folderNotFound"))
             .map(Collections::singletonList)
             .orElseGet(Collections::emptyList);
     }

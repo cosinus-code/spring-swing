@@ -33,6 +33,11 @@ import static java.util.Optional.ofNullable;
 import static java.util.function.Predicate.not;
 import static org.cosinus.swing.resource.ResourceSource.FILESYSTEM;
 
+/**
+ * Implementation of {@link ResourceResolver}
+ * which try to resolve the resources in the filesystem looking the application dedicated locations,
+ * usually in "[user.home]/.[application.name]" folder
+ */
 public class FilesystemResourceResolver implements ResourceResolver {
 
     private static final Logger LOG = LogManager.getLogger(FilesystemResourceResolver.class);
@@ -43,35 +48,73 @@ public class FilesystemResourceResolver implements ResourceResolver {
         this.applicationProperties = applicationProperties;
     }
 
-    @Override
-    public Optional<byte[]> resolveImageAsBytes(String name) {
-        return resolveAsBytes(ResourceType.IMAGE, name);
-    }
-
-    @Override
-    public Optional<byte[]> resolveAsBytes(ResourceLocator resourceLocator, String name) {
-        return resolveResourcePath(resourceLocator, name)
-            .flatMap(this::resolveAsBytes);
-    }
-
-    @Override
-    public Optional<byte[]> resolveAsBytes(String resourcePath) {
-        return resolveAsBytes(Paths.get(resourcePath));
-    }
-
+    /**
+     * Resolve a resource path from the filesystem.
+     *
+     * @param resourceLocator the resource locator
+     * @param name            the resource name
+     * @return the found resource path, or {@link Optional#empty()}
+     */
     @Override
     public Optional<Path> resolveResourcePath(ResourceLocator resourceLocator, String name) {
         return getResourcePath(resourceLocator, name)
             .flatMap(this::getFilePath);
     }
 
+    /**
+     * Resolve a resource as bytes array from the filesystem.
+     *
+     * @param resourceLocator the resource locator within resource source
+     * @param name            the resource name
+     * @return the found resource, or {@link Optional#empty()}
+     */
     @Override
-    public Stream<String> resolveResources(ResourceType type, String fileExtension) {
-        return getFilePath(Paths.get(getResourceFolder(type)))
+    public Optional<byte[]> resolveAsBytes(ResourceLocator resourceLocator, String name) {
+        return resolveResourcePath(resourceLocator, name)
+            .flatMap(this::resolveAsBytes);
+    }
+
+    /**
+     * Resolve a resource as bytes array from the filesystem.
+     *
+     * @param resourcePath the resource path within resource source
+     * @return the found resource, or {@link Optional#empty()}
+     */
+    @Override
+    public Optional<byte[]> resolveAsBytes(String resourcePath) {
+        return resolveAsBytes(Paths.get(resourcePath));
+    }
+
+    /**
+     * Resolve resource paths with a specific extension from the filesystem.
+     *
+     * @param resourceLocator the resource locator within resource source
+     * @param fileExtension   the file extension to filter the resources
+     * @return the list of found resources
+     */
+    @Override
+    public Stream<String> resolveResources(ResourceLocator resourceLocator, String fileExtension) {
+        return getFilePath(Paths.get(getResourceFolder(resourceLocator)))
             .map(Path::toFile)
             .filter(File::exists)
             .map(parent -> findFiles(parent, fileExtension))
             .orElseGet(Stream::empty);
+    }
+
+    /**
+     * Get the resource path within the resource source.
+     *
+     * @param resourceLocator the resource locator
+     * @param resourceName the resource name
+     * @return the found resource path, or {@link Optional#empty()}
+     */
+    public Optional<Path> getResourcePath(ResourceLocator resourceLocator, String resourceName) {
+        return ofNullable(resourceName)
+            .map(name -> ofNullable(resourceLocator)
+                .map(ResourceLocator::getLocation)
+                .filter(not(String::isEmpty))
+                .map(folder -> Paths.get(folder, name))
+                .orElse(Paths.get(name)));
     }
 
     private Optional<byte[]> resolveAsBytes(Path resourcePath) {
@@ -84,15 +127,6 @@ public class FilesystemResourceResolver implements ResourceResolver {
         return bytes;
     }
 
-    public Optional<Path> getResourcePath(ResourceLocator resourceLocator, String resourceName) {
-        return ofNullable(resourceName)
-            .map(name -> ofNullable(resourceLocator)
-                .map(ResourceLocator::getLocation)
-                .filter(not(String::isEmpty))
-                .map(folder -> Paths.get(folder, name))
-                .orElse(Paths.get(name)));
-    }
-
     private Optional<Path> getFilePath(Path resourcePath) {
         return ofNullable(applicationProperties.getHome())
             .map(Paths::get)
@@ -101,16 +135,15 @@ public class FilesystemResourceResolver implements ResourceResolver {
             .map(applicationHomePath -> applicationHomePath.resolve(resourcePath));
     }
 
-    public Optional<String> getApplicationFolderName() {
+    private Optional<String> getApplicationFolderName() {
         return ofNullable(applicationProperties.getName())
             .map(String::toLowerCase)
             .map("."::concat);
     }
 
-    private String getResourceFolder(ResourceType type) {
-        return ofNullable(type)
-            .map(ResourceType::name)
-            .map(String::toLowerCase)
+    private String getResourceFolder(ResourceLocator resourceLocator) {
+        return ofNullable(resourceLocator)
+            .map(ResourceLocator::getLocation)
             .map(folder -> folder.concat(File.separator))
             .orElse("");
     }
@@ -120,14 +153,6 @@ public class FilesystemResourceResolver implements ResourceResolver {
             .stream()
             .flatMap(Arrays::stream)
             .map(File::getName);
-    }
-
-    private Optional<byte[]> fileToBytes(String path) {
-        return ofNullable(path)
-            .map(File::new)
-            .filter(File::exists)
-            .map(File::toPath)
-            .flatMap(this::fileToBytes);
     }
 
     private Optional<byte[]> fileToBytes(Path filePath) {

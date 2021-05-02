@@ -22,6 +22,10 @@ import org.cosinus.swing.preference.Preference;
 
 import static java.text.NumberFormat.getNumberInstance;
 
+/**
+ * Implementation of {@link PreferenceControlProvider}
+ * for providing the {@link Control} corresponding to a long preference value.
+ */
 public class LongPreferenceControlProvider implements PreferenceControlProvider<Long> {
 
     @Override

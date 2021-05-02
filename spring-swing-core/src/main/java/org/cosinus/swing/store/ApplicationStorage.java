@@ -26,22 +26,74 @@ public interface ApplicationStorage {
 
     String KEY_DELIMITER = ".";
 
+    /**
+     * Get a stored string value.
+     *
+     * @param key the key to search for
+     * @return the stored value, or null
+     */
     String getString(String key);
 
+    /**
+     * Save a string value in the storage.
+     *
+     * @param key   the key of the value to save
+     * @param value the value to save
+     */
     void saveString(String key, String value);
 
+    /**
+     * Get a stored integer value.
+     *
+     * @param key the key to search for
+     * @return the stored value, or defaultValue
+     */
     int getInt(String key, int defaultValue);
 
+    /**
+     * Save an integer value in the storage.
+     *
+     * @param key   the key of the value to save
+     * @param value the value to save
+     */
     void saveInt(String key, int value);
 
+    /**
+     * Get a stored boolean value.
+     *
+     * @param key the key to search for
+     * @return the stored value, or defaultValue
+     */
     boolean getBoolean(String key, boolean defaultValue);
 
+    /**
+     * Save a boolean value in the storage.
+     *
+     * @param key   the key of the value to save
+     * @param value the value to save
+     */
     void saveBoolean(String key, boolean value);
 
+    /**
+     * Remove a value from storage.
+     *
+     * @param key the key of value to remove
+     */
     void remove(String key);
 
+    /**
+     * Clear the whole storage. All values will be removed.
+     */
     void clear();
 
+    /**
+     * Save an object in the storage.
+     * <p>
+     * The actual value stored is the returned {@link Object#toString()} value.
+     *
+     * @param key    the key of the value to save
+     * @param object the object to save
+     */
     default void save(String key, Object object) {
         String value = ofNullable(object)
             .map(Object::toString)
@@ -49,6 +101,12 @@ public interface ApplicationStorage {
         saveString(key, value);
     }
 
+    /**
+     * Create a combined key from an array of sub-keys.
+     *
+     * @param keys the sub-keys
+     * @return the created key
+     */
     default String key(String... keys) {
         return join(KEY_DELIMITER, keys);
     }

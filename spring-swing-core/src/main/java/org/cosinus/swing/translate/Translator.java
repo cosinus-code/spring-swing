@@ -23,7 +23,7 @@ import java.util.Optional;
 public interface Translator {
 
     /**
-     * Initialize the translator
+     * Initialize the translator with a locale
      *
      * @param locale the locale to initialize the translator
      */
@@ -38,7 +38,17 @@ public interface Translator {
      */
     String translate(String key, Object... parameters);
 
+    /**
+     * Get current locale of the translator.
+     *
+     * @return the current locale
+     */
     Optional<Locale> getLocale();
 
+    /**
+     * Get the available locales of the translator.
+     *
+     * @return the available locales
+     */
     Map<String, Locale> getAvailableLocales();
 }

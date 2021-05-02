@@ -25,13 +25,27 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.TestContextAnnotationUtils;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
+import org.springframework.test.context.TestExecutionListener;
 
 import static java.util.Optional.ofNullable;
 
+/**
+ * Implementation of {@link TestExecutionListener}
+ * that do cleanup of the application storage after the test performed,
+ * depending on {@link DirtiesApplicationStorage} annotation presence and value.
+ *
+ * The cleanup is not done even if {@link DirtiesApplicationStorage} is not present.
+ * Only the value <code>false</code> for {@link DirtiesApplicationStorage} don't trigger the cleanup.
+ */
 public class DirtiesApplicationStorageTestExecutionListener extends AbstractTestExecutionListener {
 
     private static final Log logger = LogFactory.getLog(DirtiesApplicationStorageTestExecutionListener.class);
 
+    /**
+     * Perform application storage cleanup.
+     *
+     * @param testContext the test context
+     */
     protected void cleanupApplicationStorage(TestContext testContext) {
         try {
             ApplicationStorage applicationStorage = testContext.getApplicationContext().getBean(ApplicationStorage.class);

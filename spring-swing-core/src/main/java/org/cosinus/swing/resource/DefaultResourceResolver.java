@@ -22,6 +22,11 @@ import java.util.stream.Stream;
 
 import static org.cosinus.swing.resource.ResourceSource.FILESYSTEM_BEFORE_CLASSPATH;
 
+/**
+ * Implementation of {@link ResourceResolver}
+ * which try to resolve the resources first in the application classpath
+ * and then, if not found, in the filesystem looking in application dedicated folders
+ */
 public class DefaultResourceResolver implements ResourceResolver {
 
     private final FilesystemResourceResolver filesystemResourceResolver;
@@ -41,12 +46,6 @@ public class DefaultResourceResolver implements ResourceResolver {
     }
 
     @Override
-    public Optional<byte[]> resolveImageAsBytes(String name) {
-        return filesystemResourceResolver.resolveImageAsBytes(name)
-            .or(() -> classpathResourceResolver.resolveImageAsBytes(name));
-    }
-
-    @Override
     public Optional<byte[]> resolveAsBytes(ResourceLocator resourceLocator, String name) {
         return filesystemResourceResolver.resolveAsBytes(resourceLocator, name)
             .or(() -> classpathResourceResolver.resolveAsBytes(resourceLocator, name));
@@ -59,8 +58,8 @@ public class DefaultResourceResolver implements ResourceResolver {
     }
 
     @Override
-    public Stream<String> resolveResources(ResourceType type, String fileExtension) {
-        return classpathResourceResolver.resolveResources(type, fileExtension);
+    public Stream<String> resolveResources(ResourceLocator resourceLocator, String fileExtension) {
+        return classpathResourceResolver.resolveResources(resourceLocator, fileExtension);
     }
 
     @Override

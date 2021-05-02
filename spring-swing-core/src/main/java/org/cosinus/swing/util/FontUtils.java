@@ -22,6 +22,7 @@ import java.util.Optional;
 import static java.awt.Font.ITALIC;
 import static java.lang.String.join;
 import static java.awt.Font.BOLD;
+import static java.util.Optional.ofNullable;
 
 /**
  * Font related utils.
@@ -36,7 +37,7 @@ public final class FontUtils {
      */
     public static Optional<Font> createFont(String fontDescription) {
         try {
-            return Optional.ofNullable(fontDescription)
+            return ofNullable(fontDescription)
                     .map(String::trim)
                     .map(description -> description.split("\\s*,\\s*"))
                     .filter(descriptors -> descriptors.length > 2)

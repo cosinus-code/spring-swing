@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.cosinus.swing.preference.ObjectPreference;
+import org.cosinus.swing.preference.Preference;
 import org.cosinus.swing.preference.PreferenceType;
 
 import java.io.File;
@@ -28,6 +29,9 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.preference.PreferenceType.FOLDER;
 
+/**
+ * Implementation of {@link Preference} for folder managed values.
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(NON_NULL)
 public class FolderPreference extends ObjectPreference<File> {

@@ -16,23 +16,17 @@
 
 package org.cosinus.swing.exec;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.File;
 import java.util.Optional;
 
 /**
- * Implementation of {@link ProcessExecutor} for Windows
+ * Implementation of {@link ProcessExecutor} for Mac
  */
 public class MacProcessExecutor implements ProcessExecutor {
 
-    private static final Logger LOG = LogManager.getLogger(MacProcessExecutor.class);
-
     @Override
     public void executeFile(File file) {
-        execute(file.getParentFile(),
-                "open", file.getName());
+        execute(file.getParentFile(), "open", file.getName());
     }
 
     @Override
@@ -40,8 +34,4 @@ public class MacProcessExecutor implements ProcessExecutor {
         return executeAndGetOutput("defaults", "read", "-g", "AppleInterfaceStyle");
     }
 
-    @Override
-    public Logger logger() {
-        return LOG;
-    }
 }

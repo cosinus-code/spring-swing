@@ -16,6 +16,8 @@
 
 package org.cosinus.swing.image.icon;
 
+import org.cosinus.swing.util.GroupedProperties;
+
 import java.io.*;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -28,7 +30,14 @@ import java.util.stream.Stream;
 import static java.util.stream.Stream.concat;
 import static java.util.Optional.ofNullable;
 
-public class IconThemeIndex extends SectionedProperties {
+/**
+ * Icon theme index representation.
+ *
+ * It is used to read icon theme index files in Linux.
+ */
+public class IconThemeIndex extends GroupedProperties {
+
+    private static final long serialVersionUID = 5424656492329188366L;
 
     public static final String INDEX_THEME_FILE_NAME = "index.theme";
 

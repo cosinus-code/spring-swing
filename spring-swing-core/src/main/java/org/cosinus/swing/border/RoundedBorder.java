@@ -24,6 +24,8 @@ import java.awt.*;
  */
 public class RoundedBorder extends AbstractBorder {
 
+    private static final long serialVersionUID = -8436105005184897096L;
+
     private final Color color;
 
     private final Insets insets;

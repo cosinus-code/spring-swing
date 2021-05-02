@@ -17,6 +17,9 @@ package org.cosinus.swing.action;
 
 import static java.lang.System.exit;
 
+/**
+ * The implementation of {@link ActionInContext} for a "Quit application"  meaning
+ */
 public class QuitAction implements ActionInContext<ActionContext> {
 
     public static final String QUIT_APPLICATION_ACTION_KEY = "quit.application";

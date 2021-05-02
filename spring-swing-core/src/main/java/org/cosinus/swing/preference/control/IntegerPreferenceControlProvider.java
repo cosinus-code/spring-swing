@@ -22,6 +22,10 @@ import org.cosinus.swing.preference.Preference;
 
 import static java.util.Optional.ofNullable;
 
+/**
+ * Implementation of {@link PreferenceControlProvider}
+ * for providing the {@link Control} corresponding to a integer preference value.
+ */
 public class IntegerPreferenceControlProvider implements PreferenceControlProvider<Integer> {
 
     @Override

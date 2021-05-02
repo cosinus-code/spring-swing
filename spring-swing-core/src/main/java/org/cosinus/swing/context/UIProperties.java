@@ -19,7 +19,7 @@ package org.cosinus.swing.context;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * Application properties
+ * Swing UI properties
  */
 @ConfigurationProperties(prefix = "swing.ui")
 public class UIProperties {

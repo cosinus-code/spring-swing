@@ -18,10 +18,15 @@ package org.cosinus.swing.preference.control;
 
 import org.cosinus.swing.form.control.Control;
 import org.cosinus.swing.form.control.Label;
+import org.cosinus.swing.form.control.LookAndFeelControl;
 import org.cosinus.swing.preference.Preference;
 
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
+/**
+ * Implementation of {@link PreferenceControlProvider}
+ * for providing the {@link Control} corresponding to a look-and-feel preference value.
+ */
 public class LookAndFeelPreferenceControlProvider implements PreferenceControlProvider<String> {
 
     @Override

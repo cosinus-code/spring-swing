@@ -25,6 +25,11 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+/**
+ * Annotation for marking that a test is changing the application storage.
+ *
+ * It can be specified on both class and method levels.
+ */
 @Target({TYPE, METHOD})
 @Retention(RUNTIME)
 @Documented

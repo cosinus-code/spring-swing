@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static java.util.Optional.ofNullable;
+
 /**
  * Implementation of {@link IconProvider} for Mac
  */
@@ -40,7 +42,7 @@ public class MacIconProvider implements IconProvider {
     private static final String ICON_SCSI_PATH = "/System/Library/Extensions/IOSCSIArchitectureModelFamily.kext/Contents/Resources";
     private static final String ICON_CORE_PATH = "/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/";
 
-    private Map<String, String> iconNameToFilePathMap;
+    private final Map<String, String> iconNameToFilePathMap;
 
     private final ImageHandler imageHandler;
 
@@ -61,7 +63,7 @@ public class MacIconProvider implements IconProvider {
 
     @Override
     public Optional<Icon> findIconByName(String name, IconSize size) {
-        return Optional.ofNullable(getIconNameToFilePathMap().get(name))
+        return ofNullable(getIconNameToFilePathMap().get(name))
             .map(File::new)
             .filter(File::exists)
             .flatMap(this::readImage)

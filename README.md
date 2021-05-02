@@ -182,7 +182,12 @@ and specify the preferred language:
 
 ```json
 {
-  "language": "fr_fr"
+  "appearance": {
+    "language": {
+      "type": "language",
+      "value": "fr"
+    }
+  }
 }
 ``` 
 along with the translations file `messages_fr_fr.properties`:

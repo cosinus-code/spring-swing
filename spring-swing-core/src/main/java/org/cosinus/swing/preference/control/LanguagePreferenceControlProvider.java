@@ -17,10 +17,15 @@
 package org.cosinus.swing.preference.control;
 
 import org.cosinus.swing.form.control.Control;
+import org.cosinus.swing.form.control.LanguageControl;
 import org.cosinus.swing.preference.Preference;
 
 import java.util.Locale;
 
+/**
+ * Implementation of {@link PreferenceControlProvider}
+ * for providing the {@link Control} corresponding to a language preference value.
+ */
 public class LanguagePreferenceControlProvider implements PreferenceControlProvider<Locale> {
 
     @Override

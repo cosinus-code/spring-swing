@@ -34,6 +34,14 @@ import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 import static org.springframework.util.NumberUtils.convertNumberToTargetClass;
 
+/**
+ * Extension of the {@link JFormattedTextField}
+ * which will automatically inject the application context.
+ *
+ * It supports the full {@link Control} functionality of highlighting the validation errors.
+ *
+ * @param <T> the type of the value
+ */
 public class NumberFormattedTextField<T extends Number> extends JFormattedTextField implements Control<T> {
 
     private static final Logger LOG = LogManager.getLogger(NumberFormattedTextField.class);
@@ -105,7 +113,7 @@ public class NumberFormattedTextField<T extends Number> extends JFormattedTextFi
             return emptyList();
         } catch (ValidationException e) {
             LOG.error("Invalid formatted value", e);
-            return singletonList(createValidationError("validation.invalid-number"));
+            return singletonList(createValidationError("validation.invalidNumber"));
         }
     }
 

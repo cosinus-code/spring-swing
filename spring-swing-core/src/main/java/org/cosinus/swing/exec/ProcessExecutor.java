@@ -17,6 +17,7 @@
 package org.cosinus.swing.exec;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
@@ -31,16 +32,37 @@ import java.util.Optional;
  */
 public interface ProcessExecutor {
 
+    Logger LOG = LogManager.getLogger(ProcessExecutor.class);
+
+    /**
+     * Execute a file.
+     *
+     * @param file the file to execute
+     */
     void executeFile(File file);
 
+    /**
+     * Get the current OS theme.
+     *
+     * @return the current OS theme
+     */
     Optional<String> getOsTheme();
 
-    Logger logger();
-
+    /**
+     * Execute a command on user home working directory.
+     *
+     * @param command the command to execute
+     */
     default void execute(String... command) {
         execute(new File(System.getProperty("user.home")), command);
     }
 
+    /**
+     * Execute a command in given working directory.
+     *
+     * @param workingDir the working directory
+     * @param command the command to execute
+     */
     default void execute(File workingDir, String... command) {
         try {
             new ProcessBuilder(command)
@@ -48,10 +70,16 @@ public interface ProcessExecutor {
                 .directory(workingDir)
                 .start();
         } catch (IOException ex) {
-            logger().error("Failed to run command: " + Arrays.toString(command), ex);
+            LOG.error("Failed to run command: " + Arrays.toString(command), ex);
         }
     }
 
+    /**
+     * Execute a command and get the output as string.
+     *
+     * @param command the command to execute
+     * @return the output of execution, or {@link Optional#empty}, if execution failed
+     */
     default Optional<String> executeAndGetOutput(String... command) {
         try {
             Process process = new ProcessBuilder(command)
@@ -64,7 +92,7 @@ public interface ProcessExecutor {
                 return Optional.of(output);
             }
         } catch (IOException | InterruptedException ex) {
-            logger().error("Failed to run command: " + Arrays.toString(command), ex);
+            LOG.error("Failed to run command: " + Arrays.toString(command), ex);
         }
         return Optional.empty();
     }

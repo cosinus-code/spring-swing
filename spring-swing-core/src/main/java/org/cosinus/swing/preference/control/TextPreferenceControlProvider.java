@@ -23,6 +23,10 @@ import org.cosinus.swing.preference.Preference;
 
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
+/**
+ * Implementation of {@link PreferenceControlProvider}
+ * for providing the {@link Control} corresponding to a string preference value.
+ */
 public class TextPreferenceControlProvider implements PreferenceControlProvider<String> {
 
     @Override

@@ -18,7 +18,7 @@ package org.cosinus.swing.dialog;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.cosinus.swing.form.Dialog;
+import org.cosinus.swing.window.Dialog;
 import org.cosinus.swing.preference.dialog.PreferencesDialogProvider;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
@@ -353,7 +353,7 @@ public class DialogHandler {
         File currentFile = choose.getSelectedFile();
         if (currentFile != null &&
             !currentFile.exists() &&
-            !confirm(parent, translator.translate("file-already-exists", currentFile.getName()))) {
+            !confirm(parent, translator.translate("fileAlreadyExists", currentFile.getName()))) {
             return null;
         }
         return currentFile;
@@ -364,22 +364,22 @@ public class DialogHandler {
     }
 
     public Optional<Font> chooseFont(Font font) {
-        return chooseFont((org.cosinus.swing.form.Frame) null, "", true, true, null, font);
+        return chooseFont((org.cosinus.swing.window.Frame) null, "", true, true, null, font);
     }
 
-    public Optional<Font> chooseFont(org.cosinus.swing.form.Frame frame, Font font) {
+    public Optional<Font> chooseFont(org.cosinus.swing.window.Frame frame, Font font) {
         return chooseFont(frame, "", true, true, null, font);
     }
 
-    public Optional<Font> chooseFont(org.cosinus.swing.form.Frame frame, String title, Font font) {
+    public Optional<Font> chooseFont(org.cosinus.swing.window.Frame frame, String title, Font font) {
         return chooseFont(frame, title, true, true, null, font);
     }
 
-    public Optional<Font> chooseFont(org.cosinus.swing.form.Frame frame, String title, String text, Font font) {
+    public Optional<Font> chooseFont(org.cosinus.swing.window.Frame frame, String title, String text, Font font) {
         return chooseFont(frame, title, true, true, text, font);
     }
 
-    public Optional<Font> chooseFont(org.cosinus.swing.form.Frame frame, String title, boolean modal, boolean manageWindowSettings, String text, Font font) {
+    public Optional<Font> chooseFont(org.cosinus.swing.window.Frame frame, String title, boolean modal, boolean manageWindowSettings, String text, Font font) {
         return showDialog(() -> new FontChooser(frame, title, modal, manageWindowSettings, text, font)).response();
     }
 

@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.form;
+package org.cosinus.swing.window;
 
 import org.cosinus.swing.store.ApplicationStorage;
+import org.cosinus.swing.window.WindowSettings;
+import org.cosinus.swing.window.WindowSettingsHandler;
 
 /**
  * Implementation of {@link WindowSettingsHandler} based on local storage

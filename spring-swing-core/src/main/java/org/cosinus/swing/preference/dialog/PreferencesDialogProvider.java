@@ -16,7 +16,7 @@
 
 package org.cosinus.swing.preference.dialog;
 
-import org.cosinus.swing.form.Dialog;
+import org.cosinus.swing.window.Dialog;
 
 import java.awt.*;
 

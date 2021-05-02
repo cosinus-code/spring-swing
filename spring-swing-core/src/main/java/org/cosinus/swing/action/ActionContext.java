@@ -17,7 +17,9 @@
 package org.cosinus.swing.action;
 
 /**
- * Interface for a swing action context
+ * Interface for an action context.
+ *
+ * Used for defining a context for an action execution.
  */
 public interface ActionContext {
 

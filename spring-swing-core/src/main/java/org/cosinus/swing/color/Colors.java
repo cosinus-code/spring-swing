@@ -19,14 +19,13 @@ package org.cosinus.swing.color;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.Optional;
 
 import static java.lang.Math.min;
 
 /**
- * Helper for colors
+ * Handler for colors
  */
 public final class Colors {
 
@@ -34,22 +33,13 @@ public final class Colors {
 
     public static final String COLOR_SEPARATOR = ",";
 
-    public static Color getControlLtHighlightColor() {
-        return UIManager.getColor("colorControlLtHighlight");
-    }
-
-    public static Color getControlHighlightColor() {
-        return UIManager.getColor("colorControlHighlight");
-    }
-
-    public static Color getControlColor() {
-        return UIManager.getColor("colorControl");
-    }
-
-    public static Color getControlShadowColor() {
-        return UIManager.getColor("colorControlShadow");
-    }
-
+    /**
+     * Used to parse a string descriptor of format "[red],[green],[blue]" into a Color object,
+     * where red, green and blue are 0..255 numbers.
+     *
+     * @param descriptor the string descriptor
+     * @return the parsed Color object, otherwise Optional.empty
+     */
     public static Optional<Color> toColor(String descriptor) {
         try {
             String[] pieces = descriptor.split(COLOR_SEPARATOR);
@@ -65,10 +55,23 @@ public final class Colors {
         return Optional.empty();
     }
 
+    /**
+     * Get the string descriptor of format "[red],[green],[blue]" corresponding to Color object,
+     * where red, green and blue are 0..255 numbers.
+     *
+     * @param color the source color
+     * @return the color descriptor
+     */
     public static String getColorDescription(Color color) {
         return color.getRed() + COLOR_SEPARATOR + color.getGreen() + COLOR_SEPARATOR + color.getBlue();
     }
 
+    /**
+     * Create a lighter nuance of a source color.
+     *
+     * @param color the source color
+     * @return the created lighter color
+     */
     public static Color getLighterColor(Color color) {
         return new Color(min(color.getRed() + 12, 255),
                          min(color.getGreen() + 14, 255),

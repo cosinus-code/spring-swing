@@ -19,8 +19,9 @@ package org.cosinus.swing.preference.dialog;
 import org.cosinus.swing.border.Borders;
 import org.cosinus.swing.context.ApplicationHandler;
 import org.cosinus.swing.error.ErrorHandler;
-import org.cosinus.swing.form.Dialog;
+import org.cosinus.swing.window.Dialog;
 import org.cosinus.swing.form.control.Control;
+import org.cosinus.swing.layout.SpringGridLayout;
 import org.cosinus.swing.preference.Preference;
 import org.cosinus.swing.preference.PreferenceType;
 import org.cosinus.swing.preference.Preferences;
@@ -52,7 +53,6 @@ import static javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION;
 import static javax.swing.SwingUtilities.updateComponentTreeUI;
 import static org.cosinus.swing.border.Borders.emptyBorder;
 import static org.cosinus.swing.border.Borders.lineBorder;
-import static org.cosinus.swing.layout.SpringLayoutUtils.makeCompactGrid;
 import static org.cosinus.swing.preference.PreferenceType.*;
 import static org.cosinus.swing.preference.Preferences.LOOK_AND_FEEL;
 
@@ -114,7 +114,7 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
         setSize(600, 500);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
-        restoreDefaultsButton = new JButton(translator.translate("restore-defaults"));
+        restoreDefaultsButton = new JButton(translator.translate("restoreDefaults"));
         okButton = new JButton(translator.translate("ok"));
         applyButton = new JButton(translator.translate("apply"));
         cancelButton = new JButton(translator.translate("cancel"));
@@ -154,10 +154,15 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
 
     private void addPreferencesCardPanel(String setName, Map<String, Preference> preferences) {
         JPanel preferencesCardFramePanel = new JPanel(new BorderLayout());
-        JPanel preferencesPanel = new JPanel(new SpringLayout());
+        JPanel preferencesPanel = new JPanel();
+        SpringGridLayout preferencesLayout = new SpringGridLayout(preferencesPanel,
+                                                                  preferences.size(), 2,
+                                                                  5, 5,
+                                                                  5, 5);
+        preferencesPanel.setLayout(preferencesLayout);
 
         preferences.forEach((name, preference) -> addPreferenceControl(preferencesPanel, name, preference));
-        makeCompactGrid(preferencesPanel, preferences.size(), 2, 5, 5, 5, 5);
+        preferencesLayout.pack();
 
         preferencesCardFramePanel.add(preferencesPanel, BorderLayout.NORTH);
 
@@ -346,7 +351,7 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
 
     @Override
     public void translate() {
-        restoreDefaultsButton.setText(translator.translate("restore-defaults"));
+        restoreDefaultsButton.setText(translator.translate("restoreDefaults"));
         okButton.setText(translator.translate("ok"));
         applyButton.setText(translator.translate("apply"));
         cancelButton.setText(translator.translate("cancel"));
@@ -367,6 +372,8 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
     }
 
     private class PreferenceListModel extends AbstractListModel<String> implements Translatable {
+
+        private static final long serialVersionUID = 2474868725194138977L;
 
         private final List<String> preferenceNames;
 

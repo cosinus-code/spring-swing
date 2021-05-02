@@ -17,14 +17,12 @@
 package org.cosinus.swing.boot.config;
 
 import com.bulenkov.darcula.DarculaLaf;
-import org.cosinus.swing.boot.initialize.DefaultThemeInitializer;
 import org.cosinus.swing.boot.initialize.DarkLookAndFeelInitializer;
+import org.cosinus.swing.boot.initialize.DefaultThemeInitializer;
 import org.cosinus.swing.boot.initialize.LookAndFeelInitializer;
-import org.cosinus.swing.boot.initialize.TranslatorInitializer;
 import org.cosinus.swing.context.UIProperties;
 import org.cosinus.swing.preference.Preferences;
 import org.cosinus.swing.resource.ClasspathResourceResolver;
-import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.cosinus.swing.ui.dark.DarkLookAndFeel;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -35,7 +33,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * Application UI Configuration.
- *
+ * <p>
  * This includes all UI related beans configuration.
  */
 @Configuration
