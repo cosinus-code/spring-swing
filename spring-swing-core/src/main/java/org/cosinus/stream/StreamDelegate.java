@@ -30,7 +30,7 @@ import java.util.stream.*;
  * <p>
  * It delegates all functionality to a delegate stream.
  *
- * @param <T>
+ * @param <T> the type of the delegate stream elements
  */
 public class StreamDelegate<T> implements Stream<T> {
 

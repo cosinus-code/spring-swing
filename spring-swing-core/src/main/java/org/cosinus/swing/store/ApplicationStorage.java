@@ -46,6 +46,7 @@ public interface ApplicationStorage {
      * Get a stored integer value.
      *
      * @param key the key to search for
+     * @param defaultValue the default value
      * @return the stored value, or defaultValue
      */
     int getInt(String key, int defaultValue);
@@ -62,6 +63,7 @@ public interface ApplicationStorage {
      * Get a stored boolean value.
      *
      * @param key the key to search for
+     * @param defaultValue the default value
      * @return the stored value, or defaultValue
      */
     boolean getBoolean(String key, boolean defaultValue);

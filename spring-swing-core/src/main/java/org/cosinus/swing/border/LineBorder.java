@@ -33,23 +33,14 @@ public class LineBorder extends javax.swing.border.LineBorder {
 
     private int right;
 
-    /**
-     * Creates a new instance of DashedBorder
-     */
     public LineBorder(Color color) {
         this(color, 1, false);
     }
 
-    /**
-     * Creates a new instance of DashedBorder
-     */
     public LineBorder(Color color, int thickness) {
         this(color, thickness, false);
     }
 
-    /**
-     * Creates a new instance of DashedBorder
-     */
     public LineBorder(Color color, int thickness, boolean roundedCorners) {
         super(color, thickness, roundedCorners);
     }

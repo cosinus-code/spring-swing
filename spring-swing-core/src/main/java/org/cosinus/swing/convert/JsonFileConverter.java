@@ -46,11 +46,11 @@ import static org.cosinus.swing.resource.ResourceSource.FILESYSTEM_BEFORE_CLASSP
  * and for saving models into json files.
  * <p>
  * The json files are identified by names adn are search using different strategies:
- * <lu>
+ * <ul>
  * <li>FILESYSTEM: search in filesystem looking in the locations dedicated to the this application</li>
  * <li>CLASSPATH: search in the application classpath</li>
  * <li>FILESYSTEM_BEFORE_CLASSPATH: search first in filesystem and next, if not found, in the classpath</li>
- * </lu>
+ * </ul>
  */
 public abstract class JsonFileConverter<T> {
 
@@ -230,9 +230,9 @@ public abstract class JsonFileConverter<T> {
     /**
      * Saves a model to json file.
      *
-     * @param name  the name to identify the json file
+     * @param name the name to identify the json file
      * @param model the model to save
-     * @throws IOException, if an IO error occurs
+     * @throws IOException if an IO error occurs
      */
     public void saveModel(String name, T model) throws IOException {
         try (OutputStream output = createOutputStream(name)) {
@@ -245,7 +245,7 @@ public abstract class JsonFileConverter<T> {
      *
      * @param name   the name to identify the json file
      * @param models the list of models to save
-     * @throws IOException, if an IO error occurs
+     * @throws IOException if an IO error occurs
      */
     public void saveModelsList(String name, List<T> models) throws IOException {
         try (OutputStream output = createOutputStream(name)) {
@@ -258,7 +258,7 @@ public abstract class JsonFileConverter<T> {
      *
      * @param name      the name to identify the json file
      * @param modelsMap the map of models to save
-     * @throws IOException, if an IO error occurs
+     * @throws IOException if an IO error occurs
      */
     public void saveModelsMap(String name, Map<String, T> modelsMap) throws IOException {
         try (OutputStream output = createOutputStream(name)) {
@@ -271,7 +271,7 @@ public abstract class JsonFileConverter<T> {
      *
      * @param name the name to identify the file
      * @return the created output stream
-     * @throws IOException, if an IO error occurs
+     * @throws IOException if an IO error occurs
      */
     protected OutputStream createOutputStream(String name) throws IOException {
         File file = resourceResolversMap.get(FILESYSTEM).resolveResourcePath(resourceLocator(), name)
@@ -289,7 +289,7 @@ public abstract class JsonFileConverter<T> {
      *
      * @param output the output stream to write to
      * @param model  the model to write
-     * @throws IOException, if an IO error occurs
+     * @throws IOException if an IO error occurs
      */
     protected void writeValue(OutputStream output, Object model) throws IOException {
         objectMapper

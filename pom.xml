@@ -10,10 +10,15 @@
         <version>2.4.5</version>
     </parent>
 
-    <groupId>org.cosinus.swing</groupId>
+    <groupId>org.cosinuscode.swing</groupId>
     <artifactId>spring-swing-parent</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Spring Swing Parent POM for framework modules</description>
+    <url>https://github.com/cosinus-code/spring-swing</url>
+    <inceptionYear>2018</inceptionYear>
 
     <modules>
         <module>spring-swing-core</module>
@@ -23,5 +28,57 @@
         <module>spring-swing-starter</module>
         <module>spring-swing-test</module>
     </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.3</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <releaseProfiles>release</releaseProfiles>
+                    <goals>deploy</goals>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <distributionManagement>
+        <repository>
+            <id>ossrh-distro</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>Cosinus Code</name>
+    </organization>
+
+    <developers>
+        <developer>
+            <id>cosinus</id>
+            <name>Cosinus Code</name>
+            <email>cosinus.ro@gmail.com</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:cosinus-code/spring-swing.git</connection>
+        <developerConnection>scm:git:ssh://github.com:cosinus-code/spring-swing.git</developerConnection>
+        <url>https://github.com/cosinus-code/spring-swing/tree/master</url>
+    </scm>
 
 </project>

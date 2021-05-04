@@ -68,20 +68,20 @@ public class HelloWorld extends ApplicationFrame {
 ## Dependencies
 ```xml
   <parent>
-    <groupId>org.cosinus.swing</groupId>
+    <groupId>org.cosinuscode.swing</groupId>
     <artifactId>spring-swing-parent</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
   </parent>
 
   <properties>
     ...
-    <spring-swing.version>1.0-SNAPSHOT</spring-swing.version>
+    <spring-swing.version>1.1.0-SNAPSHOT</spring-swing.version>
     ...
   </properties>
 
   <dependencies>
     <dependency>
-      <groupId>org.cosinus.swing</groupId>
+      <groupId>org.cosinuscode.swing</groupId>
       <artifactId>spring-swing-starter</artifactId>
       <version>${spring-swing.version}</version>
     </dependency>
@@ -151,7 +151,7 @@ The icon file default location is in the `image` resources folder.
 To add Apache Log4j 2 to the application exclude the `spring-boot-starter-logging` and add `spring-boot-starter-log4j2`:
 ```xml
     <dependency>
-      <groupId>org.cosinus.swing</groupId>
+      <groupId>org.cosinuscode.swing</groupId>
       <artifactId>spring-swing-starter</artifactId>
       <version>${spring-swing.version}</version>
       <exclusions>

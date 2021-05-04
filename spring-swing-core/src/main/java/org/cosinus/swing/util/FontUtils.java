@@ -63,7 +63,7 @@ public final class FontUtils {
     }
 
     /**
-     * Get the description a font in format "<family>,<size>,<style>"
+     * Get the description a font in format "[family],[size],[style]"
      *
      * @param font the given font
      * @return the font description

@@ -21,11 +21,11 @@ package org.cosinus.swing.resource;
  * <p>
  * Also implementation of {@link ResourceLocator}.
  *
- * <lu>
+ * <ul>
  * <li>CONF: configuration resources</li>
  * <li>I18N: translation resources</li>
  * <li>IMAGE: image resources</li>
- * </lu>
+ * </ul>
  */
 public enum ResourceType implements ResourceLocator {
     CONF,

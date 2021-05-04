@@ -33,17 +33,11 @@ public class DashedBorder extends LineBorder {
 
     private final float[] dash;
 
-    /**
-     * Creates a new instance of LineBorder
-     */
     public DashedBorder(Color color, float[] dash) {
         super(color, 1, false);
         this.dash = dash;
     }
 
-    /**
-     * Creates a new instance of LineBorder
-     */
     public DashedBorder(Color color, int thickness, float[] dash) {
         super(color, thickness, false);
         this.dash = dash;
