@@ -19,7 +19,6 @@ package org.cosinus.swing.test.model;
 import org.cosinus.swing.form.Split;
 import org.cosinus.swing.store.ApplicationStorage;
 import org.cosinus.swing.translate.Translator;
-import org.cosinus.swing.ui.ApplicationUIHandler;
 
 public class TestSplit extends Split {
 
@@ -33,9 +32,5 @@ public class TestSplit extends Split {
 
     public Translator getTranslator() {
         return translator;
-    }
-
-    public ApplicationUIHandler getUIHandler() {
-        return uiHandler;
     }
 }

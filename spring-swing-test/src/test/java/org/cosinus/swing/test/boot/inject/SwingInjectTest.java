@@ -16,9 +16,9 @@
 
 package org.cosinus.swing.test.boot.inject;
 
-import org.cosinus.swing.window.Frame;
 import org.cosinus.swing.test.boot.SpringSwingBootTest;
 import org.cosinus.swing.test.model.*;
+import org.cosinus.swing.window.Frame;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -84,7 +84,6 @@ public class SwingInjectTest {
 
         assertNotNull(split.getApplicationStorage());
         assertNotNull(split.getTranslator());
-        assertNotNull(split.getUIHandler());
     }
 
     @Test

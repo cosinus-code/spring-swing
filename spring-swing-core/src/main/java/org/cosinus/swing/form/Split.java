@@ -20,17 +20,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.store.ApplicationStorage;
 import org.cosinus.swing.translate.Translator;
-import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.beans.PropertyChangeEvent;
-import java.util.Arrays;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
+import static java.util.Arrays.stream;
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
 /**
@@ -47,11 +46,11 @@ public class Split extends JSplitPane implements FormComponent {
 
     private final String splitName;
 
-    private boolean isDividerLocationLoading;
-
     private boolean lastPercentDivider;
 
     protected BasicSplitPaneDivider divider;
+
+    protected boolean keepRelativeLocationOnResize;
 
     private final int defaultDividerLocation;
 
@@ -61,17 +60,20 @@ public class Split extends JSplitPane implements FormComponent {
     @Autowired
     protected Translator translator;
 
-    @Autowired
-    protected ApplicationUIHandler uiHandler;
-
-    public Split(String splitName,
-                 int defaultDividerLocation) {
+    public Split(String splitName, int defaultDividerLocation) {
         injectContext(this);
         this.splitName = splitName;
         this.defaultDividerLocation = defaultDividerLocation;
     }
 
+    public void setKeepRelativeLocationOnResize(boolean keepRelativeLocationOnResize) {
+        this.keepRelativeLocationOnResize = keepRelativeLocationOnResize;
+    }
+
     public void initComponent() {
+        if (keepRelativeLocationOnResize) {
+            setResizeWeight(0.5);
+        }
         initDivider();
         initListeners();
         loadDividerLocation();
@@ -82,9 +84,8 @@ public class Split extends JSplitPane implements FormComponent {
             addPropertyChangeListener(new BasicSplitPaneDivider((BasicSplitPaneUI) getUI()) {
                 public void propertyChange(PropertyChangeEvent event) {
                     try {
-                        if (event.getPropertyName().equals(SPLIT_PROPERTY_NAME) && !isDividerLocationLoading) {
-                            applicationStorage.saveInt(applicationStorage.key(SPLIT, splitName),
-                                                       Integer.parseInt(event.getNewValue().toString()));
+                        if (event.getPropertyName().equals(SPLIT_PROPERTY_NAME)) {
+                            saveDividerLocation(Integer.parseInt(event.getNewValue().toString()));
                         }
                         super.propertyChange(event);
                     } catch (Exception ex) {
@@ -96,17 +97,23 @@ public class Split extends JSplitPane implements FormComponent {
     }
 
     protected void initDivider() {
-        divider = Arrays.stream(getComponents())
+        divider = stream(getComponents())
             .filter(component -> BasicSplitPaneDivider.class.isAssignableFrom(component.getClass()))
             .map(BasicSplitPaneDivider.class::cast)
             .findFirst()
             .orElse(null);
     }
 
-    public void loadDividerLocation() {
-        isDividerLocationLoading = true;
-        setDividerLocation(applicationStorage.getInt(applicationStorage.key(SPLIT, splitName), defaultDividerLocation));
-        isDividerLocationLoading = false;
+    public synchronized void loadDividerLocation() {
+        setDividerLocation(applicationStorage.getInt(getStorageKey(), defaultDividerLocation));
+    }
+
+    protected synchronized void saveDividerLocation(int location) {
+        applicationStorage.saveInt(getStorageKey(), location);
+    }
+
+    protected String getStorageKey() {
+        return applicationStorage.key(SPLIT, splitName);
     }
 
     public void moveSplitter(int percent) {
@@ -114,9 +121,11 @@ public class Split extends JSplitPane implements FormComponent {
     }
 
     public void moveSplitter(int value, boolean percent) {
-        setDividerLocation(percent ?
-                               min(max(value, 20), 80) * getWidth() / 100 :
-                               max(value, 0));
+        int location = percent ?
+            min(max(value, 20), 80) * getWidth() / 100 :
+            max(value, 0);
+        setDividerLocation(location);
+        saveDividerLocation(location);
 
         lastDividerLocation = value;
         lastPercentDivider = percent;
