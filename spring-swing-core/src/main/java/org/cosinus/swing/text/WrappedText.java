@@ -14,21 +14,31 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.form;
+package org.cosinus.swing.text;
 
-import javax.swing.table.AbstractTableModel;
+public class WrappedText {
 
-import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
+    private String text;
 
-/**
- * Extension of the {@link AbstractTableModel}
- * which will automatically inject the application context.
- */
-public abstract class TableModel extends AbstractTableModel {
+    private int width;
 
-    private static final long serialVersionUID = 2331650388625436833L;
+    private int height;
 
-    public TableModel() {
-        injectContext(this);
+    public WrappedText(String text, int width, int height) {
+        this.text = text;
+        this.width = width;
+        this.height = height;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 }

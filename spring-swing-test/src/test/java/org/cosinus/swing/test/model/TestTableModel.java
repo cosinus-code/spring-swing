@@ -41,12 +41,4 @@ public class TestTableModel extends TableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         return null;
     }
-
-    @Override
-    public void initComponents() {
-    }
-
-    @Override
-    public void translate() {
-    }
 }

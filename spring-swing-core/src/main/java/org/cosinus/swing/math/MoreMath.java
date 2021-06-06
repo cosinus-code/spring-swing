@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.form;
+package org.cosinus.swing.math;
 
-import javax.swing.table.AbstractTableModel;
+public final class MoreMath {
 
-import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
+    public static int fitInRange(int value, int min, int max) {
+        return Math.min(Math.max(value, min), max);
+    }
 
-/**
- * Extension of the {@link AbstractTableModel}
- * which will automatically inject the application context.
- */
-public abstract class TableModel extends AbstractTableModel {
+    public static int divideAndCeil(int value1, int value2) {
+        return (int) Math.ceil((double) value1 / (double) value2);
+    }
 
-    private static final long serialVersionUID = 2331650388625436833L;
+    public static int divideAndFloor(int value1, int value2) {
+        return (int) Math.floor((double) value1 / (double) value2);
+    }
 
-    public TableModel() {
-        injectContext(this);
+    private MoreMath() {
     }
 }

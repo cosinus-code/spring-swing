@@ -58,8 +58,8 @@ public class SpringSwingImageAutoConfiguration {
 
     @Bean
     @ConditionalOnWindows
-    public IconProvider windowsIconProvider() {
-        return new WindowsIconProvider();
+    public IconProvider windowsIconProvider(ImageHandler imageHandler) {
+        return new WindowsIconProvider(imageHandler);
     }
 
     @Bean

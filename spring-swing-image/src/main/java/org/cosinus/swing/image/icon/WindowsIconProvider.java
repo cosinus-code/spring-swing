@@ -18,6 +18,7 @@ package org.cosinus.swing.image.icon;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.cosinus.swing.image.ImageHandler;
 import org.cosinus.swing.util.AutoRemovableTemporaryFile;
 import org.cosinus.swing.util.WindowsUtils;
 
@@ -32,7 +33,6 @@ import java.util.Optional;
 
 import static org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS_XP;
 import static org.cosinus.swing.image.icon.IconSize.X16;
-import static org.cosinus.swing.image.icon.IconSize.X32;
 import static org.cosinus.swing.util.AutoRemovableTemporaryFile.autoRemovableTemporaryFileWithExtension;
 import static org.cosinus.swing.util.FileUtils.getExtension;
 import static org.cosinus.swing.util.WindowsUtils.getRegistryValue;
@@ -63,7 +63,10 @@ public class WindowsIconProvider implements IconProvider {
 
     private final Map<String, Integer> extensionsToIconIndexMap;
 
-    public WindowsIconProvider() {
+    private final ImageHandler imageHandler;
+
+    public WindowsIconProvider(ImageHandler imageHandler) {
+        this.imageHandler = imageHandler;
         this.iconNameToFilePathMap = new HashMap<>();
         this.extensionsToIconIndexMap = new HashMap<>();
     }
@@ -79,15 +82,27 @@ public class WindowsIconProvider implements IconProvider {
         return ofNullable(file)
             .map(f -> {
                 if (size == X16) {
-                    return file.exists() || file.isDirectory() ?
-                        getSystemIcon(file) :
-                        getSystemIcon(getExtension(file));
-                } else if (size == X32) {
-                    return getNativeSystemIcon(file, X32.getSize());
+                    return getSmallSystemIcon(file);
                 } else {
-                    return null;
+                    return getBigSystemIcon(file, size);
                 }
             });
+    }
+
+    private Icon getSmallSystemIcon(File file) {
+        return file.exists() || file.isDirectory() ?
+            getSystemIcon(file) :
+            getSystemIcon(getExtension(file));
+    }
+
+    private Icon getBigSystemIcon(File file, IconSize size) {
+        return ofNullable(getSmallSystemIcon(file))
+            .filter(icon -> ImageIcon.class.isAssignableFrom(icon.getClass()))
+            .map(ImageIcon.class::cast)
+            .map(ImageIcon::getImage)
+            .map(image -> imageHandler.scaleImage(image, size.getSize()))
+            .map(ImageIcon::new)
+            .orElse(null);
     }
 
     @Override
@@ -100,11 +115,15 @@ public class WindowsIconProvider implements IconProvider {
 
     private Optional<int[]> createIconFromSystemFile(String systemFilePath, int size) {
         String[] pieces = systemFilePath.split(",");
-        String source = pieces[0].startsWith("\"") && pieces[0].endsWith("\"") ?
-            pieces[0].substring(1, pieces[0].length() - 1) :
-            pieces[0];
-        int index = Integer.parseInt(pieces[1]);
-        return ofNullable(getNativeSystemIcon(source, index, size));
+        if (pieces.length > 1) {
+            String source = pieces[0].startsWith("\"") && pieces[0].endsWith("\"") ?
+                pieces[0].substring(1, pieces[0].length() - 1) :
+                pieces[0];
+            int index = Integer.parseInt(pieces[1]);
+            return ofNullable(getNativeSystemIcon(source, index, size));
+        }
+
+        return Optional.empty();
     }
 
     private Icon getSystemIcon(String fileExtension) {

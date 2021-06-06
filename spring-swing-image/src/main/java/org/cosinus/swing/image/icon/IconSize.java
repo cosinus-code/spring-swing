@@ -16,25 +16,45 @@
 
 package org.cosinus.swing.image.icon;
 
+import java.util.Optional;
+
+import static java.util.Arrays.stream;
+
 /**
  * Enum for icon sizes
  */
 public enum IconSize {
-    X16(16),
-    X18(18),
-    X24(24),
-    X20(20),
-    X32(32),
-    X48(48);
+    X16(16, "small"),
+    X32(32, "normal"),
+    X48(48, "large");
 
     private final int size;
 
-    IconSize(int size) {
+    private final String text;
+
+    IconSize(int size, String text) {
         this.size = size;
+        this.text = text;
     }
 
     public int getSize() {
         return size;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public static Optional<IconSize> forSize(int size) {
+        return stream(values())
+            .filter(iconSize -> iconSize.getSize() == size)
+            .findFirst();
+    }
+
+    public static Optional<IconSize> forText(String text) {
+        return stream(values())
+            .filter(iconSize -> iconSize.getText().equals(text))
+            .findFirst();
     }
 
     @Override

@@ -25,6 +25,7 @@ import java.awt.image.FilteredImageSource;
 import java.awt.image.ImageFilter;
 import java.io.*;
 import java.net.URL;
+import java.util.Optional;
 
 import static java.lang.Math.max;
 import static java.util.Optional.ofNullable;
@@ -39,16 +40,18 @@ public class ImageHandler {
     public static final ImageFilter DISABLED_FILTER = new javax.swing.GrayFilter(true, 50);
 
     /**
-     * Get the preview image of a file.
+     * Get the preview icon of a file.
      *
      * @param file the file to preview
      * @param size the size of the preview image
      * @return the preview image
      * @throws IOException if an IO error occurs
      */
-    public ImageIcon getPreviewImage(File file, int size) throws IOException {
+    public Optional<Icon> getPreviewImage(File file, int size) throws IOException {
         try (InputStream in = new FileInputStream(file)) {
-            return new ImageIcon(scaleImage(ImageIO.read(in), size));
+            return ofNullable(ImageIO.read(in))
+                .map(image -> scaleImage(image, size))
+                .map(ImageIcon::new);
         }
     }
 
@@ -70,11 +73,6 @@ public class ImageHandler {
         double scale = (double) size / max(width, height);
         if (scale <= 0) {
             return null;
-        }
-
-        // If the image is smaller than the desired image size, don't bother scaling.
-        if (scale >= 1.0d) {
-            return image;
         }
 
         AffineTransform tx = new AffineTransform();

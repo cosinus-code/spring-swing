@@ -44,21 +44,19 @@ public class Split extends JSplitPane implements FormComponent {
 
     private static final String SPLIT_PROPERTY_NAME = "dividerLocation";
 
-    private final String splitName;
+    @Autowired
+    protected ApplicationStorage applicationStorage;
 
-    private boolean lastPercentDivider;
+    @Autowired
+    protected Translator translator;
+
+    private final String splitName;
 
     protected BasicSplitPaneDivider divider;
 
     protected boolean keepRelativeLocationOnResize;
 
     private final int defaultDividerLocation;
-
-    @Autowired
-    protected ApplicationStorage applicationStorage;
-
-    @Autowired
-    protected Translator translator;
 
     public Split(String splitName, int defaultDividerLocation) {
         injectContext(this);
@@ -125,31 +123,20 @@ public class Split extends JSplitPane implements FormComponent {
             min(max(value, 20), 80) * getWidth() / 100 :
             max(value, 0);
         setDividerLocation(location);
-        saveDividerLocation(location);
-
-        lastDividerLocation = value;
-        lastPercentDivider = percent;
     }
 
-    @Override
-    public void setVisible(boolean visible) {
-        if (!visible) {
-            lastDividerLocation = getDividerLocation();
-        }
-        super.setVisible(visible);
+    public void setVisibleDivider(boolean visible) {
         if (visible) {
-            moveSplitter(lastDividerLocation, lastPercentDivider);
+            loadDividerLocation();
         }
         divider.setVisible(visible);
     }
 
     @Override
     public void initComponents() {
-
     }
 
     @Override
     public void translate() {
-
     }
 }

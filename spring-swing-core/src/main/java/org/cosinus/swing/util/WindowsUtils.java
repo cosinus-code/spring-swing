@@ -24,7 +24,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Optional;
 
+import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
+import static java.util.function.Predicate.not;
+import static java.util.stream.Collectors.joining;
 
 /**
  * Windows native utils
@@ -57,14 +60,14 @@ public class WindowsUtils {
     public static Optional<String> getRegistryValue(String register, String key) {
         String exec = REG_QUERY + "\"" + register + "\" " + (key == null ? "/ve" : "/v " + key);
         try (BufferedReader buff = new BufferedReader(new InputStreamReader(Runtime.getRuntime()
-                                                                                    .exec(exec)
-                                                                                    .getInputStream()))) {
+                                                                                .exec(exec)
+                                                                                .getInputStream()))) {
             String line;
             while (null != (line = buff.readLine())) {
                 if (line.contains(REG_EXP_TOKEN) || line.contains(REG_STR_TOKEN) || line.contains(REG_DWORD)) {
                     return ofNullable(line.split("\\s+"))
-                            .filter(values -> values.length > 0)
-                            .map(values -> values[values.length - 1]);
+                        .filter(values -> values.length > 0)
+                        .map(WindowsUtils::skip2ValuesAndJoin);
                 }
             }
         } catch (IOException ex) {
@@ -73,10 +76,17 @@ public class WindowsUtils {
         return Optional.empty();
     }
 
+    private static String skip2ValuesAndJoin(String[] values) {
+        return stream(values)
+            .filter(not(String::isEmpty))
+            .skip(2)
+            .collect(joining(" "));
+    }
+
     public static boolean getRegistryBooleanValue(String register, String key) {
         return getRegistryValue(register, key)
-                .map(Integer::decode)
-                .map(value -> value == 1)
-                .orElse(false);
+            .map(Integer::decode)
+            .map(value -> value == 1)
+            .orElse(false);
     }
 }
