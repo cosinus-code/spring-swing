@@ -20,13 +20,19 @@ import javax.swing.*;
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.TimeZone;
 
 import static java.lang.Math.ceil;
 import static java.lang.Math.floor;
+import static java.time.Instant.ofEpochMilli;
+import static java.time.LocalDateTime.ofInstant;
+import static java.time.format.FormatStyle.MEDIUM;
 
 /**
  * Numbers related utils
  */
+//TODO to move this logic into a bean
 public class Formatter {
 
     public static final int KILO = 1024;
@@ -111,4 +117,9 @@ public class Formatter {
         return newText;
     }
 
+    public static String formatDate(long timestamp) {
+        return DateTimeFormatter
+            .ofLocalizedDate(MEDIUM)
+            .format(ofInstant(ofEpochMilli(timestamp), TimeZone.getDefault().toZoneId()));
+    }
 }
