@@ -108,8 +108,8 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
             txaDetails = new JTextArea();
             txaDetails.setEditable(false);
             txaDetails.setFont(uiHandler.getLabelFont());
-            txaDetails.setBackground(uiHandler.getColor("inactiveCaption"));
-            txaDetails.setForeground(uiHandler.getColor("inactiveCaptionText"));
+            txaDetails.setBackground(uiHandler.getInactiveCaptionColor());
+            txaDetails.setForeground(uiHandler.getInactiveCaptionTextColor());
 
             panDetails = new JScrollPane();
             panDetails.setViewportView(txaDetails);

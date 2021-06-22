@@ -19,7 +19,6 @@ package org.cosinus.swing.preference.dialog;
 import org.cosinus.swing.border.Borders;
 import org.cosinus.swing.context.ApplicationHandler;
 import org.cosinus.swing.error.ErrorHandler;
-import org.cosinus.swing.window.Dialog;
 import org.cosinus.swing.form.control.Control;
 import org.cosinus.swing.layout.SpringGridLayout;
 import org.cosinus.swing.preference.Preference;
@@ -32,6 +31,7 @@ import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.cosinus.swing.validation.SimpleValidationContext;
 import org.cosinus.swing.validation.ValidationContext;
+import org.cosinus.swing.window.Dialog;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
@@ -307,18 +307,18 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
 
     public void updateUI() {
         if (preferenceSetList != null) {
-            Color inactiveCaptionColor = uiHandler.getColor("inactiveCaption");
-            Color controlColor = uiHandler.getColor("control");
+            Color inactiveCaptionColor = uiHandler.getInactiveCaptionColor();
+            Color controlColor = uiHandler.getControlColor();
             if (inactiveCaptionColor != null && !inactiveCaptionColor.equals(controlColor)) {
                 preferenceSetList.setBackground(inactiveCaptionColor);
-                preferenceSetList.setForeground(uiHandler.getColor("inactiveCaptionText"));
+                preferenceSetList.setForeground(uiHandler.getInactiveCaptionTextColor());
             } else {
                 preferenceSetList.setBackground(uiHandler.getColor("List.background"));
                 preferenceSetList.setForeground(uiHandler.getColor("List.foreground"));
             }
         }
         if (preferenceSouthPanel != null) {
-            preferenceSouthPanel.setBorder(lineBorder(uiHandler.getColor("controlHighlight"),
+            preferenceSouthPanel.setBorder(lineBorder(uiHandler.getControlHighlightColor(),
                                                       1, 0, 0, 0));
         }
     }

@@ -220,6 +220,12 @@ public class ApplicationUIHandler {
         } catch (Exception e) {
             LOG.error("Failed to load lookAndFeel: " + lookAndFeel, e);
         }
+
+//        LOG.info("------------------------------------------- ookandfeel colors: " + lookAndFeel);
+//        UIManager.getLookAndFeelDefaults().entrySet()
+//            .stream()
+//            .filter(entry -> entry.getValue() instanceof Color)
+//            .forEach(entry -> LOG.info(entry.getKey() + " -> " + Colors.getColorDescription((Color) entry.getValue())));
     }
 
     /**
@@ -403,7 +409,30 @@ public class ApplicationUIHandler {
      * @return the color
      */
     public Color getColor(String key) {
-        return UIManager.getColor(key);
+        return ofNullable(UIManager.getColor(key))
+            .map(Color::getRGB)
+            .map(Color::new)
+            .orElse(null);
+    }
+
+    public Color getControlColor() {
+        return getColor("control");
+    }
+
+    public Color getControlHighlightColor() {
+        return getColor("controlHighlight");
+    }
+
+    public Color getInactiveCaptionColor() {
+        return getColor("inactiveCaption");
+    }
+
+    public Color getInactiveCaptionTextColor() {
+        return getColor("inactiveCaptionText");
+    }
+
+    public Color getControlDarkShadowColor() {
+        return getColor("controlDkShadow");
     }
 
     /**
@@ -477,7 +506,7 @@ public class ApplicationUIHandler {
     /**
      * Set default UI font.
      *
-     * @param key the key of the font to set
+     * @param key  the key of the font to set
      * @param font the font to set
      */
     public void setDefaultFont(String key, Font font) {

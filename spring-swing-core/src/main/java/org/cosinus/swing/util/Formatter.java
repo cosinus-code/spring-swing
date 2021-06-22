@@ -28,6 +28,7 @@ import static java.lang.Math.floor;
 import static java.time.Instant.ofEpochMilli;
 import static java.time.LocalDateTime.ofInstant;
 import static java.time.format.FormatStyle.MEDIUM;
+import static javax.swing.SwingUtilities.computeStringWidth;
 
 /**
  * Numbers related utils
@@ -103,8 +104,8 @@ public class Formatter {
 
     public static String formatTextForLabel(JLabel label, String text) {
         FontMetrics labelFontMetrics = label.getFontMetrics(label.getFont());
-        int textWidth = SwingUtilities.computeStringWidth(labelFontMetrics, text);
-        int lblWidth = label.getWidth();
+        int textWidth = computeStringWidth(labelFontMetrics, text);
+        int lblWidth = label.getWidth() - label.getInsets().left - label.getInsets().right;
 
         String newText = text;
         int middle = newText.length() / 2;
@@ -112,7 +113,7 @@ public class Formatter {
         int middle2 = middle;
         while (textWidth > lblWidth && middle1 > 0 && middle2 < text.length() - 1) {
             newText = text.substring(0, --middle1) + "..." + text.substring(++middle2);
-            textWidth = SwingUtilities.computeStringWidth(labelFontMetrics, newText);
+            textWidth = computeStringWidth(labelFontMetrics, newText);
         }
         return newText;
     }

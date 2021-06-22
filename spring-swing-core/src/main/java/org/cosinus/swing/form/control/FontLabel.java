@@ -50,7 +50,7 @@ public class FontLabel extends JLabel implements Control<Font>, MouseListener {
         injectContext(this);
 
         setControlValue(font);
-        setBorder(borderWithMargin(lineBorder(uiHandler.getColor("controlHighlight")),
+        setBorder(borderWithMargin(lineBorder(uiHandler.getControlHighlightColor()),
                                    3, 5, 3, 5));
         addMouseListener(this);
     }

@@ -18,6 +18,8 @@ package org.cosinus.swing.context;
 
 import org.springframework.context.ApplicationContext;
 
+import static java.util.Optional.ofNullable;
+
 /**
  * Application context injector.
  * <p>
@@ -40,7 +42,9 @@ public final class ApplicationContextInjector {
      * @param object the object to inject the context into
      */
     public static void injectContext(Object object) {
-        applicationContext.getAutowireCapableBeanFactory().autowireBean(object);
+        ofNullable(applicationContext)
+            .map(ApplicationContext::getAutowireCapableBeanFactory)
+            .ifPresent(factory -> factory.autowireBean(object));
     }
 
     private ApplicationContextInjector() {

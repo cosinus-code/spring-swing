@@ -59,7 +59,7 @@ public class WindowsIconProvider implements IconProvider {
 
     private static final String EXTENSION_EXE = "exe";
 
-    private final Map<String, String> iconNameToFilePathMap;
+    private final Map<String, String> iconNameToRegistryPathMap;
 
     private final Map<String, Integer> extensionsToIconIndexMap;
 
@@ -67,7 +67,7 @@ public class WindowsIconProvider implements IconProvider {
 
     public WindowsIconProvider(ImageHandler imageHandler) {
         this.imageHandler = imageHandler;
-        this.iconNameToFilePathMap = new HashMap<>();
+        this.iconNameToRegistryPathMap = new HashMap<>();
         this.extensionsToIconIndexMap = new HashMap<>();
     }
 
@@ -80,13 +80,9 @@ public class WindowsIconProvider implements IconProvider {
     @Override
     public Optional<Icon> findIconByFile(File file, IconSize size) {
         return ofNullable(file)
-            .map(f -> {
-                if (size == X16) {
-                    return getSmallSystemIcon(file);
-                } else {
-                    return getBigSystemIcon(file, size);
-                }
-            });
+            .map(f -> size == X16 ?
+                getSmallSystemIcon(file) :
+                getBigSystemIcon(file, size));
     }
 
     private Icon getSmallSystemIcon(File file) {
@@ -107,7 +103,7 @@ public class WindowsIconProvider implements IconProvider {
 
     @Override
     public Optional<Icon> findIconByName(String name, IconSize size) {
-        return ofNullable(getIconNameToFilePathMap().get(name))
+        return ofNullable(getIconNameToRegistryPathMap().get(name))
             .flatMap(WindowsUtils::getRegistryValue)
             .flatMap(iconFilePath -> createIconFromSystemFile(iconFilePath, size.getSize()))
             .map(bytes -> createIconFromBytes(bytes, size.getSize()));
@@ -145,12 +141,12 @@ public class WindowsIconProvider implements IconProvider {
         return FileSystemView.getFileSystemView().getSystemIcon(file);
     }
 
-    private Map<String, String> getIconNameToFilePathMap() {
-        return iconNameToFilePathMap;
+    private Map<String, String> getIconNameToRegistryPathMap() {
+        return iconNameToRegistryPathMap;
     }
 
     private void initIconNameToFilePathMap() {
-        iconNameToFilePathMap.put(ICON_COMPUTER, ICON_COMPUTER_PATH);
+        iconNameToRegistryPathMap.put(ICON_COMPUTER, ICON_COMPUTER_PATH);
     }
 
     /**
