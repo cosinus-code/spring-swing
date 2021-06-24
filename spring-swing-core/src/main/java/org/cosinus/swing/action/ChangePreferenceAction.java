@@ -42,6 +42,8 @@ public abstract class ChangePreferenceAction implements ActionInContext<ActionCo
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+
+        apply();
     }
 
     protected abstract String getPreferenceName();
