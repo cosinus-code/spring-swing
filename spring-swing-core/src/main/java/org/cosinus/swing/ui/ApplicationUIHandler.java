@@ -435,6 +435,18 @@ public class ApplicationUIHandler {
         return getColor("controlDkShadow");
     }
 
+    public Optional<Color> getInactiveBackgroundColor() {
+        return ofNullable(getInactiveCaptionColor())
+            .or(() -> ofNullable(getColor("ScrollBar.background")))
+            .filter(color -> !color.equals(getControlColor()))
+            .or(() -> ofNullable(getColor("MenuItem.selectionBackground")));
+    }
+
+    public Optional<Color> getInactiveForegroundColor() {
+        return ofNullable(getInactiveCaptionTextColor())
+            .or(() -> ofNullable(getColor("TextField.foreground")));
+    }
+
     /**
      * Get an UI default border.
      *
