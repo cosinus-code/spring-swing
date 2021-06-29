@@ -20,10 +20,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.action.EscapeAction;
 import org.cosinus.swing.error.SwingSevereException;
-import org.cosinus.swing.window.Dialog;
-import org.cosinus.swing.window.Frame;
+import org.cosinus.swing.error.TranslatableRuntimeException;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
+import org.cosinus.swing.window.Dialog;
+import org.cosinus.swing.window.Frame;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
@@ -33,6 +34,8 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Objects;
+import java.util.Optional;
 
 import static java.awt.BorderLayout.*;
 import static java.lang.String.format;
@@ -40,6 +43,7 @@ import static javax.swing.JPanel.WHEN_IN_FOCUSED_WINDOW;
 import static javax.swing.KeyStroke.getKeyStroke;
 import static org.cosinus.swing.border.Borders.emptyBorder;
 import static org.cosinus.swing.border.Borders.emptyInsets;
+import static java.util.Optional.ofNullable;
 
 /**
  * Default implementation of {@link ErrorForm} as dialog
