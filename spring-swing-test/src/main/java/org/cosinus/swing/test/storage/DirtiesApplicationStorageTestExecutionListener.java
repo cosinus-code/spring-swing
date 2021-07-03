@@ -16,16 +16,16 @@
 
 package org.cosinus.swing.test.storage;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.store.ApplicationStorage;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.TestContextAnnotationUtils;
-import org.springframework.test.context.support.AbstractTestExecutionListener;
 import org.springframework.test.context.TestExecutionListener;
+import org.springframework.test.context.support.AbstractTestExecutionListener;
 
 import static java.util.Optional.ofNullable;
 
@@ -33,13 +33,13 @@ import static java.util.Optional.ofNullable;
  * Implementation of {@link TestExecutionListener}
  * that do cleanup of the application storage after the test performed,
  * depending on {@link DirtiesApplicationStorage} annotation presence and value.
- *
- * The cleanup is not done even if {@link DirtiesApplicationStorage} is not present.
+ * <p>
+ * The cleanup is done even if {@link DirtiesApplicationStorage} is not present.
  * Only the value <code>false</code> for {@link DirtiesApplicationStorage} don't trigger the cleanup.
  */
 public class DirtiesApplicationStorageTestExecutionListener extends AbstractTestExecutionListener {
 
-    private static final Log logger = LogFactory.getLog(DirtiesApplicationStorageTestExecutionListener.class);
+    private static final Logger LOG = LogManager.getLogger(DirtiesApplicationStorageTestExecutionListener.class);
 
     /**
      * Perform application storage cleanup.
@@ -51,7 +51,7 @@ public class DirtiesApplicationStorageTestExecutionListener extends AbstractTest
             ApplicationStorage applicationStorage = testContext.getApplicationContext().getBean(ApplicationStorage.class);
             applicationStorage.clear();
         } catch (BeansException ex) {
-            logger.error("Cannot find ApplicationStorage bean in context for cleaning test annotated with @DirtiesApplicationStorage", ex);
+            LOG.error("Cannot find ApplicationStorage bean in context for cleaning test annotated with @DirtiesApplicationStorage", ex);
         }
     }
 
@@ -70,13 +70,13 @@ public class DirtiesApplicationStorageTestExecutionListener extends AbstractTest
                 .orElse(true);
 
         if (dirtiesApplicationStorage) {
-            if (logger.isDebugEnabled()) {
+            if (LOG.isDebugEnabled()) {
                 if (methodAnnotation != null) {
-                    logger.debug(String.format("After test method: context %s, method annotated with @DirtiesApplicationStorage.", testContext));
+                    LOG.debug(String.format("After test method: context %s, method annotated with @DirtiesApplicationStorage.", testContext));
                 } else if (classAnnotation != null) {
-                    logger.debug(String.format("After test method: context %s, class annotated with @DirtiesApplicationStorage.", testContext));
+                    LOG.debug(String.format("After test method: context %s, class annotated with @DirtiesApplicationStorage.", testContext));
                 } else {
-                    logger.debug(String.format("After test method: context %s, no @DirtiesApplicationStorage annotation.", testContext));
+                    LOG.debug(String.format("After test method: context %s, no @DirtiesApplicationStorage annotation.", testContext));
                 }
             }
             cleanupApplicationStorage(testContext);
@@ -94,11 +94,11 @@ public class DirtiesApplicationStorageTestExecutionListener extends AbstractTest
                 .orElse(true);
 
         if (dirtiesApplicationStorage) {
-            if (logger.isDebugEnabled()) {
+            if (LOG.isDebugEnabled()) {
                 if (classAnnotation != null) {
-                    logger.debug(String.format("After test class: context %s, class annotated with @DirtiesApplicationStorage.", testContext));
+                    LOG.debug(String.format("After test class: context %s, class annotated with @DirtiesApplicationStorage.", testContext));
                 } else {
-                    logger.debug(String.format("After test class: context %s, no @DirtiesApplicationStorage annotation.", testContext));
+                    LOG.debug(String.format("After test class: context %s, no @DirtiesApplicationStorage annotation.", testContext));
                 }
             }
             cleanupApplicationStorage(testContext);
