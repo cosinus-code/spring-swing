@@ -23,6 +23,7 @@
         <log4j.version>2.14.1</log4j.version>
         <twelvemonkeys.imageio.version>3.7.0</twelvemonkeys.imageio.version>
         <darcula.version>2018.2</darcula.version>
+        <jdatepicker.version>1.3.4</jdatepicker.version>
 
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
@@ -96,6 +97,11 @@
                 <artifactId>darcula</artifactId>
                 <version>${darcula.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.jdatepicker</groupId>
+                <artifactId>jdatepicker</artifactId>
+                <version>${jdatepicker.version}</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>
@@ -140,8 +146,13 @@
 
     <repositories>
         <repository>
-            <id>spring-plugins</id>
-            <url>https://repo.spring.io/plugins-release/</url>
+            <id>nifi</id>
+            <name>Maven Repository NIFI</name>
+            <layout>default</layout>
+            <url>https://jcenter.bintray.com</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
