@@ -19,6 +19,7 @@ package org.cosinus.swing.boot;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.io.ResourceLoader;
 
 import java.util.function.Supplier;
 
@@ -43,7 +44,11 @@ public class SpringSwingApplication extends SpringApplication {
     private boolean logStartupProgress;
 
     public SpringSwingApplication(Class<?>... sources) {
-        super(sources);
+        this(null, sources);
+    }
+
+    public SpringSwingApplication(ResourceLoader resourceLoader, Class<?>... sources) {
+        super(resourceLoader, sources);
         setHeadless(false);
         setWebApplicationType(NONE);
         setBannerMode(OFF);

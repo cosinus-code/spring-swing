@@ -21,6 +21,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
+import org.springframework.core.io.ResourceLoader;
 
 import static org.cosinus.swing.util.ReflectionUtils.createBean;
 import static org.springframework.core.io.support.SpringFactoriesLoader.loadFactoryNames;
@@ -43,8 +44,8 @@ public class SpringSwingApplicationBuilder extends SpringApplicationBuilder {
      * @return the created swing application
      */
     @Override
-    protected SpringSwingApplication createSpringApplication(Class<?>... sources) {
-        return new SpringSwingApplication(sources);
+    protected SpringSwingApplication createSpringApplication(ResourceLoader resourceLoader, Class<?>... sources) {
+        return new SpringSwingApplication(resourceLoader, sources);
     }
 
     /**
