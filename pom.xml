@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.6</version>
+        <version>2.7.0</version>
     </parent>
 
     <groupId>org.cosinuscode.swing</groupId>
@@ -25,8 +25,9 @@
         <module>spring-swing-boot</module>
         <module>spring-swing-image</module>
         <module>spring-swing-dependencies</module>
-        <module>spring-swing-starter</module>
         <module>spring-swing-test</module>
+        <module>spring-swing-boot-starter</module>
+        <module>spring-swing-boot-starter-parent</module>
     </modules>
 
     <build>
@@ -79,6 +80,7 @@
         <connection>scm:git:git@github.com:cosinus-code/spring-swing.git</connection>
         <developerConnection>scm:git:ssh://github.com:cosinus-code/spring-swing.git</developerConnection>
         <url>https://github.com/cosinus-code/spring-swing/tree/master</url>
+        <tag>@{project.version}</tag>
     </scm>
 
 </project>

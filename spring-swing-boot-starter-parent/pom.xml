@@ -3,6 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.cosinuscode.swing</groupId>
         <artifactId>spring-swing-dependencies</artifactId>
@@ -10,20 +11,9 @@
         <relativePath>../spring-swing-dependencies</relativePath>
     </parent>
 
-    <artifactId>spring-swing-boot</artifactId>
-    <description>Spring Swing Boot</description>
-    <packaging>jar</packaging>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.cosinuscode.swing</groupId>
-            <artifactId>spring-swing-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
-    </dependencies>
+    <artifactId>spring-swing-boot-starter-parent</artifactId>
+    <description>Spring Swing Boot Parent Starter</description>
+    <packaging>pom</packaging>
 
     <build>
         <plugins>
