@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.cosinuscode.swing</groupId>
         <artifactId>spring-swing-dependencies</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1-SNAPSHOT</version>
         <relativePath>../spring-swing-dependencies</relativePath>
     </parent>
 
