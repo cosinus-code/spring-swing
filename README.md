@@ -69,21 +69,14 @@ public class HelloWorld extends ApplicationFrame {
 ```xml
   <parent>
     <groupId>org.cosinuscode.swing</groupId>
-    <artifactId>spring-swing-parent</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <artifactId>spring-swing-boot-starter-parent</artifactId>
+    <version>1.0.0</version>
   </parent>
-
-  <properties>
-    ...
-    <spring-swing.version>1.1.0-SNAPSHOT</spring-swing.version>
-    ...
-  </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.cosinuscode.swing</groupId>
-      <artifactId>spring-swing-starter</artifactId>
-      <version>${spring-swing.version}</version>
+      <artifactId>spring-swing-boot-starter</artifactId>
     </dependency>
   </dependencies>
 ```
@@ -152,8 +145,7 @@ To add Apache Log4j 2 to the application exclude the `spring-boot-starter-loggin
 ```xml
     <dependency>
       <groupId>org.cosinuscode.swing</groupId>
-      <artifactId>spring-swing-starter</artifactId>
-      <version>${spring-swing.version}</version>
+      <artifactId>spring-swing-boot-starter</artifactId>
       <exclusions>
         <exclusion>
           <groupId>org.springframework.boot</groupId>
