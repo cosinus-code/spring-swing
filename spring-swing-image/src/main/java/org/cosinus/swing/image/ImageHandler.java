@@ -20,13 +20,12 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.awt.image.FilteredImageSource;
-import java.awt.image.ImageFilter;
+import java.awt.image.*;
 import java.io.*;
 import java.net.URL;
 import java.util.Optional;
 
+import static java.awt.Toolkit.getDefaultToolkit;
 import static java.lang.Math.max;
 import static java.util.Optional.ofNullable;
 
@@ -79,8 +78,8 @@ public class ImageHandler {
         tx.scale(scale, scale);
 
         BufferedImage outImage = new BufferedImage((int) (scale * width),
-                                                   (int) (scale * height),
-                                                   BufferedImage.TYPE_INT_ARGB);
+            (int) (scale * height),
+            BufferedImage.TYPE_INT_ARGB);
 
         // Paint image.
         Graphics2D g2d = outImage.createGraphics();
@@ -124,8 +123,8 @@ public class ImageHandler {
         }
 
         BufferedImage image = new BufferedImage(icon.getIconWidth(),
-                                                icon.getIconHeight(),
-                                                BufferedImage.TYPE_INT_ARGB);
+            icon.getIconHeight(),
+            BufferedImage.TYPE_INT_ARGB);
         icon.paintIcon(new JPanel(), image.getGraphics(), 0, 0);
         return image;
     }
@@ -157,4 +156,68 @@ public class ImageHandler {
             throw new UncheckedIOException(e);
         }
     }
+
+    private Image grayToTransparency(Image image) {
+        ImageProducer ip = new FilteredImageSource(image.getSource(), new RGBImageFilter() {
+            public int filterRGB(int x, int y, int rgb) {
+                return (rgb << 8) & 0xFF000000;
+            }
+        });
+        return getDefaultToolkit().createImage(ip);
+    }
+
+    public Image colorToTransparency(Image im, final Color color) {
+        ImageFilter filter = new RGBImageFilter() {
+
+            // the color we are looking for... Alpha bits are set to opaque
+            public int markerRGB = color.getRGB() | 0xFF000000;
+
+            public final int filterRGB(int x, int y, int rgb) {
+                if ((rgb | 0xFF000000) == markerRGB) {
+                    // Mark the alpha bits as zero - transparent
+                    return 0x00FFFFFF & rgb;
+                } else {
+                    // nothing to do
+                    return rgb;
+                }
+            }
+        };
+
+        ImageProducer ip = new FilteredImageSource(im.getSource(), filter);
+        return Toolkit.getDefaultToolkit().createImage(ip);
+    }
+
+    public Image colorToTransparency(Image image, Color c1, Color c2) {
+        final int r1 = c1.getRed();
+        final int g1 = c1.getGreen();
+        final int b1 = c1.getBlue();
+        final int r2 = c2.getRed();
+        final int g2 = c2.getGreen();
+        final int b2 = c2.getBlue();
+        ImageFilter filter = new RGBImageFilter() {
+            public int filterRGB(int x, int y, int rgb) {
+                int r = (rgb & 0xFF0000) >> 16;
+                int g = (rgb & 0xFF00) >> 8;
+                int b = rgb & 0xFF;
+                if (r >= r1 && r <= r2 &&
+                    g >= g1 && g <= g2 &&
+                    b >= b1 && b <= b2) {
+                    return rgb & 0xFFFFFF;
+                }
+                return rgb;
+            }
+        };
+
+        ImageProducer ip = new FilteredImageSource(image.getSource(), filter);
+        return getDefaultToolkit().createImage(ip);
+    }
+
+    public BufferedImage toBufferedImage(Image image, int width, int height) {
+        BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = bufferedImage.createGraphics();
+        g2.drawImage(image, 0, 0, null);
+        g2.dispose();
+        return bufferedImage;
+    }
+
 }

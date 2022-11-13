@@ -16,9 +16,6 @@
 
 package org.cosinus.swing.form.control;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import javax.swing.*;
 
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
@@ -30,8 +27,6 @@ import static org.cosinus.swing.context.ApplicationContextInjector.injectContext
  * @param <T> the type of the value
  */
 public class Spinner<T> extends JSpinner implements Control<T> {
-
-    private static final Logger LOG = LogManager.getLogger(Spinner.class);
 
     public Spinner() {
         injectContext(this);

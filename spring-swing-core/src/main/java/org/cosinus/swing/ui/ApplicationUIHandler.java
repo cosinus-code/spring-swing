@@ -220,12 +220,6 @@ public class ApplicationUIHandler {
         } catch (Exception e) {
             LOG.error("Failed to load lookAndFeel: " + lookAndFeel, e);
         }
-
-//        LOG.info("------------------------------------------- ookandfeel colors: " + lookAndFeel);
-//        UIManager.getLookAndFeelDefaults().entrySet()
-//            .stream()
-//            .filter(entry -> entry.getValue() instanceof Color)
-//            .forEach(entry -> LOG.info(entry.getKey() + " -> " + Colors.getColorDescription((Color) entry.getValue())));
     }
 
     /**

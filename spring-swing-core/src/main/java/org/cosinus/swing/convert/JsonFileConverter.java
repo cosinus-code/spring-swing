@@ -27,10 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -70,7 +67,7 @@ public abstract class JsonFileConverter<T> {
         this.resourceResolversMap = resourceResolvers
             .stream()
             .collect(Collectors.toMap(ResourceResolver::getResourceSource,
-                                      Function.identity()));
+                Function.identity()));
     }
 
     /**
@@ -186,8 +183,8 @@ public abstract class JsonFileConverter<T> {
             return objectMapper.readValue(bytes, modelClass);
         } catch (IOException e) {
             throw new JsonConvertException(format("The json file doesn't contain the expected model of type %s: %s",
-                                                  modelClass,
-                                                  new String(bytes)), e);
+                modelClass,
+                new String(bytes)), e);
         }
     }
 
@@ -204,8 +201,8 @@ public abstract class JsonFileConverter<T> {
                 .constructParametricType(List.class, modelClass));
         } catch (IOException e) {
             throw new JsonConvertException(format("The json file doesn't contain the expected list of models of type %s: %s",
-                                                  modelClass,
-                                                  new String(bytes)), e);
+                modelClass,
+                new String(bytes)), e);
         }
     }
 
@@ -219,18 +216,18 @@ public abstract class JsonFileConverter<T> {
         try {
             return objectMapper.readValue(bytes, objectMapper
                 .getTypeFactory()
-                .constructParametricType(Map.class, String.class, modelClass));
+                .constructParametricType(LinkedHashMap.class, String.class, modelClass));
         } catch (IOException e) {
             throw new JsonConvertException(format("The json file doesn't contain the expected json map of models of type %s: %s",
-                                                  modelClass,
-                                                  new String(bytes)), e);
+                modelClass,
+                new String(bytes)), e);
         }
     }
 
     /**
      * Saves a model to json file.
      *
-     * @param name the name to identify the json file
+     * @param name  the name to identify the json file
      * @param model the model to save
      * @throws IOException if an IO error occurs
      */
@@ -277,7 +274,7 @@ public abstract class JsonFileConverter<T> {
         File file = resourceResolversMap.get(FILESYSTEM).resolveResourcePath(resourceLocator(), name)
             .map(Path::toFile)
             .orElseThrow(() -> new IOException("No application home folder (probably due to missing application name) " +
-                                                   "to save file: " + name));
+                "to save file: " + name));
         if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
             throw new IOException("Failed to create folders for file: " + file);
         }
