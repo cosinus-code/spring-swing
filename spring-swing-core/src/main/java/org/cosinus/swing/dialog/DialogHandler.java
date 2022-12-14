@@ -116,11 +116,12 @@ public class DialogHandler {
     }
 
     public void showInfo(Component comp, String message) {
-        showMessageDialog(
-            comp,
-            message,
-            translator.translate("information"),
-            INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(comp, message);
+//        showMessageDialog(
+//            comp,
+//            message,
+//            translator.translate("information"),
+//            INFORMATION_MESSAGE);
     }
 
     public int showConfirmation(String message) {
