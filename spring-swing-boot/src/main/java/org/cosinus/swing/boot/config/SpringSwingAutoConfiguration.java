@@ -45,6 +45,7 @@ import org.cosinus.swing.exec.LinuxProcessExecutor;
 import org.cosinus.swing.exec.MacProcessExecutor;
 import org.cosinus.swing.exec.ProcessExecutor;
 import org.cosinus.swing.exec.WindowsProcessExecutor;
+import org.cosinus.swing.format.FormatHandler;
 import org.cosinus.swing.menu.JsonMenuProvider;
 import org.cosinus.swing.menu.MenuProvider;
 import org.cosinus.swing.preference.JsonPreferencesProvider;
@@ -236,6 +237,11 @@ public class SpringSwingAutoConfiguration {
     @Bean
     public ActionExecutors actionExecutors(Set<ActionExecutor<?>> executors) {
         return new ActionExecutors(executors);
+    }
+
+    @Bean
+    public FormatHandler formatService() {
+        return new FormatHandler();
     }
 
     @Bean

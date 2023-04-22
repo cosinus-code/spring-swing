@@ -1,20 +1,6 @@
-/*
- * Copyright 2020 Cosinus Software
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+package org.cosinus.swing.format;
 
-package org.cosinus.swing.util;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,11 +16,8 @@ import static java.time.LocalDateTime.ofInstant;
 import static java.time.format.FormatStyle.MEDIUM;
 import static javax.swing.SwingUtilities.computeStringWidth;
 
-/**
- * Numbers related utils
- */
-//TODO to move this logic into a bean
-public class Formatter {
+@Component
+public class FormatHandler {
 
     public static final int KILO = 1024;
 
@@ -44,7 +27,7 @@ public class Formatter {
 
     public static final String DECIMALS_FORMAT_2 = "#,##0.00";
 
-    public static String formatMemorySize(long memorySize) {
+    public String formatMemorySize(long memorySize) {
         if (memorySize < 0) {
             return "";
         }
@@ -60,7 +43,7 @@ public class Formatter {
         return get2DecimalsFormatted(memorySize) + " b";
     }
 
-    public static String formatShortMemorySize(long memorySize) {
+    public String formatShortMemorySize(long memorySize) {
         if (memorySize < 0) {
             return "";
         }
@@ -76,7 +59,7 @@ public class Formatter {
         return memorySize + " b";
     }
 
-    public static String get2DecimalsFormatted(double input) {
+    public String get2DecimalsFormatted(double input) {
         DecimalFormat format_decimal = (DecimalFormat) NumberFormat.getNumberInstance();
         format_decimal.applyPattern(DECIMALS_FORMAT_2);
         try {
@@ -86,7 +69,7 @@ public class Formatter {
         }
     }
 
-    public static String formatTime(long seconds) {
+    public String formatTime(long seconds) {
         StringBuilder formattedTime = new StringBuilder();
         if (seconds >= 3600) {
             int hours = (int) floor((double) seconds / 3600);
@@ -102,7 +85,7 @@ public class Formatter {
         return formattedTime.toString();
     }
 
-    public static String formatTextForLabel(JLabel label, String text) {
+    public String formatTextForLabel(JLabel label, String text) {
         FontMetrics labelFontMetrics = label.getFontMetrics(label.getFont());
         int textWidth = computeStringWidth(labelFontMetrics, text);
         int lblWidth = label.getWidth() - label.getInsets().left - label.getInsets().right;
@@ -118,7 +101,7 @@ public class Formatter {
         return newText;
     }
 
-    public static String formatDate(long timestamp) {
+    public String formatDate(long timestamp) {
         return DateTimeFormatter
             .ofLocalizedDate(MEDIUM)
             .format(ofInstant(ofEpochMilli(timestamp), TimeZone.getDefault().toZoneId()));

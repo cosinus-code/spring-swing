@@ -22,6 +22,8 @@ import org.apache.logging.log4j.Logger;
 import java.awt.*;
 import java.util.Optional;
 
+import static java.lang.Math.min;
+
 /**
  * Handler for colors
  */
@@ -62,6 +64,18 @@ public final class Colors {
      */
     public static String getColorDescription(Color color) {
         return color.getRed() + COLOR_SEPARATOR + color.getGreen() + COLOR_SEPARATOR + color.getBlue();
+    }
+
+    /**
+     * Create a lighter nuance of a source color.
+     *
+     * @param color the source color
+     * @return the created lighter color
+     */
+    public static Color getLighterColor(Color color) {
+        return new Color(min(color.getRed() + 12, 255),
+                         min(color.getGreen() + 14, 255),
+                         min(color.getBlue() + 16, 255));
     }
 
     private Colors() {

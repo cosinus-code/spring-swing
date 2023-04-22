@@ -26,9 +26,6 @@ public class LinuxProcessExecutor implements ProcessExecutor {
 
     @Override
     public void executeFile(File file) {
-//        TODO: to check on KDE
-//        execute(file.getParentFile(),
-//                "kfmclient", "exec", file.getName());
         execute("xdg-open", file.getAbsolutePath());
     }
 
