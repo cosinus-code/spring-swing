@@ -22,19 +22,25 @@ import org.cosinus.swing.boot.condition.ConditionalOnWindows;
 import org.cosinus.swing.context.ApplicationProperties;
 import org.cosinus.swing.exec.ProcessExecutor;
 import org.cosinus.swing.image.ImageHandler;
-import org.cosinus.swing.image.icon.*;
+import org.cosinus.swing.image.icon.DefaultIconProvider;
+import org.cosinus.swing.image.icon.FileExtensionKeyGenerator;
+import org.cosinus.swing.image.icon.IconHandler;
+import org.cosinus.swing.image.icon.IconProvider;
+import org.cosinus.swing.image.icon.LinuxIconProvider;
+import org.cosinus.swing.image.icon.MacIconProvider;
+import org.cosinus.swing.image.icon.WindowsIconProvider;
 import org.cosinus.swing.resource.ClasspathResourceResolver;
 import org.cosinus.swing.ui.ApplicationUIHandler;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * Configuration related to images
  */
-@Configuration
+@AutoConfiguration
 @ConditionalOnClass(ImageHandler.class)
 public class SpringSwingImageAutoConfiguration {
 
@@ -51,9 +57,9 @@ public class SpringSwingImageAutoConfiguration {
                                    ApplicationUIHandler uiHandler,
                                    ImageHandler imageHandler) {
         return new IconHandler(resourceResolver,
-                               fileIcons,
-                               uiHandler,
-                               imageHandler);
+            fileIcons,
+            uiHandler,
+            imageHandler);
     }
 
     @Bean

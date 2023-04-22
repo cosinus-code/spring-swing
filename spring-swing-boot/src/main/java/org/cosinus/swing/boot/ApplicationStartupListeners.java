@@ -16,7 +16,11 @@
 
 package org.cosinus.swing.boot;
 
-import org.cosinus.swing.boot.event.*;
+import org.cosinus.swing.boot.event.ApplicationContextAfterInitializeBeanEvent;
+import org.cosinus.swing.boot.event.ApplicationContextBeforeInitializeBeanEvent;
+import org.cosinus.swing.boot.event.ApplicationContextBeforeInitializeBeansEvent;
+import org.cosinus.swing.boot.event.ApplicationFrameAfterInitializeEvent;
+import org.cosinus.swing.boot.event.ApplicationFrameBeforeInitializeEvent;
 import org.springframework.boot.context.event.ApplicationContextInitializedEvent;
 import org.springframework.boot.context.event.ApplicationPreparedEvent;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -29,7 +33,7 @@ import java.util.List;
 
 /**
  * Handler for {@link SwingSpringApplicationStartupListener}.
- *
+ * <p>
  * This allows registering {@link SwingSpringApplicationStartupListener}
  * and propagating the events to them
  */
@@ -40,7 +44,7 @@ class ApplicationStartupListeners {
     /**
      * Register some {@link SwingSpringApplicationStartupListener}
      * and make them eligible for startup events propagation.
-     *
+     * <p>
      * This is done internally from {@link SpringSwingApplicationBuilder}
      *
      * @param startupListeners the startup listener to register
@@ -51,35 +55,33 @@ class ApplicationStartupListeners {
 
     /**
      * Get the startup listeners as {@link ApplicationListener}.
-     *
+     * <p>
      * It is used internally by {@link SpringSwingApplicationBuilder} when register application listeners.
      *
      * @return the startup listeners translated as application listeners.
      */
     ApplicationListener<?>[] listeners() {
         return new ApplicationListener<?>[]{
-                (ApplicationListener<ApplicationContextInitializedEvent>) event ->
-                        startupListeners.forEach(listener -> listener.contextPrepared(event.getApplicationContext())),
-                (ApplicationListener<ApplicationPreparedEvent>) event ->
-                        startupListeners.forEach(listener -> listener.contextLoaded(event.getApplicationContext())),
-                (ApplicationListener<ApplicationContextBeforeInitializeBeansEvent>) event ->
-                        startupListeners.forEach(listener -> listener.contextBeforeInitializeBeans(event.getApplicationContext())),
-                (ApplicationListener<ApplicationContextBeforeInitializeBeanEvent>) event ->
-                        startupListeners.forEach(listener -> listener.contextBeforeInitializeBean(event.getApplicationContext(),
-                                                                                                  event.getBean(),
-                                                                                                  event.getBeanName())),
-                (ApplicationListener<ApplicationContextAfterInitializeBeanEvent>) event ->
-                        startupListeners.forEach(listener -> listener.contextAfterInitializeBean(event.getApplicationContext(),
-                                                                                                 event.getBean(),
-                                                                                                 event.getBeanName())),
-                (ApplicationListener<ApplicationStartedEvent>) event ->
-                        startupListeners.forEach(listener -> listener.started(event.getApplicationContext())),
-                (ApplicationListener<ApplicationReadyEvent>) event ->
-                        startupListeners.forEach(listener -> listener.running(event.getApplicationContext())),
-                (ApplicationListener<ApplicationFrameBeforeInitializeEvent>) event ->
-                        startupListeners.forEach(listener -> listener.applicationFrameInitializing(event.getApplicationFrame())),
-                (ApplicationListener<ApplicationFrameAfterInitializeEvent>) event ->
-                        startupListeners.forEach(listener -> listener.applicationFrameInitialized(event.getApplicationFrame()))
+            (ApplicationListener<ApplicationContextInitializedEvent>) event ->
+                startupListeners.forEach(listener -> listener.contextPrepared(event.getApplicationContext())),
+            (ApplicationListener<ApplicationPreparedEvent>) event ->
+                startupListeners.forEach(listener -> listener.contextLoaded(event.getApplicationContext())),
+            (ApplicationListener<ApplicationContextBeforeInitializeBeansEvent>) event ->
+                startupListeners.forEach(listener -> listener.contextBeforeInitializeBeans(event.getApplicationContext())),
+            (ApplicationListener<ApplicationContextBeforeInitializeBeanEvent>) event ->
+                startupListeners.forEach(listener -> listener.contextBeforeInitializeBean(
+                    event.getApplicationContext(), event.getBean(), event.getBeanName())),
+            (ApplicationListener<ApplicationContextAfterInitializeBeanEvent>) event ->
+                startupListeners.forEach(listener -> listener.contextAfterInitializeBean(
+                    event.getApplicationContext(), event.getBean(), event.getBeanName())),
+            (ApplicationListener<ApplicationStartedEvent>) event ->
+                startupListeners.forEach(listener -> listener.started(event.getApplicationContext(), event.getTimeTaken())),
+            (ApplicationListener<ApplicationReadyEvent>) event ->
+                startupListeners.forEach(listener -> listener.ready(event.getApplicationContext(), event.getTimeTaken())),
+            (ApplicationListener<ApplicationFrameBeforeInitializeEvent>) event ->
+                startupListeners.forEach(listener -> listener.applicationFrameInitializing(event.getApplicationFrame())),
+            (ApplicationListener<ApplicationFrameAfterInitializeEvent>) event ->
+                startupListeners.forEach(listener -> listener.applicationFrameInitialized(event.getApplicationFrame()))
         };
     }
 }

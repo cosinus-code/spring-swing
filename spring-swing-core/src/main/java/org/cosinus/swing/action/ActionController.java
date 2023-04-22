@@ -32,7 +32,7 @@ import static java.util.Optional.ofNullable;
 
 /**
  * Controller for the swing actions.
- *
+ * <p>
  * It is used to control the action executions.
  */
 public class ActionController<C extends ActionContext> implements ActionListener {
@@ -55,7 +55,7 @@ public class ActionController<C extends ActionContext> implements ActionListener
         this.actionMap = actions
             .stream()
             .collect(Collectors.toMap(ActionInContext::getId,
-                                      Function.identity()));
+                Function.identity()));
 
     }
 
@@ -72,7 +72,7 @@ public class ActionController<C extends ActionContext> implements ActionListener
      * Run an action executor based on an action id on a specific action context.
      *
      * @param actionId the id of the action to execute
-     * @param context the action execution context
+     * @param context  the action execution context
      */
     public void runAction(String actionId, C context) {
         try {
@@ -86,7 +86,7 @@ public class ActionController<C extends ActionContext> implements ActionListener
 
     /**
      * Run an action executor based on a key stroke defined in a key event.
-     *
+     * <p>
      * This will search for an action corresponding to the given key stroke
      * and will execute it.
      *
@@ -95,7 +95,7 @@ public class ActionController<C extends ActionContext> implements ActionListener
     public void runActionByKeyStroke(KeyEvent keyEvent) {
         try {
             KeyStroke keyStroke = KeyStroke.getKeyStroke(keyEvent.getKeyCode(),
-                                                         keyEvent.getModifiersEx());
+                keyEvent.getModifiersEx());
             keyMapHandler.findActionByKeyStroke(keyStroke)
                 .ifPresent(action -> action.run(actionContextProvider.provideActionContext()));
         } catch (Throwable throwable) {

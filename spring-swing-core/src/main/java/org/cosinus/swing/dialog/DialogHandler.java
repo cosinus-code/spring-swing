@@ -384,19 +384,19 @@ public class DialogHandler {
         return showDialog(() -> new FontChooser(frame, title, modal, manageWindowSettings, text, font)).response();
     }
 
-    public Optional<Font> chooseFont(Dialog dialog, Font font) {
+    public Optional<Font> chooseFont(Dialog<?> dialog, Font font) {
         return showDialog(() -> new FontChooser(dialog, "", true, true, null, font)).response();
     }
 
-    public Optional<Font> chooseFont(Dialog dialog, String title, Font font) {
+    public Optional<Font> chooseFont(Dialog<?> dialog, String title, Font font) {
         return showDialog(() -> new FontChooser(dialog, title, true, true, null, font)).response();
     }
 
-    public Optional<Font> chooseFont(Dialog dialog, String title, String text, Font font) {
+    public Optional<Font> chooseFont(Dialog<?> dialog, String title, String text, Font font) {
         return showDialog(() -> new FontChooser(dialog, title, true, true, text, font)).response();
     }
 
-    public Optional<Font> chooseFont(Dialog dialog, String title, boolean modal, boolean manageWindowSettings, String text, Font font) {
+    public Optional<Font> chooseFont(Dialog<?> dialog, String title, boolean modal, boolean manageWindowSettings, String text, Font font) {
         return showDialog(() -> new FontChooser(dialog, title, modal, manageWindowSettings, text, font)).response();
     }
 }

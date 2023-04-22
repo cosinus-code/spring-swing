@@ -16,7 +16,6 @@
 
 package org.cosinus.swing.preference.impl;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.cosinus.swing.preference.ObjectPreference;
@@ -42,26 +41,26 @@ public class FontPreference extends ObjectPreference<Font> {
     private static final String DELIMITER = ",";
 
     @Override
-    @JsonIgnore
     public PreferenceType getType() {
         return FONT;
     }
 
     @Override
-    public Font getRealValue() {
-        return ofNullable(value)
-            .map(descriptor -> descriptor.split(DELIMITER))
-            .map(pieces -> new Font(pieces[0],
-                                    getFontStyle(pieces[1]),
-                                    Integer.parseInt(pieces[2])))
-            .orElse(null);
+    public String fromRealValue(Font font) {
+        return join(DELIMITER,
+            font.getFamily(),
+            getFontStyleText(font),
+            Integer.toString(font.getSize()));
     }
 
     @Override
-    public void setRealValue(Font font) {
-        super.setValue(join(DELIMITER,
-                            font.getFamily(),
-                            getFontStyleText(font),
-                            Integer.toString(font.getSize())));
+    protected Font toRealValue(String value) {
+        return ofNullable(value)
+            .map(descriptor -> descriptor.split(DELIMITER))
+            .map(pieces -> new Font(
+                pieces[0],
+                getFontStyle(pieces[1]),
+                Integer.parseInt(pieces[2])))
+            .orElse(null);
     }
 }

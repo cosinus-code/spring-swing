@@ -20,8 +20,11 @@ import org.cosinus.swing.form.TableModel;
 import org.cosinus.swing.store.ApplicationStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.Serial;
+
 public class TestTableModel extends TableModel {
 
+    @Serial
     private static final long serialVersionUID = 498716782595675499L;
 
     @Autowired

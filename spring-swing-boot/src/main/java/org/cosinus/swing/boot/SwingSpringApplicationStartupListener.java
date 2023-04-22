@@ -42,6 +42,7 @@ public interface SwingSpringApplicationStartupListener extends SpringApplication
      * @param bean     the bean to be initialized
      * @param beanName the name of the bean to be initialized
      */
+    @SuppressWarnings("EmptyMethod")
     void contextBeforeInitializeBean(ApplicationContext context,
                                      Object bean,
                                      String beanName);

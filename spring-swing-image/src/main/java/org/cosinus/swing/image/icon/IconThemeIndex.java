@@ -18,7 +18,12 @@ package org.cosinus.swing.image.icon;
 
 import org.cosinus.swing.util.GroupedProperties;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serial;
+import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,16 +32,17 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.stream.Stream.concat;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Stream.concat;
 
 /**
  * Icon theme index representation.
- *
+ * <p>
  * It is used to read icon theme index files in Linux.
  */
 public class IconThemeIndex extends GroupedProperties {
 
+    @Serial
     private static final long serialVersionUID = 5424656492329188366L;
 
     public static final String INDEX_THEME_FILE_NAME = "index.theme";
@@ -75,8 +81,8 @@ public class IconThemeIndex extends GroupedProperties {
         iconPaths = ofNullable(iconThemeFolder)
             .map(File::toPath)
             .map(iconThemPath -> concat(Stream.of(iconThemPath),
-                                        getIconThemeInherits()
-                                            .map(iconThemPath::resolveSibling)))
+                getIconThemeInherits()
+                    .map(iconThemPath::resolveSibling)))
             .orElseGet(Stream::empty)
             .collect(Collectors.toList());
     }
@@ -95,9 +101,9 @@ public class IconThemeIndex extends GroupedProperties {
     public Stream<String> getIconInternalPath(IconSize size) {
         return keySet()
             .stream()
-            .filter(key -> key.startsWith(size.toString() + "/") ||
+            .filter(key -> key.startsWith(size + "/") ||
                 key.endsWith("/" + size.getSize()) ||
                 key.startsWith(size.getSize() + "/") ||
-                key.endsWith("/" + size.toString()));
+                key.endsWith("/" + size));
     }
 }

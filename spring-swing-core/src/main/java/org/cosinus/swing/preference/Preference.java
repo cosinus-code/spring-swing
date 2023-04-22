@@ -16,8 +16,24 @@
 
 package org.cosinus.swing.preference;
 
-import com.fasterxml.jackson.annotation.*;
-import org.cosinus.swing.preference.impl.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.cosinus.swing.preference.impl.BooleanPreference;
+import org.cosinus.swing.preference.impl.ColorPreference;
+import org.cosinus.swing.preference.impl.DatePreference;
+import org.cosinus.swing.preference.impl.DoublePreference;
+import org.cosinus.swing.preference.impl.FilePreference;
+import org.cosinus.swing.preference.impl.FloatPreference;
+import org.cosinus.swing.preference.impl.FolderPreference;
+import org.cosinus.swing.preference.impl.FontPreference;
+import org.cosinus.swing.preference.impl.IntegerPreference;
+import org.cosinus.swing.preference.impl.LanguagePreference;
+import org.cosinus.swing.preference.impl.LongPreference;
+import org.cosinus.swing.preference.impl.LookAndFeelPreference;
+import org.cosinus.swing.preference.impl.TextPreference;
 
 import java.util.List;
 
@@ -25,7 +41,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 /**
  * Abstract class for the application preferences.
- *
+ * <p>
  * The type property is discriminating for sub-type preferences.
  *
  * @param <T> the type of preference value to be saved as json value
@@ -53,15 +69,13 @@ public abstract class Preference<T, R> {
 
     protected PreferenceType type;
 
-    @JsonIgnore
     protected String name;
 
     protected T value;
 
-    protected R realValue;
+    protected List<T> values;
 
-    protected List<R> values;
-
+    @JsonIgnore
     public PreferenceType getType() {
         return type;
     }
@@ -70,6 +84,7 @@ public abstract class Preference<T, R> {
         this.type = type;
     }
 
+    @JsonIgnore
     public String getName() {
         return name;
     }
@@ -86,11 +101,11 @@ public abstract class Preference<T, R> {
         this.value = value;
     }
 
-    public List<R> getValues() {
+    public List<T> getValues() {
         return values;
     }
 
-    public void setValues(List<R> values) {
+    public void setValues(List<T> values) {
         this.values = values;
     }
 
@@ -98,4 +113,9 @@ public abstract class Preference<T, R> {
     public abstract R getRealValue();
 
     public abstract void setRealValue(R realValue);
+
+    @JsonIgnore
+    public abstract List<R> getRealValues();
+
+    public abstract void setRealValues(List<R> values);
 }

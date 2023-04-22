@@ -25,9 +25,6 @@ import org.cosinus.swing.menu.MenuProvider;
 import org.cosinus.swing.resource.DefaultResourceResolver;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
-import org.cosinus.swing.window.Window;
-import org.cosinus.swing.window.WindowSettings;
-import org.cosinus.swing.window.WindowSettingsHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
@@ -173,8 +170,8 @@ public class Frame extends JFrame implements Window, FormComponent {
             menuProvider.getMenu(windowSettings.getMenu())
                 .ifPresent(menuModel -> {
                     menuBar = new MenuBar(menuModel,
-                                          menuProvider.hasBoxMenu(),
-                                          actionController);
+                        menuProvider.hasBoxMenu(),
+                        actionController);
                     menuBar.initComponents();
                     setJMenuBar(menuBar);
                 });

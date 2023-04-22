@@ -24,7 +24,7 @@ import static javax.swing.SwingUtilities.invokeLater;
  * Implementation of {@link ApplicationInitializer} for initializing the Swing Application frame.
  * This will trigger the initialization of the application frame after the application is started.
  */
-public class ApplicationFrameInitializer implements ApplicationInitializer {
+public class ApplicationFrameInitializer {
 
     private final ApplicationFrame applicationFrame;
 
@@ -35,7 +35,6 @@ public class ApplicationFrameInitializer implements ApplicationInitializer {
     /**
      * Show main application frame and asynchronously load the content of the frame.
      */
-    @Override
     public void initialize() {
         applicationFrame.showApplicationFrame();
         invokeLater(applicationFrame::loadApplicationFrame);

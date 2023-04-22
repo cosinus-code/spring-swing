@@ -16,6 +16,7 @@
 
 package org.cosinus.swing.store;
 
+import java.io.Serial;
 import java.util.HashMap;
 
 import static java.util.Optional.ofNullable;
@@ -25,6 +26,7 @@ import static java.util.Optional.ofNullable;
  */
 public class InMemoryApplicationStorage extends HashMap<String, String> implements ApplicationStorage {
 
+    @Serial
     private static final long serialVersionUID = -3680442662776410600L;
 
     @Override

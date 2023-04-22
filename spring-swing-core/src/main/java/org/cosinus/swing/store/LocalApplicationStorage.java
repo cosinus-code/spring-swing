@@ -21,7 +21,7 @@ import java.util.prefs.Preferences;
 
 /**
  * Implementation of {@link ApplicationStorage} using local preferences.
- *
+ * <p>
  * This uses OS bound Java implementations for user preferences:
  * <ul>
  *     <li>For Linux: location is in filesystem, ~/.java/.userPrefs/</li>

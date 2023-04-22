@@ -30,6 +30,6 @@ public class LanguagePreferenceControlProvider implements PreferenceControlProvi
 
     @Override
     public <T> Control<Locale> getPreferenceControl(Preference<T, Locale> preference) {
-        return new LanguageControl(preference.getValues(), preference.getRealValue());
+        return new LanguageControl(preference.getRealValues(), preference.getRealValue());
     }
 }

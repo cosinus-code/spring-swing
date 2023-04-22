@@ -23,12 +23,14 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
+import java.io.Serial;
 
 /**
  * Dashed border implementation
  */
 public class DashedBorder extends LineBorder {
 
+    @Serial
     private static final long serialVersionUID = 2998788302974704170L;
 
     private final float[] dash;

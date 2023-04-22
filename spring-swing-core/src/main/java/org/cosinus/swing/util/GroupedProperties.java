@@ -20,6 +20,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -29,17 +30,18 @@ import static java.util.Optional.ofNullable;
 
 /**
  * Grouped properties model.
- *
+ * <p>
  * This mimics a {@link java.util.Properties} model
  * with the difference that the properties are grouped on sections
  * specified in lines of format
- *
+ * <p>
  * [Group_Name]
- *
+ * <p>
  * before the lines corresponding to the grouped properties.
  */
 public class GroupedProperties extends HashMap<String, Map<String, String>> {
 
+    @Serial
     private static final long serialVersionUID = -9044321314711472913L;
 
     public static final char SEPARATOR = '=';
@@ -99,7 +101,7 @@ public class GroupedProperties extends HashMap<String, Map<String, String>> {
     /**
      * Get a property value.
      *
-     * @param groupName the group name to search the property
+     * @param groupName    the group name to search the property
      * @param propertyName the name of the property to search
      * @return the found property vale, or {@link Optional#empty()}
      */

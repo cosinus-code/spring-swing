@@ -19,11 +19,14 @@ package org.cosinus.swing.boot.event;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 
+import java.io.Serial;
+
 /**
  * Event fired during creation of the application context
  */
 public class ApplicationContextCreationEvent extends ApplicationEvent {
 
+    @Serial
     private static final long serialVersionUID = -3286810344691878532L;
 
     private final ApplicationContext applicationContext;

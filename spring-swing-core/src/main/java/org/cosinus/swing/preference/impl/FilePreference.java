@@ -16,7 +16,6 @@
 
 package org.cosinus.swing.preference.impl;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.cosinus.swing.preference.ObjectPreference;
@@ -37,13 +36,12 @@ import static org.cosinus.swing.preference.PreferenceType.FILE;
 public class FilePreference extends ObjectPreference<File> {
 
     @Override
-    @JsonIgnore
     public PreferenceType getType() {
         return FILE;
     }
 
     @Override
-    public File getRealValue() {
+    public File toRealValue(String value) {
         return ofNullable(value)
             .map(File::new)
             .orElse(null);

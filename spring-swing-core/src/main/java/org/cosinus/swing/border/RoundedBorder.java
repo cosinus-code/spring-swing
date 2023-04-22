@@ -18,12 +18,14 @@ package org.cosinus.swing.border;
 
 import javax.swing.border.AbstractBorder;
 import java.awt.*;
+import java.io.Serial;
 
 /**
  * Rounded border implementation
  */
 public class RoundedBorder extends AbstractBorder {
 
+    @Serial
     private static final long serialVersionUID = -8436105005184897096L;
 
     private final Color color;

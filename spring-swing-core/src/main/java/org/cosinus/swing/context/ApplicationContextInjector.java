@@ -28,7 +28,7 @@ import static java.util.Optional.ofNullable;
  * <p>
  * This is a helper class and cannot be instantiated.
  */
-public final class ApplicationContextInjector {
+public class ApplicationContextInjector {
 
     public static ApplicationContext applicationContext;
 
@@ -45,9 +45,5 @@ public final class ApplicationContextInjector {
         ofNullable(applicationContext)
             .map(ApplicationContext::getAutowireCapableBeanFactory)
             .ifPresent(factory -> factory.autowireBean(object));
-    }
-
-    private ApplicationContextInjector() {
-
     }
 }

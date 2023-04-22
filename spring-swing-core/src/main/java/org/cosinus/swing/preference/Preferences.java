@@ -18,12 +18,24 @@ package org.cosinus.swing.preference;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.cosinus.swing.preference.impl.*;
+import org.cosinus.swing.preference.impl.BooleanPreference;
+import org.cosinus.swing.preference.impl.ColorPreference;
+import org.cosinus.swing.preference.impl.FilePreference;
+import org.cosinus.swing.preference.impl.FontPreference;
+import org.cosinus.swing.preference.impl.IntegerPreference;
+import org.cosinus.swing.preference.impl.LanguagePreference;
+import org.cosinus.swing.preference.impl.LookAndFeelPreference;
+import org.cosinus.swing.preference.impl.TextPreference;
 
 import javax.swing.UIManager.LookAndFeelInfo;
 import java.awt.*;
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -57,7 +69,7 @@ public class Preferences {
             .flatMap(preferencesSet -> preferencesSet.entrySet().stream())
             .peek(entry -> entry.getValue().setName(entry.getKey()))
             .collect(toMap(Map.Entry::getKey,
-                           Map.Entry::getValue));
+                Map.Entry::getValue));
     }
 
     public Optional<Preference> findPreference(String key) {
@@ -129,7 +141,7 @@ public class Preferences {
             .filter(preference -> preference instanceof LanguagePreference)
             .map(LanguagePreference.class::cast)
             .ifPresent(preference -> preference
-                .setValues(new ArrayList<>(locales)));
+                .setRealValues(new ArrayList<>(locales)));
     }
 
     public void setAvailableLookAndFeels(Collection<LookAndFeelInfo> lookAndFeels) {

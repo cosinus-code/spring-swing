@@ -27,7 +27,7 @@ import static java.util.Optional.ofNullable;
 
 /**
  * Key maps handler.
- *
+ * <p>
  * It takes all action defined in context and build a map from key strokes to actions.
  */
 public class KeyMapHandler<C extends ActionContext> {
@@ -36,10 +36,10 @@ public class KeyMapHandler<C extends ActionContext> {
 
     public KeyMapHandler(Set<ActionInContext<C>> actions) {
         this.keyMap = actions
-                .stream()
-                .filter(action -> action.getKeyStroke().isPresent())
-                .collect(Collectors.toMap(action -> action.getKeyStroke().get(),
-                                          Function.identity()));
+            .stream()
+            .filter(action -> action.getKeyStroke().isPresent())
+            .collect(Collectors.toMap(action -> action.getKeyStroke().get(),
+                Function.identity()));
     }
 
     /**

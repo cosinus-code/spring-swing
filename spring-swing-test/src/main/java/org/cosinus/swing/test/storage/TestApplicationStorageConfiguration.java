@@ -23,7 +23,7 @@ import org.springframework.context.annotation.Bean;
 
 /**
  * Test spring swing configuration.
- *
+ * <p>
  * It is used to override beans from the real application context.
  */
 @TestConfiguration

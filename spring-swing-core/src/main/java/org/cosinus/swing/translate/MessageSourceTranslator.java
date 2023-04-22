@@ -19,7 +19,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.cosinus.swing.preference.Preferences;
 import org.cosinus.swing.resource.DefaultResourceResolver;
 import org.springframework.context.MessageSource;
 
@@ -51,7 +50,6 @@ public class MessageSourceTranslator implements Translator {
     private Map<String, Locale> localesMap;
 
     public MessageSourceTranslator(MessageSource messageSource,
-                                   Preferences preferences,
                                    DefaultResourceResolver resourceResolver,
                                    String baseName) {
         this.messageSource = messageSource;
@@ -113,7 +111,7 @@ public class MessageSourceTranslator implements Translator {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toMap(Object::toString,
-                                          Function.identity()));
+                    Function.identity()));
         }
 
         return localesMap;

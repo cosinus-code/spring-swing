@@ -19,22 +19,6 @@ package org.cosinus.swing.validation;
 /**
  * Model for a generic validation error
  */
-public class ValidationError {
+public record ValidationError(String code, Object... arguments) {
 
-    private final String code;
-
-    private final Object[] arguments;
-
-    public ValidationError(String code, Object... arguments) {
-        this.code = code;
-        this.arguments = arguments;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public Object[] getArguments() {
-        return arguments;
-    }
 }

@@ -16,20 +16,24 @@
 
 package org.cosinus.swing.boot;
 
-import org.cosinus.swing.util.ReflectionUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.support.SpringFactoriesLoader.ArgumentResolver;
+import org.springframework.core.log.LogMessage;
 
-import static org.cosinus.swing.util.ReflectionUtils.createBean;
-import static org.springframework.core.io.support.SpringFactoriesLoader.loadFactoryNames;
+import static org.springframework.core.io.support.SpringFactoriesLoader.FailureHandler.handleMessage;
+import static org.springframework.core.io.support.SpringFactoriesLoader.forDefaultResourceLocation;
 
 /**
  * Builder for {@link SpringSwingApplication}
  */
 public class SpringSwingApplicationBuilder extends SpringApplicationBuilder {
+
+    private static final Logger LOG = LogManager.getLogger(SpringSwingApplicationBuilder.class);
 
     private final ApplicationStartupListeners startupListeners = new ApplicationStartupListeners();
 
@@ -100,16 +104,12 @@ public class SpringSwingApplicationBuilder extends SpringApplicationBuilder {
      * @param args the application arguments
      */
     protected void loadSpringFactoriesStartupListeners(String[] args) {
-        loadFactoryNames(SwingSpringApplicationStartupListener.class,
-                         application().getClassLoader())
-            .stream()
-            .map(name -> ReflectionUtils.getClassForName(name, application().getClassLoader()))
-            .filter(SwingSpringApplicationStartupListener.class::isAssignableFrom)
-            .map(instanceClass -> createBean(instanceClass,
-                                             new Class<?>[]{SpringApplication.class, String[].class},
-                                             new Object[]{application(), args}))
-            .map(SwingSpringApplicationStartupListener.class::cast)
-            .sorted(AnnotationAwareOrderComparator.INSTANCE)
+        forDefaultResourceLocation(application().getClassLoader())
+            .load(SwingSpringApplicationStartupListener.class,
+                ArgumentResolver
+                    .of(SpringApplication.class, application())
+                    .and(String[].class, args),
+                handleMessage((messageSupplier, failure) -> LOG.error(LogMessage.of(messageSupplier), failure)))
             .forEach(startupListeners::register);
     }
 }

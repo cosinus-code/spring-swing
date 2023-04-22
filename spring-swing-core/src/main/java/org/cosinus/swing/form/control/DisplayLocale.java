@@ -22,17 +22,7 @@ import java.util.Objects;
 /**
  * Wrapper for {@link Locale} used to display purposes
  */
-public class DisplayLocale {
-
-    private final Locale locale;
-
-    public DisplayLocale(Locale locale) {
-        this.locale = locale;
-    }
-
-    public Locale getLocale() {
-        return locale;
-    }
+public record DisplayLocale(Locale locale) {
 
     @Override
     public String toString() {
@@ -52,8 +42,4 @@ public class DisplayLocale {
         return Objects.equals(locale, that.locale);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(locale);
-    }
 }

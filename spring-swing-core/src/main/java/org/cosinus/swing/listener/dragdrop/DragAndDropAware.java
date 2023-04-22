@@ -12,10 +12,9 @@ public interface DragAndDropAware {
 
     default void addDragAndDropListener(DragAndDropListener listener) {
         DragAndDrop dragAndDrop = getDragAndDrop();
-        if (!(this instanceof Component)) {
+        if (!(this instanceof Component component)) {
             throw new IllegalStateException("Cannot add drag and drop listener for a non awt Component");
         }
-        Component component = (Component) this;
         component.addMouseListener(new SimpleMouseListener() {
             @Override
             public void mousePressed(MouseEvent e) {

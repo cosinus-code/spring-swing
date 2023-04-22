@@ -18,11 +18,14 @@ package org.cosinus.swing.boot.event;
 
 import org.springframework.context.ApplicationContext;
 
+import java.io.Serial;
+
 /**
  * {@link ApplicationContextCreationEvent} fired before a bean is initialized
  */
 public class ApplicationContextBeforeInitializeBeanEvent extends ApplicationContextCreationEvent {
 
+    @Serial
     private static final long serialVersionUID = -8241566660318313969L;
 
     private final Object bean;

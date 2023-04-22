@@ -26,7 +26,7 @@ public class TranslatableRuntimeException extends RuntimeException {
     @Autowired
     private Translator translator;
 
-    private String messageKey;
+    private final String messageKey;
 
     private Object[] messageArguments;
 

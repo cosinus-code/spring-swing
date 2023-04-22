@@ -16,11 +16,14 @@
 
 package org.cosinus.swing.error;
 
+import java.io.Serial;
+
 /**
  * Indicates that an action was not found.
  */
 public class ActionNotFoundException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = -8028789626344404281L;
 
     public ActionNotFoundException() {

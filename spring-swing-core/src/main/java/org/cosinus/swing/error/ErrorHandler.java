@@ -85,7 +85,7 @@ public class ErrorHandler {
         String errorMessage = format("<html><body style='width: 300px'>%s</html>",
                                      validationErrors.subList(0, min(10, validationErrors.size()))
                                          .stream()
-                                         .map(error -> translator.translate(error.getCode(), error.getArguments()))
+                                         .map(error -> translator.translate(error.code(), error.arguments()))
                                          .collect(joining("<br/>")));
         handleError(component, errorMessage);
     }

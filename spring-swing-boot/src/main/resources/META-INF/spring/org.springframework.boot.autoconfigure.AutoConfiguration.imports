@@ -1,0 +1,3 @@
+org.cosinus.swing.boot.config.SpringSwingAutoConfiguration
+org.cosinus.swing.boot.config.ApplicationUIAutoConfiguration
+org.cosinus.swing.boot.event.ApplicationContextStartupAutoConfiguration

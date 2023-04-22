@@ -33,6 +33,6 @@ public class LookAndFeelPreferenceControlProvider implements PreferenceControlPr
     public <T> Control<String> getPreferenceControl(Preference<T, String> preference) {
         return isEmpty(preference.getValues()) ?
             new Label(preference.getRealValue()) :
-            new LookAndFeelControl(preference.getValues(), preference.getRealValue());
+            new LookAndFeelControl(preference.getRealValues(), preference.getRealValue());
     }
 }

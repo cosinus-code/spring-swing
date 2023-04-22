@@ -23,8 +23,6 @@ import org.cosinus.swing.preference.Preference;
 import org.cosinus.swing.preference.PreferenceType;
 import org.cosinus.swing.preference.PrimitivePreference;
 
-import java.util.List;
-
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static org.cosinus.swing.preference.PreferenceType.LAF;
 
@@ -39,11 +37,5 @@ public class LookAndFeelPreference extends PrimitivePreference<String> {
     @JsonIgnore
     public PreferenceType getType() {
         return LAF;
-    }
-
-    @Override
-    @JsonIgnore
-    public List<String> getValues() {
-        return super.getValues();
     }
 }

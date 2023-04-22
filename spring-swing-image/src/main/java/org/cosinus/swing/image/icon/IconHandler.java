@@ -56,7 +56,7 @@ public class IconHandler {
 
     /**
      * Find an icon by name.
-     *
+     * <p>
      * If a cache configuration is defined in the application
      * with the name {@value #SPRING_SWING_ICONS_CACHE_NAME},
      * then the results are cached.
@@ -72,11 +72,11 @@ public class IconHandler {
 
     /**
      * Find an icon by resource name.
-     *
+     * <p>
      * If a cache configuration is defined in the application
      * with the name {@value #SPRING_SWING_ICONS_CACHE_NAME},
      * then the results are cached.
-
+     *
      * @param resourceName the resource name
      * @return the found icon, or {@link Optional#empty()}
      */
@@ -88,11 +88,11 @@ public class IconHandler {
 
     /**
      * Find an icon by file.
-     *
+     * <p>
      * If a cache configuration is defined in the application
      * with the name {@value #SPRING_SWING_ICONS_CACHE_NAME},
      * then the results are cached.
-
+     *
      * @param file the file
      * @param size the size of the icon to search for
      * @return the found icon, or {@link Optional#empty()}

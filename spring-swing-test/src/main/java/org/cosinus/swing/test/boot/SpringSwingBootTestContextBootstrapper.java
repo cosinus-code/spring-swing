@@ -20,10 +20,16 @@ import org.cosinus.swing.boot.SpringSwingApplication;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.context.SpringBootTestContextBootstrapper;
 import org.springframework.core.annotation.AnnotatedElementUtils;
+import org.springframework.test.context.ContextCustomizer;
 import org.springframework.test.context.ContextLoader;
+import org.springframework.test.context.MergedContextConfiguration;
 import org.springframework.test.context.TestContextBootstrapper;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import static java.util.Optional.ofNullable;
+import static org.springframework.test.context.TestContextAnnotationUtils.findMergedAnnotation;
 
 /**
  * {@link TestContextBootstrapper} for Spring Swing Boot.
@@ -70,5 +76,28 @@ public class SpringSwingBootTestContextBootstrapper extends SpringBootTestContex
         if (SpringSwingApplication.applicationClass == null && testClass != null) {
             SpringSwingApplication.applicationClass = testClass;
         }
+    }
+
+    @Override
+    protected MergedContextConfiguration processMergedContextConfiguration(MergedContextConfiguration mergedConfig) {
+        SpringSwingBootTest springSwingBootTestAnnotation =
+            findMergedAnnotation(mergedConfig.getTestClass(), SpringSwingBootTest.class);
+
+        Set<ContextCustomizer> contextCustomizers = new LinkedHashSet<>(mergedConfig.getContextCustomizers());
+        contextCustomizers.add(new SpringSwingBootTestAnnotation(springSwingBootTestAnnotation));
+
+        MergedContextConfiguration mergedContextConfiguration = super.processMergedContextConfiguration(mergedConfig);
+        return new MergedContextConfiguration(
+            mergedContextConfiguration.getTestClass(),
+            mergedContextConfiguration.getLocations(),
+            mergedContextConfiguration.getClasses(),
+            mergedContextConfiguration.getContextInitializerClasses(),
+            mergedContextConfiguration.getActiveProfiles(),
+            mergedContextConfiguration.getPropertySourceLocations(),
+            mergedContextConfiguration.getPropertySourceProperties(),
+            contextCustomizers,
+            mergedContextConfiguration.getContextLoader(),
+            getCacheAwareContextLoaderDelegate(),
+            mergedContextConfiguration.getParent());
     }
 }

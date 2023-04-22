@@ -25,7 +25,6 @@ import java.io.InputStreamReader;
 import java.util.Optional;
 
 import static java.util.Arrays.stream;
-import static java.util.Optional.ofNullable;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.joining;
 
@@ -60,12 +59,12 @@ public class WindowsUtils {
     public static Optional<String> getRegistryValue(String register, String key) {
         String exec = REG_QUERY + "\"" + register + "\" " + (key == null ? "/ve" : "/v " + key);
         try (BufferedReader buff = new BufferedReader(new InputStreamReader(Runtime.getRuntime()
-                                                                                .exec(exec)
-                                                                                .getInputStream()))) {
+            .exec(exec)
+            .getInputStream()))) {
             String line;
             while (null != (line = buff.readLine())) {
                 if (line.contains(REG_EXP_TOKEN) || line.contains(REG_STR_TOKEN) || line.contains(REG_DWORD)) {
-                    return ofNullable(line.split("\\s+"))
+                    return Optional.of(line.split("\\s+"))
                         .filter(values -> values.length > 0)
                         .map(WindowsUtils::skip2ValuesAndJoin);
                 }

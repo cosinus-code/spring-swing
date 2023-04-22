@@ -28,7 +28,7 @@ import static java.lang.String.join;
 
 /**
  * Wrapped text builder.
- *
+ * <p>
  * It allows to wrap a text with or without separators.
  */
 public class WrappedTextBuilder extends ArrayList<String> {
@@ -49,7 +49,7 @@ public class WrappedTextBuilder extends ArrayList<String> {
     /**
      * Wrap a text on a list of separators or on the row width.
      *
-     * @param text the text to wrap
+     * @param text       the text to wrap
      * @param separators the list of separator characters
      * @return this
      */
@@ -67,7 +67,7 @@ public class WrappedTextBuilder extends ArrayList<String> {
 
     /**
      * Wrap a text on the row width.
-     *
+     * <p>
      * This method doesn't apply any separator related logic.
      *
      * @param text the text to wrap
@@ -91,12 +91,12 @@ public class WrappedTextBuilder extends ArrayList<String> {
 
     /**
      * Add a text to this wrapped text builder.
-     *
+     * <p>
      * This method doesn't care about separators, so the separators should be applied before.
-     *
+     * <p>
      * If, after the text is added, the current row will exceed the maximum width,
      * then the given text will go to the next line.
-     *
+     * <p>
      * If the text itself exceeds the maximum width, then the text will be added in multiple rows.
      *
      * @param text the text to add
@@ -160,7 +160,7 @@ public class WrappedTextBuilder extends ArrayList<String> {
     /**
      * Get the wrapped text.
      *
-     * @param html if true, the wrapped text must be returned as HTML
+     * @param html     if true, the wrapped text must be returned as HTML
      * @param centered it true, the wrapped text must be centered
      * @return the wrapped text
      */

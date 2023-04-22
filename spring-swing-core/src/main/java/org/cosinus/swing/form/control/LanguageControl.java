@@ -38,7 +38,7 @@ public class LanguageControl extends JComboBox<DisplayLocale> implements Control
     public Locale getControlValue() {
         return ofNullable(super.getSelectedItem())
             .map(DisplayLocale.class::cast)
-            .map(DisplayLocale::getLocale)
+            .map(DisplayLocale::locale)
             .orElse(null);
     }
 

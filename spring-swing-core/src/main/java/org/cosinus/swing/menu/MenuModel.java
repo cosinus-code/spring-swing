@@ -16,6 +16,7 @@
 
 package org.cosinus.swing.menu;
 
+import java.io.Serial;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -24,5 +25,6 @@ import java.util.Map;
  */
 public class MenuModel extends LinkedHashMap<String, Map<String, String>> {
 
+    @Serial
     private static final long serialVersionUID = -2501461154269052009L;
 }

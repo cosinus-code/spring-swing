@@ -16,29 +16,6 @@
 
 package org.cosinus.swing.text;
 
-public class WrappedText {
+public record WrappedText(String text, int width, int height) {
 
-    private String text;
-
-    private int width;
-
-    private int height;
-
-    public WrappedText(String text, int width, int height) {
-        this.text = text;
-        this.width = width;
-        this.height = height;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
 }

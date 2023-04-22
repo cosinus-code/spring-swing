@@ -19,11 +19,14 @@ package org.cosinus.swing.boot.event;
 import org.cosinus.swing.boot.ApplicationFrame;
 import org.springframework.context.ApplicationEvent;
 
+import java.io.Serial;
+
 /**
  * Application frame related event
  */
 public class ApplicationFrameEvent extends ApplicationEvent {
 
+    @Serial
     private static final long serialVersionUID = 1968956426121243290L;
 
     private final ApplicationFrame applicationFrame;

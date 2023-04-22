@@ -37,7 +37,7 @@ import static org.springframework.util.NumberUtils.convertNumberToTargetClass;
 /**
  * Extension of the {@link JFormattedTextField}
  * which will automatically inject the application context.
- *
+ * <p>
  * It supports the full {@link Control} functionality of highlighting the validation errors.
  *
  * @param <T> the type of the value

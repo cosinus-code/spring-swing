@@ -18,6 +18,8 @@ package org.cosinus.swing.form;
 
 import javax.swing.table.AbstractTableModel;
 
+import java.io.Serial;
+
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
 /**
@@ -26,6 +28,7 @@ import static org.cosinus.swing.context.ApplicationContextInjector.injectContext
  */
 public abstract class TableModel extends AbstractTableModel {
 
+    @Serial
     private static final long serialVersionUID = 2331650388625436833L;
 
     public TableModel() {

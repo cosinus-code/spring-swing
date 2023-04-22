@@ -18,11 +18,14 @@ package org.cosinus.swing.boot.event;
 
 import org.cosinus.swing.boot.ApplicationFrame;
 
+import java.io.Serial;
+
 /**
  * Event fired before application frame initialization
  */
 public class ApplicationFrameBeforeInitializeEvent extends ApplicationFrameEvent {
 
+    @Serial
     private static final long serialVersionUID = 2752748318313922749L;
 
     public ApplicationFrameBeforeInitializeEvent(ApplicationFrame applicationFrame) {

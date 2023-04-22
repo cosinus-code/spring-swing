@@ -27,6 +27,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -34,6 +35,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 
 /**
@@ -73,7 +75,9 @@ public class SplashApplicationStartupListener implements SwingSpringApplicationS
     private Set<String> beanNames = new HashSet<>();
 
     public SplashApplicationStartupListener(SpringApplication application, String[] arguments) {
-        Map<String, String> argumentsMap = stream(arguments)
+        Map<String, String> argumentsMap = ofNullable(arguments)
+            .stream()
+            .flatMap(Arrays::stream)
             .map(argument -> argument.split("="))
             .collect(toMap(
                 argument -> argument[0],
@@ -90,7 +94,7 @@ public class SplashApplicationStartupListener implements SwingSpringApplicationS
         String splashProgressHeight = argumentsMap.get(SPLASH_PROGRESS_HEIGHT);
 
         this.splash = new ApplicationSplash(splashProgress, splashProgressColor, splashProgressX, splashProgressY,
-                                            splashProgressWidth, splashProgressHeight);
+            splashProgressWidth, splashProgressHeight);
         this.application = (SpringSwingApplication) application;
 
         this.application.setLogStartupProgress(logStartupProgress);
@@ -100,7 +104,7 @@ public class SplashApplicationStartupListener implements SwingSpringApplicationS
     @Override
     public void starting(ConfigurableBootstrapContext bootstrapContext) {
         updateSplash(APPLICATION_STATUS_STARTING,
-                     CONTEXT_INITIALIZATION_MIN_PERCENT / 4);
+            CONTEXT_INITIALIZATION_MIN_PERCENT / 4);
     }
 
     @Override
@@ -111,7 +115,7 @@ public class SplashApplicationStartupListener implements SwingSpringApplicationS
     @Override
     public void contextPrepared(ConfigurableApplicationContext context) {
         updateSplash(APPLICATION_STATUS_PREPARED,
-                     3 * CONTEXT_INITIALIZATION_MIN_PERCENT / 4);
+            3 * CONTEXT_INITIALIZATION_MIN_PERCENT / 4);
         totalBeansCount = context.getBeanDefinitionCount();
     }
 
@@ -123,7 +127,7 @@ public class SplashApplicationStartupListener implements SwingSpringApplicationS
     @Override
     public void contextBeforeInitializeBeans(ApplicationContext context) {
         updateSplash(APPLICATION_STATUS_CONTEXT_INITIALING,
-                     CONTEXT_INITIALIZATION_MIN_PERCENT);
+            CONTEXT_INITIALIZATION_MIN_PERCENT);
 
         beanNames = stream(context.getBeanDefinitionNames())
             .collect(Collectors.toSet());
@@ -149,15 +153,7 @@ public class SplashApplicationStartupListener implements SwingSpringApplicationS
         int percent = (int) ((CONTEXT_INITIALIZATION_MAX_PERCENT - CONTEXT_INITIALIZATION_MIN_PERCENT) *
             (1 - (double) beanNames.size() / totalBeansCount));
         updateSplash(APPLICATION_STATUS_BEAN_INITIALIZED + beanName,
-                     CONTEXT_INITIALIZATION_MIN_PERCENT + percent);
-    }
-
-    @Override
-    public void started(ConfigurableApplicationContext context) {
-    }
-
-    @Override
-    public void running(ConfigurableApplicationContext context) {
+            CONTEXT_INITIALIZATION_MIN_PERCENT + percent);
     }
 
     public void applicationFrameInitializing(ApplicationFrame applicationFrame) {

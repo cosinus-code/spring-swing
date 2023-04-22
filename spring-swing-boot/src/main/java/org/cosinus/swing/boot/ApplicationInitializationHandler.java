@@ -16,6 +16,7 @@
 
 package org.cosinus.swing.boot;
 
+import org.cosinus.swing.boot.initialize.ApplicationFrameInitializer;
 import org.cosinus.swing.boot.initialize.ApplicationInitializer;
 import org.cosinus.swing.context.ApplicationHandler;
 import org.springframework.boot.ApplicationArguments;
@@ -33,8 +34,14 @@ public class ApplicationInitializationHandler implements ApplicationRunner, Appl
 
     private final Set<ApplicationInitializer> applicationInitializers;
 
-    public ApplicationInitializationHandler(Set<ApplicationInitializer> applicationInitializers) {
+    private final ApplicationFrameInitializer applicationFrameInitializer;
+
+    public ApplicationInitializationHandler(
+        final Set<ApplicationInitializer> applicationInitializers,
+        final ApplicationFrameInitializer applicationFrameInitializer) {
+
         this.applicationInitializers = applicationInitializers;
+        this.applicationFrameInitializer = applicationFrameInitializer;
     }
 
     @Override
@@ -47,6 +54,7 @@ public class ApplicationInitializationHandler implements ApplicationRunner, Appl
      */
     public void initApplication() {
         applicationInitializers.forEach(ApplicationInitializer::initialize);
+        applicationFrameInitializer.initialize();
     }
 
     /**

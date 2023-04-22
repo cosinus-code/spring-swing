@@ -16,7 +16,6 @@
 
 package org.cosinus.swing.preference.impl;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.cosinus.swing.preference.ObjectPreference;
@@ -40,26 +39,26 @@ public class ColorPreference extends ObjectPreference<Color> {
     private static final String DELIMITER = ",";
 
     @Override
-    @JsonIgnore
     public PreferenceType getType() {
         return COLOR;
     }
 
     @Override
-    public Color getRealValue() {
+    public Color toRealValue(String value) {
         return ofNullable(value)
             .map(descriptor -> descriptor.split(DELIMITER))
-            .map(pieces -> new Color(Integer.parseInt(pieces[0]),
-                                     Integer.parseInt(pieces[1]),
-                                     Integer.parseInt(pieces[2])))
+            .map(pieces -> new Color(
+                Integer.parseInt(pieces[0]),
+                Integer.parseInt(pieces[1]),
+                Integer.parseInt(pieces[2])))
             .orElse(null);
     }
 
     @Override
-    public void setRealValue(Color color) {
-        super.setValue(join(DELIMITER,
-                            Integer.toString(color.getRed()),
-                            Integer.toString(color.getGreen()),
-                            Integer.toString(color.getBlue())));
+    public String fromRealValue(Color color) {
+        return join(DELIMITER,
+            Integer.toString(color.getRed()),
+            Integer.toString(color.getGreen()),
+            Integer.toString(color.getBlue()));
     }
 }

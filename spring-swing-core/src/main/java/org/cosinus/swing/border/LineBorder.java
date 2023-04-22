@@ -17,12 +17,14 @@
 package org.cosinus.swing.border;
 
 import java.awt.*;
+import java.io.Serial;
 
 /**
  * Enhanced line border implementation
  */
 public class LineBorder extends javax.swing.border.LineBorder {
 
+    @Serial
     private static final long serialVersionUID = 1266557252529296976L;
 
     private int top;

@@ -41,6 +41,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -373,6 +374,7 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
 
     private class PreferenceListModel extends AbstractListModel<String> implements Translatable {
 
+        @Serial
         private static final long serialVersionUID = 2474868725194138977L;
 
         private final List<String> preferenceNames;

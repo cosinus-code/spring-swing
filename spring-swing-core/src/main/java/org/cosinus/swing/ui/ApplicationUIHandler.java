@@ -499,9 +499,9 @@ public class ApplicationUIHandler {
     public Map<String, Font> getDefaultFontsMap() {
         return UIManager
             .getDefaults()
-            .entrySet()
+            .keySet()
             .stream()
-            .map(entry -> new ImmutablePair<>(entry.getKey().toString(), UIManager.get(entry.getKey())))
+            .map(o -> new ImmutablePair<>(o.toString(), UIManager.get(o)))
             .filter(entry -> entry.getValue() instanceof FontUIResource)
             .collect(toMap(Pair::getKey,
                            entry -> (FontUIResource) entry.getValue(),

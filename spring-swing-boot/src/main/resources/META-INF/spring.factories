@@ -1,4 +1,2 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.cosinus.swing.boot.config.SpringSwingAutoConfiguration
 org.cosinus.swing.boot.SwingSpringApplicationStartupListener=\
 org.cosinus.swing.boot.splash.SplashApplicationStartupListener

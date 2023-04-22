@@ -28,7 +28,7 @@ import static org.cosinus.swing.context.ApplicationContextInjector.injectContext
 
 /**
  * Extension of a {@link JLabel} used for controlling a {@link Color} value.
- *
+ * <p>
  * The label is used to show the color and the {@link JColorChooser} is used to change the color,
  * when the label is clicked.
  */

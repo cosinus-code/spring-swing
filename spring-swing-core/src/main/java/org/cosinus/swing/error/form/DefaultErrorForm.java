@@ -20,7 +20,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.action.EscapeAction;
 import org.cosinus.swing.error.SwingSevereException;
-import org.cosinus.swing.error.TranslatableRuntimeException;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.cosinus.swing.window.Dialog;
@@ -34,16 +33,17 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Objects;
-import java.util.Optional;
 
-import static java.awt.BorderLayout.*;
+import static java.awt.BorderLayout.CENTER;
+import static java.awt.BorderLayout.EAST;
+import static java.awt.BorderLayout.NORTH;
+import static java.awt.BorderLayout.SOUTH;
+import static java.awt.BorderLayout.WEST;
 import static java.lang.String.format;
 import static javax.swing.JPanel.WHEN_IN_FOCUSED_WINDOW;
 import static javax.swing.KeyStroke.getKeyStroke;
 import static org.cosinus.swing.border.Borders.emptyBorder;
 import static org.cosinus.swing.border.Borders.emptyInsets;
-import static java.util.Optional.ofNullable;
 
 /**
  * Default implementation of {@link ErrorForm} as dialog
@@ -152,8 +152,8 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
     public void showError(Throwable throwable) {
         boolean severe = throwable instanceof SwingSevereException;
         txtDescription.setText(format(ERROR_MESSAGE,
-                                      translate(severe ? "ErrorForm.severe-message" : "ErrorForm.message"),
-                                      throwable.getLocalizedMessage()));
+            translate(severe ? "ErrorForm.severe-message" : "ErrorForm.message"),
+            throwable.getLocalizedMessage()));
 
         try (StringWriter writer = new StringWriter()) {
             throwable.printStackTrace(new PrintWriter(writer));

@@ -16,25 +16,25 @@
 
 package org.cosinus.swing.boot.event;
 
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * Configuration for {@link ApplicationContextCreationEvent}
  */
-@Configuration
-public class ApplicationContextStartupConfiguration {
+@AutoConfiguration
+public class ApplicationContextStartupAutoConfiguration {
 
     @Bean
     public static BeanProcessorListener beanProcessorListener(
-            ApplicationEventPublisher applicationEventPublisher) {
+        ApplicationEventPublisher applicationEventPublisher) {
         return new BeanProcessorListener(applicationEventPublisher);
     }
 
     @Bean
     public static BeanFactoryProcessorListener beanFactoryProcessorListener(
-            ApplicationEventPublisher applicationEventPublisher) {
+        ApplicationEventPublisher applicationEventPublisher) {
         return new BeanFactoryProcessorListener(applicationEventPublisher);
     }
 

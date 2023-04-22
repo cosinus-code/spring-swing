@@ -16,11 +16,14 @@
 
 package org.cosinus.swing.error;
 
+import java.io.Serial;
+
 /**
  * Json convert dedicated exception
  */
 public class JsonConvertException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = 6025567313370070291L;
 
     public JsonConvertException() {

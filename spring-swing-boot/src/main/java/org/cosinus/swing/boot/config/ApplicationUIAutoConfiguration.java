@@ -25,19 +25,19 @@ import org.cosinus.swing.preference.Preferences;
 import org.cosinus.swing.resource.ClasspathResourceResolver;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.cosinus.swing.ui.dark.DarkLookAndFeel;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * Application UI Configuration.
  * <p>
  * This includes all UI related beans configuration.
  */
-@Configuration
-public class ApplicationUIConfiguration {
+@AutoConfiguration
+public class ApplicationUIAutoConfiguration {
 
     @Bean
     @ConditionalOnProperty(value = "swing.ui.theme")
@@ -62,9 +62,9 @@ public class ApplicationUIConfiguration {
                                                                  DarkLookAndFeel darkLookAndFeel,
                                                                  ClasspathResourceResolver resourceResolver) {
         return new DarkLookAndFeelInitializer(preferences,
-                                              uiHandler,
-                                              darkLookAndFeel,
-                                              resourceResolver);
+            uiHandler,
+            darkLookAndFeel,
+            resourceResolver);
     }
 
     @Bean

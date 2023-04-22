@@ -16,7 +16,6 @@
 
 package org.cosinus.swing.preference.impl;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.cosinus.swing.preference.Preference;
@@ -34,7 +33,6 @@ import static org.cosinus.swing.preference.PreferenceType.BOOLEAN;
 public class BooleanPreference extends PrimitivePreference<Boolean> {
 
     @Override
-    @JsonIgnore
     public PreferenceType getType() {
         return BOOLEAN;
     }

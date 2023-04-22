@@ -27,7 +27,7 @@ import org.springframework.context.ApplicationEventPublisher;
 
 /**
  * Implementation of {@link ApplicationFrame} as Swing {@link Frame}.
- *
+ * <p>
  * Keeping this application frame instance as static field is a compromise
  * to avoid circular dependencies when the main frame is needed as parent for other windows.
  */
@@ -45,7 +45,7 @@ public abstract class SwingApplicationFrame extends Frame implements Application
 
     /**
      * Initialize the application frame.
-     *
+     * <p>
      * It also publish the {@link ApplicationFrameBeforeInitializeEvent} and
      * {@link ApplicationFrameAfterInitializeEvent} before and after initialization.
      */

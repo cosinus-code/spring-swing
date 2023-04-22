@@ -16,7 +16,6 @@
 
 package org.cosinus.swing.preference.impl;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.cosinus.swing.preference.Preference;
 import org.cosinus.swing.preference.PreferenceType;
 import org.cosinus.swing.preference.PrimitivePreference;
@@ -31,7 +30,6 @@ import static org.cosinus.swing.preference.PreferenceType.DATE;
 public class DatePreference extends PrimitivePreference<Date> {
 
     @Override
-    @JsonIgnore
     public PreferenceType getType() {
         return DATE;
     }

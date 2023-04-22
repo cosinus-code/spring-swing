@@ -17,12 +17,14 @@
 package org.cosinus.swing.border;
 
 import java.awt.Color;
+import java.io.Serial;
 
 /**
  * Pointed border implementation
  */
 public class PointedBorder extends DashedBorder {
 
+    @Serial
     private static final long serialVersionUID = 436421094793927346L;
 
     public PointedBorder(Color color) {
