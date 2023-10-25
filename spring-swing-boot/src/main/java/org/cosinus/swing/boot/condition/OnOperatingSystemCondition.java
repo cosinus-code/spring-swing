@@ -22,8 +22,10 @@ import org.springframework.boot.autoconfigure.condition.SpringBootCondition;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
+import java.util.Arrays;
 import java.util.Map;
 
+import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.SystemUtils.OS_NAME;
 import static org.springframework.boot.autoconfigure.condition.ConditionOutcome.match;
@@ -41,20 +43,19 @@ public class OnOperatingSystemCondition extends SpringBootCondition {
     @Override
     public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
         Map<String, Object> attributes = metadata.getAnnotationAttributes(ConditionalOnOperatingSystem.class.getName());
-        String operatingSystem = ofNullable(attributes)
+        String[] operatingSystems = ofNullable(attributes)
             .map(attrs -> attrs.get("value"))
-            .map(Object::toString)
-            .orElse(null);
+            .map(value -> (String[]) value)
+            .orElseGet(() -> new String[]{});
 
         ConditionMessage.Builder message = ConditionMessage.forCondition(ConditionalOnCloudPlatform.class);
-        return isOs(operatingSystem) ?
-            match(message.foundExactly(operatingSystem)) :
-            noMatch(message.didNotFind(operatingSystem).atAll());
+        return isCurrentOsOneOf() ?
+            match(message.foundExactly(Arrays.toString(operatingSystems))) :
+            noMatch(message.didNotFind(Arrays.toString(operatingSystems)).atAll());
     }
 
-    public boolean isOs(String name) {
-        return ofNullable(name)
-            .filter(OS_NAME::startsWith)
-            .isPresent();
+    public boolean isCurrentOsOneOf(String... operatingSystems) {
+        return stream(operatingSystems)
+            .anyMatch(OS_NAME::startsWith);
     }
 }

@@ -129,7 +129,10 @@ public class Split extends JSplitPane implements FormComponent {
         if (visible) {
             loadDividerLocation();
         }
-        divider.setVisible(visible);
+        if (divider != null)
+        {
+            divider.setVisible(visible);
+        }
     }
 
     @Override

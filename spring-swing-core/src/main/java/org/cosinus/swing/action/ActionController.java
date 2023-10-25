@@ -37,6 +37,17 @@ import static java.util.Optional.ofNullable;
  */
 public class ActionController<C extends ActionContext> implements ActionListener {
 
+    public static final int KEY_CODE_PAGE_UP = 33;
+    public static final int KEY_CODE_PAGE_DOWN = 34;
+    public static final int KEY_CODE_END = 35;
+    public static final int KEY_CODE_HOME = 36;
+    public static final int KEY_CODE_LEFT_ARROW = 37;
+    public static final int KEY_CODE_UP_ARROW = 38;
+    public static final int KEY_CODE_RIGHT_ARROW = 39;
+    public static final int KEY_CODE_DOWN_ARROW = 40;
+    public static final int KEY_CODE_F1 = 112;
+    public static final int KEY_CODE_F12 = 123;
+
     private final ErrorHandler errorHandler;
 
     private final KeyMapHandler<C> keyMapHandler;
@@ -113,5 +124,25 @@ public class ActionController<C extends ActionContext> implements ActionListener
         if (event.getSource() instanceof ActionProducer) {
             runAction(((ActionProducer) event.getSource()).getActionKey());
         }
+    }
+
+    public boolean isLetterKey(KeyEvent keyEvent) {
+        return keyEvent.getKeyCode() >= ' ' &&
+            keyEvent.getKeyCode() <= '~' &&
+            !keyEvent.isAltDown() &&
+            !keyEvent.isControlDown() &&
+            !keyEvent.isShiftDown() &&
+            !isGoKey(keyEvent) &&
+            !isFunctionalKey(keyEvent);
+    }
+
+    public boolean isGoKey(KeyEvent keyEvent) {
+        return keyEvent.getKeyCode() >= KEY_CODE_PAGE_UP &&
+            keyEvent.getKeyCode() <= KEY_CODE_DOWN_ARROW;
+    }
+
+    public boolean isFunctionalKey(KeyEvent keyEvent) {
+        return keyEvent.getKeyCode() >= KEY_CODE_F1 &&
+            keyEvent.getKeyCode() <= KEY_CODE_F12;
     }
 }

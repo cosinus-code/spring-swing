@@ -17,6 +17,7 @@
 package org.cosinus.swing.boot.config;
 
 import com.bulenkov.darcula.DarculaLaf;
+import org.cosinus.swing.boot.condition.ConditionalOnOperatingSystem;
 import org.cosinus.swing.boot.initialize.DarkLookAndFeelInitializer;
 import org.cosinus.swing.boot.initialize.DefaultThemeInitializer;
 import org.cosinus.swing.boot.initialize.LookAndFeelInitializer;
@@ -26,6 +27,7 @@ import org.cosinus.swing.resource.ClasspathResourceResolver;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.cosinus.swing.ui.dark.DarkLookAndFeel;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -55,20 +57,21 @@ public class ApplicationUIAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnClass(DarculaLaf.class)
+    @ConditionalOnBean(DarkLookAndFeel.class)
     @ConditionalOnProperty(value = "swing.ui.theme", havingValue = "default", matchIfMissing = true)
     public DarkLookAndFeelInitializer darkLookAndFeelInitializer(Preferences preferences,
                                                                  ApplicationUIHandler uiHandler,
                                                                  DarkLookAndFeel darkLookAndFeel,
                                                                  ClasspathResourceResolver resourceResolver) {
         return new DarkLookAndFeelInitializer(preferences,
-            uiHandler,
-            darkLookAndFeel,
-            resourceResolver);
+                uiHandler,
+                darkLookAndFeel,
+                resourceResolver);
     }
 
     @Bean
     @ConditionalOnClass(DarculaLaf.class)
+    @ConditionalOnOperatingSystem({"Windows", "Linux"})
     @ConditionalOnMissingBean
     public DarkLookAndFeel darkLookAndFeel() {
         return new DarkLookAndFeel();

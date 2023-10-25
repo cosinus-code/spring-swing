@@ -85,7 +85,7 @@ public class FormatHandler {
         return formattedTime.toString();
     }
 
-    public String formatTextForLabel(JLabel label, String text) {
+    public String formatTextForLabel(JComponent label, String text) {
         FontMetrics labelFontMetrics = label.getFontMetrics(label.getFont());
         int textWidth = computeStringWidth(labelFontMetrics, text);
         int lblWidth = label.getWidth() - label.getInsets().left - label.getInsets().right;

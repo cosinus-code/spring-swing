@@ -54,6 +54,8 @@ import static javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION;
 import static javax.swing.SwingUtilities.updateComponentTreeUI;
 import static org.cosinus.swing.border.Borders.emptyBorder;
 import static org.cosinus.swing.border.Borders.lineBorder;
+import static org.cosinus.swing.color.SystemColor.LIST_BACKGROUND;
+import static org.cosinus.swing.color.SystemColor.LIST_FOREGROUND;
 import static org.cosinus.swing.preference.PreferenceType.*;
 import static org.cosinus.swing.preference.Preferences.LOOK_AND_FEEL;
 
@@ -308,15 +310,8 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
 
     public void updateUI() {
         if (preferenceSetList != null) {
-            Color inactiveCaptionColor = uiHandler.getInactiveCaptionColor();
-            Color controlColor = uiHandler.getControlColor();
-            if (inactiveCaptionColor != null && !inactiveCaptionColor.equals(controlColor)) {
-                preferenceSetList.setBackground(inactiveCaptionColor);
-                preferenceSetList.setForeground(uiHandler.getInactiveCaptionTextColor());
-            } else {
-                preferenceSetList.setBackground(uiHandler.getColor("List.background"));
-                preferenceSetList.setForeground(uiHandler.getColor("List.foreground"));
-            }
+            preferenceSetList.setBackground(uiHandler.getColor(LIST_BACKGROUND));
+            preferenceSetList.setForeground(uiHandler.getColor(LIST_FOREGROUND));
         }
         if (preferenceSouthPanel != null) {
             preferenceSouthPanel.setBorder(lineBorder(uiHandler.getControlHighlightColor(),

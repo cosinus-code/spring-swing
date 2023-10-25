@@ -20,6 +20,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.cosinus.swing.color.SystemColor;
 import org.cosinus.swing.exec.ProcessExecutor;
 import org.cosinus.swing.translate.Translator;
 
@@ -47,6 +48,7 @@ import static java.util.stream.Collectors.toSet;
 import static java.util.stream.Stream.concat;
 import static javax.swing.KeyStroke.getKeyStroke;
 import static org.apache.commons.lang3.SystemUtils.IS_OS_MAC;
+import static org.cosinus.swing.color.SystemColor.*;
 
 /**
  * UIManager handler.
@@ -397,48 +399,49 @@ public class ApplicationUIHandler {
     }
 
     /**
-     * Get an UI default color.
+     * Get a UI default color.
      *
-     * @param key the icon key
+     * @param color the color
      * @return the color
      */
-    public Color getColor(String key) {
-        return ofNullable(UIManager.getColor(key))
+    public Color getColor(SystemColor color) {
+        return ofNullable(color)
+            .map(SystemColor::getKey)
+            .map(UIManager::getColor)
             .map(Color::getRGB)
             .map(Color::new)
             .orElse(null);
     }
 
     public Color getControlColor() {
-        return getColor("control");
+        return getColor(CONTROL);
     }
 
     public Color getControlHighlightColor() {
-        return getColor("controlHighlight");
+        return getColor(CONTROL_HIGHLIGHT);
     }
 
     public Color getInactiveCaptionColor() {
-        return getColor("inactiveCaption");
+        return getColor(INACTIVE_CAPTION);
     }
 
     public Color getInactiveCaptionTextColor() {
-        return getColor("inactiveCaptionText");
+        return getColor(INACTIVE_CAPTION_TEXT);
     }
 
     public Color getControlDarkShadowColor() {
-        return getColor("controlDkShadow");
+        return getColor(CONTROL_DK_SHADOW);
     }
 
     public Optional<Color> getInactiveBackgroundColor() {
-        return ofNullable(getInactiveCaptionColor())
-            .or(() -> ofNullable(getColor("ScrollBar.background")))
-            .filter(color -> !color.equals(getControlColor()))
-            .or(() -> ofNullable(getColor("MenuItem.selectionBackground")));
+        return ofNullable(getColor(INTERNAL_FRAME_INACTIVE_TITLE_BACKGROUND))
+            .filter(color -> !color.equals(getInactiveForegroundColor().orElse(null)))
+            .or(() -> ofNullable(getInactiveCaptionColor()));
     }
 
     public Optional<Color> getInactiveForegroundColor() {
-        return ofNullable(getInactiveCaptionTextColor())
-            .or(() -> ofNullable(getColor("TextField.foreground")));
+        return ofNullable(getColor(TEXTAREA_INACTIVE_FOREGROUND))
+            .or(() -> ofNullable(getInactiveCaptionTextColor()));
     }
 
     /**
