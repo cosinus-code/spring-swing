@@ -269,6 +269,15 @@ public class ApplicationUIHandler {
     }
 
     /**
+     * Check if the current look-and-feel is GTK.
+     *
+     * @return true if the current look-and-feel is GTK
+     */
+    public boolean isLookAndFeelMac() {
+        return getLookAndFeel().startsWith("Mac");
+    }
+
+    /**
      * Check if the current look-and-feel is Windows.
      *
      * @return true if the current look-and-feel is Windows
@@ -520,5 +529,10 @@ public class ApplicationUIHandler {
      */
     public void setDefaultFont(String key, Font font) {
         UIManager.put(key, font);
+    }
+
+    public boolean isProgressTextAllowed()
+    {
+        return !isLookAndFeelMac();
     }
 }
