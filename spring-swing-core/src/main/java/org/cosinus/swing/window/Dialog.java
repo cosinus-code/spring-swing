@@ -81,6 +81,9 @@ public abstract class Dialog<T> extends JDialog implements Window, FormComponent
             setWindowPositionAndSize(windowSettings, uiHandler.getScreenBound());
             windowSettingsHandler.saveWindowSettings(windowSettings);
         }
+        else {
+            setLocationRelativeTo(getParent());
+        }
     }
 
     private void initFrameBasicActions() {

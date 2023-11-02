@@ -26,6 +26,7 @@ import java.util.Optional;
 
 import static java.awt.Toolkit.getDefaultToolkit;
 import static java.util.Arrays.stream;
+import static java.util.Optional.ofNullable;
 import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 import static javax.swing.KeyStroke.getKeyStroke;
 import static org.cosinus.swing.window.WindowSettings.DEFAULT_HEIGHT;
@@ -62,10 +63,13 @@ public interface Window extends Translatable {
      * Center this window on the current screen bounds
      */
     default void centerWindow() {
-        Dimension screenSize = getDefaultToolkit().getScreenSize();
         java.awt.Window window = thisWindow();
-        window.setLocation((screenSize.width - window.getWidth()) / 2,
-                           (screenSize.height - window.getHeight()) / 2);
+        ofNullable(window.getParent())
+            .ifPresentOrElse(window::setLocationRelativeTo, () -> {
+                Dimension screenSize = getDefaultToolkit().getScreenSize();
+                window.setLocation((screenSize.width - window.getWidth()) / 2,
+                    (screenSize.height - window.getHeight()) / 2);
+            });
     }
 
     /**

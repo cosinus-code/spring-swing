@@ -408,6 +408,16 @@ public class ApplicationUIHandler {
     }
 
     /**
+     * Get an UI default int.
+     *
+     * @param key the icon key
+     * @return the int
+     */
+    public int getInt(String key) {
+        return UIManager.getInt(key);
+    }
+
+    /**
      * Get a UI default color.
      *
      * @param color the color

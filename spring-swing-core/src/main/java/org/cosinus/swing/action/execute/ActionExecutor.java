@@ -31,9 +31,16 @@ public interface ActionExecutor<A extends ActionModel> {
     /**
      * Cancel action execution.
      *
-     * @param actionId the id of the action to cancel
+     * @param executionId the id of the action to cancel
      */
-    void cancel(String actionId);
+    void cancel(String executionId);
+
+    /**
+     * Remove action execution.
+     *
+     * @param executionId
+     */
+    void remove(String executionId);
 
     /**
      * Get the action handled by this executor
