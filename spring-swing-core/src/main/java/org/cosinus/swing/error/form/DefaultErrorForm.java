@@ -42,6 +42,7 @@ import static java.awt.BorderLayout.WEST;
 import static java.lang.String.format;
 import static javax.swing.JPanel.WHEN_IN_FOCUSED_WINDOW;
 import static javax.swing.KeyStroke.getKeyStroke;
+import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCause;
 import static org.cosinus.swing.border.Borders.emptyBorder;
 import static org.cosinus.swing.border.Borders.emptyInsets;
 
@@ -54,7 +55,7 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
 
     private static final String ERROR_WINDOW_TITLE = "Error";
 
-    private static final String ERROR_MESSAGE = "<html><body style='width: 300px'><p>%s</p><br/>%s</html>";
+    private static final String ERROR_MESSAGE = "<html><body style='width: 300px'><p>%s</p><br/>%s<br/>%s</html>";
 
     private JLabel txtDescription;
 
@@ -153,7 +154,8 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
         boolean severe = throwable instanceof SwingSevereException;
         txtDescription.setText(format(ERROR_MESSAGE,
             translate(severe ? "ErrorForm.severe-message" : "ErrorForm.message"),
-            throwable.getLocalizedMessage()));
+            throwable.getLocalizedMessage(),
+            getRootCauseMessage(throwable)));
 
         try (StringWriter writer = new StringWriter()) {
             throwable.printStackTrace(new PrintWriter(writer));
@@ -168,6 +170,10 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
         pack();
         centerWindow();
         setVisible(true);
+    }
+
+    private String getRootCauseMessage(Throwable throwable) {
+        return getRootCause(throwable).getLocalizedMessage();
     }
 
     private void showDetails() {
