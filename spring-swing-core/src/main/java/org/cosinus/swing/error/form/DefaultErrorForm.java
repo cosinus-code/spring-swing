@@ -55,7 +55,7 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
 
     private static final String ERROR_WINDOW_TITLE = "Error";
 
-    private static final String ERROR_MESSAGE = "<html><body style='width: 300px'><p>%s</p><br/>%s<br/>%s</html>";
+    private static final String ERROR_MESSAGE = "<html><body style='width: 300px'><p>%s</p><br/>%s</html>";
 
     private JLabel txtDescription;
 
@@ -154,7 +154,6 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
         boolean severe = throwable instanceof SwingSevereException;
         txtDescription.setText(format(ERROR_MESSAGE,
             translate(severe ? "ErrorForm.severe-message" : "ErrorForm.message"),
-            throwable.getLocalizedMessage(),
             getRootCauseMessage(throwable)));
 
         try (StringWriter writer = new StringWriter()) {

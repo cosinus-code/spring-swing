@@ -17,8 +17,6 @@
 package org.cosinus.swing.window;
 
 import org.cosinus.swing.store.ApplicationStorage;
-import org.cosinus.swing.window.WindowSettings;
-import org.cosinus.swing.window.WindowSettingsHandler;
 
 /**
  * Implementation of {@link WindowSettingsHandler} based on local storage
@@ -50,17 +48,17 @@ public class DefaultWindowSettingsHandler implements WindowSettingsHandler {
         String name = defaultSettings.getName();
         return defaultSettings
             .setPosition(applicationStorage.getInt(key(name, KEY_X),
-                                                   defaultSettings.getX()),
-                         applicationStorage.getInt(key(name, KEY_Y),
-                                                   defaultSettings.getY()))
+                    defaultSettings.getX()),
+                applicationStorage.getInt(key(name, KEY_Y),
+                    defaultSettings.getY()))
             .setSize(applicationStorage.getInt(key(name, KEY_WIDTH),
-                                               defaultSettings.getWidth()),
-                     applicationStorage.getInt(key(name, KEY_HEIGHT),
-                                               defaultSettings.getHeight()))
+                    defaultSettings.getWidth()),
+                applicationStorage.getInt(key(name, KEY_HEIGHT),
+                    defaultSettings.getHeight()))
             .setCentered(applicationStorage.getBoolean(key(name, KEY_CENTERED),
-                                                       defaultSettings.isCentered()))
+                defaultSettings.isCentered()))
             .setMaximized(applicationStorage.getBoolean(key(name, KEY_MAXIMIZED),
-                                                        defaultSettings.isMaximized()));
+                defaultSettings.isMaximized()));
     }
 
     @Override

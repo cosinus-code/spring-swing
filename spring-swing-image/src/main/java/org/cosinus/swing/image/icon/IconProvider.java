@@ -83,6 +83,7 @@ public interface IconProvider {
     String ICON_STORAGE_XD = "storage-xd";
     String ICON_STORAGE_SD = "storage-sd";
     String ICON_STORAGE_MINI_SD = "storage-mini-sd";
+    String ICON_DATABASE = "database";
 
     /**
      * Initialize this provider.
