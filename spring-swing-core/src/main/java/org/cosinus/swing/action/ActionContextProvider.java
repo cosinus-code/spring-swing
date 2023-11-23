@@ -19,7 +19,7 @@ package org.cosinus.swing.action;
 /**
  * Action context provider
  */
-public interface ActionContextProvider<C extends ActionContext> {
+public interface ActionContextProvider {
 
-    C provideActionContext();
+    ActionContext provideActionContext();
 }

@@ -35,7 +35,7 @@ import static java.util.Optional.ofNullable;
  * <p>
  * It is used to control the action executions.
  */
-public class ActionController<C extends ActionContext> implements ActionListener {
+public class ActionController implements ActionListener {
 
     public static final int KEY_CODE_PAGE_UP = 33;
     public static final int KEY_CODE_PAGE_DOWN = 34;
@@ -50,16 +50,16 @@ public class ActionController<C extends ActionContext> implements ActionListener
 
     private final ErrorHandler errorHandler;
 
-    private final KeyMapHandler<C> keyMapHandler;
+    private final KeyMapHandler keyMapHandler;
 
-    private final ActionContextProvider<C> actionContextProvider;
+    private final ActionContextProvider actionContextProvider;
 
-    private final Map<String, ActionInContext<C>> actionMap;
+    private final Map<String, ActionInContext> actionMap;
 
-    public ActionController(ErrorHandler errorHandler,
-                            KeyMapHandler<C> keyMapHandler,
-                            ActionContextProvider<C> actionContextProvider,
-                            Set<ActionInContext<C>> actions) {
+    public ActionController(final ErrorHandler errorHandler,
+                            final KeyMapHandler keyMapHandler,
+                            final ActionContextProvider actionContextProvider,
+                            final Set<ActionInContext> actions) {
         this.errorHandler = errorHandler;
         this.keyMapHandler = keyMapHandler;
         this.actionContextProvider = actionContextProvider;
@@ -85,7 +85,7 @@ public class ActionController<C extends ActionContext> implements ActionListener
      * @param actionId the id of the action to execute
      * @param context  the action execution context
      */
-    public void runAction(String actionId, C context) {
+    public void runAction(String actionId, ActionContext context) {
         try {
             ofNullable(actionMap.get(actionId))
                 .orElseThrow(() -> new ActionNotFoundException("Action not implemented (" + actionId + ")"))
@@ -96,9 +96,9 @@ public class ActionController<C extends ActionContext> implements ActionListener
     }
 
     /**
-     * Run an action executor based on a key stroke defined in a key event.
+     * Run an action executor based on a key troke defined in a key event.
      * <p>
-     * This will search for an action corresponding to the given key stroke
+     * This will search for an action corresponding to the given keystroke
      * and will execute it.
      *
      * @param keyEvent the key event to match the action

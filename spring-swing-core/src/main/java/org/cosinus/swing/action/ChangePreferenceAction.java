@@ -22,7 +22,7 @@ import org.cosinus.swing.preference.PreferencesProvider;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 
-public abstract class ChangePreferenceAction implements ActionInContext<ActionContext> {
+public abstract class ChangePreferenceAction implements ActionInContext {
 
     protected final Preferences preferences;
 

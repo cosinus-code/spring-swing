@@ -213,16 +213,16 @@ public class SpringSwingAutoConfiguration {
     }
 
     @Bean
-    public <C extends ActionContext> KeyMapHandler<C> keyMapHandler(Set<ActionInContext<C>> actions) {
-        return new KeyMapHandler<>(actions);
+    public <C extends ActionContext> KeyMapHandler keyMapHandler(Set<ActionInContext> actions) {
+        return new KeyMapHandler(actions);
     }
 
     @Bean
-    public <C extends ActionContext> ActionController<C> actionController(ErrorHandler errorHandler,
-                                                                          KeyMapHandler<C> keyMapHandler,
-                                                                          ActionContextProvider<C> actionContextProvider,
-                                                                          Set<ActionInContext<C>> actions) {
-        return new ActionController<>(errorHandler,
+    public <C extends ActionContext> ActionController actionController(ErrorHandler errorHandler,
+                                                                          KeyMapHandler keyMapHandler,
+                                                                          ActionContextProvider actionContextProvider,
+                                                                          Set<ActionInContext> actions) {
+        return new ActionController(errorHandler,
             keyMapHandler,
             actionContextProvider,
             actions);
@@ -230,7 +230,7 @@ public class SpringSwingAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ActionContextProvider<ActionContext> ActionContextProvider() {
+    public ActionContextProvider ActionContextProvider() {
         return new DefaultActionContextProvider();
     }
 

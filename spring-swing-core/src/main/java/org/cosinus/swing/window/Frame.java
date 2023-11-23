@@ -44,7 +44,7 @@ import static org.cosinus.swing.context.ApplicationContextInjector.injectContext
 public class Frame extends JFrame implements Window, FormComponent {
 
     @Autowired
-    protected ActionController<?> actionController;
+    protected ActionController actionController;
 
     @Autowired
     protected Translator translator;

@@ -22,14 +22,14 @@ import java.util.Optional;
 /**
  * Interface for a swing action in context
  */
-public interface ActionInContext<C extends ActionContext> {
+public interface ActionInContext {
 
     /**
      * Run the action in the given context.
      *
      * @param context the context to run the action
      */
-    void run(C context);
+    void run(ActionContext context);
 
     /**
      * Get the id of the action.
@@ -39,7 +39,7 @@ public interface ActionInContext<C extends ActionContext> {
     String getId();
 
     /**
-     * Get the key stroke corresponding to the action.
+     * Get the keystroke corresponding to the action.
      *
      * @return {@link Optional#empty()}
      */

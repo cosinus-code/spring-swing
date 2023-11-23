@@ -30,11 +30,11 @@ import static java.util.Optional.ofNullable;
  * <p>
  * It takes all action defined in context and build a map from key strokes to actions.
  */
-public class KeyMapHandler<C extends ActionContext> {
+public class KeyMapHandler {
 
-    private final Map<KeyStroke, ActionInContext<C>> keyMap;
+    private final Map<KeyStroke, ActionInContext> keyMap;
 
-    public KeyMapHandler(Set<ActionInContext<C>> actions) {
+    public KeyMapHandler(Set<ActionInContext> actions) {
         this.keyMap = actions
             .stream()
             .filter(action -> action.getKeyStroke().isPresent())
@@ -43,12 +43,12 @@ public class KeyMapHandler<C extends ActionContext> {
     }
 
     /**
-     * Search for an action based on a key stroke.
+     * Search for an action based on a keystroke.
      *
-     * @param keyStroke the key stroke to search for
+     * @param keyStroke the keystroke to search for
      * @return the found action, or {@link Optional#empty()}
      */
-    public Optional<ActionInContext<C>> findActionByKeyStroke(KeyStroke keyStroke) {
+    public Optional<ActionInContext> findActionByKeyStroke(KeyStroke keyStroke) {
         return ofNullable(keyMap.get(keyStroke));
     }
 }
