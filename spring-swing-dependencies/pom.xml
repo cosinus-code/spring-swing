@@ -85,6 +85,11 @@
                 <artifactId>jdatepicker</artifactId>
                 <version>${jdatepicker.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-imaging</artifactId>
+                <version>${commons-imaging.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

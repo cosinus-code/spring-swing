@@ -44,6 +44,10 @@
             <artifactId>batik-transcoder</artifactId>
             <version>${batik.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-imaging</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

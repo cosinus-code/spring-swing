@@ -37,6 +37,8 @@ public class WrappedTextBuilder extends ArrayList<String> {
 
     private final FontMetrics fontMetrics;
 
+    private int margin = 20;
+
     public WrappedTextBuilder(int width, JComponent component) {
         this(width, component.getFontMetrics(component.getFont()));
     }
@@ -131,11 +133,11 @@ public class WrappedTextBuilder extends ArrayList<String> {
     private int getWrappedTextWidth() {
         return stream()
             .map(fontMetrics::stringWidth)
-            .reduce(0, Math::max);
+            .reduce(0, Math::max) + 2 * margin;
     }
 
     private int getWrappedTextHeight() {
-        return size() * fontMetrics.getHeight();
+        return size() * (fontMetrics.getHeight() + margin);
     }
 
     /**

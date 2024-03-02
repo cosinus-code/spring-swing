@@ -41,6 +41,7 @@
         <twelvemonkeys.imageio.version>3.9.4</twelvemonkeys.imageio.version>
         <darcula.version>2018.2</darcula.version>
         <jdatepicker.version>1.3.4</jdatepicker.version>
+        <commons-imaging.version>1.0-alpha3</commons-imaging.version>
 
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
