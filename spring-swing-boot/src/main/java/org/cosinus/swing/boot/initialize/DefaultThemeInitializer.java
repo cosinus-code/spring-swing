@@ -24,6 +24,7 @@ import org.cosinus.swing.ui.ApplicationUIHandler;
 
 import javax.swing.UIManager.LookAndFeelInfo;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.cosinus.swing.preference.Preferences.LOOK_AND_FEEL;
 
@@ -47,17 +48,26 @@ public class DefaultThemeInitializer implements ApplicationInitializer {
     @Override
     public void initialize() {
         Map<String, LookAndFeelInfo> availableLookAndFeels = uiHandler.getAvailableLookAndFeels();
-        String lookAndFeelClassName = preferences.findPreference(LOOK_AND_FEEL)
+        preferences.findPreference(LOOK_AND_FEEL)
             .map(Preference::getValue)
             .map(Object::toString)
             .map(availableLookAndFeels::get)
             .map(LookAndFeelInfo::getClassName)
-            .orElseGet(uiHandler::getDefaultLookAndFeelClassName);
-        LOG.info("Initializing application look-and-feel to " + lookAndFeelClassName + "...");
-        uiHandler.setLookAndFeel(lookAndFeelClassName);
-        uiHandler.translateDefaultUILabels();
-        uiHandler.initializeDefaultUIFonts();
+            .or(this::getDefaultLookAndFeelClassName)
+            .ifPresent(lookAndFeelClassName -> {
+                LOG.info("Initializing application look-and-feel to " + lookAndFeelClassName + "...");
+                uiHandler.setLookAndFeel(lookAndFeelClassName);
+                uiHandler.translateDefaultUILabels();
+                uiHandler.initializeDefaultUIFonts();
 
-        preferences.setAvailableLookAndFeels(availableLookAndFeels.values());
+                preferences.setAvailableLookAndFeels(availableLookAndFeels.values());
+            });
+
+    }
+
+    private Optional<String> getDefaultLookAndFeelClassName() {
+        return !uiHandler.isDarkTheme() ?
+            Optional.of(uiHandler.getDefaultLookAndFeelClassName()) :
+            Optional.empty();
     }
 }

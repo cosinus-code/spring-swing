@@ -47,13 +47,16 @@ public class LookAndFeelInitializer implements ApplicationInitializer {
 
     @Override
     public void initialize() {
-        String lookAndFeelClassName = ofNullable(uiProperties.getTheme())
-            .filter(not(CROSS_PLATFORM_UI_THEME::equals))
-            .flatMap(this::getLookAndFeelClassName)
-            .orElseGet(uiHandler::getCrossPlatformLookAndFeelClassName);
+        String theme = uiProperties.getTheme();
+        if (!"default".equals(theme)) {
+            String lookAndFeelClassName = ofNullable(theme)
+                .filter(not(CROSS_PLATFORM_UI_THEME::equals))
+                .flatMap(this::getLookAndFeelClassName)
+                .orElseGet(uiHandler::getCrossPlatformLookAndFeelClassName);
 
-        LOG.info("Initializing application look-and-feel to " + lookAndFeelClassName + "...");
-        uiHandler.setLookAndFeel(lookAndFeelClassName);
+            LOG.info("Initializing application look-and-feel to " + lookAndFeelClassName + "...");
+            uiHandler.setLookAndFeel(lookAndFeelClassName);
+        }
     }
 
     private Optional<String> getLookAndFeelClassName(String uiThemeName) {

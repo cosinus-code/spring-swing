@@ -25,25 +25,35 @@ import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.lang.String.join;
+import static org.apache.logging.log4j.util.Strings.LINE_SEPARATOR;
 
 /**
  * Wrapped text builder.
  * <p>
  * It allows to wrap a text with or without separators.
  */
-public class WrappedTextBuilder extends ArrayList<String> {
+public class TextWrapper extends ArrayList<String> {
+
+    public static final String TAG_HTML_START = "<html>";
+    public static final String TAG_HTML_CLOSE = "</html>";
+    public static final String TAG_CENTER_START = "<center>";
+    public static final String TAG_CENTER_CLOSE = "</center>";
+    public static final String TAG_PARAGRAPH = "<p>";
 
     private final int width;
 
     private final FontMetrics fontMetrics;
 
-    private int margin = 20;
+    private final int margin = 20;
 
-    public WrappedTextBuilder(int width, JComponent component) {
+    private String originalText;
+
+
+    public TextWrapper(int width, JComponent component) {
         this(width, component.getFontMetrics(component.getFont()));
     }
 
-    public WrappedTextBuilder(int width, FontMetrics fontMetrics) {
+    public TextWrapper(int width, FontMetrics fontMetrics) {
         this.width = width;
         this.fontMetrics = fontMetrics;
     }
@@ -55,7 +65,8 @@ public class WrappedTextBuilder extends ArrayList<String> {
      * @param separators the list of separator characters
      * @return this
      */
-    public WrappedTextBuilder wrapOnSeparators(String text, String separators) {
+    public TextWrapper wrapOnSeparators(String text, String separators) {
+        this.originalText = text;
         String regex = separators
             .chars()
             .mapToObj(c -> (char) c)
@@ -104,7 +115,7 @@ public class WrappedTextBuilder extends ArrayList<String> {
      * @param text the text to add
      * @return this
      */
-    public WrappedTextBuilder addText(String text) {
+    public TextWrapper addText(String text) {
         if (isTextExceedingRowWidth(text)) {
             addAll(wrap(text));
         } else if (isEmpty()) {
@@ -137,7 +148,7 @@ public class WrappedTextBuilder extends ArrayList<String> {
     }
 
     private int getWrappedTextHeight() {
-        return size() * (fontMetrics.getHeight() + margin);
+        return size() * fontMetrics.getHeight() + margin;
     }
 
     /**
@@ -180,7 +191,7 @@ public class WrappedTextBuilder extends ArrayList<String> {
      * @return the wrapped text
      */
     public WrappedText toWrappedText() {
-        return getWrappedText(join("\n", this));
+        return getWrappedText(join(LINE_SEPARATOR, this));
     }
 
     /**
@@ -189,7 +200,7 @@ public class WrappedTextBuilder extends ArrayList<String> {
      * @return the wrapped text as HTML body
      */
     private String toHtmlWrappedTextBody() {
-        return join("<p>", this);
+        return join(TAG_PARAGRAPH, this);
     }
 
     /**
@@ -198,7 +209,7 @@ public class WrappedTextBuilder extends ArrayList<String> {
      * @return the wrapped text as centered HTML body
      */
     private String getHtmlCenteredWrappedTextBody() {
-        return "<center>" + join("<p>", this) + "</center>";
+        return TAG_CENTER_START + toHtmlWrappedTextBody() + TAG_CENTER_CLOSE;
     }
 
     /**
@@ -207,7 +218,7 @@ public class WrappedTextBuilder extends ArrayList<String> {
      * @return the wrapped text as HTML
      */
     public WrappedText toWrappedHtmlText() {
-        return getWrappedText("<html>" + toHtmlWrappedTextBody() + "</html>");
+        return getWrappedText(TAG_HTML_START + toHtmlWrappedTextBody() + TAG_HTML_CLOSE);
     }
 
     /**
@@ -216,7 +227,16 @@ public class WrappedTextBuilder extends ArrayList<String> {
      * @return the wrapped text as centered HTML
      */
     public WrappedText toWrappedHtmlCenteredText() {
-        return getWrappedText("<html>" + getHtmlCenteredWrappedTextBody() + "</html>");
+        return getWrappedText(TAG_HTML_START + getHtmlCenteredWrappedTextBody() + TAG_HTML_CLOSE);
+    }
+
+    /**
+     * Get the original text.
+     *
+     * @return the original text
+     */
+    public String getOriginalText() {
+        return originalText;
     }
 
     private WrappedText getWrappedText(String text) {

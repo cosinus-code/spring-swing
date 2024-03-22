@@ -41,6 +41,13 @@ import org.springframework.context.annotation.Bean;
 @AutoConfiguration
 public class ApplicationUIAutoConfiguration {
 
+    /**
+     * LookAndFeel initializer using "swing.ui.theme" application property value.
+     *
+     * @param uiHandler the UI handler
+     * @param uiProperties the UI properties
+     * @return the {@link LookAndFeelInitializer} bean
+     */
     @Bean
     @ConditionalOnProperty(value = "swing.ui.theme")
     public LookAndFeelInitializer lookAndFeelInitializer(ApplicationUIHandler uiHandler,
@@ -48,6 +55,13 @@ public class ApplicationUIAutoConfiguration {
         return new LookAndFeelInitializer(uiHandler, uiProperties);
     }
 
+    /**
+     * LookAndFeel initializer for "swing.ui.theme=default" application property.
+     *
+     * @param preferences the application preferences
+     * @param uiHandler the UI handler
+     * @return the {@link DefaultThemeInitializer} bean
+     */
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(value = "swing.ui.theme", havingValue = "default", matchIfMissing = true)
@@ -56,6 +70,15 @@ public class ApplicationUIAutoConfiguration {
         return new DefaultThemeInitializer(preferences, uiHandler);
     }
 
+    /**
+     * Dark LookAndFeel initializer for "swing.ui.theme=default" application property.
+     *
+     * @param preferences the application preferences
+     * @param uiHandler the UI handler
+     * @param darkLookAndFeel the dark look and feel
+     * @param resourceResolver the resource resolver
+     * @return the {@link DarkLookAndFeelInitializer} bean
+     */
     @Bean
     @ConditionalOnBean(DarkLookAndFeel.class)
     @ConditionalOnProperty(value = "swing.ui.theme", havingValue = "default", matchIfMissing = true)
@@ -69,6 +92,11 @@ public class ApplicationUIAutoConfiguration {
                 resourceResolver);
     }
 
+    /**
+     * The Darcula based implementation of a dark look and feel bean
+     *
+     * @return the {@link DarkLookAndFeel} bean
+     */
     @Bean
     @ConditionalOnClass(DarculaLaf.class)
     @ConditionalOnOperatingSystem({"Windows", "Linux"})
