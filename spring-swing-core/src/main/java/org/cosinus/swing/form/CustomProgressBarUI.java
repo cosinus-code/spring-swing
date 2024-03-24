@@ -28,7 +28,7 @@ public class CustomProgressBarUI extends BasicProgressBarUI {
     protected void paintIndeterminate(Graphics g, JComponent c) {
         Rectangle rectangle = new Rectangle();
         getBox(rectangle);
-        paintProgress(g, c, rectangle);
+        paintProgress(g, rectangle);
     }
 
     @Override
@@ -47,10 +47,10 @@ public class CustomProgressBarUI extends BasicProgressBarUI {
         Rectangle rectangle = new Rectangle(b.left, b.top,
             amountFull + b.left, barRectHeight + b.top);
 
-        paintProgress(g, c, rectangle);
+        paintProgress(g, rectangle);
     }
 
-    private void paintProgress(final Graphics g, final JComponent c, Rectangle rectangle) {
+    private void paintProgress(final Graphics g, Rectangle rectangle) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
         g2d.setColor(uiHandler.getColor(MENU_SELECTION_BACKGROUND));

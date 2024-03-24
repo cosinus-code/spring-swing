@@ -38,6 +38,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.awt.Cursor.HAND_CURSOR;
+import static java.awt.Cursor.getPredefinedCursor;
 import static java.awt.Toolkit.getDefaultToolkit;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.META_DOWN_MASK;
@@ -544,5 +546,13 @@ public class ApplicationUIHandler {
     public boolean isProgressTextAllowed()
     {
         return !isLookAndFeelMac();
+    }
+
+    public Cursor getHandCursor() {
+        return getCursor(HAND_CURSOR);
+    }
+
+    public Cursor getCursor(int cursorId) {
+        return getPredefinedCursor(cursorId);
     }
 }
