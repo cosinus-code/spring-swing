@@ -159,11 +159,11 @@ public class ApplicationUIHandler {
     /**
      * Get default icon for a file.
      *
-     * @param file the file
+     * @param isFolder true if the file is  a folder
      * @return the default icon of the file
      */
-    public Optional<Icon> getDefaultFileIcon(File file) {
-        return ofNullable(UIManager.get(file != null && file.isDirectory() ? FOLDER_ICON_KEY : FILE_ICON_KEY))
+    public Optional<Icon> getDefaultFileIcon(boolean isFolder) {
+        return ofNullable(UIManager.get(isFolder ? FOLDER_ICON_KEY : FILE_ICON_KEY))
             .filter(icon -> Icon.class.isAssignableFrom(icon.getClass()))
             .map(Icon.class::cast);
     }

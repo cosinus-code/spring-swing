@@ -103,6 +103,13 @@ public class ApplicationProperties {
         return getClass().getPackage().getImplementationVersion();
     }
 
+    public String userAgent() {
+        return ofNullable(getVersion())
+            .map("/"::concat)
+            .map(getName()::concat)
+            .orElseGet(this::getName);
+    }
+
     public static class Frame {
 
         private String name;

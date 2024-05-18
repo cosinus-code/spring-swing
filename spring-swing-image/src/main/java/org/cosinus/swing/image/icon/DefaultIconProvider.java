@@ -35,7 +35,7 @@ public class DefaultIconProvider implements IconProvider {
 
     @Override
     public Optional<Icon> findIconByFile(File file, IconSize size) {
-        return uiHandler.getDefaultFileIcon(file);
+        return uiHandler.getDefaultFileIcon(file != null && file.isDirectory());
     }
 
     @Override

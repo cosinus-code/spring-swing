@@ -102,7 +102,7 @@ public class IconHandler {
         keyGenerator = "fileExtensionKeyGenerator")
     public Optional<Icon> findIconByFile(File file, IconSize size) {
         return iconProvider.findIconByFile(file, size)
-            .or(() -> uiHandler.getDefaultFileIcon(file));
+            .or(() -> uiHandler.getDefaultFileIcon(file.isDirectory()));
         //TODO
         //.map(icon -> file.isHidden() ? getGrayFilteredIcon(icon) : icon);
     }
