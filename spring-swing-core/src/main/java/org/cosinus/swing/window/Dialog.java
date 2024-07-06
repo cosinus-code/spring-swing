@@ -124,6 +124,7 @@ public abstract class Dialog<T> extends JDialog implements Window, FormComponent
         return null;
     }
 
+    @Override
     public void cancel() {
         cancelled = true;
         close();

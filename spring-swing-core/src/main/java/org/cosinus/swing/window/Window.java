@@ -42,7 +42,7 @@ public interface Window extends Translatable {
      */
     default void registerExitOnEscapeKey() {
         getComponent().ifPresent(component -> component
-            .registerKeyboardAction(new EscapeActionListener(thisWindow()),
+            .registerKeyboardAction(new EscapeActionListener(this),
                                     getKeyStroke(KeyEvent.VK_ESCAPE, 0),
                                     WHEN_IN_FOCUSED_WINDOW));
     }
@@ -53,7 +53,7 @@ public interface Window extends Translatable {
      * @return the first component
      */
     default Optional<JComponent> getComponent() {
-        return stream(thisWindow().getComponents())
+        return stream(awtWindow().getComponents())
             .filter(comp -> JComponent.class.isAssignableFrom(comp.getClass()))
             .map(JComponent.class::cast)
             .findFirst();
@@ -63,7 +63,7 @@ public interface Window extends Translatable {
      * Center this window on the current screen bounds
      */
     default void centerWindow() {
-        java.awt.Window window = thisWindow();
+        java.awt.Window window = awtWindow();
         ofNullable(window.getParent())
             .ifPresentOrElse(window::setLocationRelativeTo, () -> {
                 Dimension screenSize = getDefaultToolkit().getScreenSize();
@@ -77,7 +77,7 @@ public interface Window extends Translatable {
      *
      * @return this
      */
-    default java.awt.Window thisWindow() {
+    default java.awt.Window awtWindow() {
         return (java.awt.Window) this;
     }
 
@@ -100,15 +100,19 @@ public interface Window extends Translatable {
         if (windowSettings.isCentered()) {
             centerWindow();
         } else {
-            thisWindow().setLocation(windowSettings.getX(), windowSettings.getY());
+            awtWindow().setLocation(windowSettings.getX(), windowSettings.getY());
         }
 
-        int defaultWith = thisWindow().getWidth() > 0 ? thisWindow().getWidth() : DEFAULT_WIDTH;
-        int defaultHeight = thisWindow().getHeight() > 0 ? thisWindow().getHeight() : DEFAULT_HEIGHT;
-        thisWindow().setSize(windowSettings.getWidth(), windowSettings.getHeight());
-        if (!screenBound.contains(thisWindow().getBounds())) {
-            thisWindow().setSize(defaultWith, defaultHeight);
+        int defaultWith = awtWindow().getWidth() > 0 ? awtWindow().getWidth() : DEFAULT_WIDTH;
+        int defaultHeight = awtWindow().getHeight() > 0 ? awtWindow().getHeight() : DEFAULT_HEIGHT;
+        awtWindow().setSize(windowSettings.getWidth(), windowSettings.getHeight());
+        if (!screenBound.contains(awtWindow().getBounds())) {
+            awtWindow().setSize(defaultWith, defaultHeight);
             centerWindow();
         }
+    }
+
+    default void cancel() {
+        awtWindow().dispose();
     }
 }

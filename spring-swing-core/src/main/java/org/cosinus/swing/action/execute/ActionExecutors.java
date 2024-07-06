@@ -41,13 +41,13 @@ public class ActionExecutors {
     /**
      * Get the action executor corresponding to an action model class.
      *
-     * @param actionClass the action model class to search for
+     * @param actionModel the action model to search for
      * @param <A> the type of action model
      * @return the found action executor, or {@link Optional#empty}
      */
     public <A extends ActionModel>
-    Optional<ActionExecutor<? extends ActionModel>> getActionExecutor(Class<A> actionClass) {
-        return ofNullable(executorsMap.get(actionClass.getName()));
+    Optional<ActionExecutor<? extends ActionModel>> getActionExecutor(A actionModel) {
+        return ofNullable(executorsMap.get(actionModel.getClass().getName()));
     }
 
     /**
@@ -57,7 +57,7 @@ public class ActionExecutors {
      * @param <A> the type of the action model
      */
     public <A extends ActionModel> void execute(A actionModel) {
-        getActionExecutor(actionModel.getClass())
+        getActionExecutor(actionModel)
             .ifPresent(executor -> ((ActionExecutor<A>) executor).execute(actionModel));
     }
 }

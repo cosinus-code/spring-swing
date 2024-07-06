@@ -16,7 +16,8 @@
 
 package org.cosinus.swing.action;
 
-import java.awt.*;
+import org.cosinus.swing.window.Window;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -33,6 +34,6 @@ public class EscapeActionListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        window.dispose();
+        window.cancel();
     }
 }
