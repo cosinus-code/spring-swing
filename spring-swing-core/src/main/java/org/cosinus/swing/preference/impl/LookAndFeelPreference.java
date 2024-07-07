@@ -20,11 +20,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.cosinus.swing.preference.Preference;
-import org.cosinus.swing.preference.PreferenceType;
+import org.cosinus.swing.form.control.ControlType;
 import org.cosinus.swing.preference.PrimitivePreference;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-import static org.cosinus.swing.preference.PreferenceType.LAF;
+import static org.cosinus.swing.form.control.ControlType.LAF;
 
 /**
  * Implementation of {@link Preference} for look-and-feel managed values.
@@ -35,7 +35,7 @@ public class LookAndFeelPreference extends PrimitivePreference<String> {
 
     @Override
     @JsonIgnore
-    public PreferenceType getType() {
+    public ControlType getType() {
         return LAF;
     }
 }

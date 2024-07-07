@@ -14,22 +14,25 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.preference.control;
+package org.cosinus.swing.form.control.provider;
 
+import org.cosinus.swing.form.control.ComboBox;
 import org.cosinus.swing.form.control.Control;
-import org.cosinus.swing.form.control.DatePicker;
-import org.cosinus.swing.preference.Preference;
-
-import java.util.Date;
 
 /**
- * Implementation of {@link PreferenceControlProvider}
- * for providing the {@link Control} corresponding to a date preference value.
+ * Implementation of {@link ControlProvider}
+ * for providing the {@link Control} corresponding to a combobox.
  */
-public class DatePreferenceControlProvider implements PreferenceControlProvider<Date> {
+public class ComboboxControlProvider implements ControlProvider<String> {
 
     @Override
-    public <T> Control<Date> getPreferenceControl(Preference<T, Date> preference) {
-        return new DatePicker(preference.getRealValue());
+    public ComboBox<String> getControl() {
+        return new ComboBox<>();
+    }
+
+    @Override
+    public <T> ComboBox<String> getControl(ControlDescriptor<T, String> descriptor) {
+        return new ComboBox<>(descriptor.getValues().toArray(String[]::new),
+            descriptor.getRealValue());
     }
 }

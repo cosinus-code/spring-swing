@@ -13,35 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.cosinus.swing.preference;
+package org.cosinus.swing.ui;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import static java.util.Arrays.stream;
 
-/**
- * Preference type that will be reflected on the real managed value of the preference
- * and function as discriminating for the preference implementation to be instantiated.
- */
-public enum PreferenceType {
-    TEXT,
-    BOOLEAN,
-    INTEGER,
-    LONG,
-    FLOAT,
-    DOUBLE,
-    LANGUAGE,
-    FILE,
-    FOLDER,
-    COLOR,
-    FONT,
-    LAF,
-    DATE;
+public enum UIAlign {
+    LEFT,
+    CENTER,
+    RIGHT;
 
     @JsonCreator
-    public static PreferenceType toPreferenceType(String value) {
+    public static UIAlign fromValue(String value) {
         return stream(values())
             .filter(type -> type.toString().equals(value))
             .findFirst()

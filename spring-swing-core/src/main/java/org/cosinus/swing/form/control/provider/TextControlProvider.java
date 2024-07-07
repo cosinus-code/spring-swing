@@ -14,25 +14,30 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.preference.control;
+package org.cosinus.swing.form.control.provider;
 
+import org.cosinus.swing.form.control.ComboBox;
 import org.cosinus.swing.form.control.Control;
-import org.cosinus.swing.form.control.Label;
-import org.cosinus.swing.form.control.LookAndFeelControl;
-import org.cosinus.swing.preference.Preference;
+import org.cosinus.swing.form.control.TextField;
 
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 /**
- * Implementation of {@link PreferenceControlProvider}
- * for providing the {@link Control} corresponding to a look-and-feel preference value.
+ * Implementation of {@link ControlProvider}
+ * for providing the {@link Control} corresponding to a string value.
  */
-public class LookAndFeelPreferenceControlProvider implements PreferenceControlProvider<String> {
+public class TextControlProvider implements ControlProvider<String> {
 
     @Override
-    public <T> Control<String> getPreferenceControl(Preference<T, String> preference) {
-        return isEmpty(preference.getValues()) ?
-            new Label(preference.getRealValue()) :
-            new LookAndFeelControl(preference.getRealValues(), preference.getRealValue());
+    public TextField getControl() {
+        return new TextField();
+    }
+
+    @Override
+    public <T> Control<String> getControl(ControlDescriptor<T, String> descriptor) {
+        return isEmpty(descriptor.getValues()) ?
+            new TextField(descriptor.getRealValue()) :
+            new ComboBox<>(descriptor.getValues().toArray(String[]::new),
+                           descriptor.getRealValue());
     }
 }

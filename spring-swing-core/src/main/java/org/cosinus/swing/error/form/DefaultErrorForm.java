@@ -19,7 +19,7 @@ package org.cosinus.swing.error.form;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.action.EscapeAction;
-import org.cosinus.swing.error.SwingSevereException;
+import org.cosinus.swing.error.SpringSwingException;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.cosinus.swing.window.Dialog;
@@ -151,7 +151,7 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
 
     @Override
     public void showError(Throwable throwable) {
-        boolean severe = throwable instanceof SwingSevereException;
+        boolean severe = throwable instanceof SpringSwingException;
         txtDescription.setText(format(ERROR_MESSAGE,
             translate(severe ? "ErrorForm.severe-message" : "ErrorForm.message"),
             getRootCauseMessage(throwable)));

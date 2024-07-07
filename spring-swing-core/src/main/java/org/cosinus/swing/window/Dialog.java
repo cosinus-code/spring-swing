@@ -17,10 +17,9 @@
 package org.cosinus.swing.window;
 
 import org.cosinus.swing.form.FormComponent;
+import org.cosinus.swing.form.control.Button;
 import org.cosinus.swing.ui.ApplicationUIHandler;
-import org.cosinus.swing.window.Window;
-import org.cosinus.swing.window.WindowSettings;
-import org.cosinus.swing.window.WindowSettingsHandler;
+import org.cosinus.swing.ui.UIStructure;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
@@ -31,6 +30,8 @@ import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
+import static org.cosinus.swing.ui.UIStructure.CANCEL_BUTTON_ID;
+import static org.cosinus.swing.ui.UIStructure.OK_BUTTON_ID;
 
 /**
  * Wrapper over a {@link JDialog}
@@ -80,8 +81,7 @@ public abstract class Dialog<T> extends JDialog implements Window, FormComponent
         if (windowSettings != null) {
             setWindowPositionAndSize(windowSettings, uiHandler.getScreenBound());
             windowSettingsHandler.saveWindowSettings(windowSettings);
-        }
-        else {
+        } else {
             setLocationRelativeTo(getParent());
         }
     }
@@ -144,5 +144,21 @@ public abstract class Dialog<T> extends JDialog implements Window, FormComponent
 
     @Override
     public void translate() {
+    }
+
+    protected void registerOkAction(final Button button) {
+        button.addActionListener(event -> dispose());
+    }
+
+    protected void registerCancelAction(final Button button) {
+        button.addActionListener(event -> cancel());
+    }
+
+    protected void registerDefaultActions(UIStructure uiStructure) {
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        uiStructure.getButton(OK_BUTTON_ID)
+            .ifPresent(this::registerOkAction);
+        uiStructure.getButton(CANCEL_BUTTON_ID)
+            .ifPresent(this::registerCancelAction);
     }
 }

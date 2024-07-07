@@ -14,18 +14,30 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.preference.control;
+package org.cosinus.swing.error;
 
-import org.cosinus.swing.form.control.Control;
-import org.cosinus.swing.preference.Preference;
+import java.io.Serial;
 
 /**
- * Interface for providing the {@link Control} corresponding to a preference value
- *
- * @param <R> the type of the preference real value
+ * Swing severe exception
  */
-public interface PreferenceControlProvider<R> {
+public class SpringSwingException extends RuntimeException {
 
-    <T> Control<R> getPreferenceControl(Preference<T, R> preference);
+    @Serial
+    private static final long serialVersionUID = -1511690664217068720L;
 
+    public SpringSwingException() {
+    }
+
+    public SpringSwingException(String message) {
+        super(message);
+    }
+
+    public SpringSwingException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public SpringSwingException(Throwable cause) {
+        super(cause);
+    }
 }

@@ -14,32 +14,27 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.form;
+package org.cosinus.swing.form.control.provider;
+
+import org.cosinus.swing.form.control.Control;
+import org.cosinus.swing.form.control.FontLabel;
 
 import javax.swing.*;
 import java.awt.*;
 
-import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
-
 /**
- * Extension of the {@link JPanel}
- * which will automatically inject the application context.
+ * Implementation of {@link ControlProvider}
+ * for providing the {@link Control} corresponding to a font value.
  */
-public class Panel extends JPanel implements FormComponent {
+public class FontControlProvider implements ControlProvider<Font> {
 
-    public Panel() {
-        injectContext(this);
-    }
-
-    public Panel(LayoutManager layout) {
-        super(layout);
+    @Override
+    public FontLabel getControl() {
+        return new FontLabel(new JLabel().getFont());
     }
 
     @Override
-    public void initComponents() {
-    }
-
-    @Override
-    public void translate() {
+    public <T> FontLabel getControl(ControlDescriptor<T, Font> descriptor) {
+        return new FontLabel(descriptor.getRealValue());
     }
 }

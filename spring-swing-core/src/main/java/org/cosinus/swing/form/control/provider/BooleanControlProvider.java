@@ -14,32 +14,25 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.form;
+package org.cosinus.swing.form.control.provider;
 
-import javax.swing.*;
-import java.awt.*;
-
-import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
+import org.cosinus.swing.form.control.CheckBox;
+import org.cosinus.swing.form.control.Control;
 
 /**
- * Extension of the {@link JPanel}
- * which will automatically inject the application context.
+ * Implementation of {@link ControlProvider}
+ * for providing the {@link Control} corresponding to a boolean value.
  */
-public class Panel extends JPanel implements FormComponent {
+public class BooleanControlProvider implements ControlProvider<Boolean> {
 
-    public Panel() {
-        injectContext(this);
-    }
-
-    public Panel(LayoutManager layout) {
-        super(layout);
+    @Override
+    public CheckBox getControl() {
+        return new CheckBox("");
     }
 
     @Override
-    public void initComponents() {
+    public <T> CheckBox getControl(ControlDescriptor<T, Boolean> descriptor) {
+        return new CheckBox("", descriptor.getRealValue());
     }
 
-    @Override
-    public void translate() {
-    }
 }

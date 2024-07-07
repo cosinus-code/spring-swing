@@ -30,7 +30,8 @@ package org.cosinus.swing.resource;
 public enum ResourceType implements ResourceLocator {
     CONF,
     I18N,
-    IMAGE;
+    IMAGE,
+    UI;
 
     @Override
     public String getLocation() {

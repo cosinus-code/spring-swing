@@ -14,22 +14,31 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.preference.control;
+package org.cosinus.swing.form.control.provider;
 
 import org.cosinus.swing.form.control.Control;
-import org.cosinus.swing.form.control.FontLabel;
-import org.cosinus.swing.preference.Preference;
-
-import java.awt.*;
 
 /**
- * Implementation of {@link PreferenceControlProvider}
- * for providing the {@link Control} corresponding to a font preference value.
+ * Interface for providing the {@link Control} corresponding to a descriptor
+ *
+ * @param <R> the type of the real value handled by the control
  */
-public class FontPreferenceControlProvider implements PreferenceControlProvider<Font> {
+public interface ControlProvider<R> {
 
-    @Override
-    public <T> Control<Font> getPreferenceControl(Preference<T, Font> preference) {
-        return new FontLabel(preference.getRealValue());
-    }
+    /**
+     * Create a control.
+     *
+     * @return the created control
+     */
+    Control<R> getControl();
+
+    /**
+     * Create a control based on a descriptor.
+     *
+     * @param descriptor the control descriptor
+     * @return the created control
+     * @param <T> the type of the value to show in the control
+     */
+    <T> Control<R> getControl(final ControlDescriptor<T, R> descriptor);
+
 }

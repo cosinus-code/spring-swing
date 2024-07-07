@@ -14,22 +14,29 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.preference.control;
+package org.cosinus.swing.form.control.provider;
 
 import org.cosinus.swing.form.control.Control;
 import org.cosinus.swing.form.control.LanguageControl;
-import org.cosinus.swing.preference.Preference;
 
 import java.util.Locale;
 
+import static java.util.Collections.singletonList;
+
 /**
- * Implementation of {@link PreferenceControlProvider}
- * for providing the {@link Control} corresponding to a language preference value.
+ * Implementation of {@link ControlProvider}
+ * for providing the {@link Control} corresponding to a language value.
  */
-public class LanguagePreferenceControlProvider implements PreferenceControlProvider<Locale> {
+public class LanguageControlProvider implements ControlProvider<Locale> {
 
     @Override
-    public <T> Control<Locale> getPreferenceControl(Preference<T, Locale> preference) {
-        return new LanguageControl(preference.getRealValues(), preference.getRealValue());
+    public LanguageControl getControl() {
+        Locale defaultLocal = Locale.getDefault();
+        return new LanguageControl(singletonList(defaultLocal), defaultLocal);
+    }
+
+    @Override
+    public <T> LanguageControl getControl(ControlDescriptor<T, Locale> descriptor) {
+        return new LanguageControl(descriptor.getRealValues(), descriptor.getRealValue());
     }
 }

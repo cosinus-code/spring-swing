@@ -20,14 +20,14 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.cosinus.swing.preference.ObjectPreference;
 import org.cosinus.swing.preference.Preference;
-import org.cosinus.swing.preference.PreferenceType;
+import org.cosinus.swing.form.control.ControlType;
 
 import java.awt.*;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static java.lang.String.join;
 import static java.util.Optional.ofNullable;
-import static org.cosinus.swing.preference.PreferenceType.FONT;
+import static org.cosinus.swing.form.control.ControlType.FONT;
 import static org.cosinus.swing.util.FontUtils.getFontStyle;
 import static org.cosinus.swing.util.FontUtils.getFontStyleText;
 
@@ -41,7 +41,7 @@ public class FontPreference extends ObjectPreference<Font> {
     private static final String DELIMITER = ",";
 
     @Override
-    public PreferenceType getType() {
+    public ControlType getType() {
         return FONT;
     }
 

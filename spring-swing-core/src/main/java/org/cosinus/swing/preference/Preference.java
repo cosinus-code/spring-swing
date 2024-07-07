@@ -21,6 +21,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.cosinus.swing.form.control.ControlType;
+import org.cosinus.swing.form.control.provider.ControlDescriptor;
 import org.cosinus.swing.preference.impl.BooleanPreference;
 import org.cosinus.swing.preference.impl.ColorPreference;
 import org.cosinus.swing.preference.impl.DatePreference;
@@ -65,9 +67,9 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
     @JsonSubTypes.Type(value = LookAndFeelPreference.class, name = "laf"),
     @JsonSubTypes.Type(value = DatePreference.class, name = "date")
 })
-public abstract class Preference<T, R> {
+public abstract class Preference<T, R> implements ControlDescriptor<T, R> {
 
-    protected PreferenceType type;
+    protected ControlType type;
 
     protected String name;
 
@@ -76,11 +78,11 @@ public abstract class Preference<T, R> {
     protected List<T> values;
 
     @JsonIgnore
-    public PreferenceType getType() {
+    public ControlType getType() {
         return type;
     }
 
-    public void setType(PreferenceType type) {
+    public void setType(ControlType type) {
         this.type = type;
     }
 
@@ -101,6 +103,7 @@ public abstract class Preference<T, R> {
         this.value = value;
     }
 
+    @Override
     public List<T> getValues() {
         return values;
     }
@@ -110,11 +113,13 @@ public abstract class Preference<T, R> {
     }
 
     @JsonIgnore
+    @Override
     public abstract R getRealValue();
 
     public abstract void setRealValue(R realValue);
 
     @JsonIgnore
+    @Override
     public abstract List<R> getRealValues();
 
     public abstract void setRealValues(List<R> values);

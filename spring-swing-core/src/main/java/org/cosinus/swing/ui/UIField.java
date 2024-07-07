@@ -13,27 +13,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.cosinus.swing.ui;
 
-package org.cosinus.swing.preference.impl;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import org.cosinus.swing.preference.Preference;
 import org.cosinus.swing.form.control.ControlType;
-import org.cosinus.swing.preference.PrimitivePreference;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-import static org.cosinus.swing.form.control.ControlType.TEXT;
+public class UIField {
 
-/**
- * Implementation of {@link Preference} for text managed values.
- */
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(NON_NULL)
-public class TextPreference extends PrimitivePreference<String> {
+    private String id;
 
-    @Override
+    private String label;
+
+    private ControlType type;
+
+    private UIAlign align;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
     public ControlType getType() {
-        return TEXT;
+        return type;
+    }
+
+    public void setType(ControlType type) {
+        this.type = type;
+    }
+
+    public UIAlign getAlign() {
+        return align;
+    }
+
+    public void setAlign(UIAlign align) {
+        this.align = align;
     }
 }

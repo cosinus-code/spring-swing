@@ -14,23 +14,26 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.preference.control;
+package org.cosinus.swing.form.control.provider;
 
 import org.cosinus.swing.form.control.Control;
-import org.cosinus.swing.form.control.FileTextField;
-import org.cosinus.swing.preference.Preference;
+import org.cosinus.swing.form.control.Spinner;
 
-import java.io.File;
+import static java.util.Optional.ofNullable;
 
 /**
- * Implementation of {@link PreferenceControlProvider}
- * for providing the {@link Control} corresponding to a folder preference value.
+ * Implementation of {@link ControlProvider}
+ * for providing the {@link Control} corresponding to an integer value.
  */
-public class FolderPreferenceControlProvider implements PreferenceControlProvider<File> {
+public class IntegerControlProvider implements ControlProvider<Integer> {
 
     @Override
-    public <T> Control<File> getPreferenceControl(Preference<T, File> preference) {
-        return new FileTextField(preference.getRealValue(), true);
+    public Spinner<Integer> getControl() {
+        return new Spinner<>(0);
     }
 
+    @Override
+    public <T> Spinner<Integer> getControl(ControlDescriptor<T, Integer> descriptor) {
+        return new Spinner<>(ofNullable(descriptor.getRealValue()).orElse(0));
+    }
 }

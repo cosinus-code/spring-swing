@@ -19,11 +19,11 @@ package org.cosinus.swing.preference.impl;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.cosinus.swing.preference.Preference;
-import org.cosinus.swing.preference.PreferenceType;
+import org.cosinus.swing.form.control.ControlType;
 import org.cosinus.swing.preference.PrimitivePreference;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-import static org.cosinus.swing.preference.PreferenceType.INTEGER;
+import static org.cosinus.swing.form.control.ControlType.INTEGER;
 
 /**
  * Implementation of {@link Preference} for integer managed values.
@@ -33,7 +33,7 @@ import static org.cosinus.swing.preference.PreferenceType.INTEGER;
 public class IntegerPreference extends PrimitivePreference<Integer> {
 
     @Override
-    public PreferenceType getType() {
+    public ControlType getType() {
         return INTEGER;
     }
 }

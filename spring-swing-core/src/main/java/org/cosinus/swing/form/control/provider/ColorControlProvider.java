@@ -14,22 +14,28 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.preference.control;
+package org.cosinus.swing.form.control.provider;
 
+import org.cosinus.swing.form.control.ColorLabel;
 import org.cosinus.swing.form.control.Control;
-import org.cosinus.swing.form.control.FileTextField;
-import org.cosinus.swing.preference.Preference;
 
-import java.io.File;
+import java.awt.*;
+
+import static java.awt.Color.white;
 
 /**
- * Implementation of {@link PreferenceControlProvider}
- * for providing the {@link Control} corresponding to a file preference value.
+ * Implementation of {@link ControlProvider}
+ * for providing the {@link Control} corresponding to a color value.
  */
-public class FilePreferenceControlProvider implements PreferenceControlProvider<File> {
+public class ColorControlProvider implements ControlProvider<Color> {
 
     @Override
-    public <T> Control<File> getPreferenceControl(Preference<T, File> preference) {
-        return new FileTextField(preference.getRealValue(), false);
+    public ColorLabel getControl() {
+        return new ColorLabel(white);
+    }
+
+    @Override
+    public <T> ColorLabel getControl(ControlDescriptor<T, Color> descriptor) {
+        return new ColorLabel(descriptor.getRealValue());
     }
 }

@@ -13,22 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.cosinus.swing.form.control.provider;
 
-package org.cosinus.swing.preference.control;
+import java.util.Collection;
+import java.util.List;
 
-import org.cosinus.swing.form.control.CheckBox;
-import org.cosinus.swing.form.control.Control;
-import org.cosinus.swing.preference.Preference;
+public interface ControlDescriptor<T, R> {
 
-/**
- * Implementation of {@link PreferenceControlProvider}
- * for providing the {@link Control} corresponding to a boolean preference value.
- */
-public class BooleanPreferenceControlProvider implements PreferenceControlProvider<Boolean> {
+    R getRealValue();
 
-    @Override
-    public <T> Control<Boolean> getPreferenceControl(Preference<T, Boolean> preference) {
-        return new CheckBox("", preference.getRealValue());
-    }
+    List<R> getRealValues();
 
+    Collection<T> getValues();
 }

@@ -79,8 +79,8 @@ public interface Control<T> {
      * @param label the label text
      * @return the created label
      */
-    default JLabel createAssociatedLabel(String label) {
-        JLabel controlLabel = new JLabel(label);
+    default Label createAssociatedLabel(String label) {
+        Label controlLabel = new Label(label);
         Optional.of(this)
             .filter(control -> JComponent.class.isAssignableFrom(control.getClass()))
             .map(JComponent.class::cast)
@@ -214,5 +214,24 @@ public interface Control<T> {
      */
     default void updateAssociatedLabel(String labelText) {
         getAssociatedLabel().ifPresent(label -> label.setText(labelText));
+    }
+
+    /**
+     * Return this as a {@link Component}.
+     *
+     * @return this as a {@link Component}
+     */
+    default Component getComponent() {
+        return (Component) this;
+    }
+
+    /**
+     * Enable/disable this control.
+     *
+     * @param enabled true to enable the control, false otherwise
+     */
+    default void setEnabled(boolean enabled) {
+        getComponent().setEnabled(enabled);
+        getAssociatedLabel().ifPresent(label -> label.setEnabled(enabled));
     }
 }

@@ -26,4 +26,14 @@ public interface ResourceLocator {
      * @return the resource location
      */
     String getLocation();
+
+    /**
+     * create a resource locator based on a folder name
+     *
+     * @param resourceFolderName the folder name
+     * @return the resource locator
+     */
+    static ResourceLocator resourceLocator(String resourceFolderName) {
+        return () -> resourceFolderName;
+    }
 }

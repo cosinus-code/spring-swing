@@ -17,12 +17,12 @@
 package org.cosinus.swing.preference.impl;
 
 import org.cosinus.swing.preference.Preference;
-import org.cosinus.swing.preference.PreferenceType;
+import org.cosinus.swing.form.control.ControlType;
 import org.cosinus.swing.preference.PrimitivePreference;
 
 import java.util.Date;
 
-import static org.cosinus.swing.preference.PreferenceType.DATE;
+import static org.cosinus.swing.form.control.ControlType.DATE;
 
 /**
  * Implementation of {@link Preference} for date managed values.
@@ -30,7 +30,7 @@ import static org.cosinus.swing.preference.PreferenceType.DATE;
 public class DatePreference extends PrimitivePreference<Date> {
 
     @Override
-    public PreferenceType getType() {
+    public ControlType getType() {
         return DATE;
     }
 }

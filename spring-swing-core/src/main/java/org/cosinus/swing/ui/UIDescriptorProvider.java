@@ -13,40 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.cosinus.swing.menu;
+package org.cosinus.swing.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.cosinus.swing.convert.JsonFileConverter;
 import org.cosinus.swing.error.JsonConvertException;
 import org.cosinus.swing.error.SpringSwingException;
+import org.cosinus.swing.resource.ResourceLocator;
 import org.cosinus.swing.resource.ResourceResolver;
-import org.cosinus.swing.resource.ResourceType;
 
-import java.util.Optional;
 import java.util.Set;
 
-/**
- * Menu provider from json file
- */
-public class JsonMenuProvider extends JsonFileConverter<MenuModel> implements MenuProvider {
+import static org.cosinus.swing.resource.ResourceType.UI;
 
-    public JsonMenuProvider(ObjectMapper objectMapper,
-                            Set<ResourceResolver> resourceResolvers) {
-        super(objectMapper, MenuModel.class, resourceResolvers);
+public class UIDescriptorProvider extends JsonFileConverter<UIDescriptor> {
+
+    public UIDescriptorProvider(final ObjectMapper objectMapper,
+                                final Set<ResourceResolver> resourceResolvers) {
+        super(objectMapper, UIDescriptor.class, resourceResolvers);
     }
 
-    @Override
-    public Optional<MenuModel> getMenu(String name) {
+    public UIDescriptor getUIDescriptor(String name) {
         try {
-            return convert(name);
+            return convert(name)
+                .orElseThrow(() -> new SpringSwingException("There is no UI descriptor for name: " + name));
         } catch (JsonConvertException ex) {
-            throw new SpringSwingException("Failed to load application menu.", ex);
+            throw new SpringSwingException("Failed to load UI descriptor.", ex);
         }
     }
 
     @Override
-    protected ResourceType resourceLocator() {
-        return ResourceType.CONF;
+    protected ResourceLocator resourceLocator() {
+        return UI;
     }
 }

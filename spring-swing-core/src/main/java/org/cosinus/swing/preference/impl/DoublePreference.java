@@ -19,11 +19,11 @@ package org.cosinus.swing.preference.impl;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.cosinus.swing.preference.Preference;
-import org.cosinus.swing.preference.PreferenceType;
+import org.cosinus.swing.form.control.ControlType;
 import org.cosinus.swing.preference.PrimitivePreference;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-import static org.cosinus.swing.preference.PreferenceType.DOUBLE;
+import static org.cosinus.swing.form.control.ControlType.DOUBLE;
 
 /**
  * Implementation of {@link Preference} for double managed values.
@@ -33,7 +33,7 @@ import static org.cosinus.swing.preference.PreferenceType.DOUBLE;
 public class DoublePreference extends PrimitivePreference<Double> {
 
     @Override
-    public PreferenceType getType() {
+    public ControlType getType() {
         return DOUBLE;
     }
 }

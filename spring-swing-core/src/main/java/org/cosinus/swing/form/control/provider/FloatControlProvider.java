@@ -14,25 +14,30 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.preference.control;
+package org.cosinus.swing.form.control.provider;
 
 import org.cosinus.swing.form.control.Control;
 import org.cosinus.swing.form.control.NumberFormattedTextField;
-import org.cosinus.swing.preference.Preference;
 
 import static java.text.NumberFormat.getNumberInstance;
 
 /**
- * Implementation of {@link PreferenceControlProvider}
- * for providing the {@link Control} corresponding to a float preference value.
+ * Implementation of {@link ControlProvider}
+ * for providing the {@link Control} corresponding to a float value.
  */
-public class FloatPreferenceControlProvider implements PreferenceControlProvider<Float> {
+public class FloatControlProvider implements ControlProvider<Float> {
 
     @Override
-    public <T> Control<Float> getPreferenceControl(Preference<T, Float> preference) {
+    public NumberFormattedTextField<Float> getControl() {
         NumberFormattedTextField<Float> control = new NumberFormattedTextField<>(getNumberInstance(), Float.class);
-        control.setControlValue(preference.getRealValue());
         control.setColumns(10);
+        return control;
+    }
+
+    @Override
+    public <T> NumberFormattedTextField<Float> getControl(ControlDescriptor<T, Float> descriptor) {
+        NumberFormattedTextField<Float> control = getControl();
+        control.setControlValue(descriptor.getRealValue());
         return control;
     }
 

@@ -20,12 +20,12 @@ import org.cosinus.swing.border.Borders;
 import org.cosinus.swing.context.ApplicationHandler;
 import org.cosinus.swing.error.ErrorHandler;
 import org.cosinus.swing.form.control.Control;
+import org.cosinus.swing.form.control.ControlType;
+import org.cosinus.swing.form.control.provider.ControlProvider;
 import org.cosinus.swing.layout.SpringGridLayout;
 import org.cosinus.swing.preference.Preference;
-import org.cosinus.swing.preference.PreferenceType;
 import org.cosinus.swing.preference.Preferences;
 import org.cosinus.swing.preference.PreferencesProvider;
-import org.cosinus.swing.preference.control.*;
 import org.cosinus.swing.translate.Translatable;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
@@ -56,7 +56,6 @@ import static org.cosinus.swing.border.Borders.emptyBorder;
 import static org.cosinus.swing.border.Borders.lineBorder;
 import static org.cosinus.swing.color.SystemColor.LIST_BACKGROUND;
 import static org.cosinus.swing.color.SystemColor.LIST_FOREGROUND;
-import static org.cosinus.swing.preference.PreferenceType.*;
 import static org.cosinus.swing.preference.Preferences.LOOK_AND_FEEL;
 
 public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelectionListener, ActionListener {
@@ -95,13 +94,10 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
 
     private JButton applyButton;
 
-    private final Map<PreferenceType, PreferenceControlProvider<?>> preferenceControlProvidersMap;
-
     private final Map<String, Control> preferenceControlsMap;
 
     public DefaultPreferencesDialog(Frame frame, String title) {
         super(frame, title, true, true);
-        this.preferenceControlProvidersMap = getPreferenceControlProvidersMap();
         preferenceControlsMap = new HashMap<>();
     }
 
@@ -181,13 +177,15 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
 
     private <T, R> void addPreferenceControl(JPanel preferencesPanel, String name, Preference<T, R> preference) {
         String label = translatePreferenceName(name);
-        ofNullable(getPreferenceControlProvider(preference))
-            .ifPresent(provider -> {
-                Control<R> preferenceControl = provider.getPreferenceControl(preference);
-                preferenceControlsMap.put(name, preferenceControl);
+        ofNullable(preference)
+            .map(Preference::getType)
+            .map(ControlType::getControlProvider)
+            .map(provider -> provider.getControl(preference))
+            .ifPresent(control -> {
+                preferenceControlsMap.put(name, control);
 
-                Component preferenceComponent = (Component) preferenceControl;
-                preferencesPanel.add(preferenceControl.createAssociatedLabel(label));
+                Component preferenceComponent = (Component) control;
+                preferencesPanel.add(control.createAssociatedLabel(label));
                 preferencesPanel.add(preferenceComponent);
             });
     }
@@ -321,28 +319,6 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
 
     protected String translatePreferenceName(String name) {
         return translator.translate("preference-" + name);
-    }
-
-    protected <T, R> PreferenceControlProvider<R> getPreferenceControlProvider(Preference<T, R> preference) {
-        return (PreferenceControlProvider<R>) preferenceControlProvidersMap.get(preference.getType());
-    }
-
-    private Map<PreferenceType, PreferenceControlProvider<?>> getPreferenceControlProvidersMap() {
-        Map<PreferenceType, PreferenceControlProvider<?>> preferenceControlProvidersMap = new HashMap<>();
-        preferenceControlProvidersMap.put(TEXT, new TextPreferenceControlProvider());
-        preferenceControlProvidersMap.put(BOOLEAN, new BooleanPreferenceControlProvider());
-        preferenceControlProvidersMap.put(INTEGER, new IntegerPreferenceControlProvider());
-        preferenceControlProvidersMap.put(LONG, new LongPreferenceControlProvider());
-        preferenceControlProvidersMap.put(FLOAT, new FloatPreferenceControlProvider());
-        preferenceControlProvidersMap.put(DOUBLE, new DoublePreferenceControlProvider());
-        preferenceControlProvidersMap.put(LANGUAGE, new LanguagePreferenceControlProvider());
-        preferenceControlProvidersMap.put(LAF, new LookAndFeelPreferenceControlProvider());
-        preferenceControlProvidersMap.put(FILE, new FilePreferenceControlProvider());
-        preferenceControlProvidersMap.put(FOLDER, new FolderPreferenceControlProvider());
-        preferenceControlProvidersMap.put(COLOR, new ColorPreferenceControlProvider());
-        preferenceControlProvidersMap.put(FONT, new FontPreferenceControlProvider());
-        preferenceControlProvidersMap.put(DATE, new DatePreferenceControlProvider());
-        return preferenceControlProvidersMap;
     }
 
     @Override

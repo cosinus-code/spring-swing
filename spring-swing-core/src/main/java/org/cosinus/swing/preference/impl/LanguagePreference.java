@@ -20,13 +20,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.cosinus.swing.preference.ObjectPreference;
 import org.cosinus.swing.preference.Preference;
-import org.cosinus.swing.preference.PreferenceType;
+import org.cosinus.swing.form.control.ControlType;
 
 import java.util.Locale;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static java.util.Optional.ofNullable;
-import static org.cosinus.swing.preference.PreferenceType.LANGUAGE;
+import static org.cosinus.swing.form.control.ControlType.LANGUAGE;
 
 /**
  * Implementation of {@link Preference} for language managed values.
@@ -36,7 +36,7 @@ import static org.cosinus.swing.preference.PreferenceType.LANGUAGE;
 public class LanguagePreference extends ObjectPreference<Locale> {
 
     @Override
-    public PreferenceType getType() {
+    public ControlType getType() {
         return LANGUAGE;
     }
 

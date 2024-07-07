@@ -19,11 +19,11 @@ package org.cosinus.swing.preference.impl;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.cosinus.swing.preference.Preference;
-import org.cosinus.swing.preference.PreferenceType;
+import org.cosinus.swing.form.control.ControlType;
 import org.cosinus.swing.preference.PrimitivePreference;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-import static org.cosinus.swing.preference.PreferenceType.LONG;
+import static org.cosinus.swing.form.control.ControlType.LONG;
 
 /**
  * Implementation of {@link Preference} for long managed values.
@@ -33,7 +33,7 @@ import static org.cosinus.swing.preference.PreferenceType.LONG;
 public class LongPreference extends PrimitivePreference<Long> {
 
     @Override
-    public PreferenceType getType() {
+    public ControlType getType() {
         return LONG;
     }
 }

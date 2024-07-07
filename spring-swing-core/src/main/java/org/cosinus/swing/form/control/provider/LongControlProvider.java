@@ -14,26 +14,30 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.preference.control;
+package org.cosinus.swing.form.control.provider;
 
 import org.cosinus.swing.form.control.Control;
 import org.cosinus.swing.form.control.NumberFormattedTextField;
-import org.cosinus.swing.preference.Preference;
 
 import static java.text.NumberFormat.getNumberInstance;
 
 /**
- * Implementation of {@link PreferenceControlProvider}
- * for providing the {@link Control} corresponding to a double preference value.
+ * Implementation of {@link ControlProvider}
+ * for providing the {@link Control} corresponding to a long value.
  */
-public class DoublePreferenceControlProvider implements PreferenceControlProvider<Double> {
+public class LongControlProvider implements ControlProvider<Long> {
 
     @Override
-    public <T> Control<Double> getPreferenceControl(Preference<T, Double> preference) {
-        NumberFormattedTextField<Double> control = new NumberFormattedTextField<>(getNumberInstance(), Double.class);
-        control.setControlValue(preference.getRealValue());
+    public NumberFormattedTextField<Long> getControl() {
+        NumberFormattedTextField<Long> control = new NumberFormattedTextField<>(getNumberInstance(), Long.class);
         control.setColumns(10);
         return control;
     }
 
+    @Override
+    public <T> NumberFormattedTextField<Long> getControl(ControlDescriptor<T, Long> descriptor) {
+        NumberFormattedTextField<Long> control = getControl();
+        control.setControlValue(descriptor.getRealValue());
+        return control;
+    }
 }

@@ -32,7 +32,7 @@ import static javax.swing.Spring.sum;
  */
 public class SpringGridLayout extends SpringLayout {
 
-    private final Container parent;
+    private final Container target;
 
     private final int rows;
     private final int cols;
@@ -49,11 +49,11 @@ public class SpringGridLayout extends SpringLayout {
     private Spring totalWidth;
     private Spring totalHeight;
 
-    public SpringGridLayout(Container parent,
+    public SpringGridLayout(Container target,
                             int rows, int cols,
                             int initialX, int initialY,
                             int xPad, int yPad) {
-        this.parent = parent;
+        this.target = target;
         this.rows = rows;
         this.cols = cols;
         this.initialX = initialX;
@@ -145,7 +145,7 @@ public class SpringGridLayout extends SpringLayout {
      * Update the parent constraints
      */
     private void updateParentConstraints() {
-        Constraints parentConstraints = getConstraints(parent);
+        Constraints parentConstraints = getConstraints(target);
         parentConstraints.setConstraint(EAST, totalWidth);
         parentConstraints.setConstraint(SOUTH, totalHeight);
     }
@@ -158,7 +158,7 @@ public class SpringGridLayout extends SpringLayout {
      * @return the cell constraints
      */
     private Constraints getCellConstraints(int row, int col) {
-        return ofNullable(parent.getComponent(row * cols + col))
+        return ofNullable(target.getComponent(row * cols + col))
             .map(this::getConstraints)
             .orElseThrow(IndexOutOfBoundsException::new);
     }

@@ -14,22 +14,26 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.preference.control;
+package org.cosinus.swing.form.control.provider;
 
-import org.cosinus.swing.form.control.ColorLabel;
 import org.cosinus.swing.form.control.Control;
-import org.cosinus.swing.preference.Preference;
+import org.cosinus.swing.form.control.DatePicker;
 
-import java.awt.*;
+import java.util.Date;
 
 /**
- * Implementation of {@link PreferenceControlProvider}
- * for providing the {@link Control} corresponding to a color preference value.
+ * Implementation of {@link ControlProvider}
+ * for providing the {@link Control} corresponding to a date value.
  */
-public class ColorPreferenceControlProvider implements PreferenceControlProvider<Color> {
+public class DateControlProvider implements ControlProvider<Date> {
 
     @Override
-    public <T> Control<Color> getPreferenceControl(Preference<T, Color> preference) {
-        return new ColorLabel(preference.getRealValue());
+    public DatePicker getControl() {
+        return new DatePicker(new Date());
+    }
+
+    @Override
+    public <T> DatePicker getControl(ControlDescriptor<T, Date> descriptor) {
+        return new DatePicker(descriptor.getRealValue());
     }
 }

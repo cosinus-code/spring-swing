@@ -14,32 +14,26 @@
  * limitations under the License.
  */
 
-package org.cosinus.swing.form;
+package org.cosinus.swing.form.control.provider;
 
-import javax.swing.*;
-import java.awt.*;
+import org.cosinus.swing.form.control.Control;
+import org.cosinus.swing.form.control.FileTextField;
 
-import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
+import java.io.File;
 
 /**
- * Extension of the {@link JPanel}
- * which will automatically inject the application context.
+ * Implementation of {@link ControlProvider}
+ * for providing the {@link Control} corresponding to a file value.
  */
-public class Panel extends JPanel implements FormComponent {
+public class FileControlProvider implements ControlProvider<File> {
 
-    public Panel() {
-        injectContext(this);
-    }
-
-    public Panel(LayoutManager layout) {
-        super(layout);
+    @Override
+    public FileTextField getControl() {
+        return new FileTextField(null, false);
     }
 
     @Override
-    public void initComponents() {
-    }
-
-    @Override
-    public void translate() {
+    public <T> FileTextField getControl(ControlDescriptor<T, File> descriptor) {
+        return new FileTextField(descriptor.getRealValue(), false);
     }
 }

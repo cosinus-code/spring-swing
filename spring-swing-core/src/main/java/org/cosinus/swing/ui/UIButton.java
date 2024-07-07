@@ -13,31 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.cosinus.swing.ui;
 
-package org.cosinus.swing.error;
+public class UIButton {
 
-import java.io.Serial;
+    private String id;
 
-/**
- * Swing severe exception
- */
-public class SwingSevereException extends RuntimeException {
+    private String label;
 
-    @Serial
-    private static final long serialVersionUID = -1511690664217068720L;
+    private String action;
 
-    public SwingSevereException() {
+    public String getId() {
+        return id;
     }
 
-    public SwingSevereException(String message) {
-        super(message);
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public SwingSevereException(String message, Throwable cause) {
-        super(message, cause);
+    public String getLabel() {
+        return label;
     }
 
-    public SwingSevereException(Throwable cause) {
-        super(cause);
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
     }
 }
