@@ -51,13 +51,14 @@ public class UiInitializer {
                         .map(translator::translate)
                         .map(control::createAssociatedLabel)
                         .orElse(null);
-                    uiStructure.addField(field.getId(), control, label);
+                    uiStructure.addControl(field.getId(), control, label);
                 }));
         uiDescriptor.getButtons()
             .forEach(button -> uiStructure.addButton(button.getId(), createButton(button)));
         ofNullable(uiDescriptor.getDefaultButton())
             .ifPresent(uiStructure::setDefaultButton);
 
+        uiStructure.pack();
         return uiStructure;
     }
 

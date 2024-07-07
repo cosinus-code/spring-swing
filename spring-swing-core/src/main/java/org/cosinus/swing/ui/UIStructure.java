@@ -15,10 +15,12 @@
  */
 package org.cosinus.swing.ui;
 
+import org.cosinus.swing.error.SpringSwingException;
 import org.cosinus.swing.form.Panel;
+import org.cosinus.swing.form.control.*;
 import org.cosinus.swing.form.control.Button;
-import org.cosinus.swing.form.control.Control;
 import org.cosinus.swing.form.control.Label;
+import org.cosinus.swing.layout.SpringGridLayout;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -30,6 +32,7 @@ import java.util.Optional;
 import static java.awt.BorderLayout.*;
 import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.border.Borders.emptyBorder;
+import static org.cosinus.swing.ui.UILayout.SPRING_GRID;
 import static org.cosinus.swing.ui.UILayout.VERTICAL_FLOW;
 
 public class UIStructure extends Panel {
@@ -40,13 +43,13 @@ public class UIStructure extends Panel {
 
     private final UIDescriptor uiDescriptor;
 
-    private final Map<String, Control<?>> fieldssMap;
+    private final Map<String, Control<?>> controlsMap;
 
     private final Map<String, Button> buttonsMap;
 
     private Button defaultButton;
 
-    private Panel fieldsPanel;
+    private Panel controlsPanel;
 
     private Panel buttonsPanel;
 
@@ -54,7 +57,7 @@ public class UIStructure extends Panel {
         super(new BorderLayout());
 
         this.uiDescriptor = uiDescriptor;
-        this.fieldssMap = new HashMap<>();
+        this.controlsMap = new HashMap<>();
         this.buttonsMap = new HashMap<>();
     }
 
@@ -73,14 +76,14 @@ public class UIStructure extends Panel {
 
         int fieldsCount = uiDescriptor.getFields().size();
         if (fieldsCount > 0) {
-            fieldsPanel = new Panel();
-            fieldsPanel.setLayout(ofNullable(uiDescriptor.getLayout())
-                .orElse(VERTICAL_FLOW)
-                .layoutManager(fieldsPanel, fieldsCount));
-            fieldsPanel.setBorder(emptyBorder(0, 0, 10, 0));
+            controlsPanel = new Panel();
+            controlsPanel.setLayout(ofNullable(uiDescriptor.getLayout())
+                .orElse(SPRING_GRID)
+                .layoutManager(controlsPanel, fieldsCount));
+            controlsPanel.setBorder(emptyBorder(0, 0, 10, 0));
 
             Panel centerPanel = new Panel(new BorderLayout());
-            centerPanel.add(fieldsPanel, NORTH);
+            centerPanel.add(controlsPanel, NORTH);
             add(centerPanel, CENTER);
         }
 
@@ -94,13 +97,21 @@ public class UIStructure extends Panel {
         }
     }
 
-    public void addField(String id, @NotNull Control<?> field, Label label) {
-        if (label != null) {
-            label.setVerticalAlignment(SwingConstants.BOTTOM);
-            fieldsPanel.add(label);
+    public void pack() {
+        if (controlsPanel.getLayout() instanceof SpringGridLayout layout) {
+            layout.pack();
         }
-        fieldsPanel.add(field.getComponent());
-        fieldssMap.put(id, field);
+    }
+
+    public void addControl(String id, @NotNull Control<?> control, Label label) {
+        if (label != null) {
+            if (uiDescriptor.getLayout() == VERTICAL_FLOW) {
+                label.setVerticalAlignment(SwingConstants.BOTTOM);
+            }
+            controlsPanel.add(label);
+        }
+        controlsPanel.add(control.getComponent());
+        controlsMap.put(id, control);
     }
 
     public void addButton(String id, @NotNull Button button) {
@@ -108,17 +119,17 @@ public class UIStructure extends Panel {
         buttonsMap.put(id, button);
     }
 
-    public Optional<Control<?>> getField(String id) {
-        return ofNullable(fieldssMap.get(id));
+    public Optional<Control<?>> findControl(String id) {
+        return ofNullable(controlsMap.get(id));
     }
 
-    public Optional<Button> getButton(String id) {
+    public Optional<Button> findButton(String id) {
         return ofNullable(buttonsMap.get(id));
     }
 
     public Optional<Button> getDefaultButton() {
         return ofNullable(defaultButton)
-            .or(() -> getButton(OK_BUTTON_ID));
+            .or(() -> findButton(OK_BUTTON_ID));
     }
 
     public void setDefaultButton(Button defaultButton) {
@@ -126,12 +137,34 @@ public class UIStructure extends Panel {
     }
 
     public void setDefaultButton(String defaultButtonId) {
-        getButton(defaultButtonId)
+        findButton(defaultButtonId)
             .ifPresent(this::setDefaultButton);
     }
 
-    public Optional<Object> getValue(String id) {
-        return getField(id)
-            .map(Control::getControlValue);
+    public Object getValue(String id) {
+        return getControl(id).getControlValue();
+    }
+
+    public String getStringValue(String id) {
+        return getControl(id).getControlValue().toString();
+    }
+
+    public Control<?> getControl(String id) {
+        return ofNullable(controlsMap.get(id))
+            .orElseThrow(() -> new SpringSwingException("Cannot find control with id: " + id));
+    }
+
+    public <T> ComboBox<T> getComboBoxControl(String id) {
+        return findControl(id)
+            .filter(ComboBox.class::isInstance)
+            .map(ComboBox.class::cast)
+            .orElseThrow(() -> new SpringSwingException("Cannot combobox control with id: " + id));
+    }
+
+    public FileTextField getFileControl(String id) {
+        return findControl(id)
+            .filter(FileTextField.class::isInstance)
+            .map(FileTextField.class::cast)
+            .orElseThrow(() -> new SpringSwingException("Cannot file control with id: " + id));
     }
 }

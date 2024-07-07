@@ -57,4 +57,8 @@ public class ComboBox<T> extends JComboBox<T> implements Control<T> {
     public void setControlValue(T value) {
         setSelectedItem(value);
     }
+
+    public void setValues(T[] values) {
+        setModel(new DefaultComboBoxModel<>(values));
+    }
 }

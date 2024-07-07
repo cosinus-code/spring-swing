@@ -230,7 +230,7 @@ public interface Control<T> {
      *
      * @param enabled true to enable the control, false otherwise
      */
-    default void setEnabled(boolean enabled) {
+    default void setControlEnabled(boolean enabled) {
         getComponent().setEnabled(enabled);
         getAssociatedLabel().ifPresent(label -> label.setEnabled(enabled));
     }
