@@ -15,16 +15,13 @@
  */
 package org.cosinus.swing.ui;
 
-import org.cosinus.swing.form.control.Button;
-import org.cosinus.swing.form.control.Control;
-import org.cosinus.swing.form.control.ControlType;
-import org.cosinus.swing.form.control.Label;
+import org.cosinus.swing.form.control.*;
 import org.cosinus.swing.form.control.provider.ControlProvider;
 import org.cosinus.swing.translate.Translator;
 
 import static java.util.Optional.ofNullable;
 
-public class UiInitializer {
+public class UIController {
 
     public static final String SWING_UI_INITIALIZER_PROPERTY = "swing.ui.initializer";
 
@@ -32,8 +29,8 @@ public class UiInitializer {
 
     private final Translator translator;
 
-    public UiInitializer(final UIDescriptorProvider uiDescriptorProvider,
-                         final Translator translator) {
+    public UIController(final UIDescriptorProvider uiDescriptorProvider,
+                        final Translator translator) {
         this.uiDescriptorProvider = uiDescriptorProvider;
         this.translator = translator;
     }
@@ -60,6 +57,27 @@ public class UiInitializer {
 
         uiStructure.pack();
         return uiStructure;
+    }
+
+    public void fillUIStructure(final UIStructure uiStructure, final UIModel model) {
+        model.keys()
+            .forEach(key -> ofNullable(uiStructure.getControl(key))
+                .ifPresent(control -> fillControl(key, control, model)));
+    }
+
+    public <T> void fillControl(String key, final Control<T> control, final UIModel model) {
+        if (control instanceof MultipleValuesControl<?> multipleValuesControl) {
+            ofNullable(model.getValues(key))
+                .ifPresent(values -> ((MultipleValuesControl<T>) multipleValuesControl).setValues((T[]) values));
+        }
+        ofNullable(model.getValue(key))
+            .ifPresent(value -> control.setControlValue((T) value));
+    }
+
+    public void updateUIModel(final UIStructure uiStructure, final UIModel model) {
+        model.keys()
+            .forEach(key -> ofNullable(uiStructure.getControl(key))
+                .ifPresent(control -> model.putValue(key, control.getControlValue())));
     }
 
     protected Control<?> createControl(UIField field) {

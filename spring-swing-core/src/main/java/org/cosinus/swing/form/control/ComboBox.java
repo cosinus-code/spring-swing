@@ -26,7 +26,7 @@ import static org.cosinus.swing.context.ApplicationContextInjector.injectContext
  *
  * @param <T> the type of the value
  */
-public class ComboBox<T> extends JComboBox<T> implements Control<T> {
+public class ComboBox<T> extends JComboBox<T> implements Control<T>, MultipleValuesControl<T> {
 
     public ComboBox(ComboBoxModel<T> aModel) {
         super(aModel);
@@ -58,6 +58,7 @@ public class ComboBox<T> extends JComboBox<T> implements Control<T> {
         setSelectedItem(value);
     }
 
+    @Override
     public void setValues(T[] values) {
         setModel(new DefaultComboBoxModel<>(values));
     }

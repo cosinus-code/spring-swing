@@ -53,7 +53,7 @@ import org.cosinus.swing.translate.MessageSourceTranslator;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.cosinus.swing.ui.UIDescriptorProvider;
-import org.cosinus.swing.ui.UiInitializer;
+import org.cosinus.swing.ui.UIController;
 import org.cosinus.swing.window.DefaultWindowSettingsHandler;
 import org.cosinus.swing.window.WindowSettingsHandler;
 import org.springframework.beans.factory.annotation.Value;
@@ -71,7 +71,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import java.util.Set;
 
 import static org.cosinus.swing.boot.SpringSwingApplication.applicationClass;
-import static org.cosinus.swing.ui.UiInitializer.SWING_UI_INITIALIZER_PROPERTY;
+import static org.cosinus.swing.ui.UIController.SWING_UI_INITIALIZER_PROPERTY;
 
 /**
  * Application main configuration.
@@ -294,8 +294,8 @@ public class SpringSwingAutoConfiguration {
 
     @Bean
     @ConditionalOnProperty(value = SWING_UI_INITIALIZER_PROPERTY, havingValue = "true")
-    public UiInitializer uiInitializer(final UIDescriptorProvider uiDescriptorProvider,
-                                       final Translator translator) {
-        return new UiInitializer(uiDescriptorProvider, translator);
+    public UIController uiInitializer(final UIDescriptorProvider uiDescriptorProvider,
+                                      final Translator translator) {
+        return new UIController(uiDescriptorProvider, translator);
     }
 }

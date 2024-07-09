@@ -153,12 +153,4 @@ public abstract class Dialog<T> extends JDialog implements Window, FormComponent
     protected void registerCancelAction(final Button button) {
         button.addActionListener(event -> cancel());
     }
-
-    protected void registerDefaultActions(UIStructure uiStructure) {
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        uiStructure.findButton(OK_BUTTON_ID)
-            .ifPresent(this::registerOkAction);
-        uiStructure.findButton(CANCEL_BUTTON_ID)
-            .ifPresent(this::registerCancelAction);
-    }
 }
