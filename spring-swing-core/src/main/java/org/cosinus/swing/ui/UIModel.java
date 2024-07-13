@@ -25,5 +25,7 @@ public interface UIModel {
 
     Object getValue(String key);
 
-    Object[] getValues(String key);
+    default Object[] getValues(String key) {
+        return null;
+    }
 }

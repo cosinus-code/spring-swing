@@ -27,6 +27,8 @@ public class UIField {
 
     private UIAlign align;
 
+    private boolean disabled;
+
     public String getId() {
         return id;
     }
@@ -57,5 +59,13 @@ public class UIField {
 
     public void setAlign(UIAlign align) {
         this.align = align;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 }

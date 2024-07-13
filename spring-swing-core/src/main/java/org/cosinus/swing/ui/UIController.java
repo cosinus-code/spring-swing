@@ -48,6 +48,9 @@ public class UIController {
                         .map(translator::translate)
                         .map(control::createAssociatedLabel)
                         .orElse(null);
+                    if (field.isDisabled()) {
+                        control.setControlEnabled(false);
+                    }
                     uiStructure.addControl(field.getId(), control, label);
                 }));
         uiDescriptor.getButtons()

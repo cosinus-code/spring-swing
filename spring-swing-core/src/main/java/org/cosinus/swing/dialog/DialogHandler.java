@@ -18,10 +18,12 @@ package org.cosinus.swing.dialog;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.cosinus.swing.ui.UIModel;
 import org.cosinus.swing.window.Dialog;
 import org.cosinus.swing.preference.dialog.PreferencesDialogProvider;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
+import org.cosinus.swing.window.SimpleDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -398,5 +400,13 @@ public class DialogHandler {
 
     public Optional<Font> chooseFont(Dialog<?> dialog, String title, boolean modal, boolean manageWindowSettings, String text, Font font) {
         return showDialog(() -> new FontChooser(dialog, title, modal, manageWindowSettings, text, font)).response();
+    }
+
+    public <M extends UIModel> Dialog<M> createDialog(final Frame parent, String descriptorName, M model) {
+        return new SimpleDialog<>(parent, parent.getTitle(), true, false, descriptorName, model);
+    }
+
+    public <M extends UIModel> Dialog<M> createDialog(final Dialog parent, String descriptorName, M model) {
+        return new SimpleDialog<>(parent, parent.getTitle(), true, false, descriptorName, model);
     }
 }
