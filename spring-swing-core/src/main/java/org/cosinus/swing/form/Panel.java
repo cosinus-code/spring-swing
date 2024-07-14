@@ -33,6 +33,7 @@ public class Panel extends JPanel implements FormComponent {
 
     public Panel(LayoutManager layout) {
         super(layout);
+        injectContext(this);
     }
 
     @Override
