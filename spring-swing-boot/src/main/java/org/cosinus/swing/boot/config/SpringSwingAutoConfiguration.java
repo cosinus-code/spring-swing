@@ -49,6 +49,7 @@ import org.cosinus.swing.resource.FilesystemResourceResolver;
 import org.cosinus.swing.resource.ResourceResolver;
 import org.cosinus.swing.store.ApplicationStorage;
 import org.cosinus.swing.store.LocalApplicationStorage;
+import org.cosinus.swing.text.TextHandler;
 import org.cosinus.swing.translate.MessageSourceTranslator;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
@@ -153,6 +154,11 @@ public class SpringSwingAutoConfiguration {
         return new DialogHandler(translator,
             uiHandler,
             preferencesDialogProvider);
+    }
+
+    @Bean
+    public TextHandler textHandler() {
+        return new TextHandler();
     }
 
     @Bean

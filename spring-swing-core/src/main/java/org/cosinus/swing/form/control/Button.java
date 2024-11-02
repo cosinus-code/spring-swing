@@ -17,6 +17,7 @@
 package org.cosinus.swing.form.control;
 
 import javax.swing.*;
+import java.awt.event.ActionListener;
 
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
@@ -48,6 +49,12 @@ public class Button extends JButton implements Control<String> {
     public Button(String text, Icon icon) {
         super(text, icon);
         injectContext(this);
+    }
+
+    public Button(String text, ActionListener action) {
+        super(text);
+        injectContext(this);
+        addActionListener(action);
     }
 
     @Override

@@ -33,8 +33,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static java.awt.Cursor.HAND_CURSOR;
-import static java.awt.Cursor.TEXT_CURSOR;
 import static java.util.Optional.ofNullable;
 import static javax.swing.filechooser.FileSystemView.getFileSystemView;
 import static org.cosinus.swing.border.Borders.emptyBorder;
@@ -157,7 +155,7 @@ public class FileTextField extends JTextField implements Control<File>, MouseLis
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        setCursor(Cursor.getPredefinedCursor(isMouseOverIcon(e) ? HAND_CURSOR : TEXT_CURSOR));
+        setCursor(isMouseOverIcon(e) ? uiHandler.getHandCursor() : uiHandler.getDefaultCursor());
     }
 
     @Override

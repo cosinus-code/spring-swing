@@ -29,7 +29,8 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.Border;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
-import java.io.File;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -38,6 +39,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.awt.Cursor.DEFAULT_CURSOR;
 import static java.awt.Cursor.HAND_CURSOR;
 import static java.awt.Cursor.getPredefinedCursor;
 import static java.awt.Toolkit.getDefaultToolkit;
@@ -50,7 +52,15 @@ import static java.util.stream.Collectors.toSet;
 import static java.util.stream.Stream.concat;
 import static javax.swing.KeyStroke.getKeyStroke;
 import static org.apache.commons.lang3.SystemUtils.IS_OS_MAC;
-import static org.cosinus.swing.color.SystemColor.*;
+import static org.cosinus.swing.border.Borders.emptyBorder;
+import static org.cosinus.swing.color.SystemColor.CONTROL;
+import static org.cosinus.swing.color.SystemColor.CONTROL_DK_SHADOW;
+import static org.cosinus.swing.color.SystemColor.CONTROL_HIGHLIGHT;
+import static org.cosinus.swing.color.SystemColor.INACTIVE_CAPTION;
+import static org.cosinus.swing.color.SystemColor.INACTIVE_CAPTION_TEXT;
+import static org.cosinus.swing.color.SystemColor.INTERNAL_FRAME_INACTIVE_TITLE_BACKGROUND;
+import static org.cosinus.swing.color.SystemColor.TEXTAREA_INACTIVE_FOREGROUND;
+import static org.cosinus.swing.color.SystemColor.TEXT_PANE_SELECTION_BACKGROUND;
 
 /**
  * UIManager handler.
@@ -124,7 +134,7 @@ public class ApplicationUIHandler {
             }
         } catch (Exception ex) {
             LOG.error("Failed to translate ui key: " + key,
-                      ex);
+                ex);
         }
     }
 
@@ -243,9 +253,9 @@ public class ApplicationUIHandler {
     public Map<String, LookAndFeelInfo> getAvailableLookAndFeels() {
         if (lookAndFeelMap == null) {
             lookAndFeelMap = concat(stream(UIManager.getInstalledLookAndFeels()),
-                                    lookAndFeels.stream())
+                lookAndFeels.stream())
                 .collect(Collectors.toMap(LookAndFeelInfo::getName,
-                                          Function.identity()));
+                    Function.identity()));
         }
         return lookAndFeelMap;
     }
@@ -327,54 +337,54 @@ public class ApplicationUIHandler {
     public Set<String> getTranslationKeys() {
         if (uiTranslationKeys == null) {
             uiTranslationKeys = Stream.of(
-                "OptionPane.yesButtonText",
-                "OptionPane.noButtonText",
-                "OptionPane.cancelButtonText",
-                "ColorChooser.okText",
-                "ColorChooser.cancelText",
-                "ColorChooser.resetText",
-                "ColorChooser.swatchesNameText",
-                "ColorChooser.swatchesRecentText",
-                "ColorChooser.hsbNameText",
-                "ColorChooser.rgbNameText",
-                "ColorChooser.previewText",
-                "ColorChooser.rgbRedText",
-                "ColorChooser.rgbGreenText",
-                "ColorChooser.rgbBlueText",
-                "ColorChooser.hsbRedText",
-                "ColorChooser.hsbGreenText",
-                "ColorChooser.hsbBlueText",
-                "ColorChooser.hsbHueText",
-                "ColorChooser.hsbSaturationText",
-                "ColorChooser.hsbBrightnessText",
-                "ColorChooser.sampleText",
-                "FileChooser.acceptAllFileFilterText",
-                "FileChooser.cancelButtonText",
-                "FileChooser.cancelButtonToolTipText",
-                "FileChooser.detailsViewButtonAccessibleName",
-                "FileChooser.detailsViewButtonToolTipText",
-                "FileChooser.directoryDescriptionText",
-                "FileChooser.fileDescriptionText",
-                "FileChooser.fileNameLabelText",
-                "FileChooser.filesOfTypeLabelText",
-                "FileChooser.helpButtonText",
-                "FileChooser.helpButtonToolTipText",
-                "FileChooser.homeFolderAccessibleName",
-                "FileChooser.homeFolderToolTipText",
-                "FileChooser.listViewButtonAccessibleName",
-                "FileChooser.listViewButtonToolTipText",
-                "FileChooser.lookInLabelText",
-                "FileChooser.newFolderAccessibleName",
-                "FileChooser.newFolderErrorText",
-                "FileChooser.newFolderToolTipText",
-                "FileChooser.openButtonText",
-                "FileChooser.openButtonToolTipText",
-                "FileChooser.saveButtonText",
-                "FileChooser.saveButtonToolTipText",
-                "FileChooser.updateButtonText",
-                "FileChooser.updateButtonToolTipText",
-                "FileChooser.upFolderAccessibleName",
-                "FileChooser.upFolderToolTipText")
+                    "OptionPane.yesButtonText",
+                    "OptionPane.noButtonText",
+                    "OptionPane.cancelButtonText",
+                    "ColorChooser.okText",
+                    "ColorChooser.cancelText",
+                    "ColorChooser.resetText",
+                    "ColorChooser.swatchesNameText",
+                    "ColorChooser.swatchesRecentText",
+                    "ColorChooser.hsbNameText",
+                    "ColorChooser.rgbNameText",
+                    "ColorChooser.previewText",
+                    "ColorChooser.rgbRedText",
+                    "ColorChooser.rgbGreenText",
+                    "ColorChooser.rgbBlueText",
+                    "ColorChooser.hsbRedText",
+                    "ColorChooser.hsbGreenText",
+                    "ColorChooser.hsbBlueText",
+                    "ColorChooser.hsbHueText",
+                    "ColorChooser.hsbSaturationText",
+                    "ColorChooser.hsbBrightnessText",
+                    "ColorChooser.sampleText",
+                    "FileChooser.acceptAllFileFilterText",
+                    "FileChooser.cancelButtonText",
+                    "FileChooser.cancelButtonToolTipText",
+                    "FileChooser.detailsViewButtonAccessibleName",
+                    "FileChooser.detailsViewButtonToolTipText",
+                    "FileChooser.directoryDescriptionText",
+                    "FileChooser.fileDescriptionText",
+                    "FileChooser.fileNameLabelText",
+                    "FileChooser.filesOfTypeLabelText",
+                    "FileChooser.helpButtonText",
+                    "FileChooser.helpButtonToolTipText",
+                    "FileChooser.homeFolderAccessibleName",
+                    "FileChooser.homeFolderToolTipText",
+                    "FileChooser.listViewButtonAccessibleName",
+                    "FileChooser.listViewButtonToolTipText",
+                    "FileChooser.lookInLabelText",
+                    "FileChooser.newFolderAccessibleName",
+                    "FileChooser.newFolderErrorText",
+                    "FileChooser.newFolderToolTipText",
+                    "FileChooser.openButtonText",
+                    "FileChooser.openButtonToolTipText",
+                    "FileChooser.saveButtonText",
+                    "FileChooser.saveButtonToolTipText",
+                    "FileChooser.updateButtonText",
+                    "FileChooser.updateButtonToolTipText",
+                    "FileChooser.upFolderAccessibleName",
+                    "FileChooser.upFolderToolTipText")
                 .collect(toSet());
         }
         return uiTranslationKeys;
@@ -528,9 +538,9 @@ public class ApplicationUIHandler {
             .map(o -> new ImmutablePair<>(o.toString(), UIManager.get(o)))
             .filter(entry -> entry.getValue() instanceof FontUIResource)
             .collect(toMap(Pair::getKey,
-                           entry -> (FontUIResource) entry.getValue(),
-                           (v1, v2) -> v1,
-                           HashMap::new));
+                entry -> (FontUIResource) entry.getValue(),
+                (v1, v2) -> v1,
+                HashMap::new));
     }
 
     /**
@@ -543,8 +553,7 @@ public class ApplicationUIHandler {
         UIManager.put(key, font);
     }
 
-    public boolean isProgressTextAllowed()
-    {
+    public boolean isProgressTextAllowed() {
         return !isLookAndFeelMac();
     }
 
@@ -552,7 +561,33 @@ public class ApplicationUIHandler {
         return getCursor(HAND_CURSOR);
     }
 
+    public Cursor getDefaultCursor() {
+        return getCursor(DEFAULT_CURSOR);
+    }
+
     public Cursor getCursor(int cursorId) {
         return getPredefinedCursor(cursorId);
+    }
+
+    public void makeSimpleButton(AbstractButton button) {
+        button.setOpaque(true);
+        button.setContentAreaFilled(true);
+        button.setBorderPainted(false);
+        button.setFocusPainted(false);
+        button.setBorder(emptyBorder(0));
+        button.setPreferredSize(new Dimension(30, 30));
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                button.setBackground(getColor(TEXT_PANE_SELECTION_BACKGROUND));
+                button.setCursor(getHandCursor());
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                button.setBackground(null);
+                button.setCursor(getDefaultCursor());
+            }
+        });
     }
 }

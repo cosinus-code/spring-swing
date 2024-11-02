@@ -19,6 +19,9 @@ package org.cosinus.swing.form.control;
 import javax.swing.*;
 import javax.swing.text.Document;
 
+import java.awt.event.ActionListener;
+import java.util.function.Supplier;
+
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
 /**
@@ -49,6 +52,12 @@ public class TextField extends JTextField implements Control<String> {
     public TextField(Document doc, String text, int columns) {
         super(doc, text, columns);
         injectContext(this);
+    }
+
+    public TextField(Supplier<ActionListener> actionProvider) {
+        super();
+        injectContext(this);
+        addActionListener(actionProvider.get());
     }
 
     @Override

@@ -18,7 +18,11 @@ package org.cosinus.swing.form;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.util.function.Supplier;
 
+import static javax.swing.KeyStroke.getKeyStroke;
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
 /**
@@ -42,5 +46,11 @@ public class Panel extends JPanel implements FormComponent {
 
     @Override
     public void translate() {
+    }
+
+    public void registerEscapeAction(Supplier<ActionListener> actionProvider) {
+        registerKeyboardAction(actionProvider.get(),
+            getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+            WHEN_IN_FOCUSED_WINDOW);
     }
 }
