@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>spring-swing-image</artifactId>
+    <name>Spring Swing Image</name>
     <description>Spring Swing Image</description>
     <packaging>jar</packaging>
 
@@ -38,6 +39,14 @@
         <dependency>
             <groupId>com.twelvemonkeys.imageio</groupId>
             <artifactId>imageio-batik</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-jpeg</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-tiff</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.xmlgraphics</groupId>

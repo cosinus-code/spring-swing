@@ -12,6 +12,7 @@
     </parent>
 
     <artifactId>spring-swing-boot-starter</artifactId>
+    <name>Spring Swing Boot Generic Starter</name>
     <description>Spring Swing Boot Generic Starter</description>
 
     <dependencies>

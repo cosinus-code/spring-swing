@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>spring-swing-dependencies</artifactId>
+    <name>Spring Swing Dependencies</name>
     <description>Spring Swing Dependencies BOM</description>
     <packaging>pom</packaging>
 
@@ -53,6 +54,16 @@
             <dependency>
                 <groupId>com.twelvemonkeys.imageio</groupId>
                 <artifactId>imageio-batik</artifactId>
+                <version>${twelvemonkeys.imageio.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.twelvemonkeys.imageio</groupId>
+                <artifactId>imageio-jpeg</artifactId>
+                <version>${twelvemonkeys.imageio.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.twelvemonkeys.imageio</groupId>
+                <artifactId>imageio-tiff</artifactId>
                 <version>${twelvemonkeys.imageio.version}</version>
             </dependency>
             <dependency>

@@ -15,7 +15,7 @@
     <version>2.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>${project.groupId}:${project.artifactId}</name>
+    <name>Spring Swing Parent</name>
     <description>Spring Swing Parent POM for framework modules</description>
     <url>https://github.com/cosinus-code/spring-swing</url>
     <inceptionYear>2018</inceptionYear>
@@ -38,7 +38,7 @@
         <commons-io.version>2.11.0</commons-io.version>
         <org.apache.common.version>4.4</org.apache.common.version>
         <log4j.version>2.19.0</log4j.version>
-        <twelvemonkeys.imageio.version>3.9.4</twelvemonkeys.imageio.version>
+        <twelvemonkeys.imageio.version>3.12.0</twelvemonkeys.imageio.version>
         <darcula.version>2018.2</darcula.version>
         <jdatepicker.version>1.3.4</jdatepicker.version>
         <commons-imaging.version>1.0-alpha3</commons-imaging.version>

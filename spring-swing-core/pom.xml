@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>spring-swing-core</artifactId>
+    <name>Spring Swing Core</name>
     <description>Spring Swing Core</description>
     <packaging>jar</packaging>
 

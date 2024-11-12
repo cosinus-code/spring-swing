@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>spring-swing-boot</artifactId>
+    <name>Spring Swing Boot</name>
     <description>Spring Swing Boot</description>
     <packaging>jar</packaging>
 

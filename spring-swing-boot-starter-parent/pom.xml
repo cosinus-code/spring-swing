@@ -12,6 +12,7 @@
     </parent>
 
     <artifactId>spring-swing-boot-starter-parent</artifactId>
+    <name>Spring Swing Boot Parent Starter</name>
     <description>Spring Swing Boot Parent Starter</description>
     <packaging>pom</packaging>
 

@@ -20,14 +20,24 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.awt.image.*;
-import java.io.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.FilteredImageSource;
+import java.awt.image.ImageFilter;
+import java.awt.image.ImageProducer;
+import java.awt.image.RGBImageFilter;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.net.URL;
 import java.util.Optional;
 
 import static java.awt.Toolkit.getDefaultToolkit;
 import static java.lang.Math.max;
 import static java.util.Optional.ofNullable;
+import static javax.imageio.ImageIO.read;
 
 /**
  * Image handler
@@ -54,6 +64,10 @@ public class ImageHandler {
         }
     }
 
+    public BufferedImage scaleImage(Image image, int width, int height) {
+        return scaleImage(image, max(width, height));
+    }
+
     /**
      * Scale image to a new size.
      * <p>
@@ -63,7 +77,7 @@ public class ImageHandler {
      * @param size  the new size
      * @return the new scaled image
      */
-    public Image scaleImage(Image image, int size) {
+    public BufferedImage scaleImage(Image image, int size) {
         if (image == null) return null;
         int width = image.getWidth(null);
         int height = image.getHeight(null);
@@ -215,4 +229,17 @@ public class ImageHandler {
         return bufferedImage;
     }
 
+    /**
+     * Create an image from image bytes.
+     *
+     * @param imageBytes yje image bytes
+     * @return the created image
+     */
+    public BufferedImage getImage(byte[] imageBytes) {
+        try (InputStream inputStream = new ByteArrayInputStream(imageBytes)) {
+            return read(inputStream);
+        } catch (IOException ex) {
+            throw new UncheckedIOException(ex);
+        }
+    }
 }

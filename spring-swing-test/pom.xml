@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>spring-swing-test</artifactId>
+    <name>Spring Swing Test</name>
     <description>Spring Swing Test</description>
     <packaging>jar</packaging>
 
