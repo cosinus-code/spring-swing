@@ -1,7 +1,6 @@
 package org.cosinus.swing.image;
 
 import javax.imageio.stream.ImageInputStream;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -18,19 +17,8 @@ public class UpdatableImage {
 
     private long size = -1;
 
-    public UpdatableImage() {
-    }
-
-    public UpdatableImage(BufferedImage image) {
-        this.image = image;
-    }
-
     public BufferedImage getImage() {
         return image;
-    }
-
-    public void setImage(BufferedImage image) {
-        this.image = image;
     }
 
     public long getSize() {

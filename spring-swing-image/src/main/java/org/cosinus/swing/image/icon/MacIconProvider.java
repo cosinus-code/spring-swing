@@ -92,9 +92,7 @@ public class MacIconProvider implements IconProvider {
     private Optional<BufferedImage> readFromImageFile(File imageFile, IconSize size) {
         try {
             return Optional.of(ImageIO.read(imageFile))
-                .map(image -> imageHandler.scaleImage(image, size.getSize()))
-                .filter(BufferedImage.class::isInstance)
-                .map(BufferedImage.class::cast);
+                .map(image -> imageHandler.scaleImage(image, size.getSize()));
         } catch (IOException e) {
             LOG.warn(String.format("Cannot read image of size %s from file %s",
                 size.getSize(), imageFile.getPath()));

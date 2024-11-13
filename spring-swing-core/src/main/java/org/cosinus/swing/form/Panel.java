@@ -29,7 +29,7 @@ import static org.cosinus.swing.context.ApplicationContextInjector.injectContext
  * Extension of the {@link JPanel}
  * which will automatically inject the application context.
  */
-public class Panel extends JPanel implements FormComponent {
+public class Panel extends JPanel implements FormComponent, Canvas {
 
     public Panel() {
         injectContext(this);

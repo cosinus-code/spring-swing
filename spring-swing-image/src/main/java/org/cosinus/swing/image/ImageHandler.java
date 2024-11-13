@@ -16,13 +16,16 @@
 
 package org.cosinus.swing.image;
 
+import org.cosinus.swing.form.Canvas;
+import org.cosinus.swing.form.SquareCanvas;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.FilteredImageSource;
 import java.awt.image.ImageFilter;
+import java.awt.image.ImageObserver;
 import java.awt.image.ImageProducer;
 import java.awt.image.RGBImageFilter;
 import java.io.ByteArrayInputStream;
@@ -34,10 +37,18 @@ import java.io.UncheckedIOException;
 import java.net.URL;
 import java.util.Optional;
 
+import static java.awt.RenderingHints.KEY_ALPHA_INTERPOLATION;
+import static java.awt.RenderingHints.KEY_ANTIALIASING;
+import static java.awt.RenderingHints.KEY_INTERPOLATION;
+import static java.awt.RenderingHints.KEY_RENDERING;
 import static java.awt.Toolkit.getDefaultToolkit;
-import static java.lang.Math.max;
+import static java.awt.Transparency.OPAQUE;
+import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
+import static java.awt.image.BufferedImage.TYPE_INT_RGB;
+import static java.lang.Math.min;
 import static java.util.Optional.ofNullable;
 import static javax.imageio.ImageIO.read;
+import static org.cosinus.swing.image.ImageSettings.QUALITY;
 
 /**
  * Image handler
@@ -64,46 +75,235 @@ public class ImageHandler {
         }
     }
 
-    public BufferedImage scaleImage(Image image, int width, int height) {
-        return scaleImage(image, max(width, height));
-    }
-
     /**
-     * Scale image to a new size.
-     * <p>
-     * New size is relative to the maximum between with and height.
+     * Scale image to a square of the provided size.
      *
      * @param image the image to scale
      * @param size  the new size
-     * @return the new scaled image
+     * @return the scaled image
      */
     public BufferedImage scaleImage(Image image, int size) {
-        if (image == null) return null;
-        int width = image.getWidth(null);
-        int height = image.getHeight(null);
-        if (width <= 0 || height <= 0) return null;
+        return fitImageToCanvas(image, new SquareCanvas(size));
+    }
 
-        double scale = (double) size / max(width, height);
-        if (scale <= 0) {
+    /**
+     * Scale an image to fit to the provided canvas.
+     *
+     * @param image  the image to scale
+     * @param canvas  the canvas
+     * @return the scaled image
+     */
+    public BufferedImage fitImageToCanvas(Image image, Canvas canvas) {
+        return fitImageToCanvas(image, canvas, QUALITY);
+    }
+
+    /**
+     * Scale an image to fit to the provided width/height.
+     *
+     * @param image                the image to scale
+     * @param canvas               the canvas
+     * @param imageSettings the image processing hints
+     * @return the scaled image, or null if the image cannot be scaled
+     */
+    public BufferedImage fitImageToCanvas(final Image image, Canvas canvas,
+                                          final ImageSettings imageSettings) {
+
+        boolean opaqueImage = Optional.of(image)
+            .filter(img -> BufferedImage.class.isAssignableFrom(img.getClass()))
+            .map(BufferedImage.class::cast)
+            .map(img -> img.getTransparency() == OPAQUE)
+            .orElse(false);
+        int imageType = opaqueImage ? TYPE_INT_RGB : TYPE_INT_ARGB;
+
+        Image imageToScale = prepareImageForScaling(image, canvas, imageSettings, imageType);
+        return fitImageToCanvas(imageToScale, canvas.getWidth(), canvas.getHeight(), imageSettings, imageType);
+    }
+
+    public Image prepareImageForScaling(final Image image,
+                                        Canvas canvas,
+                                        final ImageSettings imageSettings) {
+        boolean opaqueImage = Optional.of(image)
+            .filter(img -> BufferedImage.class.isAssignableFrom(img.getClass()))
+            .map(BufferedImage.class::cast)
+            .map(img -> img.getTransparency() == OPAQUE)
+            .orElse(false);
+        int imageType = opaqueImage ? TYPE_INT_RGB : TYPE_INT_ARGB;
+
+        return prepareImageForScaling(image, canvas, imageSettings, imageType);
+    }
+
+    private Image prepareImageForScaling(final Image image,
+                                         Canvas canvas,
+                                         final ImageSettings imageSettings,
+                                         int imageType) {
+        Image preparedimage = image;
+        if (imageSettings.isHighQualityOnScaling()) {
+            while (isCanvasLessThanHalfOfImageDimension(preparedimage, canvas)) {
+                preparedimage = scaleImageByHalf(preparedimage, imageSettings, imageType);
+            }
+        }
+
+        return preparedimage;
+    }
+
+    /**
+     * Scale image by half.
+     *
+     * @param image                yhe image to scale
+     * @param imageSettings the image processing hints
+     * @param imageType            the image type
+     * @return the scaled image
+     */
+    public BufferedImage scaleImageByHalf(final Image image,
+                                          final ImageSettings imageSettings,
+                                          int imageType) {
+        return fitImageToCanvas(image,
+            image.getWidth(null) / 2,
+            image.getHeight(null) / 2,
+            imageSettings, imageType);
+    }
+
+    private BufferedImage fitImageToCanvas(final Image image,
+                                           int width, int height,
+                                           final ImageSettings imageSettings,
+                                           int imageType) {
+        Dimension fitDimension = getFitDimension(image, width, height);
+        if (fitDimension == null) {
             return null;
         }
 
-        AffineTransform tx = new AffineTransform();
-        tx.scale(scale, scale);
+        int fitWidth = fitDimension.width;
+        int fitHeight = fitDimension.height;
 
-        BufferedImage outImage = new BufferedImage((int) (scale * width),
-            (int) (scale * height),
-            BufferedImage.TYPE_INT_ARGB);
-
-        // Paint image.
-        Graphics2D g2d = outImage.createGraphics();
-        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-        g2d.drawImage(image, tx, null);
+        BufferedImage scaledImage = new BufferedImage(fitWidth, fitHeight, imageType);
+        Graphics2D g2d = scaledImage.createGraphics();
+        drawImage(g2d, image, 0, 0, fitWidth, fitHeight, imageSettings, null);
         g2d.dispose();
 
-        return outImage;
+        return scaledImage;
+    }
+
+    public boolean isCanvasLessThanHalfOfImageDimension(final Image image, Canvas canvas) {
+        if (image == null) {
+            return false;
+        }
+        return canvas.getWidth() < image.getWidth(null) / 2 ||
+            canvas.getHeight() < image.getHeight(null) / 2;
+    }
+
+    public boolean isCanvasLessThanImageDimension(final Image image, int canvasWidth, int canvasHeight) {
+        if (image == null) {
+            return false;
+        }
+        return canvasWidth < image.getWidth(null) ||
+            canvasHeight < image.getHeight(null);
+    }
+
+    public boolean isImageFitInCanvas(final Image image, Canvas canvas) {
+        if (image == null) {
+            return false;
+        }
+        return canvas.getWidth() == image.getWidth(null) ||
+            canvas.getHeight() == image.getHeight(null);
+    }
+
+    private Dimension getFitDimension(final Image image, int canvasWidth, int canvasHeight) {
+        return getFitDimension(image, canvasWidth, canvasHeight, null);
+    }
+
+    private Dimension getFitDimension(final Image image, int canvasWidth, int canvasHeight,
+                                      final ImageObserver imageObserver) {
+        if (image == null) {
+            return null;
+        }
+
+        return getFitDimension(
+            image.getWidth(imageObserver), image.getHeight(imageObserver),
+            canvasWidth, canvasHeight);
+    }
+
+    private Dimension getFitDimension(int originalWidth, int originalHeight, int canvasWidth, int canvasHeight) {
+        if (originalWidth <= 0 || originalHeight <= 0 || canvasWidth <= 0 || canvasHeight <= 0) {
+            return null;
+        }
+
+        if (originalWidth > canvasWidth || originalHeight > canvasHeight) {
+            double scale = min(
+                (double) canvasWidth / (double) originalWidth,
+                (double) canvasHeight / (double) originalHeight);
+            if (scale <= 0) {
+                return null;
+            }
+            return new Dimension((int) (originalWidth * scale), (int) (originalHeight * scale));
+        }
+
+        return new Dimension(originalWidth, originalHeight);
+    }
+
+    public void drawFitImage(final Graphics2D g2d,
+                             final Image image,
+                             int width, int height,
+                             boolean centered,
+                             final ImageSettings imageSettings) {
+        drawFitImage(g2d, image, width, height, centered, imageSettings, null);
+    }
+
+    public void drawFitImage(final Graphics2D g2d,
+                             final Image image,
+                             int width, int height,
+                             boolean centered,
+                             final ImageSettings imageSettings,
+                             final ImageObserver imageObserver) {
+        Dimension fitDimension = getFitDimension(image, width, height, imageObserver);
+        if (fitDimension == null) {
+            throw new IllegalArgumentException("Cannot scale image within dimensions of " + width + "x" + height);
+        }
+
+        int x = centered ? (width - fitDimension.width) / 2 : 0;
+        int y = centered ? (height - fitDimension.height) / 2 : 0;
+        drawImage(g2d, image, x, y, fitDimension.width, fitDimension.height, imageSettings, imageObserver);
+    }
+
+    public void drawImage(final Graphics2D g2d,
+                          final Image image,
+                          int x, int y,
+                          final ImageSettings imageSettings) {
+        drawImage(g2d, image, x, y,
+            image.getWidth(null), image.getHeight(null),
+            imageSettings,
+            null);
+    }
+
+    public void drawImage(final Graphics2D g2d,
+                          final Image image,
+                          int x, int y,
+                          final ImageSettings imageSettings,
+                          final ImageObserver imageObserver) {
+        drawImage(g2d, image, x, y,
+            image.getWidth(imageObserver), image.getHeight(imageObserver),
+            imageSettings,
+            imageObserver);
+    }
+
+    public void drawImage(final Graphics2D g2d,
+                          final Image image,
+                          int x, int y,
+                          int width, int height,
+                          final ImageSettings imageSettings) {
+        drawImage(g2d, image, x, y, width, height, imageSettings, null);
+    }
+
+    public void drawImage(final Graphics2D g2d,
+                          final Image image,
+                          int x, int y,
+                          int width, int height,
+                          final ImageSettings imageSettings,
+                          final ImageObserver imageObserver) {
+        g2d.setRenderingHint(KEY_RENDERING, imageSettings.getRenderingHint());
+        g2d.setRenderingHint(KEY_ANTIALIASING, imageSettings.getAntialiasingHint());
+        g2d.setRenderingHint(KEY_INTERPOLATION, imageSettings.getInterpolationHint());
+        g2d.setRenderingHint(KEY_ALPHA_INTERPOLATION, imageSettings.getAlphaInterpolationHint());
+        g2d.drawImage(image, x, y, width, height, imageObserver);
     }
 
     /**
@@ -138,7 +338,7 @@ public class ImageHandler {
 
         BufferedImage image = new BufferedImage(icon.getIconWidth(),
             icon.getIconHeight(),
-            BufferedImage.TYPE_INT_ARGB);
+            TYPE_INT_ARGB);
         icon.paintIcon(new JPanel(), image.getGraphics(), 0, 0);
         return image;
     }
@@ -222,7 +422,7 @@ public class ImageHandler {
     }
 
     public BufferedImage toBufferedImage(Image image, int width, int height) {
-        BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage bufferedImage = new BufferedImage(width, height, TYPE_INT_ARGB);
         Graphics2D g2 = bufferedImage.createGraphics();
         g2.drawImage(image, 0, 0, null);
         g2.dispose();
