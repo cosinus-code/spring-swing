@@ -32,13 +32,13 @@ public class FormatHandler {
             return "";
         }
         if (memorySize >= GIGA) {
-            return get2DecimalsFormatted((double) memorySize / (1024 * 1024 * 1024)) + " G";
+            return get2DecimalsFormatted((double) memorySize / GIGA) + " G";
         }
         if (memorySize >= MEGA) {
-            return get2DecimalsFormatted((double) memorySize / (1024 * 1024)) + " M";
+            return get2DecimalsFormatted((double) memorySize / MEGA) + " M";
         }
         if (memorySize >= KILO) {
-            return get2DecimalsFormatted((double) memorySize / 1024) + " K";
+            return get2DecimalsFormatted((double) memorySize / KILO) + " K";
         }
         return get2DecimalsFormatted(memorySize) + " b";
     }

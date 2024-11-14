@@ -13,9 +13,15 @@ import static javax.imageio.ImageIO.createImageInputStream;
  */
 public class UpdatableImage {
 
+    private final String imageType;
+
     private BufferedImage image;
 
     private long size = -1;
+
+    public UpdatableImage(String imageType) {
+        this.imageType = imageType;
+    }
 
     public BufferedImage getImage() {
         return image;
@@ -35,7 +41,7 @@ public class UpdatableImage {
     public void update(byte[] imageBytes) throws IOException {
         try (InputStream inputStream = new ByteArrayInputStream(imageBytes);
              ImageInputStream imageInputStream = createImageInputStream(inputStream);
-             ImageUpdater imageUpdater = new ImageUpdater(image)) {
+             ImageUpdater imageUpdater = new ImageUpdater(image, imageType)) {
 
             image = imageUpdater.updateImage(imageInputStream);
             size = imageBytes.length;
