@@ -1,2 +1,4 @@
 org.cosinus.swing.boot.SwingSpringApplicationStartupListener=\
 org.cosinus.swing.boot.splash.SplashApplicationStartupListener
+org.springframework.boot.env.EnvironmentPostProcessor=\
+org.cosinus.swing.boot.properties.PropertiesConfigurationFile
