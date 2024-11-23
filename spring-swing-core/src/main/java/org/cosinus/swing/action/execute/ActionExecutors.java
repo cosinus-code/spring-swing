@@ -47,7 +47,7 @@ public class ActionExecutors {
      */
     public <A extends ActionModel>
     Optional<ActionExecutor<? extends ActionModel>> getActionExecutor(A actionModel) {
-        return ofNullable(executorsMap.get(actionModel.getClass().getName()));
+        return ofNullable(executorsMap.get(actionModel.getActionId()));
     }
 
     /**

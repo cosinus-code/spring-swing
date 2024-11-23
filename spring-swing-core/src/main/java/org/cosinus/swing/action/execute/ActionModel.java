@@ -21,14 +21,22 @@ package org.cosinus.swing.action.execute;
  */
 public class ActionModel {
 
+    private final String executionId;
+
     private final String actionId;
 
     private final String actionName;
 
-    public ActionModel(String actionId,
+    public ActionModel(String executionId,
+                       String actionId,
                        String actionName) {
+        this.executionId = executionId;
         this.actionId = actionId;
         this.actionName = actionName;
+    }
+
+    public String getExecutionId() {
+        return executionId;
     }
 
     public String getActionId() {
