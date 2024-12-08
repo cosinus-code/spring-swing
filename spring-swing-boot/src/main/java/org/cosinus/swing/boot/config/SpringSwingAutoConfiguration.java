@@ -36,6 +36,7 @@ import org.cosinus.swing.error.ErrorHandler;
 import org.cosinus.swing.error.form.DefaultErrorFormProvider;
 import org.cosinus.swing.exec.*;
 import org.cosinus.swing.format.FormatHandler;
+import org.cosinus.swing.io.MimeTypeResolver;
 import org.cosinus.swing.menu.JsonMenuProvider;
 import org.cosinus.swing.menu.MenuProvider;
 import org.cosinus.swing.preference.JsonPreferencesProvider;
@@ -242,6 +243,11 @@ public class SpringSwingAutoConfiguration {
     @Bean
     public FormatHandler formatService() {
         return new FormatHandler();
+    }
+
+    @Bean
+    public MimeTypeResolver mimeTypeResolver() {
+        return new MimeTypeResolver();
     }
 
     @Bean

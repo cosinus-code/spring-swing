@@ -110,4 +110,10 @@ public abstract class TextFinder {
      * @return the current find
      */
     public abstract FindResult getCurrentFind();
+
+    public boolean containsText() {
+        return findAll()
+            .findFirst()
+            .isPresent();
+    }
 }

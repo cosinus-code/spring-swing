@@ -51,6 +51,10 @@ public class Button extends JButton implements Control<String> {
         injectContext(this);
     }
 
+    public Button(String text, Runnable action) {
+        this(text, event -> action.run());
+    }
+
     public Button(String text, ActionListener action) {
         super(text);
         injectContext(this);

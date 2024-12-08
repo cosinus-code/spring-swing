@@ -21,7 +21,6 @@ import org.cosinus.swing.context.ApplicationHandler;
 import org.cosinus.swing.error.ErrorHandler;
 import org.cosinus.swing.form.control.Control;
 import org.cosinus.swing.form.control.ControlType;
-import org.cosinus.swing.form.control.provider.ControlProvider;
 import org.cosinus.swing.layout.SpringGridLayout;
 import org.cosinus.swing.preference.Preference;
 import org.cosinus.swing.preference.Preferences;
@@ -155,9 +154,9 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
         JPanel preferencesCardFramePanel = new JPanel(new BorderLayout());
         JPanel preferencesPanel = new JPanel();
         SpringGridLayout preferencesLayout = new SpringGridLayout(preferencesPanel,
-                                                                  preferences.size(), 2,
-                                                                  5, 5,
-                                                                  5, 5);
+            preferences.size(), 2,
+            5, 5,
+            5, 5);
         preferencesPanel.setLayout(preferencesLayout);
 
         preferences.forEach((name, preference) -> addPreferenceControl(preferencesPanel, name, preference));
@@ -313,7 +312,7 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
         }
         if (preferenceSouthPanel != null) {
             preferenceSouthPanel.setBorder(lineBorder(uiHandler.getControlHighlightColor(),
-                                                      1, 0, 0, 0));
+                1, 0, 0, 0));
         }
     }
 
@@ -357,7 +356,7 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
             this.itemsMap = preferenceNames
                 .stream()
                 .collect(Collectors.toMap(Function.identity(),
-                                          DefaultPreferencesDialog.this::translatePreferenceName));
+                    DefaultPreferencesDialog.this::translatePreferenceName));
         }
 
         @Override

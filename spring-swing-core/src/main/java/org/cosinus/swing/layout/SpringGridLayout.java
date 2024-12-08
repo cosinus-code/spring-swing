@@ -18,6 +18,7 @@ package org.cosinus.swing.layout;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Map;
 
 import static java.util.Optional.ofNullable;
 import static java.util.stream.IntStream.range;
@@ -49,6 +50,10 @@ public class SpringGridLayout extends SpringLayout {
     private Spring totalWidth;
     private Spring totalHeight;
 
+    private int rowHeight;
+
+    private Map<Integer, Spring> columnWidth;
+
     public SpringGridLayout(Container target,
                             int rows, int cols,
                             int initialX, int initialY,
@@ -63,6 +68,15 @@ public class SpringGridLayout extends SpringLayout {
 
         this.columnDimensions = new SpringDimension[cols];
         this.rowDimensions = new SpringDimension[rows];
+    }
+
+//    public void setColumnWidth(int column, int width) {
+//        columnWidth.put(column, new WidthSpring(width));
+//    }
+
+
+    public void setRowHeight(int rowHeight) {
+        this.rowHeight = rowHeight;
     }
 
     /**

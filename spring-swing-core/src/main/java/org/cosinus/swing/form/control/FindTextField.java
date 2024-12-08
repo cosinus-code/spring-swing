@@ -18,6 +18,7 @@ import java.awt.event.MouseMotionListener;
 import static java.awt.Color.darkGray;
 import static java.awt.Color.lightGray;
 import static java.awt.event.KeyEvent.VK_ENTER;
+import static java.util.Optional.ofNullable;
 import static javax.swing.SwingUtilities.invokeLater;
 import static org.cosinus.swing.border.Borders.emptyBorder;
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
@@ -42,6 +43,12 @@ public class FindTextField extends JTextField
 
     private final Runnable action;
 
+    private boolean actionOnSettingChange;
+
+    public FindTextField() {
+        this(null, null);
+    }
+
     public FindTextField(final Runnable action) {
         this(null, action);
     }
@@ -58,6 +65,10 @@ public class FindTextField extends JTextField
         addMouseListener(this);
         addMouseMotionListener(this);
         addActionListener(this);
+    }
+
+    public void setActionOnSettingChange(boolean actionOnSettingChange) {
+        this.actionOnSettingChange = actionOnSettingChange;
     }
 
     @Override
@@ -132,7 +143,9 @@ public class FindTextField extends JTextField
             return;
         }
         invokeLater(this::repaint);
-        performAction();
+        if (actionOnSettingChange) {
+            performAction();
+        }
     }
 
     @Override
@@ -177,6 +190,7 @@ public class FindTextField extends JTextField
     }
 
     public void performAction() {
-        action.run();
+        ofNullable(action)
+            .ifPresent(Runnable::run);
     }
 }
