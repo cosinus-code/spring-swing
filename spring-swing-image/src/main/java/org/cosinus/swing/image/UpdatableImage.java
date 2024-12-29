@@ -62,7 +62,9 @@ public class UpdatableImage {
             try (InputStream input = new ByteArrayInputStream(imageBytes)) {
                 imageMetadata = readMetadata(input);
                 ExifIFD0Directory exifInfo = imageMetadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
-                imageRotation = findImageRotation(exifInfo.getInt(TAG_ORIENTATION));
+                if (exifInfo != null) {
+                    imageRotation = findImageRotation(exifInfo.getInt(TAG_ORIENTATION));
+                }
             } catch (ImageProcessingException | MetadataException ex) {
                 LOG.error("Failed to read image metadata", ex);
             }
