@@ -17,8 +17,7 @@
 package org.cosinus.swing.boot.config;
 
 import com.bulenkov.darcula.DarculaLaf;
-import org.cosinus.swing.boot.condition.ConditionalOnOperatingSystem;
-import org.cosinus.swing.boot.initialize.DarkLookAndFeelInitializer;
+import org.cosinus.swing.boot.condition.ConditionalOnWindows;
 import org.cosinus.swing.boot.initialize.DefaultThemeInitializer;
 import org.cosinus.swing.boot.initialize.LookAndFeelInitializer;
 import org.cosinus.swing.context.UIProperties;
@@ -26,8 +25,8 @@ import org.cosinus.swing.preference.Preferences;
 import org.cosinus.swing.resource.ClasspathResourceResolver;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.cosinus.swing.ui.dark.DarkLookAndFeel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -44,14 +43,13 @@ public class ApplicationUIAutoConfiguration {
     /**
      * LookAndFeel initializer using "swing.ui.theme" application property value.
      *
-     * @param uiHandler the UI handler
+     * @param uiHandler    the UI handler
      * @param uiProperties the UI properties
      * @return the {@link LookAndFeelInitializer} bean
      */
     @Bean
     @ConditionalOnProperty(value = "swing.ui.theme")
-    public LookAndFeelInitializer lookAndFeelInitializer(ApplicationUIHandler uiHandler,
-                                                         UIProperties uiProperties) {
+    public LookAndFeelInitializer lookAndFeelInitializer(ApplicationUIHandler uiHandler, UIProperties uiProperties) {
         return new LookAndFeelInitializer(uiHandler, uiProperties);
     }
 
@@ -59,37 +57,15 @@ public class ApplicationUIAutoConfiguration {
      * LookAndFeel initializer for "swing.ui.theme=default" application property.
      *
      * @param preferences the application preferences
-     * @param uiHandler the UI handler
+     * @param uiHandler   the UI handler
      * @return the {@link DefaultThemeInitializer} bean
      */
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(value = "swing.ui.theme", havingValue = "default", matchIfMissing = true)
-    public DefaultThemeInitializer defaultThemeInitializer(Preferences preferences,
-                                                           ApplicationUIHandler uiHandler) {
-        return new DefaultThemeInitializer(preferences, uiHandler);
-    }
+    public DefaultThemeInitializer defaultThemeInitializer(final Preferences preferences, final ApplicationUIHandler uiHandler, final ClasspathResourceResolver resourceResolver, @Autowired(required = false) final DarkLookAndFeel darkLookAndFeel) {
 
-    /**
-     * Dark LookAndFeel initializer for "swing.ui.theme=default" application property.
-     *
-     * @param preferences the application preferences
-     * @param uiHandler the UI handler
-     * @param darkLookAndFeel the dark look and feel
-     * @param resourceResolver the resource resolver
-     * @return the {@link DarkLookAndFeelInitializer} bean
-     */
-    @Bean
-    @ConditionalOnBean(DarkLookAndFeel.class)
-    @ConditionalOnProperty(value = "swing.ui.theme", havingValue = "default", matchIfMissing = true)
-    public DarkLookAndFeelInitializer darkLookAndFeelInitializer(Preferences preferences,
-                                                                 ApplicationUIHandler uiHandler,
-                                                                 DarkLookAndFeel darkLookAndFeel,
-                                                                 ClasspathResourceResolver resourceResolver) {
-        return new DarkLookAndFeelInitializer(preferences,
-                uiHandler,
-                darkLookAndFeel,
-                resourceResolver);
+        return new DefaultThemeInitializer(preferences, uiHandler, resourceResolver, darkLookAndFeel);
     }
 
     /**
@@ -99,7 +75,7 @@ public class ApplicationUIAutoConfiguration {
      */
     @Bean
     @ConditionalOnClass(DarculaLaf.class)
-    @ConditionalOnOperatingSystem({"Windows", "Linux"})
+    @ConditionalOnWindows
     @ConditionalOnMissingBean
     public DarkLookAndFeel darkLookAndFeel() {
         return new DarkLookAndFeel();

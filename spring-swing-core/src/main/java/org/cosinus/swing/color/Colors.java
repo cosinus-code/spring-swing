@@ -22,6 +22,7 @@ import org.apache.logging.log4j.Logger;
 import java.awt.*;
 import java.util.Optional;
 
+import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 /**
@@ -73,9 +74,43 @@ public final class Colors {
      * @return the created lighter color
      */
     public static Color getLighterColor(Color color) {
-        return new Color(min(color.getRed() + 12, 255),
-                         min(color.getGreen() + 14, 255),
-                         min(color.getBlue() + 16, 255));
+        return getLighterColor(color, 5);
+    }
+
+    /**
+     * Create a lighter nuance of a source color.
+     *
+     * @param color the source color
+     * @param amount the amount of adjustment
+     * @return the created lighter color
+     */
+    public static Color getLighterColor(Color color, int amount) {
+        return new Color(min(color.getRed() + amount, 255),
+            min(color.getGreen() + amount, 255),
+            min(color.getBlue() + amount, 255));
+    }
+
+    /**
+     * Create a darker nuance of a source color.
+     *
+     * @param color the source color
+     * @return the created darker color
+     */
+    public static Color getDarkerColor(Color color) {
+        return getDarkerColor(color, 5);
+    }
+
+    /**
+     * Create a darker nuance of a source color.
+     *
+     * @param color the source color
+     * @param amount the amount of adjustment
+     * @return the created darker color
+     */
+    public static Color getDarkerColor(Color color, int amount) {
+        return new Color(max(color.getRed() - amount, 0),
+            max(color.getGreen() - amount, 0),
+            max(color.getBlue() - amount, 0));
     }
 
     private Colors() {

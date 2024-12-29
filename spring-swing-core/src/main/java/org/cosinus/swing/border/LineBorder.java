@@ -35,6 +35,8 @@ public class LineBorder extends javax.swing.border.LineBorder {
 
     private int right;
 
+    private boolean rectangle;
+
     public LineBorder(Color color) {
         this(color, 1, false);
     }
@@ -53,12 +55,11 @@ public class LineBorder extends javax.swing.border.LineBorder {
 
     public LineBorder(Color color, int thickness, int top, int left, int bottom, int right) {
         super(color, thickness, false);
-        if (top != left || left != bottom || bottom != right) {
-            this.top = top;
-            this.left = left;
-            this.bottom = bottom;
-            this.right = right;
-        }
+        this.top = top;
+        this.left = left;
+        this.bottom = bottom;
+        this.right = right;
+        this.rectangle = top == left && left == bottom && bottom == right;
     }
 
     @Override
@@ -68,30 +69,30 @@ public class LineBorder extends javax.swing.border.LineBorder {
         g2d.setStroke(new BasicStroke(thickness));
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        if (top > 0 || left > 0 || bottom > 0 || right > 0) {
-            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
+        if (!rectangle) {
             if (top > 0) {
                 g2d.setStroke(new BasicStroke(top));
-                g2d.drawLine(x, y, x + width, y);
+                g2d.drawLine(x, y, x + width - 1, y);
             }
 
             if (left > 0) {
                 g2d.setStroke(new BasicStroke(left));
-                g2d.drawLine(x, y, x, height);
+                g2d.drawLine(x, y, x, y + height - 1);
             }
 
             if (bottom > 0) {
                 g2d.setStroke(new BasicStroke(bottom));
-                g2d.drawLine(x, y + height, x + width, y + height);
+                g2d.drawLine(x, y + height - bottom, x + width, y + height - bottom);
             }
 
             if (right > 0) {
                 g2d.setStroke(new BasicStroke(right));
-                g2d.drawLine(x + width, y, x + width, y + height);
+                g2d.drawLine(x + width - right, y, x + width - right, y + height);
             }
+        } else if (roundedCorners) {
+            g.drawRoundRect(x, y, width, height, 10, 10);
         } else {
-            drawRect(g, x, y, width, height, roundedCorners, 10, 10);
+            super.paintBorder(c, g, x, y, width, height);
         }
     }
 

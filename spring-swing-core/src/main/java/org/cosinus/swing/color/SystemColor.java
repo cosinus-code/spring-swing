@@ -268,7 +268,7 @@ public enum SystemColor {
     TEXT_HIGHLIGHT_TEXT("textHighlightText"),
     TEXT_INACTIVE_TEXT("textInactiveText"),
     TEXT_TEXT("textText"),
-    window("window"),
+    WINDOW("window"),
     WINDOW_BORDER("windowBorder"),
     WINDOW_TEXT("windowText");
 

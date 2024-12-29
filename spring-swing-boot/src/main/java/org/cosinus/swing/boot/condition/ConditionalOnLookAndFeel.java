@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Cosinus Software
+ * Copyright 2024 Cosinus Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,18 +20,16 @@ import org.springframework.context.annotation.Conditional;
 import java.lang.annotation.*;
 
 /**
- * {@link Conditional @Conditional} that only matches when a list of operating systems.
+ * {@link Conditional @Conditional} that only matches when a list of look and feels.
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Conditional(OnOperatingSystemCondition.class)
-public @interface ConditionalOnOperatingSystem {
-
+@Conditional(OnLookAndFeelCondition.class)
+public @interface ConditionalOnLookAndFeel {
     /**
      *
-     * @return the expected operating systems
+     * @return the expected look and feels
      */
     String[] value();
-
 }
