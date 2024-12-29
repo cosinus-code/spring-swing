@@ -17,6 +17,8 @@ import java.awt.event.MouseMotionListener;
 
 import static java.awt.Color.darkGray;
 import static java.awt.Color.lightGray;
+import static java.awt.RenderingHints.KEY_ANTIALIASING;
+import static java.awt.RenderingHints.VALUE_ANTIALIAS_ON;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.util.Optional.ofNullable;
 import static javax.swing.SwingUtilities.invokeLater;
@@ -76,6 +78,9 @@ public class FindTextField extends JTextField
         super.paintComponent(g);
         int fontHeight = g.getFontMetrics().getHeight();
         int height = (getHeight() + fontHeight) / 2;
+
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
 
         g.setColor(value.isCaseSensitive() ? SELECTED_FOREGROUND_COLOR : UNSELECTED_FOREGROUND_COLOR);
         g.drawString(CASE_SENSITIVE_TEXT, getWidth() - 3 * BUTTON_SIZE, height - 3);
