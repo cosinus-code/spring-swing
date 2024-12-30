@@ -76,23 +76,17 @@ public class LinuxIconProvider implements IconProvider {
 
     @Override
     public Optional<Icon> findIconByFile(File file, IconSize size) {
-        return file.isDirectory() ?
-            findIconByName(getFolderIconName(file), size)
-                .or(() -> findIconByName(ICON_FOLDER, size)) :
-            getFileMimeType(file)
-                .stream()
-                .flatMap(this::mimeTypeToIconNames)
-                .map(iconName -> findIconByName(iconName, size))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .findFirst()
-                .or(() -> findIconByName(ICON_FILE, size));
-    }
-
-    protected String getFolderIconName(File file) {
-        return SpecialFileIcon.byFile(file)
-            .map(SpecialFileIcon::getName)
-            .orElse(ICON_FOLDER);
+        return findIconByName(getFolderIconName(file), size)
+            .or(() -> file.isDirectory() ?
+                findIconByName(ICON_FOLDER, size) :
+                getFileMimeType(file)
+                    .stream()
+                    .flatMap(this::mimeTypeToIconNames)
+                    .map(iconName -> findIconByName(iconName, size))
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .findFirst()
+                    .or(() -> findIconByName(ICON_FILE, size)));
     }
 
     protected Optional<String> getFileMimeType(File file) {

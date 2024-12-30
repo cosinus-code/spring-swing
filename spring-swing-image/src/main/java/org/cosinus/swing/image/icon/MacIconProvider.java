@@ -65,7 +65,8 @@ public class MacIconProvider implements IconProvider {
 
     @Override
     public Optional<Icon> findIconByFile(File file, IconSize size) {
-        return findIconByName(file.isDirectory() ? ICON_FOLDER : ICON_FILE, size);
+        return findIconByName(getFolderIconName(file), size)
+            .or(() -> findIconByName(file.isDirectory() ? ICON_FOLDER : ICON_FILE, size));
     }
 
     @Override

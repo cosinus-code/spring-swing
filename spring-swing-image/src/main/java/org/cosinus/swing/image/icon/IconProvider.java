@@ -111,4 +111,10 @@ public interface IconProvider {
      * @return the icon
      */
     Optional<Icon> findIconByName(String name, IconSize size);
+
+    default String getFolderIconName(File file) {
+        return SpecialFileIcon.byFile(file)
+            .map(SpecialFileIcon::getName)
+            .orElse(ICON_FOLDER);
+    }
 }
