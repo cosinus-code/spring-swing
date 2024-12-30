@@ -50,6 +50,10 @@ public final class FileUtils {
         return EXTENSION_SEPARATOR + extension;
     }
 
+    public static String setHomeFolder(String path) {
+        return path.replaceFirst("^~", System.getProperty("user.home"));
+    }
+
     private FileUtils() {
     }
 }

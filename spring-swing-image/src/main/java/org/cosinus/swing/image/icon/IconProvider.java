@@ -89,7 +89,7 @@ public interface IconProvider {
 
     /**
      * Initialize this provider.
-     * This allows time consuming operations to be perform with less impact on user experience.
+     * This allows time-consuming operations to be performed with less impact on user experience.
      */
     default void initialize() {
     }

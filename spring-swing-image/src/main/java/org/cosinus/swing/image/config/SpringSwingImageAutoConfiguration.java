@@ -102,7 +102,7 @@ public class SpringSwingImageAutoConfiguration {
     }
 
     @Bean("fileExtensionKeyGenerator")
-    public KeyGenerator keyGenerator() {
-        return new FileExtensionKeyGenerator();
+    public KeyGenerator keyGenerator(final IconProvider iconProvider) {
+        return new FileExtensionKeyGenerator(iconProvider);
     }
 }

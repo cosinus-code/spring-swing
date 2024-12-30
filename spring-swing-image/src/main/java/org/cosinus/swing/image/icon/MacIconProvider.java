@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
+import static org.cosinus.swing.image.icon.SpecialFileIcon.*;
 
 /**
  * Implementation of {@link IconProvider} for Mac
@@ -116,6 +117,16 @@ public class MacIconProvider implements IconProvider {
         iconNameToFilePathMap.put(ICON_FILE, ICON_CORE_PATH + "GenericDocumentIcon.icns");
         iconNameToFilePathMap.put(ICON_EXECUTABLE, ICON_CORE_PATH + "ExecutableBinaryIcon.icns");
         iconNameToFilePathMap.put(ICON_GRID, ICON_CORE_PATH + "GridIcon.icns");
+
+        iconNameToFilePathMap.put(HOME.getName(), ICON_CORE_PATH + "UsersFolderIcon.icns");
+        iconNameToFilePathMap.put(APPLICATIONS.getName(), ICON_CORE_PATH + "ApplicationsFolderIcon.icns");
+        iconNameToFilePathMap.put(DESKTOP.getName(), ICON_CORE_PATH + "DesktopFolderIcon.icns");
+        iconNameToFilePathMap.put(DOCUMENTS.getName(), ICON_CORE_PATH + "DocumentsFolderIcon.icns");
+        iconNameToFilePathMap.put(DOWNLOADS.getName(), ICON_CORE_PATH + "DownloadsFolderIcon.icns");
+        iconNameToFilePathMap.put(MUSIC.getName(), ICON_CORE_PATH + "MusicFolderIcon.icns");
+        iconNameToFilePathMap.put(PUBLIC.getName(), ICON_CORE_PATH + "PublicFolderIcon.icns");
+        iconNameToFilePathMap.put(PICTURES.getName(), ICON_CORE_PATH + "PicturesFolderIcon.icns");
+        iconNameToFilePathMap.put(VIDEOS.getName(), ICON_CORE_PATH + "MovieFolderIcon.icns");
 
         iconNameToFilePathMap.put(ICON_STORAGE_INTERNAL, ICON_STORAGE_PATH + "Internal.icns");
         iconNameToFilePathMap.put(ICON_STORAGE_EXTERNAL, ICON_STORAGE_PATH + "External.icns");

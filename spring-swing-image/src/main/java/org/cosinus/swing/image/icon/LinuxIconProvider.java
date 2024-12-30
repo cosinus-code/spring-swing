@@ -77,7 +77,8 @@ public class LinuxIconProvider implements IconProvider {
     @Override
     public Optional<Icon> findIconByFile(File file, IconSize size) {
         return file.isDirectory() ?
-            findIconByName(ICON_FOLDER, size) :
+            findIconByName(getFolderIconName(file), size)
+                .or(() -> findIconByName(ICON_FOLDER, size)) :
             getFileMimeType(file)
                 .stream()
                 .flatMap(this::mimeTypeToIconNames)
@@ -86,6 +87,12 @@ public class LinuxIconProvider implements IconProvider {
                 .map(Optional::get)
                 .findFirst()
                 .or(() -> findIconByName(ICON_FILE, size));
+    }
+
+    protected String getFolderIconName(File file) {
+        return SpecialFileIcon.byFile(file)
+            .map(SpecialFileIcon::getName)
+            .orElse(ICON_FOLDER);
     }
 
     protected Optional<String> getFileMimeType(File file) {
@@ -139,7 +146,7 @@ public class LinuxIconProvider implements IconProvider {
             return ofNullable(read(file))
                 .map(ImageIcon::new);
         } catch (IOException e) {
-            LOG.error("Failed to create icon from file: " + file.getAbsolutePath(), e);
+            LOG.error("Failed to create icon from file: {}", file.getAbsolutePath(), e);
             return Optional.empty();
         }
     }
@@ -164,10 +171,10 @@ public class LinuxIconProvider implements IconProvider {
             .map(File::new)
             .filter(File::exists)
             .or(() -> Stream.of(
-                System.getProperty("user.home") + "/.icons",
-                "/usr/share/icons", // Redhat/Debian/Solaris
-                "/opt/gnome2/share/icons", // SUSE
-                System.getProperty("swing.gtkthomedir") + "/icons")
+                    System.getProperty("user.home") + "/.icons",
+                    "/usr/share/icons", // Redhat/Debian/Solaris
+                    "/opt/gnome2/share/icons", // SUSE
+                    System.getProperty("swing.gtkthomedir") + "/icons")
                 .map(Paths::get)
                 .map(iconsFolderName -> iconsFolderName.resolve(getIconsTheme()))
                 .map(Path::toFile)

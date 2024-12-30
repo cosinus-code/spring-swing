@@ -33,6 +33,12 @@ public class FileExtensionKeyGenerator extends SimpleKeyGenerator {
 
     private static final String FOLDER_ICON_KEY = ":folder:";
 
+    private final IconProvider iconProvider;
+
+    public FileExtensionKeyGenerator(IconProvider iconProvider) {
+        this.iconProvider = iconProvider;
+    }
+
     @Override
     public Object generate(@NotNull Object target, @NotNull Method method, Object @NotNull ... params) {
         return super.generate(target, method, stream(params)
@@ -41,7 +47,14 @@ public class FileExtensionKeyGenerator extends SimpleKeyGenerator {
     }
 
     private String getFileKey(File file) {
-        return file.isDirectory() ? FOLDER_ICON_KEY : getExtension(file);
+        return file.isDirectory() ? getFolderKey(file) : getExtension(file);
+    }
+
+    private String getFolderKey(File file) {
+        return SpecialFileIcon.byFile(file)
+            .map(SpecialFileIcon::getName)
+            .map(FOLDER_ICON_KEY::concat)
+            .orElse(FOLDER_ICON_KEY);
     }
 
 }
