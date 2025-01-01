@@ -16,18 +16,23 @@
 
 package org.cosinus.swing.util;
 
+import org.springframework.beans.factory.support.BeanDefinitionValidationException;
 import org.springframework.util.ClassUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Stream.concat;
 import static org.springframework.beans.BeanUtils.instantiateClass;
 import static org.springframework.util.ReflectionUtils.makeAccessible;
@@ -38,30 +43,59 @@ import static org.springframework.util.ReflectionUtils.setField;
  */
 public final class ReflectionUtils {
 
-    public static void setFieldsSafe(Object target,
-                                     Class<?> baseTargetClass,
-                                     Class<? extends Annotation> annotation,
-                                     Map<String, Object> beansMap) {
+    public static void setFieldsSafe(
+        final Object target,
+        final Class<?> baseTargetClass,
+        final Class<? extends Annotation> annotation,
+        final Supplier<Map<String, Object>> beansMapSupplier) {
+
         if (!baseTargetClass.isAssignableFrom(target.getClass())) {
             return;
         }
 
-        getFields(target.getClass(), baseTargetClass)
+        List<Field> annotatedFields = getFields(target.getClass(), baseTargetClass)
             .filter(field -> Object.class != field.getType())
             .filter(field -> field.getAnnotation(annotation) != null)
-            .forEach(field -> findBeanForField(field, beansMap)
+            .toList();
+
+        if (!annotatedFields.isEmpty()) {
+            Map<String, Object> beansMap = beansMapSupplier.get();
+            annotatedFields.forEach(field -> findBeanForField(field, beansMap)
                 .ifPresent(bean -> {
                     makeAccessible(field);
                     setField(field, target, bean);
                 }));
+        }
     }
 
-    private static Optional<Object> findBeanForField(Field field, Map<String, Object> beansMap) {
+    private static Optional<Object> findBeanForField(
+        final Field field,
+        final Map<String, Object> beansMap) {
+
         return ofNullable(beansMap.get(field.getName()))
-            .or(() -> beansMap.values()
-                .stream()
-                .filter(bean -> field.getType().isAssignableFrom(bean.getClass()))
-                .findFirst());
+            .or(() -> Optional.of(findBeanForField(field, beansMap.values())));
+    }
+
+    private static Object findBeanForField(
+        final Field field,
+        final Collection<Object> availableBeans) {
+        List<Object> beans = availableBeans
+            .stream()
+            .filter(bean -> field.getType().isAssignableFrom(bean.getClass()))
+            .toList();
+
+        if (beans.size() != 1) {
+            throw new BeanDefinitionValidationException(format("Expected one bean of type %s but found %d: %s",
+                field.getType(),
+                beans.size(),
+                beans
+                    .stream()
+                    .map(Object::getClass)
+                    .map(Class::getName)
+                    .collect(joining(", "))));
+        }
+
+        return beans.get(0);
     }
 
     public static Stream<Field> getFields(Class<?> targetClass,

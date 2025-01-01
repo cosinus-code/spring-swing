@@ -17,8 +17,16 @@
 package org.cosinus.swing.context;
 
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import static java.util.Optional.ofNullable;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+
+import static java.util.stream.Collectors.toMap;
+import static org.cosinus.swing.util.ReflectionUtils.setFieldsSafe;
+import static org.springframework.beans.BeanUtils.instantiateClass;
 
 /**
  * Application context injector.
@@ -37,13 +45,41 @@ public class ApplicationContextInjector {
     }
 
     /**
-     * Inject the application into an object.
+     * Inject the application into an object.La
      *
      * @param object the object to inject the context into
      */
     public static void injectContext(Object object) {
-        ofNullable(applicationContext)
-            .map(ApplicationContext::getAutowireCapableBeanFactory)
-            .ifPresent(factory -> factory.autowireBean(object));
+        if (applicationContext != null) {
+            applicationContext.getAutowireCapableBeanFactory().autowireBean(object);
+
+            setFieldsSafe(object,
+                Object.class,
+                SwingAutowired.class,
+                ApplicationContextInjector::getAvailableSwingComponents);
+        }
+    }
+
+    private static Map<String, Object> getAvailableSwingComponents() {
+        return applicationContext.getBeansWithAnnotation(SwingComponent.class)
+            .entrySet()
+            .stream()
+            .filter(entry -> Optional.of(entry.getKey())
+                .map(ApplicationContextInjector::getSwingComponentAnnotation)
+                .map(SwingComponent::value)
+                .stream()
+                .flatMap(Arrays::stream)
+                .map(ApplicationContextInjector::instantiateCondition)
+                .allMatch(condition -> condition.matches(applicationContext, entry.getValue())))
+            .collect(toMap(Entry::getKey, Entry::getValue));
+    }
+
+    private static SwingComponent getSwingComponentAnnotation(String beanName) {
+        return ((AnnotationConfigApplicationContext) applicationContext).getBeanFactory()
+            .findAnnotationOnBean(beanName, SwingComponent.class);
+    }
+
+    private static SwingCondition instantiateCondition(Class<? extends SwingCondition> conditionClass) {
+        return instantiateClass(conditionClass);
     }
 }

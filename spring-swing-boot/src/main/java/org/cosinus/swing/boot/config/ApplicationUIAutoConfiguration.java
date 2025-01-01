@@ -18,7 +18,6 @@ package org.cosinus.swing.boot.config;
 
 import com.bulenkov.darcula.DarculaLaf;
 import org.cosinus.swing.boot.condition.ConditionalOnWindows;
-import org.cosinus.swing.boot.initialize.DefaultThemeInitializer;
 import org.cosinus.swing.boot.initialize.LookAndFeelInitializer;
 import org.cosinus.swing.context.UIProperties;
 import org.cosinus.swing.preference.Preferences;
@@ -43,29 +42,22 @@ public class ApplicationUIAutoConfiguration {
     /**
      * LookAndFeel initializer using "swing.ui.theme" application property value.
      *
+     * @param preferences the application preferences
      * @param uiHandler    the UI handler
      * @param uiProperties the UI properties
      * @return the {@link LookAndFeelInitializer} bean
      */
     @Bean
-    @ConditionalOnProperty(value = "swing.ui.theme")
-    public LookAndFeelInitializer lookAndFeelInitializer(ApplicationUIHandler uiHandler, UIProperties uiProperties) {
-        return new LookAndFeelInitializer(uiHandler, uiProperties);
-    }
-
-    /**
-     * LookAndFeel initializer for "swing.ui.theme=default" application property.
-     *
-     * @param preferences the application preferences
-     * @param uiHandler   the UI handler
-     * @return the {@link DefaultThemeInitializer} bean
-     */
-    @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(value = "swing.ui.theme", havingValue = "default", matchIfMissing = true)
-    public DefaultThemeInitializer defaultThemeInitializer(final Preferences preferences, final ApplicationUIHandler uiHandler, final ClasspathResourceResolver resourceResolver, @Autowired(required = false) final DarkLookAndFeel darkLookAndFeel) {
+    @ConditionalOnProperty(value = "swing.ui.theme", matchIfMissing = true)
+    public LookAndFeelInitializer defaultThemeInitializer(
+        final Preferences preferences,
+        final ApplicationUIHandler uiHandler,
+        final UIProperties uiProperties,
+        final ClasspathResourceResolver resourceResolver,
+        @Autowired(required = false) final DarkLookAndFeel darkLookAndFeel) {
 
-        return new DefaultThemeInitializer(preferences, uiHandler, resourceResolver, darkLookAndFeel);
+        return new LookAndFeelInitializer(uiProperties, preferences, uiHandler, resourceResolver, darkLookAndFeel);
     }
 
     /**

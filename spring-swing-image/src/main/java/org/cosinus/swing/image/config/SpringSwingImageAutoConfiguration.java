@@ -30,6 +30,7 @@ import org.cosinus.swing.image.icon.IconProvider;
 import org.cosinus.swing.image.icon.LinuxIconProvider;
 import org.cosinus.swing.image.icon.MacIconProvider;
 import org.cosinus.swing.image.icon.WindowsIconProvider;
+import org.cosinus.swing.io.MimeTypeResolver;
 import org.cosinus.swing.resource.ClasspathResourceResolver;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -71,10 +72,11 @@ public class SpringSwingImageAutoConfiguration {
 
     @Bean
     @ConditionalOnLinux
-    public IconProvider linuxIconProvider(ApplicationProperties applicationProperties,
-                                          ApplicationUIHandler uiHandler,
-                                          ProcessExecutor processExecutor) {
-        return new LinuxIconProvider(applicationProperties, uiHandler, processExecutor);
+    public IconProvider linuxIconProvider(final ApplicationProperties applicationProperties,
+                                          final ApplicationUIHandler uiHandler,
+                                          final ProcessExecutor processExecutor,
+                                          final MimeTypeResolver mimeTypeResolver) {
+        return new LinuxIconProvider(applicationProperties, uiHandler, processExecutor, mimeTypeResolver);
     }
 
     @Bean

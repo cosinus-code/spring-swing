@@ -65,8 +65,9 @@ public class MacIconProvider implements IconProvider {
 
     @Override
     public Optional<Icon> findIconByFile(File file, IconSize size) {
-        return findIconByName(getFolderIconName(file), size)
-            .or(() -> findIconByName(file.isDirectory() ? ICON_FOLDER : ICON_FILE, size));
+        return file.isDirectory() ? findIconByName(getFolderIconName(file), size)
+            .or(() -> findIconByName(ICON_FOLDER, size)) :
+            findIconByName(file.isDirectory() ? ICON_FOLDER : ICON_FILE, size);
     }
 
     @Override
@@ -119,7 +120,7 @@ public class MacIconProvider implements IconProvider {
         iconNameToFilePathMap.put(ICON_EXECUTABLE, ICON_CORE_PATH + "ExecutableBinaryIcon.icns");
         iconNameToFilePathMap.put(ICON_GRID, ICON_CORE_PATH + "GridIcon.icns");
 
-        iconNameToFilePathMap.put(HOME.getName(), ICON_CORE_PATH + "UsersFolderIcon.icns");
+        iconNameToFilePathMap.put(HOME.getName(), ICON_CORE_PATH + "HomeFolderIcon.icns");
         iconNameToFilePathMap.put(APPLICATIONS.getName(), ICON_CORE_PATH + "ApplicationsFolderIcon.icns");
         iconNameToFilePathMap.put(DESKTOP.getName(), ICON_CORE_PATH + "DesktopFolderIcon.icns");
         iconNameToFilePathMap.put(DOCUMENTS.getName(), ICON_CORE_PATH + "DocumentsFolderIcon.icns");

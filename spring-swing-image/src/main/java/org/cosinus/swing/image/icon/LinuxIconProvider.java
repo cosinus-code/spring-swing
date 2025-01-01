@@ -20,7 +20,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.context.ApplicationProperties;
 import org.cosinus.swing.exec.ProcessExecutor;
+import org.cosinus.swing.io.MimeTypeResolver;
 import org.cosinus.swing.ui.ApplicationUIHandler;
+import org.springframework.util.MimeType;
 
 import javax.swing.*;
 import java.io.File;
@@ -49,16 +51,20 @@ public class LinuxIconProvider implements IconProvider {
 
     private final ProcessExecutor processExecutor;
 
+    private final MimeTypeResolver mimeTypeResolver;
+
     private IconThemeIndex iconThemeIndex;
 
     private final Map<String, String> iconNamesMap;
 
-    public LinuxIconProvider(ApplicationProperties applicationProperties,
-                             ApplicationUIHandler uiHandler,
-                             ProcessExecutor processExecutor) {
+    public LinuxIconProvider(final ApplicationProperties applicationProperties,
+                             final ApplicationUIHandler uiHandler,
+                             final ProcessExecutor processExecutor,
+                             final MimeTypeResolver mimeTypeResolver) {
         this.applicationProperties = applicationProperties;
         this.uiHandler = uiHandler;
         this.processExecutor = processExecutor;
+        this.mimeTypeResolver = mimeTypeResolver;
 
         this.iconThemeIndex = new IconThemeIndex();
         this.iconNamesMap = new HashMap<>();
@@ -76,32 +82,31 @@ public class LinuxIconProvider implements IconProvider {
 
     @Override
     public Optional<Icon> findIconByFile(File file, IconSize size) {
-        return findIconByName(getFolderIconName(file), size)
-            .or(() -> file.isDirectory() ?
-                findIconByName(ICON_FOLDER, size) :
-                getFileMimeType(file)
-                    .stream()
-                    .flatMap(this::mimeTypeToIconNames)
-                    .map(iconName -> findIconByName(iconName, size))
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .findFirst()
-                    .or(() -> findIconByName(ICON_FILE, size)));
+        return file.isDirectory() ?
+            findIconByName(getFolderIconName(file), size)
+                .or(() -> findIconByName(ICON_FOLDER, size)) :
+            getFileMimeType(file)
+                .flatMap(this::mimeTypeToIconNames)
+                .map(iconName -> findIconByName(iconName, size))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findFirst()
+                .or(() -> findIconByName(ICON_FILE, size));
     }
 
-    protected Optional<String> getFileMimeType(File file) {
-        return processExecutor.executeAndGetOutput("file", "--mime-type", file.getAbsolutePath())
-            .map(output -> output.substring(output.lastIndexOf(" ") + 1))
-            .or(() -> processExecutor.executeAndGetOutput("xdg-mime", "query", "filetype", file.getAbsolutePath()))
-            .map(output -> output.replaceAll("\\n", ""));
+    protected Stream<MimeType> getFileMimeType(File file) {
+        return mimeTypeResolver.getMimeTypes(file.toPath())
+            .stream();
+//        return processExecutor.executeAndGetOutput("file", "--mime-type", file.getAbsolutePath())
+//            .map(output -> output.substring(output.lastIndexOf(" ") + 1))
+//            .or(() -> processExecutor.executeAndGetOutput("xdg-mime", "query", "filetype", file.getAbsolutePath()))
+//            .map(output -> output.replaceAll("\\n", ""));
     }
 
-    protected Stream<String> mimeTypeToIconNames(String mimeType) {
-        String iconName = mimeType.replace("/", "-");
-        int index = mimeType.indexOf("/");
-        return index > 0 ?
-            Stream.of(iconName, mimeType.substring(0, index)) :
-            Stream.of(iconName);
+    protected Stream<String> mimeTypeToIconNames(MimeType mimeType) {
+        return !mimeType.getSubtype().isEmpty() ?
+            Stream.of(mimeType.getType() + "-" + mimeType.getSubtype(), mimeType.getType()) :
+            Stream.of(mimeType.getType());
     }
 
     @Override
