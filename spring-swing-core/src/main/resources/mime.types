@@ -512,6 +512,7 @@ application/x-freearc				arc
 application/x-futuresplash			spl
 application/x-gca-compressed		gca
 application/x-glulx				    ulx
+application/x-gnome-theme-package   theme
 application/x-gnumeric				gnumeric
 application/x-gramps-xml			gramps
 application/x-gtar				    gtar

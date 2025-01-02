@@ -143,7 +143,7 @@ public class MacIconProvider implements IconProvider {
         iconNameToFilePathMap.put(ICON_STORAGE_MINI_SD, ICON_SCSI_PATH + "MiniSD.icns");
 
         iconNameToFilePathMap.put(ICON_COMPUTER, ICON_CORE_PATH + "com.apple.macbookpro-15.icns");
-        iconNameToFilePathMap.put(ICON_FILE_SERVER, ICON_CORE_PATH + "GenericFileServerIcon.icns");
+        iconNameToFilePathMap.put(ICON_DATABASE, ICON_CORE_PATH + "GenericFileServerIcon.icns");
         iconNameToFilePathMap.put(ICON_NETWORK, ICON_CORE_PATH + "GenericNetworkIcon.icns");
     }
 }
