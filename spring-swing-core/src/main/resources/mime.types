@@ -50,7 +50,7 @@ application/mp21				    m21 mp21
 application/mp4					    mp4s
 application/msword				    doc dot
 application/mxf					    mxf
-application/octet-stream	        bin dms lrf mar so dist distz pkg bpk dump elc deploy
+application/octet-stream	        bin dms lrf mar so dist distz pkg bpk dump elc deploy dat
 application/oda					    oda
 application/oebps-package+xml		opf
 application/ogg					    ogx
@@ -162,6 +162,7 @@ application/vnd.curl.car			car
 application/vnd.curl.pcurl			pcurl
 application/vnd.dart				dart
 application/vnd.data-vision.rdz			rdz
+application/vnd.debian.binary-package   deb udeb
 application/vnd.dece.data			uvf uvvf uvd uvvd
 application/vnd.dece.ttml+xml			uvt uvvt
 application/vnd.dece.unspecified		uvx uvvx
@@ -565,6 +566,7 @@ application/x-tex				tex
 application/x-tex-tfm			tfm
 application/x-texinfo			texinfo texi
 application/x-tgif				obj
+application/x-trash				bak old
 application/x-ustar				ustar
 application/x-wais-source		src
 application/x-x509-ca-cert		der crt
@@ -700,7 +702,7 @@ text/html					    html htm
 text/n3						    n3
 text/plain					    txt text conf def list log in
 text/prs.lines.tag				dsc
-text/richtext					rtx
+text/richtext					rtx djvu epub
 text/sgml					    sgml sgm
 text/tab-separated-values		tsv
 text/troff					    t tr roff man me ms

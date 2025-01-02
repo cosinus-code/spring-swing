@@ -35,6 +35,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Stream.concat;
 import static javax.imageio.ImageIO.read;
 import static org.cosinus.swing.image.icon.IconSize.X16;
 
@@ -85,13 +86,41 @@ public class LinuxIconProvider implements IconProvider {
         return file.isDirectory() ?
             findIconByName(getFolderIconName(file), size)
                 .or(() -> findIconByName(ICON_FOLDER, size)) :
-            getFileMimeType(file)
-                .flatMap(this::mimeTypeToIconNames)
-                .map(iconName -> findIconByName(iconName, size))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .findFirst()
-                .or(() -> findIconByName(ICON_FILE, size));
+            findIconFileByMimeType(file, size)
+                .or(() -> getSpecialIconNameByFile(file)
+                    .flatMap(iconName -> findIconByName(iconName, size)))
+                .or(() -> findIconFileByMagicMimeType(file, size))
+                .or(() -> findIconByName(ICON_UNKNOWN, size));
+    }
+
+    protected Optional<Icon> findIconFileByMimeType(File file, IconSize size) {
+        return getFileMimeType(file)
+            .flatMap(this::mimeTypeToIconNames)
+            .map(iconName -> findIconByName(iconName, size))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .findFirst();
+    }
+
+    protected Optional<Icon> findIconFileByMagicMimeType(File file, IconSize size) {
+        return mimeTypeResolver.getMagicMimeType(file)
+            .map(this::mimeTypeToIconNames)
+            .orElseGet(Stream::empty)
+            .map(iconName -> findIconByName(iconName, size))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .findFirst();
+    }
+
+    protected Optional<String> getSpecialIconNameByFile(File file) {
+        if (mimeTypeResolver.isArchive(file)) {
+            return Optional.of(ICON_PACKAGE);
+        }
+
+        if (mimeTypeResolver.isTextCompatible(file.toPath())) {
+            return Optional.of(ICON_TEXT);
+        }
+        return Optional.empty();
     }
 
     protected Stream<MimeType> getFileMimeType(File file) {
@@ -104,9 +133,12 @@ public class LinuxIconProvider implements IconProvider {
     }
 
     protected Stream<String> mimeTypeToIconNames(MimeType mimeType) {
-        return !mimeType.getSubtype().isEmpty() ?
-            Stream.of(mimeType.getType() + "-" + mimeType.getSubtype(), mimeType.getType()) :
-            Stream.of(mimeType.getType());
+        Stream<String> genericIconNames = Stream.of(
+            mimeType.getType(),
+            mimeType.getType() + "-x-generic");
+        return mimeType.getSubtype().isEmpty() ?
+            genericIconNames :
+            concat(Stream.of(mimeType.getType() + "-" + mimeType.getSubtype()), genericIconNames);
     }
 
     @Override

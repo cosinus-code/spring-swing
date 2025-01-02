@@ -32,6 +32,7 @@ import static java.util.Optional.ofNullable;
 public class OnMissingBeanCondition implements SwingCondition {
 
     @Override
+    //TODO: still wrong because check against spring context, which contains all beans
     public boolean matches(ApplicationContext applicationContext, Object beanToCheck) {
         return ofNullable(beanToCheck.getClass().getAnnotation(OnMissingBeanSwingComponent.class).value())
             .filter(ArrayUtils::isNotEmpty)

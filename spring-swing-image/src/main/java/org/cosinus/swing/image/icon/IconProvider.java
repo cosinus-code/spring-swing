@@ -58,6 +58,9 @@ public interface IconProvider {
     String ICON_FIND_TEXT = "find-text";
     String ICON_REPLACE = "replace";
     String ICON_SIDEBAR = "sidebar";
+    String ICON_PACKAGE = "package";
+    String ICON_TEXT = "text";
+    String ICON_UNKNOWN = "unknown";
 
     String ICON_FONT = "font";
     String ICON_WRAP = "wrap";
