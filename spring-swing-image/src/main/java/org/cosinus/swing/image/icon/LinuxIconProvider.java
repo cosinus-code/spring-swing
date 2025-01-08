@@ -89,7 +89,8 @@ public class LinuxIconProvider implements IconProvider {
             findIconFileByMimeType(file, size)
                 .or(() -> getSpecialIconNameByFile(file)
                     .flatMap(iconName -> findIconByName(iconName, size)))
-                .or(() -> findIconFileByMagicMimeType(file, size))
+                //TODO: to re-enable magic
+                //.or(() -> findIconFileByMagicMimeType(file, size))
                 .or(() -> findIconByName(ICON_UNKNOWN, size));
     }
 
@@ -159,13 +160,13 @@ public class LinuxIconProvider implements IconProvider {
             .getIconInternalPath(size)
             .map(path::resolve)
             .flatMap(filePath -> Stream.of("", "gnome-", "gnome-mime-", "gtk-", "stock-")
-                .flatMap(prefix -> getIconFileName(filePath, prefix + name)))
+                .flatMap(prefix -> getIconFile(filePath, prefix + name)))
             .filter(File::exists)
             .findFirst()
             .flatMap(this::createIcon);
     }
 
-    private Stream<File> getIconFileName(Path path, String name) {
+    private Stream<File> getIconFile(Path path, String name) {
         return Stream.of(".svg", ".png", ".jpg")
             .map(extension -> path.resolve(name + extension))
             .map(Path::toFile);

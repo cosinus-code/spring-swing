@@ -19,17 +19,22 @@ import static javax.swing.SwingUtilities.computeStringWidth;
 @Component
 public class FormatHandler {
 
-    public static final int KILO = 1024;
+    public static final long KILO = 1024;
 
-    public static final int MEGA = KILO * KILO;
+    public static final long MEGA = KILO * KILO;
 
-    public static final int GIGA = KILO * KILO * KILO;
+    public static final long GIGA = KILO * KILO * KILO;
+
+    public static final long TERA = KILO * KILO * KILO * KILO;
 
     public static final String DECIMALS_FORMAT_2 = "#,##0.00";
 
     public String formatMemorySize(long memorySize) {
         if (memorySize < 0) {
             return "";
+        }
+        if (memorySize >= TERA) {
+            return get2DecimalsFormatted((double) memorySize / TERA) + " T";
         }
         if (memorySize >= GIGA) {
             return get2DecimalsFormatted((double) memorySize / GIGA) + " G";
@@ -47,14 +52,17 @@ public class FormatHandler {
         if (memorySize < 0) {
             return "";
         }
+        if (memorySize >= TERA) {
+            return (int) ceil((double) memorySize / TERA) + " G";
+        }
         if (memorySize >= GIGA) {
-            return (int) ceil((double) memorySize / (1024 * 1024 * 1024)) + " G";
+            return (int) ceil((double) memorySize / GIGA) + " G";
         }
         if (memorySize >= MEGA) {
-            return (int) ceil((double) memorySize / (1024 * 1024)) + " M";
+            return (int) ceil((double) memorySize / MEGA) + " M";
         }
         if (memorySize >= KILO) {
-            return (int) ceil((double) memorySize / 1024) + " K";
+            return (int) ceil((double) memorySize / KILO) + " K";
         }
         return memorySize + " b";
     }
