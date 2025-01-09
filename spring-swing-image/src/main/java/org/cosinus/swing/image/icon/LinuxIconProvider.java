@@ -195,7 +195,7 @@ public class LinuxIconProvider implements IconProvider {
 
     protected void initIconNamesMap() {
         iconNamesMap.put(ICON_STORAGE_INTERNAL, "drive-harddisk");
-        iconNamesMap.put(ICON_STORAGE_EXTERNAL, "drive-removable-media");
+        iconNamesMap.put(ICON_STORAGE_EXTERNAL, "drive-removable-media-usb");
         iconNamesMap.put(ICON_NETWORK, "network-server");
         iconNamesMap.put(ICON_DATABASE, "sqldeveloper");
     }

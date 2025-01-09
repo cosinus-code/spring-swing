@@ -25,7 +25,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+
+import static java.lang.ProcessBuilder.Redirect.INHERIT;
+import static java.lang.ProcessBuilder.Redirect.PIPE;
+import static java.lang.ProcessBuilder.startPipeline;
 
 /**
  * Interface for a process executor
@@ -70,7 +75,7 @@ public interface ProcessExecutor {
                 .directory(workingDir)
                 .start();
         } catch (IOException ex) {
-            LOG.error("Failed to run command: " + Arrays.toString(command), ex);
+            LOG.error("Failed to run command: {}", Arrays.toString(command), ex);
         }
     }
 
@@ -92,9 +97,29 @@ public interface ProcessExecutor {
                 return Optional.of(output);
             }
         } catch (IOException | InterruptedException ex) {
-            LOG.error("Failed to run command: " + Arrays.toString(command), ex);
+            LOG.error("Failed to run command: {}", Arrays.toString(command), ex);
         }
         return Optional.empty();
     }
 
+    default Optional<String> executePipeline(String[] command1, String[] command2) {
+        try {
+            Process process = startPipeline(List.of(
+                new ProcessBuilder(command1)
+                    .inheritIO().redirectOutput(PIPE),
+                new ProcessBuilder(command2)
+                    .redirectError(INHERIT)))
+                .stream()
+                .reduce((first, second) -> second)
+                .orElseThrow(() -> new IOException("Failed to execute pipeline command"));
+
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                String output = IOUtils.toString(reader);
+                process.waitFor();
+                return Optional.of(output);
+            }
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
