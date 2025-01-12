@@ -74,12 +74,12 @@ public class ApplicationContextInjector {
             .collect(toMap(Entry::getKey, Entry::getValue));
     }
 
-    private static SwingComponent getSwingComponentAnnotation(String beanName) {
+    public static SwingComponent getSwingComponentAnnotation(String beanName) {
         return ((AnnotationConfigApplicationContext) applicationContext).getBeanFactory()
             .findAnnotationOnBean(beanName, SwingComponent.class);
     }
 
-    private static SwingCondition instantiateCondition(Class<? extends SwingCondition> conditionClass) {
+    public static SwingCondition instantiateCondition(Class<? extends SwingCondition> conditionClass) {
         return instantiateClass(conditionClass);
     }
 }

@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 import static java.util.Optional.ofNullable;
+import static org.cosinus.swing.context.ApplicationContextInjector.getSwingComponentAnnotation;
 
 /**
  * {@link SwingCondition} that check if there beans of the given classes are missing from context.
@@ -40,8 +41,16 @@ public class OnMissingBeanCondition implements SwingCondition {
             .orElseGet(() -> Stream.of(beanToCheck.getClass()))
             .flatMap(missingClassToCheck -> applicationContext
                 .getBeansOfType(missingClassToCheck)
-                .values()
-                .stream())
-            .allMatch(beanToCheck::equals);
+                .entrySet()
+                .stream()
+                .filter(entry -> entry.getValue() != beanToCheck)
+                .filter(entry -> ofNullable(getSwingComponentAnnotation(entry.getKey()))
+                        .map(SwingComponent::value)
+                        .stream()
+                        .flatMap(Arrays::stream)
+                        .map(ApplicationContextInjector::instantiateCondition)
+                        .allMatch(condition -> condition.matches(applicationContext, entry.getValue()))))
+            .findFirst()
+            .isEmpty();
     }
 }
