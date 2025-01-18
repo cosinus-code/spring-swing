@@ -21,7 +21,7 @@ package org.cosinus.swing.context;
 import java.lang.annotation.*;
 
 /**
- * {@link @Conditional} that only matches when Gtk LookAndFeel.
+ * {@link SwingComponent} that only matches when Gtk LookAndFeel.
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

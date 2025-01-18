@@ -29,7 +29,7 @@ public interface IconProvider {
     String ICON_FILE = "file";
     String ICON_EXECUTABLE = "executable";
     String ICON_GRID = "grid";
-    String ICON_BACK = "go-back";
+    String ICON_BACK = "go-previous";
     String ICON_NEXT = "go-next";
     String ICON_UP = "go-up";
     String ICON_REFRESH = "refresh";

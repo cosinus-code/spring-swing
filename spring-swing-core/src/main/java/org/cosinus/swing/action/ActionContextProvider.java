@@ -21,5 +21,10 @@ package org.cosinus.swing.action;
  */
 public interface ActionContextProvider {
 
+    /**
+     * Provide the action context.
+     *
+     * @return the action context
+     */
     ActionContext provideActionContext();
 }

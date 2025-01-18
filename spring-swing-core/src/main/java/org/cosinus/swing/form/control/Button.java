@@ -36,6 +36,16 @@ public class Button extends JButton implements Control<String> {
         injectContext(this);
     }
 
+    public Button(Icon icon, Runnable action) {
+        this(icon, event -> action.run());
+    }
+
+    public Button(Icon icon, ActionListener action) {
+        super(icon);
+        injectContext(this);
+        addActionListener(action);
+    }
+
     public Button(String text) {
         super(text);
         injectContext(this);
@@ -69,5 +79,9 @@ public class Button extends JButton implements Control<String> {
     @Override
     public void setControlValue(String text) {
         setText(text);
+    }
+
+    public void addAction(Runnable runnable) {
+        addActionListener(event -> runnable.run());
     }
 }

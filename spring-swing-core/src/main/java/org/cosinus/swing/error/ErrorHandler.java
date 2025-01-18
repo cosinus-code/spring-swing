@@ -38,6 +38,9 @@ public class ErrorHandler {
 
     private static final Logger LOG = LogManager.getLogger(ErrorHandler.class);
 
+    public static final String HTML_ERROR_MESSAGE = "<html><body>%s</html>";
+    public static final String HTML_ERROR_MESSAGE_300 = "<html><body style='width: 300px'>%s</html>";
+
     private final Translator translator;
 
     private final DefaultErrorFormProvider errorFormProvider;
@@ -69,7 +72,7 @@ public class ErrorHandler {
     public void handleError(Component component, String errorMessage) {
         LOG.error(errorMessage);
         showMessageDialog(component,
-                          errorMessage,
+                          format(HTML_ERROR_MESSAGE, errorMessage),
                           translator.translate("error"),
                           JOptionPane.ERROR_MESSAGE);
     }
@@ -82,7 +85,7 @@ public class ErrorHandler {
      */
     public void handleValidationErrors(Component component,
                                        List<ValidationError> validationErrors) {
-        String errorMessage = format("<html><body style='width: 300px'>%s</html>",
+        String errorMessage = format(HTML_ERROR_MESSAGE_300,
                                      validationErrors.subList(0, min(10, validationErrors.size()))
                                          .stream()
                                          .map(error -> translator.translate(error.code(), error.arguments()))

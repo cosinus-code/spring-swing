@@ -54,10 +54,10 @@ public class TextField extends JTextField implements Control<String> {
         injectContext(this);
     }
 
-    public TextField(Supplier<ActionListener> actionProvider) {
+    public TextField(Runnable action) {
         super();
         injectContext(this);
-        addActionListener(actionProvider.get());
+        addActionListener(event -> action.run());
     }
 
     @Override
@@ -68,5 +68,9 @@ public class TextField extends JTextField implements Control<String> {
     @Override
     public void setControlValue(String text) {
         setText(text);
+    }
+
+    public void addAction(Runnable runnable) {
+        addActionListener(event -> runnable.run());
     }
 }

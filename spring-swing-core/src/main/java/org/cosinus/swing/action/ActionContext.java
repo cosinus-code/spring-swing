@@ -23,6 +23,9 @@ package org.cosinus.swing.action;
  */
 public interface ActionContext {
 
+    /**
+     * Empty action context
+     */
     ActionContext EMPTY_CONTEXT = new ActionContext() {
     };
 }

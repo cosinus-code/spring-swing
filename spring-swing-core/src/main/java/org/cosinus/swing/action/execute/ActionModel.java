@@ -28,6 +28,11 @@ public class ActionModel {
     private final String actionName;
 
     public ActionModel(String executionId,
+                       String actionId) {
+        this(executionId, actionId, actionId);
+    }
+
+    public ActionModel(String executionId,
                        String actionId,
                        String actionName) {
         this.executionId = executionId;
