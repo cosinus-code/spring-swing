@@ -50,6 +50,10 @@ public class UpdatableImage {
         return size;
     }
 
+    public void setImageRotation(ImageRotation imageRotation) {
+        this.imageRotation = imageRotation;
+    }
+
     /**
      * Update the current image with image bytes.
      * If the current image to update is null, it will be created.
@@ -63,7 +67,8 @@ public class UpdatableImage {
                 imageMetadata = readMetadata(input);
                 ExifIFD0Directory exifInfo = imageMetadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
                 if (exifInfo != null) {
-                    imageRotation = findImageRotation(exifInfo.getInt(TAG_ORIENTATION));
+                    findImageRotation(exifInfo.getInt(TAG_ORIENTATION))
+                        .ifPresent(this::setImageRotation);
                 }
             } catch (ImageProcessingException | MetadataException ex) {
                 LOG.error("Failed to read image metadata", ex);

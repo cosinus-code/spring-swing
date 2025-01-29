@@ -1,6 +1,7 @@
 package org.cosinus.swing.image;
 
 import java.awt.image.BufferedImage;
+import java.util.Optional;
 import java.util.function.Function;
 
 import static java.util.Arrays.stream;
@@ -40,10 +41,9 @@ public enum ImageRotation {
         return imageRotation.apply(image);
     }
 
-    public static ImageRotation findImageRotation(int code) {
+    public static Optional<ImageRotation> findImageRotation(int code) {
         return stream(values())
             .filter(orientation -> orientation.code == code)
-            .findFirst()
-            .orElse(null);
+            .findFirst();
     }
 }
