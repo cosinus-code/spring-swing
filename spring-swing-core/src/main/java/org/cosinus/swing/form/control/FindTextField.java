@@ -15,8 +15,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-import static java.awt.Color.darkGray;
-import static java.awt.Color.lightGray;
+import static java.awt.Color.*;
 import static java.awt.RenderingHints.KEY_ANTIALIASING;
 import static java.awt.RenderingHints.VALUE_ANTIALIAS_ON;
 import static java.awt.event.KeyEvent.VK_ENTER;
@@ -82,14 +81,20 @@ public class FindTextField extends JTextField
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
 
-        g.setColor(value.isCaseSensitive() ? SELECTED_FOREGROUND_COLOR : UNSELECTED_FOREGROUND_COLOR);
+        g.setColor(getForegroundColor(value.isCaseSensitive()));
         g.drawString(CASE_SENSITIVE_TEXT, getWidth() - 3 * BUTTON_SIZE, height - 3);
 
-        g.setColor(value.isWholeWord() ? SELECTED_FOREGROUND_COLOR : UNSELECTED_FOREGROUND_COLOR);
+        g.setColor(getForegroundColor(value.isWholeWord()));
         g.drawString(WHOLE_WORD_TEXT, getWidth() - 2 * BUTTON_SIZE, height - 3);
 
-        g.setColor(value.isRegularExpression() ? SELECTED_FOREGROUND_COLOR : UNSELECTED_FOREGROUND_COLOR);
+        g.setColor(getForegroundColor(value.isRegularExpression()));
         g.drawString(REGULAR_EXPRESSION_TEXT, getWidth() - BUTTON_SIZE, height - 3);
+    }
+
+    private Color getForegroundColor(boolean selected) {
+        return selected ?
+            !SELECTED_FOREGROUND_COLOR.equals(getBackground()) ? SELECTED_FOREGROUND_COLOR : white :
+            !UNSELECTED_FOREGROUND_COLOR.equals(getBackground()) ? UNSELECTED_FOREGROUND_COLOR : black;
     }
 
     @Override
