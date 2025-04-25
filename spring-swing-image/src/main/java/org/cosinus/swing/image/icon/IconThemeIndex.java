@@ -58,15 +58,23 @@ public class IconThemeIndex extends GroupedProperties {
     }
 
     public IconThemeIndex load(File iconThemeFolder) {
+        loadTheme(iconThemeFolder);
+        initIconPaths(iconThemeFolder);
+        iconPaths
+            .stream()
+            .map(Path::toFile)
+            .forEach(this::loadTheme);
+        
+        return this;
+    }
+
+    protected void loadTheme(File iconThemeFolder) {
         Optional.of(iconThemeFolder)
             .map(File::toPath)
             .map(path -> path.resolve(INDEX_THEME_FILE_NAME))
             .map(Path::toFile)
             .filter(File::exists)
             .ifPresent(this::loadFromIndexFile);
-
-        initIconPaths(iconThemeFolder);
-        return this;
     }
 
     protected void loadFromIndexFile(File indexFile) {
@@ -101,9 +109,11 @@ public class IconThemeIndex extends GroupedProperties {
     public Stream<String> getIconInternalPath(IconSize size) {
         return keySet()
             .stream()
-            .filter(key -> key.startsWith(size + "/") ||
-                key.endsWith("/" + size.getSize()) ||
+            .filter(key ->
+                key.startsWith(size + "/") ||
+                key.endsWith("/" + size) ||
                 key.startsWith(size.getSize() + "/") ||
-                key.endsWith("/" + size));
+                key.endsWith("/" + size.getSize())
+            );
     }
 }

@@ -22,10 +22,13 @@ import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.springframework.cache.annotation.Cacheable;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.image.ImageFilter;
 import java.io.File;
 import java.util.Optional;
 
+import static java.awt.Image.SCALE_SMOOTH;
+import static java.lang.Math.max;
 import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.image.ImageHandler.DISABLED_FILTER;
 import static org.cosinus.swing.image.ImageHandler.GRAY_FILTER;
@@ -102,7 +105,8 @@ public class IconHandler {
         keyGenerator = "fileExtensionKeyGenerator")
     public Optional<Icon> findIconByFile(File file, IconSize size) {
         return iconProvider.findIconByFile(file, size)
-            .or(() -> uiHandler.getDefaultFileIcon(file.isDirectory()));
+            .or(() -> uiHandler.getDefaultFileIcon(file.isDirectory())
+                .map(icon -> scaleIcon(icon, size)));
         //TODO
         //.map(icon -> file.isHidden() ? getGrayFilteredIcon(icon) : icon);
     }
@@ -129,5 +133,15 @@ public class IconHandler {
             .map(ImageIcon::new)
             .map(Icon.class::cast)
             .orElse(iconToFilter);
+    }
+
+    public Icon scaleIcon(Icon iconToResize, IconSize size) {
+        return ofNullable(iconToResize)
+            .filter(icon -> icon.getIconWidth() != size.getSize() ||
+                icon.getIconHeight() != size.getSize())
+            .map(imageHandler::iconToImage)
+            .map(image -> imageHandler.scaleUpImage(image, size.getSize(), size.getSize()))
+            .<Icon>map(ImageIcon::new)
+            .orElse(iconToResize);
     }
 }

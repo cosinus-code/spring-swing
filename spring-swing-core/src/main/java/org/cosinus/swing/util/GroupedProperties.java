@@ -82,14 +82,14 @@ public class GroupedProperties extends HashMap<String, Map<String, String>> {
             if (!line.trim().isEmpty() && !line.startsWith(COMMENT_MARKER)) {
                 if (line.startsWith("[") && line.endsWith("]")) {
                     sectionName = line.substring(1, line.length() - 1);
-                    put(sectionName, new HashMap<>());
+                    putIfAbsent(sectionName, new HashMap<>());
                 } else {
                     int separatorIndex = line.indexOf(SEPARATOR);
                     if (separatorIndex > 0) {
                         String key = line.substring(0, separatorIndex);
                         String value = line.substring(separatorIndex + 1);
                         ofNullable(get(sectionName))
-                            .ifPresent(sectionMap -> sectionMap.put(key, value));
+                            .ifPresent(sectionMap -> sectionMap.putIfAbsent(key, value));
                     }
                 }
             }

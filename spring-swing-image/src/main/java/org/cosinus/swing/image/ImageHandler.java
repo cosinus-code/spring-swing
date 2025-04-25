@@ -37,6 +37,7 @@ import java.io.UncheckedIOException;
 import java.net.URL;
 import java.util.Optional;
 
+import static java.awt.Image.SCALE_SMOOTH;
 import static java.awt.RenderingHints.KEY_ALPHA_INTERPOLATION;
 import static java.awt.RenderingHints.KEY_ANTIALIASING;
 import static java.awt.RenderingHints.KEY_INTERPOLATION;
@@ -45,6 +46,7 @@ import static java.awt.Toolkit.getDefaultToolkit;
 import static java.awt.Transparency.OPAQUE;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
+import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.util.Optional.ofNullable;
 import static javax.imageio.ImageIO.read;
@@ -67,7 +69,7 @@ public class ImageHandler {
      * @return the preview image
      * @throws IOException if an IO error occurs
      */
-    public Optional<Icon> getPreviewImage(File file, int size) throws IOException {
+    public Optional<Icon> getThumbnail(File file, int size) throws IOException {
         try (InputStream in = new FileInputStream(file)) {
             return ofNullable(ImageIO.read(in))
                 .map(image -> scaleImage(image, size))
@@ -441,5 +443,20 @@ public class ImageHandler {
         } catch (IOException ex) {
             throw new UncheckedIOException(ex);
         }
+    }
+
+    /**
+     * Scale up an image.
+     *
+     * @param image the image to scale
+     * @param width the new width
+     * @param height the new height
+     * @return the scaled image
+     */
+    public Image scaleUpImage(Image image, int width, int height) {
+        int max = max(image.getWidth(null), image.getHeight(null));
+        int scaleWidth = width - max + image.getWidth(null);
+        int scaleHeight = height - max + image.getHeight(null);
+        return image.getScaledInstance(scaleWidth, scaleHeight, SCALE_SMOOTH);
     }
 }
