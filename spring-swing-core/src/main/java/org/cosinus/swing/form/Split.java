@@ -24,8 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
-import javax.swing.plaf.basic.BasicSplitPaneUI;
-import java.beans.PropertyChangeEvent;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -72,30 +70,25 @@ public class Split extends JSplitPane implements FormComponent {
         if (keepRelativeLocationOnResize) {
             setResizeWeight(0.5);
         }
-        initDivider();
+        this.divider = getDivider();
         initListeners();
         loadDividerLocation();
     }
 
     protected void initListeners() {
-        if (getUI() instanceof BasicSplitPaneUI) {
-            addPropertyChangeListener(new BasicSplitPaneDivider((BasicSplitPaneUI) getUI()) {
-                public void propertyChange(PropertyChangeEvent event) {
-                    try {
-                        if (event.getPropertyName().equals(SPLIT_PROPERTY_NAME)) {
-                            saveDividerLocation(Integer.parseInt(event.getNewValue().toString()));
-                        }
-                        super.propertyChange(event);
-                    } catch (Exception ex) {
-                        LOG.error("Cannot save divider location", ex);
-                    }
+        addPropertyChangeListener(event -> {
+            try {
+                if (event.getPropertyName().equals(SPLIT_PROPERTY_NAME)) {
+                    saveDividerLocation(Integer.parseInt(event.getNewValue().toString()));
                 }
-            });
-        }
+            } catch (Exception ex) {
+                LOG.error("Cannot save divider location", ex);
+            }
+        });
     }
 
-    protected void initDivider() {
-        divider = stream(getComponents())
+    protected BasicSplitPaneDivider getDivider() {
+        return stream(getComponents())
             .filter(component -> BasicSplitPaneDivider.class.isAssignableFrom(component.getClass()))
             .map(BasicSplitPaneDivider.class::cast)
             .findFirst()
