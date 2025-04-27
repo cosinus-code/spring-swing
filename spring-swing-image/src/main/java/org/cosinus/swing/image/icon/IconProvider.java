@@ -59,6 +59,7 @@ public interface IconProvider {
     String ICON_REPLACE = "replace";
     String ICON_SIDEBAR = "sidebar";
     String ICON_PACKAGE = "package";
+    String ICON_SHELL_SCRIPT = "shellscript";
     String ICON_TEXT = "text";
     String ICON_UNKNOWN = "unknown";
 

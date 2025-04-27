@@ -29,13 +29,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
+import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Stream.concat;
 import static javax.imageio.ImageIO.read;
 import static org.cosinus.swing.image.icon.IconSize.X16;
 
@@ -95,8 +93,11 @@ public class LinuxIconProvider implements IconProvider {
     }
 
     protected Optional<Icon> findIconFileByMimeType(File file, IconSize size) {
-        return getFileMimeType(file)
-            .flatMap(this::mimeTypeToIconNames)
+        return ofNullable(file)
+            .map(File::toPath)
+            .map(mimeTypeResolver::getMimeTypes)
+            .map(this::mimeTypesToIconNames)
+            .orElseGet(Stream::empty)
             .map(iconName -> findIconByName(iconName, size))
             .filter(Optional::isPresent)
             .map(Optional::get)
@@ -118,28 +119,33 @@ public class LinuxIconProvider implements IconProvider {
             return Optional.of(ICON_PACKAGE);
         }
 
+        if (mimeTypeResolver.isShellScript(file)) {
+            return Optional.of(ICON_SHELL_SCRIPT);
+        }
+
         if (mimeTypeResolver.isTextCompatible(file.toPath())) {
             return Optional.of(ICON_TEXT);
         }
         return Optional.empty();
     }
 
-    protected Stream<MimeType> getFileMimeType(File file) {
-        return mimeTypeResolver.getMimeTypes(file.toPath())
-            .stream();
-//        return processExecutor.executeAndGetOutput("file", "--mime-type", file.getAbsolutePath())
-//            .map(output -> output.substring(output.lastIndexOf(" ") + 1))
-//            .or(() -> processExecutor.executeAndGetOutput("xdg-mime", "query", "filetype", file.getAbsolutePath()))
-//            .map(output -> output.replaceAll("\\n", ""));
+    protected Stream<String> mimeTypeToIconNames(MimeType mimeType) {
+        return mimeTypesToIconNames(singletonList(mimeType));
     }
 
-    protected Stream<String> mimeTypeToIconNames(MimeType mimeType) {
-        Stream<String> genericIconNames = Stream.of(
-            mimeType.getType(),
-            mimeType.getType() + "-x-generic");
-        return mimeType.getSubtype().isEmpty() ?
-            genericIconNames :
-            concat(Stream.of(mimeType.getType() + "-" + mimeType.getSubtype()), genericIconNames);
+    protected Stream<String> mimeTypesToIconNames(List<MimeType> mimeTypes) {
+        Set<String> iconNames = new LinkedHashSet<>();
+        mimeTypes
+            .stream()
+            .filter(mimeType -> !mimeType.getSubtype().isEmpty())
+            .map(mimeType -> mimeType.getType() + "-" + mimeType.getSubtype())
+            .forEach(iconNames::add);
+        mimeTypes
+            .forEach(mimeType -> {
+                iconNames.add(mimeType.getType());
+                iconNames.add(mimeType.getType() + "-x-generic");
+            });
+        return iconNames.stream();
     }
 
     @Override
@@ -197,7 +203,7 @@ public class LinuxIconProvider implements IconProvider {
         iconNamesMap.put(ICON_STORAGE_INTERNAL, "drive-harddisk");
         iconNamesMap.put(ICON_STORAGE_EXTERNAL, "drive-removable-media-usb");
         iconNamesMap.put(ICON_NETWORK, "network-server");
-        iconNamesMap.put(ICON_DATABASE, "sqldeveloper");
+        iconNamesMap.put(ICON_DATABASE, "sqlitebrowser");
     }
 
     private Optional<File> getIconsThemeFolder() {

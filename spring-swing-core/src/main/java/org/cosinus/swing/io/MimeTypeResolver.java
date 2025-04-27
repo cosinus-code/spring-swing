@@ -2,9 +2,7 @@ package org.cosinus.swing.io;
 
 import net.sf.jmimemagic.*;
 import org.apache.commons.collections4.ListValuedMap;
-import org.apache.commons.collections4.SetValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
-import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.util.InvalidMimeTypeException;
@@ -12,7 +10,6 @@ import org.springframework.util.MimeType;
 import org.springframework.util.StringUtils;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
@@ -23,7 +20,6 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.util.Arrays.stream;
 import static java.util.Locale.ENGLISH;
 import static java.util.Optional.ofNullable;
-import static java.util.function.Predicate.not;
 import static net.sf.jmimemagic.Magic.getMagicMatch;
 import static org.cosinus.swing.util.FileUtils.getExtension;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_OCTET_STREAM;
@@ -38,9 +34,12 @@ public class MimeTypeResolver {
 
     private static final String MIME_TYPES_FILE_NAME = "/mime.types";
 
+    private static final String SHELL_SCRIPT = "x-shellscript";
+
     private static final MimeType IMAGE = new MimeType(IMAGE_JPEG.getType());
     private static final MimeType TEXT = new MimeType(TEXT_PLAIN.getType());
     private static final MimeType APPLICATION = new MimeType(APPLICATION_OCTET_STREAM.getType());
+    private static final MimeType SHELL_SCRIPT_MIME_TYPE = new MimeType(APPLICATION.getType(), SHELL_SCRIPT);
 
     public static final String AR = "ar";
     public static final String ARJ = "arj";
@@ -56,8 +55,14 @@ public class MimeTypeResolver {
     public static final String BZ2 = "bz2";
     public static final String BZIP2 = "bzip2";
 
+    public static final String SH = "sh";
+    public static final String BAT = "bat";
+
     public static Set<String> ARCHIVE_TYPES =
         Set.of(AR, ARJ, CPIO, DUMP, JAR, RAR, TAR, ZIP, SEVEN_Z, GZ, GZIP, BZ2, BZIP2);
+
+    public static Set<String> SHELL_SCRIPT_TYPES =
+        Set.of(SH, BAT);
 
     private final ListValuedMap<String, MimeType> mimeTypesMap;
 
@@ -67,6 +72,8 @@ public class MimeTypeResolver {
 
     public ListValuedMap<String, MimeType> initMimeTypes() {
         ListValuedMap<String, MimeType> mimeTypesMap = new ArrayListValuedHashMap<>();
+        SHELL_SCRIPT_TYPES.forEach(type -> mimeTypesMap.put(type, SHELL_SCRIPT_MIME_TYPE));
+
         try (InputStream input = MimeTypeResolver.class.getResourceAsStream(MIME_TYPES_FILE_NAME)) {
             if (input != null) {
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(input, US_ASCII))) {
@@ -140,6 +147,16 @@ public class MimeTypeResolver {
         return ARCHIVE_TYPES.contains(getExtension(file));
     }
 
+    /**
+     * Check if a file is shell script.
+     *
+     * @param file the file to check
+     * @return true if the file is a known shell script
+     */
+    public boolean isShellScript(File file) {
+        return SHELL_SCRIPT_TYPES.contains(getExtension(file));
+    }
+
     public boolean hasUnknownMimeType(Path path) {
         return getMimeTypes(path).isEmpty();
     }
@@ -160,6 +177,11 @@ public class MimeTypeResolver {
 //            return null;
 //        }
 //    }
+
+//        return processExecutor.executeAndGetOutput("file", "--mime-type", file.getAbsolutePath())
+//            .map(output -> output.substring(output.lastIndexOf(" ") + 1))
+//            .or(() -> processExecutor.executeAndGetOutput("xdg-mime", "query", "filetype", file.getAbsolutePath()))
+//            .map(output -> output.replaceAll("\\n", ""));
 
     public Optional<MimeType> getMagicMimeType(File file) {
         try {
