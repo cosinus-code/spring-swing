@@ -27,7 +27,8 @@ public enum IconSize {
     X16(16, "small"),
     X32(32, "normal"),
     X48(48, "large"),
-    X64(64, "extra-large");
+    X64(64, "extra-large"),
+    X256(256, "huge");
 
     private final int size;
 

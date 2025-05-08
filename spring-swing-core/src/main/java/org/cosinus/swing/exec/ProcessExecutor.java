@@ -19,18 +19,19 @@ package org.cosinus.swing.exec;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.cosinus.swing.error.ProcessExecutionException;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
-import static java.lang.ProcessBuilder.Redirect.INHERIT;
-import static java.lang.ProcessBuilder.Redirect.PIPE;
 import static java.lang.ProcessBuilder.startPipeline;
+import static java.util.stream.IntStream.range;
+import static org.cosinus.swing.exec.Command.outputProcess;
+import static org.cosinus.swing.exec.Command.pipeProcess;
 
 /**
  * Interface for a process executor
@@ -54,6 +55,36 @@ public interface ProcessExecutor {
     Optional<String> getOsTheme();
 
     /**
+     * Execute a command with privileges and get the output.
+     *
+     * @param command the command to execute
+     */
+    Optional<String> executeWithPrivilegesAndGetOutput(String... command);
+
+    /**
+     * Execute a pipeline of commands with privileges and get the output.
+     *
+     * @param commands the commands to execute
+     */
+    Optional<String> executePipelineWithPrivilegesAndGetOutput(String[]... commands);
+
+    /**
+     * Execute a pipeline of commands with privileges.
+     *
+     * @param commands the commands to execute
+     */
+    default void executePipelineWithPrivileges(String[]... commands) {
+        executePipelineWithPrivilegesAndGetOutput(commands);
+    }
+
+    /**
+     * Execute a command with privileges.
+     *
+     * @param command the command to execute
+     */
+    void executeWithPrivileges(String... command);
+
+    /**
      * Execute a command on user home working directory.
      *
      * @param command the command to execute
@@ -66,7 +97,7 @@ public interface ProcessExecutor {
      * Execute a command in given working directory.
      *
      * @param workingDir the working directory
-     * @param command the command to execute
+     * @param command    the command to execute
      */
     default void execute(File workingDir, String... command) {
         try {
@@ -75,7 +106,7 @@ public interface ProcessExecutor {
                 .directory(workingDir)
                 .start();
         } catch (IOException ex) {
-            LOG.error("Failed to run command: {}", Arrays.toString(command), ex);
+            throw new ProcessExecutionException("Failed to execute command: " + Arrays.toString(command), ex);
         }
     }
 
@@ -91,35 +122,37 @@ public interface ProcessExecutor {
                 .redirectErrorStream(true)
                 .start();
 
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-                String output = IOUtils.toString(reader);
-                process.waitFor();
-                return Optional.of(output);
-            }
+            return readOutput(process);
         } catch (IOException | InterruptedException ex) {
-            LOG.error("Failed to run command: {}", Arrays.toString(command), ex);
+            throw new ProcessExecutionException("Failed to execute command: " + Arrays.toString(command), ex);
         }
-        return Optional.empty();
     }
 
-    default Optional<String> executePipeline(String[] command1, String[] command2) {
+    default Optional<String> executePipelineAndGetOutput(String[]... commands) {
         try {
-            Process process = startPipeline(List.of(
-                new ProcessBuilder(command1)
-                    .inheritIO().redirectOutput(PIPE),
-                new ProcessBuilder(command2)
-                    .redirectError(INHERIT)))
+            Process process = startPipeline(range(0, commands.length)
+                .mapToObj(index -> index < commands.length - 1 ?
+                    pipeProcess(commands[index]) :
+                    outputProcess(commands[index]))
+                .toList())
                 .stream()
                 .reduce((first, second) -> second)
-                .orElseThrow(() -> new IOException("Failed to execute pipeline command"));
+                .orElseThrow(() -> new ProcessExecutionException("Failed to execute pipeline command"));
 
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-                String output = IOUtils.toString(reader);
-                process.waitFor();
-                return Optional.of(output);
-            }
+            return readOutput(process);
         } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
+            throw new ProcessExecutionException("Failed to execute pipeline command", e);
+        }
+    }
+
+    private Optional<String> readOutput(final Process process) throws IOException, InterruptedException {
+        try (Reader reader = new InputStreamReader(process.getInputStream())) {
+            String output = IOUtils.toString(reader);
+            process.waitFor();
+            if (process.exitValue() != 0) {
+                throw new ProcessExecutionException(process.exitValue(), output);
+            }
+            return Optional.of(output);
         }
     }
 }

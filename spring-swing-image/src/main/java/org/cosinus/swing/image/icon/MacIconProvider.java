@@ -137,7 +137,7 @@ public class MacIconProvider implements IconProvider {
         iconNameToFilePathMap.put(ICON_STORAGE_SAS_HD, ICON_SCSI_PATH + "SASHD.icns");
         iconNameToFilePathMap.put(ICON_STORAGE_MEMORY_STICK, ICON_SCSI_PATH + "MemoryStick.icns");
         iconNameToFilePathMap.put(ICON_STORAGE_MEMORY_STICK_PRO_DUO, ICON_SCSI_PATH + "MemoryStickProDuo.icns");
-        iconNameToFilePathMap.put(ICON_STORAGE_COMPACT_FLASH, ICON_SCSI_PATH + "CompactFlash.icns");
+        iconNameToFilePathMap.put(ICON_STORAGE_MEDIA_FLASH, ICON_SCSI_PATH + "CompactFlash.icns");
         iconNameToFilePathMap.put(ICON_STORAGE_XD, ICON_SCSI_PATH + "XD.icns");
         iconNameToFilePathMap.put(ICON_STORAGE_SD, ICON_SCSI_PATH + "SD.icns");
         iconNameToFilePathMap.put(ICON_STORAGE_MINI_SD, ICON_SCSI_PATH + "MiniSD.icns");

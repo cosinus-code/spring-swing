@@ -32,6 +32,7 @@ import static java.lang.Math.max;
 import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.image.ImageHandler.DISABLED_FILTER;
 import static org.cosinus.swing.image.ImageHandler.GRAY_FILTER;
+import static org.cosinus.swing.image.icon.IconSize.X256;
 
 /**
  * Icons handler
@@ -70,7 +71,11 @@ public class IconHandler {
      */
     @Cacheable(value = SPRING_SWING_ICONS_CACHE_NAME)
     public Optional<Icon> findIconByName(String name, IconSize size) {
-        return iconProvider.findIconByName(name, size);
+        return iconProvider.findIconByName(name, size)
+            .or(() -> iconProvider.findIconByName(name, X256)
+                .map(icon -> scaleIcon(icon, size)))
+            .or(() -> this.findIconByResource(name + ".png")
+                .map(icon -> scaleIcon(icon, size)));
     }
 
     /**

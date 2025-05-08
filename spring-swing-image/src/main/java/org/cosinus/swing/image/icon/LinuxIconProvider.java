@@ -19,7 +19,6 @@ package org.cosinus.swing.image.icon;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.context.ApplicationProperties;
-import org.cosinus.swing.exec.ProcessExecutor;
 import org.cosinus.swing.io.MimeTypeResolver;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.springframework.util.MimeType;
@@ -48,8 +47,6 @@ public class LinuxIconProvider implements IconProvider {
 
     private final ApplicationUIHandler uiHandler;
 
-    private final ProcessExecutor processExecutor;
-
     private final MimeTypeResolver mimeTypeResolver;
 
     private IconThemeIndex iconThemeIndex;
@@ -58,11 +55,9 @@ public class LinuxIconProvider implements IconProvider {
 
     public LinuxIconProvider(final ApplicationProperties applicationProperties,
                              final ApplicationUIHandler uiHandler,
-                             final ProcessExecutor processExecutor,
                              final MimeTypeResolver mimeTypeResolver) {
         this.applicationProperties = applicationProperties;
         this.uiHandler = uiHandler;
-        this.processExecutor = processExecutor;
         this.mimeTypeResolver = mimeTypeResolver;
 
         this.iconThemeIndex = new IconThemeIndex();
@@ -201,7 +196,13 @@ public class LinuxIconProvider implements IconProvider {
 
     protected void initIconNamesMap() {
         iconNamesMap.put(ICON_STORAGE_INTERNAL, "drive-harddisk");
-        iconNamesMap.put(ICON_STORAGE_EXTERNAL, "drive-removable-media-usb");
+        iconNamesMap.put(ICON_STORAGE_EXTERNAL, "drive-storage-external");
+        iconNamesMap.put(ICON_STORAGE_REMOVABLE, "drive-removable-media-usb");
+        iconNamesMap.put(ICON_STORAGE_MEMORY_STICK, "drive-removable-media-usb");
+        iconNamesMap.put(ICON_STORAGE_MEDIA_FLASH, "media-flash");
+        iconNamesMap.put(ICON_STORAGE_PHONE, "phone");
+        iconNamesMap.put(ICON_STORAGE_WATCH, "watch");
+        iconNamesMap.put(ICON_STORAGE_COMPACT_DISK, "media-optical");
         iconNamesMap.put(ICON_NETWORK, "network-server");
         iconNamesMap.put(ICON_DATABASE, "sqlitebrowser");
     }

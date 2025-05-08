@@ -45,4 +45,19 @@ public class WindowsProcessExecutor implements ProcessExecutor {
                                OS_DARK_THEME);
     }
 
+    @Override
+    public Optional<String> executeWithPrivilegesAndGetOutput(String... command) {
+        //TODO
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<String> executePipelineWithPrivilegesAndGetOutput(String[]... commands) {
+        return Optional.empty();
+    }
+
+    @Override
+    public void executeWithPrivileges(String... command) {
+    }
+
 }

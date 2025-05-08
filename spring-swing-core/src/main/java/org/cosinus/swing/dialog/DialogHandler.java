@@ -409,4 +409,8 @@ public class DialogHandler {
     public <M extends UIModel> Dialog<M> createDialog(final Dialog parent, String descriptorName, M model) {
         return new SimpleDialog<>(parent, parent.getTitle(), true, false, descriptorName, model);
     }
+
+    public Optional<String> showInputPasswordDialog(String message) {
+        return Optional.empty();
+    }
 }

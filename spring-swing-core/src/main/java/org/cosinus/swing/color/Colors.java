@@ -74,7 +74,7 @@ public final class Colors {
      * @return the created lighter color
      */
     public static Color getLighterColor(Color color) {
-        return getLighterColor(color, 5);
+        return getLighterColor(color, 10);
     }
 
     /**

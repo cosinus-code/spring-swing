@@ -34,4 +34,19 @@ public class MacProcessExecutor implements ProcessExecutor {
         return executeAndGetOutput("defaults", "read", "-g", "AppleInterfaceStyle");
     }
 
+    @Override
+    public Optional<String> executeWithPrivilegesAndGetOutput(String... command) {
+        //TODO
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<String> executePipelineWithPrivilegesAndGetOutput(String[]... commands) {
+        return Optional.empty();
+    }
+
+    @Override
+    public void executeWithPrivileges(String... command) {
+    }
+
 }

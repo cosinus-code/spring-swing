@@ -19,10 +19,18 @@ package org.cosinus.swing.exec;
 import java.io.File;
 import java.util.Optional;
 
+import static java.util.Arrays.stream;
+import static java.util.stream.IntStream.range;
+
 /**
  * Implementation of {@link ProcessExecutor} for Linux
  */
 public class LinuxProcessExecutor implements ProcessExecutor {
+
+    private static final String SUDO = "sudo";
+    private static final String PASSWORD_IS_REQUIRED = "sudo: a password is required";
+
+    private static final String PK_EXEC = "pkexec";
 
     @Override
     public void executeFile(File file) {
@@ -34,4 +42,31 @@ public class LinuxProcessExecutor implements ProcessExecutor {
         return Optional.empty();
     }
 
+    @Override
+    public Optional<String> executeWithPrivilegesAndGetOutput(String... command) {
+        return executeAndGetOutput(sudoCommand(command))
+            .flatMap(output -> output.contains(PASSWORD_IS_REQUIRED) ?
+                executeAndGetOutput(commandWithPassword(command)) :
+                Optional.of(output));
+    }
+
+    @Override
+    public Optional<String> executePipelineWithPrivilegesAndGetOutput(String[]... commands) {
+        return executePipelineAndGetOutput(range(0, commands.length)
+            .mapToObj(index -> index == 0 ? commandWithPassword(commands[index]) : commands[index])
+            .toArray(String[][]::new));
+    }
+
+    @Override
+    public void executeWithPrivileges(String... command) {
+        executeWithPrivilegesAndGetOutput(command);
+    }
+
+    private String[] sudoCommand(String... command) {
+        return Command.prefixed(SUDO, command);
+    }
+
+    private String[] commandWithPassword(String... command) {
+        return Command.prefixed(PK_EXEC, command);
+    }
 }
