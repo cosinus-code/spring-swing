@@ -18,21 +18,16 @@ package org.cosinus.swing.image.icon;
 
 import org.cosinus.swing.util.GroupedProperties;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serial;
-import java.io.UncheckedIOException;
+import java.io.*;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
 import java.util.stream.Stream;
 
+import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 import static java.util.stream.Stream.concat;
 
 /**
@@ -53,6 +48,10 @@ public class IconThemeIndex extends GroupedProperties {
 
     private List<Path> iconPaths;
 
+    private EnumMap<IconSize, List<String>> iconInternalPathMap;
+
+    private Set<String> internalPathsWithoutSize;
+
     public IconThemeIndex() {
         this.iconPaths = new ArrayList<>();
     }
@@ -64,7 +63,21 @@ public class IconThemeIndex extends GroupedProperties {
             .stream()
             .map(Path::toFile)
             .forEach(this::loadTheme);
-        
+
+        this.iconInternalPathMap = new EnumMap<>(stream(IconSize.values())
+            .collect(toMap(identity(), size -> keySet()
+                .stream()
+                .filter(key -> key.startsWith(size + "/") ||
+                    key.endsWith("/" + size) ||
+                    key.startsWith(size.getSize() + "/") ||
+                    key.endsWith("/" + size.getSize()))
+                .toList())));
+
+        this.internalPathsWithoutSize = keySet()
+            .stream()
+            .filter(key -> !key.matches("^\\d.*\\d$"))
+            .collect(toSet());
+
         return this;
     }
 
@@ -92,7 +105,7 @@ public class IconThemeIndex extends GroupedProperties {
                 getIconThemeInherits()
                     .map(iconThemPath::resolveSibling)))
             .orElseGet(Stream::empty)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     public List<Path> getIconPaths() {
@@ -107,13 +120,8 @@ public class IconThemeIndex extends GroupedProperties {
     }
 
     public Stream<String> getIconInternalPath(IconSize size) {
-        return keySet()
-            .stream()
-            .filter(key ->
-                key.startsWith(size + "/") ||
-                key.endsWith("/" + size) ||
-                key.startsWith(size.getSize() + "/") ||
-                key.endsWith("/" + size.getSize())
-            );
+        return concat(
+            iconInternalPathMap.get(size).stream(),
+            internalPathsWithoutSize.stream());
     }
 }

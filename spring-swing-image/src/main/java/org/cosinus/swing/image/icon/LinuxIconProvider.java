@@ -150,6 +150,9 @@ public class LinuxIconProvider implements IconProvider {
         return iconThemeIndex()
             .getIconPaths()
             .stream()
+            .flatMap(path -> iconThemeIndex()
+                .getIconInternalPath(size)
+                .map(path::resolve))
             .map(iconsFolder -> getIconFromPath(iconsFolder, iconName, size))
             .filter(Optional::isPresent)
             .map(Optional::get)
@@ -157,11 +160,8 @@ public class LinuxIconProvider implements IconProvider {
     }
 
     protected Optional<Icon> getIconFromPath(Path path, String name, IconSize size) {
-        return iconThemeIndex()
-            .getIconInternalPath(size)
-            .map(path::resolve)
-            .flatMap(filePath -> Stream.of("", "gnome-", "gnome-mime-", "gtk-", "stock-")
-                .flatMap(prefix -> getIconFile(filePath, prefix + name)))
+        return Stream.of("", "gnome-", "gnome-mime-", "gtk-", "stock-")
+            .flatMap(prefix -> getIconFile(path, prefix + name))
             .filter(File::exists)
             .findFirst()
             .flatMap(this::createIcon);
@@ -175,7 +175,7 @@ public class LinuxIconProvider implements IconProvider {
 
     protected Optional<Icon> createIcon(File file) {
         try {
-            LOG.debug("Create icon from file: " + file.getAbsolutePath());
+            LOG.debug("Create icon from file: {}", file.getAbsolutePath());
             return ofNullable(read(file))
                 .map(ImageIcon::new);
         } catch (IOException e) {
@@ -205,6 +205,11 @@ public class LinuxIconProvider implements IconProvider {
         iconNamesMap.put(ICON_STORAGE_COMPACT_DISK, "media-optical");
         iconNamesMap.put(ICON_NETWORK, "network-server");
         iconNamesMap.put(ICON_DATABASE, "sqlitebrowser");
+
+        iconNamesMap.put(ICON_VIEW_ICON, "view-grid-symbolic");
+        iconNamesMap.put(ICON_VIEW_GRID, "view-list-symbolic");
+        iconNamesMap.put(ICON_VIEW_LIST, "view-list-details");
+        iconNamesMap.put(ICON_VIEW_TREE, "view-list-tree");
     }
 
     private Optional<File> getIconsThemeFolder() {

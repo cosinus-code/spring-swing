@@ -41,9 +41,6 @@ public interface IconProvider {
     String ICON_HIDDEN = "hidden";
     String ICON_PREVIEW = "preview";
     String ICON_VIEW = "view";
-    String ICON_VIEW_TREE = "view-tree";
-    String ICON_VIEW_LIST = "view-list";
-    String ICON_VIEW_FULL = "view-full";
     String ICON_NEW_FILE = "new-file";
     String ICON_OPEN = "open";
     String ICON_SAVE = "save";
@@ -97,6 +94,11 @@ public interface IconProvider {
     String ICON_STORAGE_SD = "storage-sd";
     String ICON_STORAGE_MINI_SD = "storage-mini-sd";
     String ICON_DATABASE = "database";
+
+    String ICON_VIEW_ICON = "view-grid-symbolic";
+    String ICON_VIEW_GRID = "view-list-symbolic";
+    String ICON_VIEW_LIST = "view-list-details";
+    String ICON_VIEW_TREE = "view-list-tree";
 
     /**
      * Initialize this provider.
