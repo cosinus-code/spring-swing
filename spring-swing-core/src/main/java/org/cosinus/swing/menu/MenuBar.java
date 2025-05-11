@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.util.Arrays.stream;
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
@@ -38,20 +40,23 @@ public class MenuBar extends JMenuBar implements FormComponent {
 
     private BoxMenu boxMenu;
 
-    private final MenuModel mapModel;
+    private final MenuModel menuModel;
 
     private final boolean withBoxMenu;
 
     private final ActionListener actionListener;
 
-    public MenuBar(MenuModel mapModel,
+    private Map<String, AbstractButton> menuComponentsMap;
+
+    public MenuBar(MenuModel menuModel,
                    boolean withBoxMenu,
                    ActionListener actionListener) {
         injectContext(this);
 
         this.withBoxMenu = withBoxMenu;
-        this.mapModel = mapModel;
+        this.menuModel = menuModel;
         this.actionListener = actionListener;
+        this.menuComponentsMap = new HashMap<>();
     }
 
     public void add(Menu menu) {
@@ -67,20 +72,31 @@ public class MenuBar extends JMenuBar implements FormComponent {
             boxMenu = new BoxMenu();
         }
 
-        mapModel.forEach((menuKey, menuMap) -> {
+        menuModel.forEach((menuKey, menuMap) -> {
             Menu menu = new Menu(menuKey, withBoxMenu);
             add(menu);
-            menuMap.forEach((menuItemKey, menuItemShortcut) -> {
+            menuComponentsMap.putIfAbsent(menuKey, menu);
+            menuMap.forEach((menuItemKey, menuItemModel) -> {
                 if (menuItemKey.startsWith(SEPARATOR)) {
                     menu.add(new JSeparator());
                 } else {
-                    menu.add(new MenuItem(actionListener,
-                                          menuItemKey,
-                                          KeyStroke.getKeyStroke(menuItemShortcut),
-                                          withBoxMenu));
+                    MenuItem menuItem = new MenuItem(actionListener,
+                        menuItemKey,
+                        KeyStroke.getKeyStroke(menuItemModel.getShortcut()),
+                        withBoxMenu);
+                    menu.add(menuItem);
+                    menuComponentsMap.putIfAbsent(menuItemKey, menuItem);
                 }
             });
         });
+    }
+
+    public MenuModel getMenuModel() {
+        return menuModel;
+    }
+
+    public AbstractButton getMenuComponent(String menuKey) {
+        return menuComponentsMap.get(menuKey);
     }
 
     @Override

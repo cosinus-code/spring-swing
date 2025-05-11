@@ -23,8 +23,8 @@ import java.util.Map;
 /**
  * Menu model
  */
-public class MenuModel extends LinkedHashMap<String, Map<String, String>> {
+public class MenuModel extends LinkedHashMap<String, Map<String, MenuItemModel>> {
 
     @Serial
-    private static final long serialVersionUID = -2501461154269052009L;
+    private static final long serialVersionUID = 1L;
 }

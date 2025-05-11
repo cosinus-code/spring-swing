@@ -95,10 +95,15 @@ public interface IconProvider {
     String ICON_STORAGE_MINI_SD = "storage-mini-sd";
     String ICON_DATABASE = "database";
 
-    String ICON_VIEW_ICON = "view-grid-symbolic";
-    String ICON_VIEW_GRID = "view-list-symbolic";
-    String ICON_VIEW_LIST = "view-list-details";
-    String ICON_VIEW_TREE = "view-list-tree";
+    String ICON_VIEW_ICON = "view-icon";
+    String ICON_VIEW_GRID = "view-grid";
+    String ICON_VIEW_LIST = "view-list";
+    String ICON_VIEW_TREE = "view-tree";
+
+    String ICON_VIEW_HIDDEN = "view-hidden";
+    String ICON_VIEW_LEFT_PANE = "view-left-pane";
+    String ICON_SETTINGS = "settings";
+    String ICON_HELP = "help";
 
     /**
      * Initialize this provider.

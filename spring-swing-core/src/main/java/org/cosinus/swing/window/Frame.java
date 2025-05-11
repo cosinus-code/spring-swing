@@ -192,6 +192,10 @@ public class Frame extends JFrame implements Window, FormComponent {
         errorHandler.handleError(this, errorMessage);
     }
 
+    public MenuBar getMenu() {
+        return menuBar;
+    }
+
     @Override
     public void initComponents() {
         try {

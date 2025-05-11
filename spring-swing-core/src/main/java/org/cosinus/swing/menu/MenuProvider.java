@@ -33,7 +33,7 @@ public interface MenuProvider {
 
     /**
      * Check if the menu should have a box containing a shadow of the menu bar.
-     * This allow to replace the menu bar with a small starting box.
+     * This allows to replace the menu bar with a small starting box.
      *
      * @return true if it has box menu
      */

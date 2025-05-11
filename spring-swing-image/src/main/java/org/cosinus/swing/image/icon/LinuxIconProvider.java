@@ -210,6 +210,8 @@ public class LinuxIconProvider implements IconProvider {
         iconNamesMap.put(ICON_VIEW_GRID, "view-list-symbolic");
         iconNamesMap.put(ICON_VIEW_LIST, "view-list-details");
         iconNamesMap.put(ICON_VIEW_TREE, "view-list-tree");
+
+        iconNamesMap.put(ICON_VIEW_LEFT_PANE, "sidebar-show-symbolic");
     }
 
     private Optional<File> getIconsThemeFolder() {
