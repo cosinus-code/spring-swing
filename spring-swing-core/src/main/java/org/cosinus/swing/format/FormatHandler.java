@@ -27,6 +27,12 @@ public class FormatHandler {
 
     public static final long TERA = KILO * KILO * KILO * KILO;
 
+    public static final int KILO_INT = (int) KILO;
+
+    public static final int MEGA_INT = (int) MEGA;
+
+    public static final int GIGA_INT = (int) GIGA;
+
     public static final String DECIMALS_FORMAT_2 = "#,##0.00";
 
     public String formatMemorySize(long memorySize) {

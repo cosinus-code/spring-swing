@@ -93,7 +93,7 @@ public class ClasspathResourceResolver implements ResourceResolver {
                 }
             });
         if (bytes.isEmpty()) {
-            LOG.debug("Resource not found: " + resourcePath);
+            LOG.debug("Resource not found: {}", resourcePath);
         }
         return bytes;
     }
@@ -112,7 +112,7 @@ public class ClasspathResourceResolver implements ResourceResolver {
             return Arrays.stream(resources)
                 .map(Resource::getFilename);
         } catch (IOException e) {
-            LOG.error("Failed to resolve resources of extension: " + fileExtension);
+            LOG.error("Failed to resolve resources of extension: {}", fileExtension);
             return Stream.empty();
         }
     }

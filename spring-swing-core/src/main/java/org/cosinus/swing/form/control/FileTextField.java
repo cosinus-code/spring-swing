@@ -127,7 +127,7 @@ public class FileTextField extends JTextField implements Control<File>, MouseLis
 
     @Override
     public void setControlValue(File file) {
-        setText(file.getAbsolutePath());
+        setText(file.exists() ? file.getAbsolutePath() : file.toString());
     }
 
     @Override

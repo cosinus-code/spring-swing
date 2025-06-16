@@ -636,6 +636,7 @@ image/g3fax					    g3
 image/gif					    gif
 image/ief					    ief
 image/jpeg					    jpeg jpg jpe
+image/heic                      heic
 image/ktx					    ktx
 image/png					    png
 image/prs.btif					btif
