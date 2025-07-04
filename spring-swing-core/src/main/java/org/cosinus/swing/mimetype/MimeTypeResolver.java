@@ -15,7 +15,7 @@
  *
  */
 
-package org.cosinus.swing.io;
+package org.cosinus.swing.mimetype;
 
 import net.sf.jmimemagic.*;
 import org.apache.commons.collections4.ListValuedMap;

@@ -31,7 +31,7 @@ import static org.cosinus.swing.context.ApplicationContextInjector.injectContext
 /**
  * Menu item model
  */
-public class MenuItem extends JMenuItem implements FormComponent, ActionProducer {
+public class MenuItem extends JMenuItem implements FormComponent, ActionProducer, DuplicateMenuHolder {
 
     @Autowired
     protected Translator translator;
@@ -72,7 +72,8 @@ public class MenuItem extends JMenuItem implements FormComponent, ActionProducer
         super.setText(text);
     }
 
-    public JMenuItem getAltMenuItem() {
+    @Override
+    public JMenuItem getDuplicateMenu() {
         return altMenuItem;
     }
 

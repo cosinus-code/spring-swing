@@ -31,7 +31,7 @@ import org.cosinus.swing.image.icon.IconProvider;
 import org.cosinus.swing.image.icon.LinuxIconProvider;
 import org.cosinus.swing.image.icon.MacIconProvider;
 import org.cosinus.swing.image.icon.WindowsIconProvider;
-import org.cosinus.swing.io.MimeTypeResolver;
+import org.cosinus.swing.mimetype.MimeTypeResolver;
 import org.cosinus.swing.resource.ClasspathResourceResolver;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.springframework.boot.autoconfigure.AutoConfiguration;

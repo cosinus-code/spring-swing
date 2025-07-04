@@ -47,7 +47,7 @@ public class MenuBar extends JMenuBar implements FormComponent {
 
     private final ActionListener actionListener;
 
-    private Map<String, AbstractButton> menuComponentsMap;
+    private final Map<String, AbstractButton> menuComponentsMap;
 
     public MenuBar(MenuModel menuModel,
                    boolean withBoxMenu,

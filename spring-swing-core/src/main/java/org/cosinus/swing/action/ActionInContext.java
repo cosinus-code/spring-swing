@@ -20,6 +20,8 @@ package org.cosinus.swing.action;
 import javax.swing.*;
 import java.util.Optional;
 
+import static org.cosinus.swing.action.ActionContext.EMPTY_CONTEXT;
+
 /**
  * Interface for a swing action in context
  */
@@ -31,6 +33,13 @@ public interface ActionInContext {
      * @param context the context to run the action
      */
     void run(ActionContext context);
+
+    /**
+     * Run the action in the given context.
+     */
+    default void run() {
+        run(EMPTY_CONTEXT);
+    }
 
     /**
      * Get the id of the action.

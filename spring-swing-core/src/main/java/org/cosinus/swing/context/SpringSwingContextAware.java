@@ -15,39 +15,13 @@
  *
  */
 
-package org.cosinus.swing.menu;
+package org.cosinus.swing.context;
 
-import org.cosinus.swing.form.FormComponent;
-
-import javax.swing.*;
-
-import static java.util.Arrays.stream;
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
-/**
- * Popup menu model
- */
-public class PopupMenu extends JPopupMenu implements FormComponent {
+public class SpringSwingContextAware {
 
-    public PopupMenu() {
+    public SpringSwingContextAware() {
         injectContext(this);
-    }
-
-    public PopupMenu(String title) {
-        super(title);
-        injectContext(this);
-    }
-
-    @Override
-    public void initComponents() {
-
-    }
-
-    @Override
-    public void translate() {
-        stream(getSubElements())
-            .filter(FormComponent.class::isInstance)
-            .map(FormComponent.class::cast)
-            .forEach(FormComponent::translate);
     }
 }

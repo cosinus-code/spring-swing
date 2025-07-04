@@ -30,7 +30,7 @@ import static org.cosinus.swing.context.ApplicationContextInjector.injectContext
 /**
  * Menu list model
  */
-public class Menu extends JMenu implements FormComponent {
+public class Menu extends JMenu implements FormComponent, DuplicateMenuHolder {
 
     @Autowired
     protected Translator translator;
@@ -64,20 +64,17 @@ public class Menu extends JMenu implements FormComponent {
         super.add(separator);
     }
 
-    public JMenuItem add(MenuItem menuItem) {
-        if (duplicateMenu != null) {
-            duplicateMenu.add(menuItem.getAltMenuItem());
+    @Override
+    public JMenuItem add(JMenuItem menuItem) {
+        if (menuItem instanceof FormComponent formComponent) {
+            formComponents.add(formComponent);
         }
-        formComponents.add(menuItem);
+        if (menuItem instanceof DuplicateMenuHolder duplicateMenuHolder) {
+            if (duplicateMenu != null) {
+                duplicateMenu.add(duplicateMenuHolder.getDuplicateMenu());
+            }
+        }
         return super.add(menuItem);
-    }
-
-    public JMenuItem add(Menu menu) {
-        if (duplicateMenu != null) {
-            duplicateMenu.add(menu.getDuplicateMenu());
-        }
-        formComponents.add(menu);
-        return super.add(menu);
     }
 
     @Override
@@ -88,6 +85,7 @@ public class Menu extends JMenu implements FormComponent {
         super.setText(text);
     }
 
+    @Override
     public JMenu getDuplicateMenu() {
         return duplicateMenu;
     }

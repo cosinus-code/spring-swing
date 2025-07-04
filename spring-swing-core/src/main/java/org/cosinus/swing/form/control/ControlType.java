@@ -42,6 +42,7 @@ public enum ControlType {
     FONT(new FontControlProvider()),
     DATE(new DateControlProvider()),
     COMBOBOX(new ComboboxControlProvider()),
+    LIST(new ListControlProvider()),
     CHECKBOX(new CheckboxControlProvider());
 
 

@@ -27,8 +27,7 @@ public class DefaultProcessExecutor implements ProcessExecutor {
 
     @Override
     public void executeFile(File file) {
-        execute(file.getParentFile(),
-                file.getName());
+        execute(false, file.getParentFile(), file.getName());
     }
 
     @Override

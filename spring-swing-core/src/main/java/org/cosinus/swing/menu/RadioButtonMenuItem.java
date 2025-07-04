@@ -26,7 +26,7 @@ import java.awt.event.ActionListener;
 
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
-public class RadioButtonMenuItem extends JRadioButtonMenuItem implements FormComponent {
+public class RadioButtonMenuItem extends JRadioButtonMenuItem implements FormComponent, DuplicateMenuHolder {
 
     @Autowired
     protected Translator translator;
@@ -75,7 +75,8 @@ public class RadioButtonMenuItem extends JRadioButtonMenuItem implements FormCom
         super.setText(text);
     }
 
-    public JRadioButtonMenuItem getAltMenuItem() {
+    @Override
+    public JMenuItem getDuplicateMenu() {
         return altMenuItem;
     }
 

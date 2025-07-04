@@ -28,9 +28,12 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static java.lang.ProcessBuilder.startPipeline;
+import static java.util.Arrays.stream;
 import static java.util.stream.IntStream.range;
+import static java.util.stream.Stream.concat;
 import static org.cosinus.swing.exec.Command.outputProcess;
 import static org.cosinus.swing.exec.Command.pipeProcess;
 
@@ -91,18 +94,31 @@ public interface ProcessExecutor {
      * @param command the command to execute
      */
     default void execute(String... command) {
-        execute(new File(System.getProperty("user.home")), command);
+        execute(false, new File(System.getProperty("user.home")), command);
+    }
+
+    /**
+     * Execute a command on user home working directory.
+     *
+     * @param runInTerminal true if run in terminal
+     * @param command       the command to execute
+     */
+    default void execute(boolean runInTerminal, String... command) {
+        execute(runInTerminal, new File(System.getProperty("user.home")), command);
     }
 
     /**
      * Execute a command in given working directory.
      *
-     * @param workingDir the working directory
-     * @param command    the command to execute
+     * @param runInTerminal true if run in terminal
+     * @param workingDir    the working directory
+     * @param command       the command to execute
      */
-    default void execute(File workingDir, String... command) {
+    default void execute(boolean runInTerminal, File workingDir, String... command) {
         try {
-            new ProcessBuilder(command)
+            new ProcessBuilder(runInTerminal ?
+                concat(Stream.of("/bin/sh", "-c"), stream(command)).toArray(String[]::new) :
+                command)
                 .inheritIO()
                 .directory(workingDir)
                 .start();

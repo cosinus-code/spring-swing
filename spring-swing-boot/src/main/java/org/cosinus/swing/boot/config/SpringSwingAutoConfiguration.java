@@ -31,7 +31,7 @@ import org.cosinus.swing.dialog.DialogHandler;
 import org.cosinus.swing.error.ErrorHandler;
 import org.cosinus.swing.error.form.DefaultErrorFormProvider;
 import org.cosinus.swing.format.FormatHandler;
-import org.cosinus.swing.io.MimeTypeResolver;
+import org.cosinus.swing.mimetype.MimeTypeResolver;
 import org.cosinus.swing.menu.JsonMenuProvider;
 import org.cosinus.swing.menu.MenuProvider;
 import org.cosinus.swing.preference.Preferences;
