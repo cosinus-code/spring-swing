@@ -104,14 +104,21 @@ public class UIStructure extends Panel {
         }
     }
 
-    public void addControl(String id, @NotNull Control<?> control, Label label) {
+    public void addControl(String id, @NotNull Control<?> control, Label label, UIField field) {
         if (label != null) {
             if (uiDescriptor.getLayout() == VERTICAL_FLOW) {
                 label.setVerticalAlignment(SwingConstants.BOTTOM);
             }
             controlsPanel.add(label);
         }
-        controlsPanel.add(control.getComponent());
+        if (field.getWidth() > 0 || field.getHeight() > 0 ) {
+            ScrollPane scroll = new ScrollPane();
+            scroll.setPreferredSize(new Dimension(field.getWidth(), field.getHeight()));
+            scroll.add(control.getComponent());
+            controlsPanel.add(scroll);
+        } else {
+            controlsPanel.add(control.getComponent());
+        }
         controlsMap.put(id, control);
     }
 
@@ -146,26 +153,8 @@ public class UIStructure extends Panel {
         return getControl(id).getControlValue();
     }
 
-    public String getStringValue(String id) {
-        return getControl(id).getControlValue().toString();
-    }
-
     public Control<?> getControl(String id) {
         return ofNullable(controlsMap.get(id))
             .orElseThrow(() -> new SpringSwingException("Cannot find control with id: " + id));
-    }
-
-    public <T> ComboBox<T> getComboBoxControl(String id) {
-        return findControl(id)
-            .filter(ComboBox.class::isInstance)
-            .map(ComboBox.class::cast)
-            .orElseThrow(() -> new SpringSwingException("Cannot combobox control with id: " + id));
-    }
-
-    public FileTextField getFileControl(String id) {
-        return findControl(id)
-            .filter(FileTextField.class::isInstance)
-            .map(FileTextField.class::cast)
-            .orElseThrow(() -> new SpringSwingException("Cannot file control with id: " + id));
     }
 }

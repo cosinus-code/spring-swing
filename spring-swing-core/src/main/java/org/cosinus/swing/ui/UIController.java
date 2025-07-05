@@ -52,7 +52,7 @@ public class UIController {
                     if (field.isDisabled()) {
                         control.setControlEnabled(false);
                     }
-                    uiStructure.addControl(field.getId(), control, label);
+                    uiStructure.addControl(field.getId(), control, label, field);
                 }));
         uiDescriptor.getButtons()
             .forEach(button -> uiStructure.addButton(button.getId(), createButton(button)));
