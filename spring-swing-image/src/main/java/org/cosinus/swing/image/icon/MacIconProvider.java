@@ -76,6 +76,9 @@ public class MacIconProvider implements IconProvider {
         return ofNullable(getIconNameToFilePathMap().get(name))
             .map(File::new)
             .filter(File::exists)
+            .or(() -> ofNullable(name)
+                .map(File::new)
+                .filter(File::exists))
             .flatMap(imageFile -> readImage(imageFile, size))
             .map(ImageIcon::new);
     }

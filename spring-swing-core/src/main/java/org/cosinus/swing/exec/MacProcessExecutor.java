@@ -19,6 +19,7 @@ package org.cosinus.swing.exec;
 
 import java.io.File;
 import java.util.Optional;
+import org.cosinus.swing.error.ProcessExecutionException;
 
 /**
  * Implementation of {@link ProcessExecutor} for Mac
@@ -32,7 +33,11 @@ public class MacProcessExecutor implements ProcessExecutor {
 
     @Override
     public Optional<String> getOsTheme() {
-        return executeAndGetOutput("defaults", "read", "-g", "AppleInterfaceStyle");
+        try {
+            return executeAndGetOutput("defaults", "read", "-g", "AppleInterfaceStyle");
+        } catch (ProcessExecutionException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
