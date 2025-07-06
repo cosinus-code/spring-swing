@@ -19,13 +19,14 @@ package org.cosinus.swing.form.control;
 
 import javax.swing.*;
 
+import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
 /**
  * Extension of the {@link JLabel}
  * which will automatically inject the application context.
  */
-public class Label extends JLabel implements Control<String> {
+public class Label extends JLabel implements Control<Object> {
 
     public Label(String text, Icon icon, int horizontalAlignment) {
         super(text, icon, horizontalAlignment);
@@ -62,7 +63,16 @@ public class Label extends JLabel implements Control<String> {
     }
 
     @Override
-    public void setControlValue(String text) {
-        setText(text);
+    public void setControlValue(Object value) {
+        ofNullable(value)
+            .map(Object::toString)
+            .ifPresent(this::setText);
+
+        if (value instanceof ControlValue controlValue) {
+            ofNullable(controlValue.getIcon())
+                .ifPresent(this::setIcon);
+            ofNullable(controlValue.getTooltip())
+                .ifPresent(this::setToolTipText);
+        }
     }
 }

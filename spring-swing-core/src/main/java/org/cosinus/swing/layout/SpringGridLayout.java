@@ -51,8 +51,6 @@ public class SpringGridLayout extends SpringLayout {
     private Spring totalWidth;
     private Spring totalHeight;
 
-    private int rowHeight;
-
     private Map<Integer, Spring> columnWidth;
 
     public SpringGridLayout(Container target,
@@ -69,15 +67,6 @@ public class SpringGridLayout extends SpringLayout {
 
         this.columnDimensions = new SpringDimension[cols];
         this.rowDimensions = new SpringDimension[rows];
-    }
-
-//    public void setColumnWidth(int column, int width) {
-//        columnWidth.put(column, new WidthSpring(width));
-//    }
-
-
-    public void setRowHeight(int rowHeight) {
-        this.rowHeight = rowHeight;
     }
 
     /**

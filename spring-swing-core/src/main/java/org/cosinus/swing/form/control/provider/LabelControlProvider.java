@@ -18,29 +18,26 @@
 package org.cosinus.swing.form.control.provider;
 
 import org.cosinus.swing.form.control.Control;
-import org.cosinus.swing.form.control.LookAndFeelControl;
+import org.cosinus.swing.form.control.Label;
 
-import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 
 /**
  * Implementation of {@link ControlProvider}
- * for providing the {@link Control} corresponding to a look-and-feel value.
+ * for providing the {@link Control} corresponding to a color value.
  */
-public class LookAndFeelControlProvider implements ControlProvider<String> {
+public class LabelControlProvider implements ControlProvider<Object> {
 
     @Override
-    public Control<String> getControl() {
-        //TODO
-        return new LookAndFeelControl(emptyList(), null);
+    public Label getControl() {
+        return new Label();
     }
 
     @Override
-    public <T> Control<String> getControl(ControlDescriptor<T, String> descriptor) {
-        String realValue = ofNullable(descriptor.getRealValue())
+    public <T> Label getControl(ControlDescriptor<T, Object> descriptor) {
+        return new Label(ofNullable(descriptor)
+            .map(ControlDescriptor::getRealValue)
             .map(Object::toString)
-            .orElse(null);
-
-        return new LookAndFeelControl(descriptor.getRealValues(), realValue);
+            .orElse(""));
     }
 }
