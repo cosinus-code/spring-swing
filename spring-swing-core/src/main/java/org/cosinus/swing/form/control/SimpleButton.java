@@ -66,6 +66,7 @@ public class SimpleButton extends Label implements MouseListener {
     }
 
     private void initComponent() {
+        setHorizontalAlignment(CENTER);
         setOpaque(true);
         addMouseListener(this);
     }
