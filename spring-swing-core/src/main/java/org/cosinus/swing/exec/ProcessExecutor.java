@@ -116,13 +116,14 @@ public interface ProcessExecutor {
      */
     default void execute(boolean runInTerminal, File workingDir, String... command) {
         try {
-            new ProcessBuilder(runInTerminal ?
+            Process process = new ProcessBuilder(runInTerminal ?
                 concat(Stream.of("/bin/sh", "-c"), stream(command)).toArray(String[]::new) :
                 command)
                 .inheritIO()
                 .directory(workingDir)
                 .start();
-        } catch (IOException ex) {
+            process.waitFor();
+        } catch (IOException | InterruptedException ex) {
             throw new ProcessExecutionException("Failed to execute command: " + Arrays.toString(command), ex);
         }
     }
