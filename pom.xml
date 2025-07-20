@@ -34,7 +34,7 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
 
-        <commons-io.version>2.11.0</commons-io.version>
+        <commons-io.version>2.16.1</commons-io.version>
         <org.apache.common.version>4.4</org.apache.common.version>
         <log4j.version>2.19.0</log4j.version>
         <twelvemonkeys.imageio.version>3.12.0</twelvemonkeys.imageio.version>
