@@ -123,11 +123,11 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
 
             JPanel panButtonsRight = new JPanel();
             panButtonsRight.setLayout(new FlowLayout(FlowLayout.RIGHT));
-            panButtonsRight.add(continueButton);
+            panButtonsRight.add(detailsButton);
             panButtonsRight.add(exitButton);
 
             JPanel panButtonsLeft = new JPanel();
-            panButtonsLeft.add(detailsButton);
+            panButtonsLeft.add(continueButton);
 
             JPanel panButtons = new JPanel(new BorderLayout());
             panButtons.add(panButtonsRight, EAST);

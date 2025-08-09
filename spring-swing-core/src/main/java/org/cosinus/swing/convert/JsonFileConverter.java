@@ -52,7 +52,7 @@ import static org.cosinus.swing.resource.ResourceSource.FILESYSTEM_BEFORE_CLASSP
  */
 public abstract class JsonFileConverter<T> {
 
-    private static final String JSON_EXTENSION = ".json";
+    public static final String JSON_EXTENSION = ".json";
 
     private final ObjectMapper objectMapper;
 
@@ -159,18 +159,19 @@ public abstract class JsonFileConverter<T> {
      */
     public <P> Optional<P> convert(ResourceSource resourceSource, String name, Function<byte[], P> mapper) {
         return ofNullable(resourceResolversMap.get(resourceSource))
-            .flatMap(resourceResolver -> resourceResolver.resolveAsBytes(resourceLocator(), getFileName(name)))
+            .flatMap(resourceResolver -> resourceResolver
+                .resolveAsBytes(resourceLocator(), adjustName(name)))
             .map(mapper);
     }
 
     /**
-     * Get the json filename corresponding to name.
+     * Adjust the name, if needed.
      *
      * @param name the name
      * @return the filename
      */
-    protected String getFileName(String name) {
-        return name.endsWith(JSON_EXTENSION) ? name : name + JSON_EXTENSION;
+    protected String adjustName(String name) {
+        return name;
     }
 
     /**
@@ -272,7 +273,7 @@ public abstract class JsonFileConverter<T> {
      * @throws IOException if an IO error occurs
      */
     protected OutputStream createOutputStream(String name) throws IOException {
-        File file = resourceResolversMap.get(FILESYSTEM).resolveResourcePath(resourceLocator(), name)
+        File file = resolveFilesystemPath(name)
             .map(Path::toFile)
             .orElseThrow(() -> new IOException("No application home folder (probably due to missing application name) " +
                 "to save file: " + name));
@@ -280,6 +281,10 @@ public abstract class JsonFileConverter<T> {
             throw new IOException("Failed to create folders for file: " + file);
         }
         return new FileOutputStream(file);
+    }
+
+    protected Optional<Path> resolveFilesystemPath(String fileName) {
+        return resourceResolversMap.get(FILESYSTEM).resolveResourcePath(resourceLocator(), fileName);
     }
 
     /**

@@ -47,6 +47,11 @@ public class JsonMenuProvider extends JsonFileConverter<MenuModel> implements Me
     }
 
     @Override
+    protected String adjustName(String name) {
+        return name.endsWith(JSON_EXTENSION) ? name : name + JSON_EXTENSION;
+    }
+
+    @Override
     protected ResourceType resourceLocator() {
         return ResourceType.CONF;
     }

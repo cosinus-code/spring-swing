@@ -17,6 +17,8 @@
 package org.cosinus.swing.boot.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.cosinus.swing.boot.condition.ConditionalOnLinux;
 import org.cosinus.swing.boot.condition.ConditionalOnMac;
 import org.cosinus.swing.boot.condition.ConditionalOnWindows;
@@ -46,6 +48,9 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import javax.swing.*;
 import java.util.Set;
 
+import static com.fasterxml.jackson.databind.DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE;
+import static com.fasterxml.jackson.databind.MapperFeature.REQUIRE_HANDLERS_FOR_JAVA8_TIMES;
+import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
 import static org.springframework.beans.factory.config.BeanDefinition.ROLE_INFRASTRUCTURE;
 
 /**
@@ -64,7 +69,13 @@ public class SpringSwingCoreAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public ObjectMapper objectMapper() {
-        return new ObjectMapper();
+        return JsonMapper
+            .builder()
+            .disable(REQUIRE_HANDLERS_FOR_JAVA8_TIMES)
+            .disable(ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
+            .disable(WRITE_DATES_AS_TIMESTAMPS)
+            .build()
+            .registerModule(new JavaTimeModule());
     }
 
     @Bean

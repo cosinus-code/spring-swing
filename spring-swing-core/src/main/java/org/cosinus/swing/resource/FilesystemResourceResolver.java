@@ -102,11 +102,23 @@ public class FilesystemResourceResolver implements ResourceResolver {
             .orElseGet(Stream::empty);
     }
 
+    public Stream<File> resolveAllFiles(ResourceLocator resourceLocator, Boolean onlyDirs) {
+        return getFilePath(Paths.get(getResourceFolder(resourceLocator)))
+            .map(Path::toFile)
+            .filter(File::exists)
+            .map(parent -> ofNullable(parent.listFiles((file, name) -> ofNullable(onlyDirs)
+                .map(dirs -> dirs == file.isDirectory())
+                .orElse(true)))
+                .stream()
+                .flatMap(Arrays::stream))
+            .orElseGet(Stream::empty);
+    }
+
     /**
      * Get the resource path within the resource source.
      *
      * @param resourceLocator the resource locator
-     * @param resourceName the resource name
+     * @param resourceName    the resource name
      * @return the found resource path, or {@link Optional#empty()}
      */
     public Optional<Path> getResourcePath(ResourceLocator resourceLocator, String resourceName) {
@@ -114,7 +126,7 @@ public class FilesystemResourceResolver implements ResourceResolver {
             .map(name -> ofNullable(resourceLocator)
                 .map(ResourceLocator::getLocation)
                 .filter(not(String::isEmpty))
-                .map(folder -> Paths.get(folder, name))
+                .map(folder -> Paths.get(folder, name.split("/")))
                 .orElse(Paths.get(name)));
     }
 
@@ -128,7 +140,7 @@ public class FilesystemResourceResolver implements ResourceResolver {
         return bytes;
     }
 
-    private Optional<Path> getFilePath(Path resourcePath) {
+    public Optional<Path> getFilePath(Path resourcePath) {
         return ofNullable(applicationProperties.getHome())
             .map(Paths::get)
             .or(() -> getApplicationFolderName()
@@ -142,7 +154,7 @@ public class FilesystemResourceResolver implements ResourceResolver {
             .map("."::concat);
     }
 
-    private String getResourceFolder(ResourceLocator resourceLocator) {
+    protected String getResourceFolder(ResourceLocator resourceLocator) {
         return ofNullable(resourceLocator)
             .map(ResourceLocator::getLocation)
             .map(folder -> folder.concat(File.separator))
@@ -150,7 +162,9 @@ public class FilesystemResourceResolver implements ResourceResolver {
     }
 
     private Stream<String> findFiles(File parent, String fileExtension) {
-        return ofNullable(parent.listFiles((isDir, name) -> name.endsWith(fileExtension)))
+        return ofNullable(parent.listFiles((isDir, name) -> ofNullable(fileExtension)
+            .map(name::endsWith)
+            .orElse(true)))
             .stream()
             .flatMap(Arrays::stream)
             .map(File::getName);

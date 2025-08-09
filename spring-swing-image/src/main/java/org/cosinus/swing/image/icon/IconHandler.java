@@ -23,13 +23,11 @@ import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.springframework.cache.annotation.Cacheable;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.image.ImageFilter;
 import java.io.File;
 import java.util.Optional;
 
-import static java.awt.Image.SCALE_SMOOTH;
-import static java.lang.Math.max;
+import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.image.ImageHandler.DISABLED_FILTER;
 import static org.cosinus.swing.image.ImageHandler.GRAY_FILTER;
@@ -72,11 +70,27 @@ public class IconHandler {
      */
     @Cacheable(value = SPRING_SWING_ICONS_CACHE_NAME)
     public Optional<Icon> findIconByName(String name, IconSize size) {
-        return iconProvider.findIconByName(name, size)
-            .or(() -> iconProvider.findIconByName(name, X256)
-                .map(icon -> scaleIcon(icon, size)))
-            .or(() -> this.findIconByResource(name + ".png")
-                .map(icon -> scaleIcon(icon, size)));
+        return getRemoteIcon(name)
+            .map(icon -> scaleIcon(icon, size))
+            .or(() -> iconProvider.findIconByName(name, size)
+                .or(() -> iconProvider.findIconByName(name, X256)
+                    .map(icon -> scaleIcon(icon, size)))
+                .or(() -> this.findIconByResource(name + ".png")
+                    .map(icon -> scaleIcon(icon, size))));
+    }
+
+    protected boolean isUrl(String text) {
+        return ofNullable(text)
+            .map(url -> url.startsWith("http://")
+                || url.startsWith("https://"))
+            .orElse(false);
+    }
+
+    protected Optional<Icon> getRemoteIcon(String url) {
+        return isUrl(url) ?
+            ofNullable(imageHandler.createImage(url))
+                .map(ImageIcon::new) :
+            empty();
     }
 
     /**

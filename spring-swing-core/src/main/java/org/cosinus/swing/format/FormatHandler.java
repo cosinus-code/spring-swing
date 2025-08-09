@@ -50,6 +50,8 @@ public class FormatHandler {
 
     public static final int GIGA_INT = (int) GIGA;
 
+    public static final long KILOMETER = 1000;
+
     public static final String DECIMALS_FORMAT_2 = "#,##0.00";
 
     public String formatMemorySize(long memorySize) {
@@ -136,5 +138,19 @@ public class FormatHandler {
         return DateTimeFormatter
             .ofLocalizedDate(MEDIUM)
             .format(ofInstant(ofEpochMilli(timestamp), TimeZone.getDefault().toZoneId()));
+    }
+
+    public String formatDistance(long distance) {
+        if (distance < 0) {
+            return "";
+        }
+        if (distance >= KILOMETER) {
+            return get2DecimalsFormatted((double) distance / KILOMETER) + " Km";
+        }
+        return get2DecimalsFormatted(distance) + " m";
+    }
+
+    public String formatElevation(long elevation) {
+        return get2DecimalsFormatted(elevation) + " m";
     }
 }

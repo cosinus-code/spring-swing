@@ -2,3 +2,4 @@ org.cosinus.swing.boot.config.SpringSwingCoreAutoConfiguration
 org.cosinus.swing.boot.config.ApplicationUIAutoConfiguration
 org.cosinus.swing.boot.config.SpringSwingAutoConfiguration
 org.cosinus.swing.boot.event.ApplicationContextStartupAutoConfiguration
+org.cosinus.swing.boot.config.OAuth2ClientAutoConfiguration
