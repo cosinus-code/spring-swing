@@ -140,7 +140,7 @@ public class FormatHandler {
             .format(ofInstant(ofEpochMilli(timestamp), TimeZone.getDefault().toZoneId()));
     }
 
-    public String formatDistance(long distance) {
+    public String formatDistance(double distance) {
         if (distance < 0) {
             return "";
         }
@@ -150,7 +150,18 @@ public class FormatHandler {
         return get2DecimalsFormatted(distance) + " m";
     }
 
-    public String formatElevation(long elevation) {
+    public String formatElevation(double elevation) {
         return get2DecimalsFormatted(elevation) + " m";
+    }
+
+    public String formatPace(double pace) {
+        return get2DecimalsFormatted(pace) + " min/km";
+    }
+
+    public String formatIndexAsString(int index, int count) {
+        String indexFormat = count < 10 ? "%01d" :
+            count < 100 ? "%02d" :
+                count < 1000 ? "%03d" : "%04d";
+        return indexFormat.formatted(index);
     }
 }
