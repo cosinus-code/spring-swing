@@ -17,7 +17,6 @@
 
 package org.cosinus.swing.image.icon;
 
-import org.apache.commons.imaging.ImageReadException;
 import org.apache.commons.imaging.formats.icns.IcnsImageParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -89,7 +88,7 @@ public class MacIconProvider implements IconProvider {
                 .stream()
                 .filter(image -> image.getWidth() == size.getSize() && image.getHeight() == size.getSize())
                 .findFirst();
-        } catch (IOException | ImageReadException e) {
+        } catch (IOException e) {
             LOG.warn(String.format("Cannot read image of size %s from icns file %s",
                 size.getSize(), imageFile.getPath()));
             return Optional.empty();

@@ -40,12 +40,14 @@ public abstract class IconTextFieldWithAutocomplete<T extends AutocompleteItem> 
     public void keyTyped(KeyEvent e) {
         if (actionOnEnter() && e.getKeyChar() == VK_ENTER) {
             performAction();
-            return;
         }
-        AutocompleteProvider<T> autocompleteProvider = getAutocompleteProvider();
-        if (autocompleteProvider != null) {
-            new Thread(new AutocompleteLoader(autocompleteProvider)).start();
-        }
+    }
+
+    protected void startAutocomplete() {
+            AutocompleteProvider<T> autocompleteProvider = getAutocompleteProvider();
+            if (autocompleteProvider != null) {
+                new Thread(new AutocompleteLoader(autocompleteProvider)).start();
+            }
     }
 
     @Override
