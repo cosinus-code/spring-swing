@@ -54,6 +54,8 @@ public class UIStructure extends Panel {
 
     private Panel buttonsPanel;
 
+    private Component focusComponent;
+
     public UIStructure(UIDescriptor uiDescriptor) {
         super(new BorderLayout());
 
@@ -165,5 +167,13 @@ public class UIStructure extends Panel {
 
     public void addActionComponent(Component component) {
         actionComponents.add(component);
+    }
+
+    public void setFocusComponent(Component focusComponent) {
+        this.focusComponent = focusComponent;
+    }
+
+    public Optional<Component> getFocusComponent() {
+        return ofNullable(focusComponent);
     }
 }

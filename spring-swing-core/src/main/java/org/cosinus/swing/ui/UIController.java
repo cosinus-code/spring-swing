@@ -56,8 +56,13 @@ public class UIController {
                     if (field.isDisabled()) {
                         control.setControlEnabled(false);
                     }
-                    if (field.isAction() && control instanceof Component component) {
-                        uiStructure.addActionComponent(component);
+                    if (control instanceof Component component) {
+                        if (field.isAction()) {
+                            uiStructure.addActionComponent(component);
+                        }
+                        if (field.isFocus()) {
+                            uiStructure.setFocusComponent(component);
+                        }
                     }
                     uiStructure.addControl(field.getId(), control, label, field);
                 }));

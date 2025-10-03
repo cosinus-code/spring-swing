@@ -36,6 +36,8 @@ public class UIField {
 
     private boolean action;
 
+    private boolean focus;
+
     public String getId() {
         return id;
     }
@@ -99,5 +101,13 @@ public class UIField {
 
     public void setAction(boolean action) {
         this.action = action;
+    }
+
+    public boolean isFocus() {
+        return focus;
+    }
+
+    public void setFocus(boolean focus) {
+        this.focus = focus;
     }
 }

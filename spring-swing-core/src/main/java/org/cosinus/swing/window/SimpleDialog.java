@@ -20,6 +20,7 @@ import org.cosinus.swing.ui.UIModel;
 import org.cosinus.swing.ui.UIStructure;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.awt.*;
 import java.awt.Frame;
 
 import static org.cosinus.swing.ui.UIStructure.CANCEL_BUTTON_ID;
@@ -62,6 +63,8 @@ public class SimpleDialog<M extends UIModel> extends Dialog<M> {
 
         pack();
         centerWindow();
+
+        setDefaultFocus();
     }
 
     @Override
@@ -80,5 +83,10 @@ public class SimpleDialog<M extends UIModel> extends Dialog<M> {
             .ifPresent(this::registerCancelAction);
         uiStructure.findDefaultButton()
             .ifPresent(uiStructure.getRootPane()::setDefaultButton);
+    }
+
+    protected void setDefaultFocus() {
+        uiStructure.getFocusComponent()
+            .ifPresent(Component::requestFocus);
     }
 }
