@@ -20,6 +20,8 @@ package org.cosinus.swing.listener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import static javax.swing.SwingUtilities.isLeftMouseButton;
+
 /**
  * Simple {@link MouseListener} to be used when we want to implement only some methods
  */
@@ -37,7 +39,9 @@ public class SimpleMouseListener implements MouseListener {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
+        if (isLeftMouseButton(e) && e.getClickCount() == 2) {
+            mouseDoubleClicked(e);
+        }
     }
 
     @Override
@@ -49,4 +53,8 @@ public class SimpleMouseListener implements MouseListener {
     public void mouseExited(MouseEvent e) {
 
     }
+
+    public void mouseDoubleClicked(MouseEvent event) {
+    }
+
 }

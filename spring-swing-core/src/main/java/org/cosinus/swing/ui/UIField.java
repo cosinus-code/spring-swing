@@ -34,6 +34,8 @@ public class UIField {
 
     private boolean disabled;
 
+    private boolean action;
+
     public String getId() {
         return id;
     }
@@ -89,5 +91,13 @@ public class UIField {
 
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
+    }
+
+    public boolean isAction() {
+        return action;
+    }
+
+    public void setAction(boolean action) {
+        this.action = action;
     }
 }

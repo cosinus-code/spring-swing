@@ -19,20 +19,20 @@ package org.cosinus.swing.window;
 
 import org.cosinus.swing.form.FormComponent;
 import org.cosinus.swing.form.control.Button;
+import org.cosinus.swing.listener.SimpleMouseListener;
 import org.cosinus.swing.ui.ApplicationUIHandler;
-import org.cosinus.swing.ui.UIStructure;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.Frame;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.MouseEvent;
 import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
-import static org.cosinus.swing.ui.UIStructure.CANCEL_BUTTON_ID;
-import static org.cosinus.swing.ui.UIStructure.OK_BUTTON_ID;
 
 /**
  * Wrapper over a {@link JDialog}
@@ -149,6 +149,15 @@ public abstract class Dialog<T> extends JDialog implements Window, FormComponent
 
     protected void registerOkAction(final Button button) {
         button.addActionListener(event -> dispose());
+    }
+
+    protected void registerDoubleClickOkAction(final Component component) {
+        component.addMouseListener(new SimpleMouseListener() {
+            @Override
+            public void mouseDoubleClicked(MouseEvent event) {
+                dispose();
+            }
+        });
     }
 
     protected void registerCancelAction(final Button button) {

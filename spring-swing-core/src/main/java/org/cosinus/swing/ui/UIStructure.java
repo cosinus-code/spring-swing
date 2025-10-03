@@ -26,9 +26,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static java.awt.BorderLayout.*;
 import static java.util.Optional.ofNullable;
@@ -48,6 +46,8 @@ public class UIStructure extends Panel {
 
     private final Map<String, Button> buttonsMap;
 
+    private final Collection<Component> actionComponents;
+
     private Button defaultButton;
 
     private Panel controlsPanel;
@@ -60,6 +60,7 @@ public class UIStructure extends Panel {
         this.uiDescriptor = uiDescriptor;
         this.controlsMap = new HashMap<>();
         this.buttonsMap = new HashMap<>();
+        this.actionComponents = new ArrayList<>();
     }
 
     @Override
@@ -135,9 +136,13 @@ public class UIStructure extends Panel {
         return ofNullable(buttonsMap.get(id));
     }
 
-    public Optional<Button> getDefaultButton() {
+    public Optional<Button> findDefaultButton() {
         return ofNullable(defaultButton)
             .or(() -> findButton(OK_BUTTON_ID));
+    }
+
+    public Collection<Component> getActionComponents() {
+        return actionComponents;
     }
 
     public void setDefaultButton(Button defaultButton) {
@@ -156,5 +161,9 @@ public class UIStructure extends Panel {
     public Control<?> getControl(String id) {
         return ofNullable(controlsMap.get(id))
             .orElseThrow(() -> new SpringSwingException("Cannot find control with id: " + id));
+    }
+
+    public void addActionComponent(Component component) {
+        actionComponents.add(component);
     }
 }

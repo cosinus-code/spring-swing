@@ -74,9 +74,11 @@ public class SimpleDialog<M extends UIModel> extends Dialog<M> {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         uiStructure.findButton(OK_BUTTON_ID)
             .ifPresent(this::registerOkAction);
+        uiStructure.getActionComponents()
+            .forEach(this::registerDoubleClickOkAction);
         uiStructure.findButton(CANCEL_BUTTON_ID)
             .ifPresent(this::registerCancelAction);
-        uiStructure.getDefaultButton()
+        uiStructure.findDefaultButton()
             .ifPresent(uiStructure.getRootPane()::setDefaultButton);
     }
 }

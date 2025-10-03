@@ -17,8 +17,12 @@
 package org.cosinus.swing.ui;
 
 import org.cosinus.swing.form.control.*;
+import org.cosinus.swing.form.control.Button;
+import org.cosinus.swing.form.control.Label;
 import org.cosinus.swing.form.control.provider.ControlProvider;
 import org.cosinus.swing.translate.Translator;
+
+import java.awt.*;
 
 import static java.util.Optional.ofNullable;
 
@@ -51,6 +55,9 @@ public class UIController {
                         .orElse(null);
                     if (field.isDisabled()) {
                         control.setControlEnabled(false);
+                    }
+                    if (field.isAction() && control instanceof Component component) {
+                        uiStructure.addActionComponent(component);
                     }
                     uiStructure.addControl(field.getId(), control, label, field);
                 }));
