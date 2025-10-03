@@ -35,7 +35,7 @@ public class LinuxProcessExecutor implements ProcessExecutor {
 
     @Override
     public void executeFile(File file) {
-        execute("xdg-open", file.getAbsolutePath());
+        execute(false, false, "xdg-open", file.getAbsolutePath());
     }
 
     @Override

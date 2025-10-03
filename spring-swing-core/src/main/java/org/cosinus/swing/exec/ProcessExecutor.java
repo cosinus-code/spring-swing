@@ -94,7 +94,18 @@ public interface ProcessExecutor {
      * @param command the command to execute
      */
     default void execute(String... command) {
-        execute(false, new File(System.getProperty("user.home")), command);
+        execute(false, new File(System.getProperty("user.home")), true, command);
+    }
+
+    /**
+     * Execute a command on user home working directory.
+     *
+     * @param runInTerminal true if run in terminal
+     * @param waitForProcess true if wait for process to finish
+     * @param command       the command to execute
+     */
+    default void execute(boolean runInTerminal, boolean waitForProcess, String... command) {
+        execute(runInTerminal, new File(System.getProperty("user.home")), waitForProcess, command);
     }
 
     /**
@@ -104,7 +115,7 @@ public interface ProcessExecutor {
      * @param command       the command to execute
      */
     default void execute(boolean runInTerminal, String... command) {
-        execute(runInTerminal, new File(System.getProperty("user.home")), command);
+        execute(runInTerminal, new File(System.getProperty("user.home")), true, command);
     }
 
     /**
@@ -114,7 +125,7 @@ public interface ProcessExecutor {
      * @param workingDir    the working directory
      * @param command       the command to execute
      */
-    default void execute(boolean runInTerminal, File workingDir, String... command) {
+    default void execute(boolean runInTerminal, File workingDir, boolean waitForProcess, String... command) {
         try {
             Process process = new ProcessBuilder(runInTerminal ?
                 concat(Stream.of("/bin/sh", "-c"), stream(command)).toArray(String[]::new) :
@@ -122,7 +133,9 @@ public interface ProcessExecutor {
                 .inheritIO()
                 .directory(workingDir)
                 .start();
-            process.waitFor();
+            if (waitForProcess) {
+                process.waitFor();
+            }
         } catch (IOException | InterruptedException ex) {
             throw new ProcessExecutionException("Failed to execute command: " + Arrays.toString(command), ex);
         }

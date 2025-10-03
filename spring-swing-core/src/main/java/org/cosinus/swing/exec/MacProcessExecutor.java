@@ -28,7 +28,7 @@ public class MacProcessExecutor implements ProcessExecutor {
 
     @Override
     public void executeFile(File file) {
-        execute(false, file.getParentFile(), "open", "-a", file.getName());
+        execute(false, file.getParentFile(), false, "open", "-a", file.getName());
     }
 
     @Override

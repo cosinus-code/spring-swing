@@ -35,8 +35,8 @@ public class WindowsProcessExecutor implements ProcessExecutor {
 
     @Override
     public void executeFile(File file) {
-        execute(false, file.getParentFile(),
-                "rundll32", "url.dll,FileProtocolHandler", file.getName());
+        execute(false, file.getParentFile(), false,
+            "rundll32", "url.dll,FileProtocolHandler", file.getName());
     }
 
     @Override
