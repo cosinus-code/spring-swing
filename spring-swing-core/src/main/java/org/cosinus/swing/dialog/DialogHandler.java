@@ -91,7 +91,7 @@ public class DialogHandler {
     }
 
     public boolean confirm(Component comp, String message, String title, int options) {
-        return YES_OPTION == showConfirmDialog(comp, message, title, options);
+        return YES_OPTION == showConfirmDialog(comp, translator.translate(message), title, options);
     }
 
     public DialogOption retryWithSkipDialog(Window parentWindow, String message) {
