@@ -24,6 +24,7 @@ import java.awt.*;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import java.util.TimeZone;
 
 import static java.lang.Math.ceil;
@@ -118,10 +119,18 @@ public class FormatHandler {
         return formattedTime.toString();
     }
 
-    public String formatTextForLabel(JComponent label, String text) {
-        FontMetrics labelFontMetrics = label.getFontMetrics(label.getFont());
+    public String formatTextForLabel(JComponent component, String text) {
+        FontMetrics labelFontMetrics = component.getFontMetrics(component.getFont());
         int textWidth = computeStringWidth(labelFontMetrics, text);
-        int lblWidth = label.getWidth() - label.getInsets().left - label.getInsets().right;
+
+        int iconWidth = Optional.of(component)
+            .filter(c -> JLabel.class.isAssignableFrom(c.getClass()))
+            .map(JLabel.class::cast)
+            .map(JLabel::getIcon)
+            .map(Icon::getIconWidth)
+            .orElse(0);
+
+        int lblWidth = component.getWidth() - component.getInsets().left - component.getInsets().right - iconWidth;
 
         String newText = text;
         int middle = newText.length() / 2;
