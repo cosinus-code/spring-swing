@@ -47,6 +47,10 @@ public class IconThemeIndex extends GroupedProperties {
 
     public static final String INHERITS = "Inherits";
 
+    public static final String[] ADDITIONAL_ICON_THEMES = new String[]{
+        "Papirus"
+    };
+
     private List<Path> iconPaths;
 
     private EnumMap<IconSize, List<String>> iconInternalPathMap;
@@ -114,10 +118,12 @@ public class IconThemeIndex extends GroupedProperties {
     }
 
     public Stream<String> getIconThemeInherits() {
-        return getProperty(ICON_THEME, INHERITS)
-            .map(inherits -> inherits.split(","))
-            .stream()
-            .flatMap(Arrays::stream);
+        return concat(
+            getProperty(ICON_THEME, INHERITS)
+                .map(inherits -> inherits.split(","))
+                .stream()
+                .flatMap(Arrays::stream),
+            stream(ADDITIONAL_ICON_THEMES));
     }
 
     public Stream<String> getIconInternalPath(IconSize size) {

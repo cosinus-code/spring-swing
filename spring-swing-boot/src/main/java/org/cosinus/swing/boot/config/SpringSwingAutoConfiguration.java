@@ -23,6 +23,7 @@ import org.cosinus.swing.action.execute.ActionExecutor;
 import org.cosinus.swing.action.execute.ActionExecutors;
 import org.cosinus.swing.boot.ApplicationFrame;
 import org.cosinus.swing.boot.ApplicationInitializationHandler;
+import org.cosinus.swing.boot.condition.ConditionalOnLinux;
 import org.cosinus.swing.boot.initialize.ApplicationFrameInitializer;
 import org.cosinus.swing.boot.initialize.ApplicationInitializer;
 import org.cosinus.swing.boot.initialize.TranslatorInitializer;
@@ -31,9 +32,12 @@ import org.cosinus.swing.dialog.DialogHandler;
 import org.cosinus.swing.error.ErrorHandler;
 import org.cosinus.swing.error.form.DefaultErrorFormProvider;
 import org.cosinus.swing.format.FormatHandler;
-import org.cosinus.swing.mimetype.MimeTypeResolver;
 import org.cosinus.swing.menu.JsonMenuProvider;
 import org.cosinus.swing.menu.MenuProvider;
+import org.cosinus.swing.mimetype.DefaultMimeTypeInfoProvider;
+import org.cosinus.swing.mimetype.LinuxMimeTypeInfoProvider;
+import org.cosinus.swing.mimetype.MimeTypeInfoProvider;
+import org.cosinus.swing.mimetype.MimeTypeResolver;
 import org.cosinus.swing.preference.Preferences;
 import org.cosinus.swing.preference.dialog.DefaultPreferencesDialogProvider;
 import org.cosinus.swing.preference.dialog.PreferencesDialogProvider;
@@ -47,6 +51,7 @@ import org.cosinus.swing.ui.UIController;
 import org.cosinus.swing.ui.UIDescriptorProvider;
 import org.cosinus.swing.window.DefaultWindowSettingsHandler;
 import org.cosinus.swing.window.WindowSettingsHandler;
+import org.cosinus.swing.xml.XmlHandler;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -175,8 +180,20 @@ public class SpringSwingAutoConfiguration {
     }
 
     @Bean
-    public MimeTypeResolver mimeTypeResolver() {
-        return new MimeTypeResolver();
+    @ConditionalOnLinux
+    public MimeTypeInfoProvider linuxMimeTypeInfoProvider(final Translator translator) {
+        return new LinuxMimeTypeInfoProvider(translator);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public MimeTypeInfoProvider mimeTypeInfoProvider() {
+        return new DefaultMimeTypeInfoProvider();
+    }
+
+    @Bean
+    public MimeTypeResolver mimeTypeResolver(final MimeTypeInfoProvider mimeTypeInfoProvider) {
+        return new MimeTypeResolver(mimeTypeInfoProvider);
     }
 
     @Bean
@@ -196,5 +213,10 @@ public class SpringSwingAutoConfiguration {
     public UIController uiInitializer(final UIDescriptorProvider uiDescriptorProvider,
                                       final Translator translator) {
         return new UIController(uiDescriptorProvider, translator);
+    }
+
+    @Bean
+    public XmlHandler xmlHandler() {
+        return new XmlHandler();
     }
 }

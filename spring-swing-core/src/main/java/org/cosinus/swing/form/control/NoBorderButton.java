@@ -30,6 +30,7 @@ import java.awt.event.MouseEvent;
 
 import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.border.Borders.emptyBorder;
+import static org.cosinus.swing.color.Colors.getLighterColor;
 
 public class NoBorderButton extends Button {
 
@@ -86,7 +87,7 @@ public class NoBorderButton extends Button {
         initialBackground = getBackground();
 
         setUI(new BasicButtonUI());
-        setBorder(emptyBorder(0, 0, 0, 0));
+        setBorder(emptyBorder(2, 5, 2, 5));
         setCursor(uiHandler.getHandCursor());
 
         addMouseListener(new MouseAdapter() {
@@ -94,7 +95,7 @@ public class NoBorderButton extends Button {
             public void mouseEntered(MouseEvent mouseEvent) {
 
                 ofNullable(getBackground())
-                    .map(background -> Colors.getLighterColor(background, 30))
+                    .map(background -> getLighterColor(background, 30))
                     .ifPresent(NoBorderButton.this::setBackground);
             }
 

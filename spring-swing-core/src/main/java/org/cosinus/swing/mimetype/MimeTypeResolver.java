@@ -17,14 +17,16 @@
 
 package org.cosinus.swing.mimetype;
 
-import net.sf.jmimemagic.*;
+import net.sf.jmimemagic.MagicException;
+import net.sf.jmimemagic.MagicMatch;
+import net.sf.jmimemagic.MagicMatchNotFoundException;
+import net.sf.jmimemagic.MagicParseException;
 import org.apache.commons.collections4.ListValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.util.InvalidMimeTypeException;
 import org.springframework.util.MimeType;
-import org.springframework.util.StringUtils;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -35,14 +37,13 @@ import java.util.Set;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.util.Arrays.stream;
+import static java.util.Collections.singletonList;
 import static java.util.Locale.ENGLISH;
 import static java.util.Optional.ofNullable;
 import static net.sf.jmimemagic.Magic.getMagicMatch;
 import static org.cosinus.swing.util.FileUtils.getExtension;
-import static org.springframework.util.MimeTypeUtils.APPLICATION_OCTET_STREAM;
-import static org.springframework.util.MimeTypeUtils.IMAGE_JPEG;
-import static org.springframework.util.MimeTypeUtils.TEXT_PLAIN;
-import static org.springframework.util.MimeTypeUtils.parseMimeType;
+import static org.springframework.util.MimeTypeUtils.*;
+import static org.springframework.util.StringUtils.getFilenameExtension;
 import static org.springframework.util.StringUtils.tokenizeToStringArray;
 
 public class MimeTypeResolver {
@@ -53,6 +54,7 @@ public class MimeTypeResolver {
 
     private static final String SHELL_SCRIPT = "x-shellscript";
 
+    private static final MimeType FOLDER = new MimeType("inode", "directory");
     private static final MimeType IMAGE = new MimeType(IMAGE_JPEG.getType());
     private static final MimeType TEXT = new MimeType(TEXT_PLAIN.getType());
     private static final MimeType APPLICATION = new MimeType(APPLICATION_OCTET_STREAM.getType());
@@ -81,9 +83,12 @@ public class MimeTypeResolver {
     public static Set<String> SHELL_SCRIPT_TYPES =
         Set.of(SH, BAT);
 
+    private final MimeTypeInfoProvider mimeTypeInfoProvider;
+
     private final ListValuedMap<String, MimeType> mimeTypesMap;
 
-    public MimeTypeResolver() {
+    public MimeTypeResolver(final MimeTypeInfoProvider mimeTypeInfoProvider) {
+        this.mimeTypeInfoProvider = mimeTypeInfoProvider;
         mimeTypesMap = initMimeTypes();
     }
 
@@ -128,12 +133,17 @@ public class MimeTypeResolver {
     }
 
     public List<MimeType> getMimeTypes(Path path) {
-        return ofNullable(path)
-            .map(Path::toString)
-            .map(StringUtils::getFilenameExtension)
+        if (path.toFile().isDirectory()) {
+            return singletonList(FOLDER);
+        }
+        return ofNullable(getFilenameExtension(path.toString()))
             .map(extension -> extension.toLowerCase(ENGLISH))
             .map(mimeTypesMap::get)
             .orElseGet(Collections::emptyList);
+    }
+
+    public Optional<String> getMimeTypeDescription(final MimeType mimeType) {
+        return mimeTypeInfoProvider.getMimeTypeDescription(mimeType);
     }
 
     public boolean isTextCompatible(Path path) {

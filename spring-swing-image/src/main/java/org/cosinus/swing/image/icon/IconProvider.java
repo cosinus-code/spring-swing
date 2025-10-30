@@ -99,6 +99,7 @@ public interface IconProvider {
     String ICON_VIEW_ICON = "view-icon";
     String ICON_VIEW_GRID = "view-grid";
     String ICON_VIEW_LIST = "view-list";
+    String ICON_VIEW_DETAILS = "view-details";
     String ICON_VIEW_TREE = "view-tree";
 
     String ICON_VIEW_HIDDEN = "view-hidden";

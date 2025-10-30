@@ -89,12 +89,14 @@ public class LinuxIconProvider implements IconProvider {
     }
 
     protected Optional<Icon> findIconFileByMimeType(File file, IconSize size) {
-        return ofNullable(file)
-            .map(File::toPath)
-            .map(mimeTypeResolver::getMimeTypes)
-            .map(this::mimeTypesToIconNames)
-            .orElseGet(Stream::empty)
-            .map(iconName -> findIconByName(iconName, size))
+        return getPathsToIcons(size)
+            .flatMap(iconsFolder -> ofNullable(file)
+                .map(File::toPath)
+                .map(mimeTypeResolver::getMimeTypes)
+                .map(this::mimeTypesToIconNames)
+                .orElseGet(Stream::empty)
+                .flatMap(iconName -> getIconFromPath(iconsFolder, iconName)))
+            .map(this::createIcon)
             .filter(Optional::isPresent)
             .map(Optional::get)
             .findFirst();
@@ -148,24 +150,27 @@ public class LinuxIconProvider implements IconProvider {
     public Optional<Icon> findIconByName(String name, IconSize size) {
         String iconName = ofNullable(iconNamesMap.get(name))
             .orElse(name);
-        return iconThemeIndex()
-            .getIconPaths()
-            .stream()
-            .flatMap(path -> iconThemeIndex()
-                .getIconInternalPath(size)
-                .map(path::resolve))
-            .map(iconsFolder -> getIconFromPath(iconsFolder, iconName, size))
+        return getPathsToIcons(size)
+            .flatMap(iconsFolder -> getIconFromPath(iconsFolder, iconName))
+            .map(this::createIcon)
             .filter(Optional::isPresent)
             .map(Optional::get)
             .findFirst();
     }
 
-    protected Optional<Icon> getIconFromPath(Path path, String name, IconSize size) {
+    protected Stream<Path> getPathsToIcons(IconSize size) {
+        return iconThemeIndex()
+            .getIconPaths()
+            .stream()
+            .flatMap(path -> iconThemeIndex()
+                .getIconInternalPath(size)
+                .map(path::resolve));
+    }
+
+    protected Stream<File> getIconFromPath(Path path, String name) {
         return Stream.of("", "gnome-", "gnome-mime-", "gtk-", "stock-")
             .flatMap(prefix -> getIconFile(path, prefix + name))
-            .filter(File::exists)
-            .findFirst()
-            .flatMap(this::createIcon);
+            .filter(File::exists);
     }
 
     private Stream<File> getIconFile(Path path, String name) {
@@ -208,8 +213,8 @@ public class LinuxIconProvider implements IconProvider {
         iconNamesMap.put(ICON_DATABASE, "sqlitebrowser");
 
         iconNamesMap.put(ICON_VIEW_ICON, "view-grid-symbolic");
-        iconNamesMap.put(ICON_VIEW_GRID, "view-list-symbolic");
-        iconNamesMap.put(ICON_VIEW_LIST, "view-list-details");
+        iconNamesMap.put(ICON_VIEW_GRID, "view-list");
+        iconNamesMap.put(ICON_VIEW_DETAILS, "view-list-symbolic");
         iconNamesMap.put(ICON_VIEW_TREE, "view-list-tree");
 
         iconNamesMap.put(ICON_VIEW_LEFT_PANE, "sidebar-show-symbolic");

@@ -17,16 +17,22 @@
 
 package org.cosinus.swing.image.config;
 
+import com.twelvemonkeys.imageio.plugins.svg.SVGImageReaderSpi;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.boot.SwingApplicationFrame;
 import org.cosinus.swing.boot.initialize.ApplicationInitializer;
 import org.cosinus.swing.image.icon.IconHandler;
 import org.cosinus.swing.image.icon.IconProvider;
+import org.cosinus.swing.image.svg.SvgImageReaderSpi;
 import org.cosinus.swing.menu.MenuBar;
 import org.cosinus.swing.menu.MenuItemModel;
 
+import javax.imageio.spi.IIORegistry;
+import javax.imageio.spi.ImageReaderSpi;
+
 import static java.util.Optional.ofNullable;
+import static org.cosinus.stream.Streams.stream;
 import static org.cosinus.swing.image.icon.IconSize.X16;
 
 /**
@@ -58,6 +64,8 @@ public class ApplicationImageInitializer implements ApplicationInitializer {
     }
 
     protected void initializeImages() {
+        registerSvgImageReader();
+
         iconProvider.initialize();
         ofNullable(applicationFrame.getMenu())
             .ifPresent(menuBar -> menuBar.getMenuModel()
@@ -74,5 +82,17 @@ public class ApplicationImageInitializer implements ApplicationInitializer {
         iconHandler.findIconByName(menuItemModel.getIcon(), X16)
             .ifPresent(icon -> ofNullable(menuBar.getMenuComponent(menuItemKey))
                 .ifPresent(menuComponent -> menuComponent.setIcon(icon)));
+    }
+
+    protected void registerSvgImageReader() {
+        try {
+            IIORegistry registry = IIORegistry.getDefaultInstance();
+            stream(registry.getServiceProviders(ImageReaderSpi.class, true))
+                .filter(SVGImageReaderSpi.class::isInstance)
+                .forEach(registry::deregisterServiceProvider);
+            registry.registerServiceProvider(new SvgImageReaderSpi());
+        } catch (Exception e) {
+            LOG.warn("Error deregistering svg image reader", e);
+        }
     }
 }

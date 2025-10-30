@@ -25,21 +25,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
-import static java.lang.String.join;
-import static org.apache.logging.log4j.util.Strings.LINE_SEPARATOR;
 
 /**
  * Wrapped text builder.
  * <p>
  * It allows to wrap a text with or without separators.
  */
-public class TextWrapper extends ArrayList<String> {
-
-    public static final String TAG_HTML_START = "<html>";
-    public static final String TAG_HTML_CLOSE = "</html>";
-    public static final String TAG_CENTER_START = "<center>";
-    public static final String TAG_CENTER_CLOSE = "</center>";
-    public static final String TAG_PARAGRAPH = "<p>";
+public class TextWrapper extends ArrayList<String> implements HtmlText {
 
     private final int width;
 
@@ -192,7 +184,12 @@ public class TextWrapper extends ArrayList<String> {
      * @return the wrapped text
      */
     public WrappedText toWrappedText() {
-        return getWrappedText(join(LINE_SEPARATOR, this));
+        return getWrappedText(wrappedHtml(this));
+    }
+
+    @Override
+    public String getHtml() {
+        return wrappedHtml(this);
     }
 
     /**
@@ -201,7 +198,7 @@ public class TextWrapper extends ArrayList<String> {
      * @return the wrapped text as HTML body
      */
     private String toHtmlWrappedTextBody() {
-        return join(TAG_PARAGRAPH, this);
+        return wrappedHtml(this);
     }
 
     /**
@@ -210,7 +207,7 @@ public class TextWrapper extends ArrayList<String> {
      * @return the wrapped text as centered HTML body
      */
     private String getHtmlCenteredWrappedTextBody() {
-        return TAG_CENTER_START + toHtmlWrappedTextBody() + TAG_CENTER_CLOSE;
+        return centeredText(toHtmlWrappedTextBody());
     }
 
     /**
@@ -219,7 +216,7 @@ public class TextWrapper extends ArrayList<String> {
      * @return the wrapped text as HTML
      */
     public WrappedText toWrappedHtmlText() {
-        return getWrappedText(TAG_HTML_START + toHtmlWrappedTextBody() + TAG_HTML_CLOSE);
+        return getWrappedText(htmlText(toHtmlWrappedTextBody()));
     }
 
     /**
@@ -228,7 +225,7 @@ public class TextWrapper extends ArrayList<String> {
      * @return the wrapped text as centered HTML
      */
     public WrappedText toWrappedHtmlCenteredText() {
-        return getWrappedText(TAG_HTML_START + getHtmlCenteredWrappedTextBody() + TAG_HTML_CLOSE);
+        return getWrappedText(htmlText(getHtmlCenteredWrappedTextBody()));
     }
 
     /**

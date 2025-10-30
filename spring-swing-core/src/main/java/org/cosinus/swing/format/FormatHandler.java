@@ -130,7 +130,7 @@ public class FormatHandler {
             .map(Icon::getIconWidth)
             .orElse(0);
 
-        int lblWidth = component.getWidth() - component.getInsets().left - component.getInsets().right - iconWidth;
+        int lblWidth = component.getWidth() - component.getInsets().left - component.getInsets().right - iconWidth - 40;
 
         String newText = text;
         int middle = newText.length() / 2;
