@@ -80,7 +80,8 @@ public class LinuxIconProvider implements IconProvider {
         return file.isDirectory() ?
             findIconByName(getFolderIconName(file), size)
                 .or(() -> findIconByName(ICON_FOLDER, size)) :
-            findIconFileByMimeType(file, size)
+            findIconFileByMimeType(file, size, false)
+                .or(() -> findIconFileByMimeType(file, size, true))
                 .or(() -> getSpecialIconNameByFile(file)
                     .flatMap(iconName -> findIconByName(iconName, size)))
                 //TODO: to re-enable magic
@@ -88,12 +89,14 @@ public class LinuxIconProvider implements IconProvider {
                 .or(() -> findIconByName(ICON_UNKNOWN, size));
     }
 
-    protected Optional<Icon> findIconFileByMimeType(File file, IconSize size) {
+    protected Optional<Icon> findIconFileByMimeType(File file, IconSize size, boolean genericMimeType) {
         return getPathsToIcons(size)
             .flatMap(iconsFolder -> ofNullable(file)
                 .map(File::toPath)
                 .map(mimeTypeResolver::getMimeTypes)
-                .map(this::mimeTypesToIconNames)
+                .map(mimeTypes -> genericMimeType ?
+                    genericMimeTypesToIconNames(mimeTypes) :
+                    mimeTypesToIconNames(mimeTypes))
                 .orElseGet(Stream::empty)
                 .flatMap(iconName -> getIconFromPath(iconsFolder, iconName)))
             .map(this::createIcon)
@@ -132,18 +135,20 @@ public class LinuxIconProvider implements IconProvider {
     }
 
     protected Stream<String> mimeTypesToIconNames(List<MimeType> mimeTypes) {
-        Set<String> iconNames = new LinkedHashSet<>();
-        mimeTypes
+        return mimeTypes
             .stream()
             .filter(mimeType -> !mimeType.getSubtype().isEmpty())
-            .map(mimeType -> mimeType.getType() + "-" + mimeType.getSubtype())
-            .forEach(iconNames::add);
-        mimeTypes
-            .forEach(mimeType -> {
-                iconNames.add(mimeType.getType());
-                iconNames.add(mimeType.getType() + "-x-generic");
-            });
-        return iconNames.stream();
+            .map(mimeType -> mimeType.getType() + "-" + mimeType.getSubtype());
+    }
+
+    protected Stream<String> genericMimeTypesToIconNames(List<MimeType> mimeTypes) {
+        return mimeTypes
+            .stream()
+            .map(MimeType::getType);
+//            .flatMap(mimeType -> Stream.of(
+//                mimeType.getType(),
+//                mimeType.getType() + "-x-generic"
+//            ));
     }
 
     @Override

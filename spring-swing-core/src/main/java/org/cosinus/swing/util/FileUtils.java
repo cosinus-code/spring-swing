@@ -20,7 +20,6 @@ package org.cosinus.swing.util;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
-import java.util.Set;
 
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.io.FilenameUtils.EXTENSION_SEPARATOR;

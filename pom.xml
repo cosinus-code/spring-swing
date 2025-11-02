@@ -24,6 +24,7 @@
         <module>spring-swing-core</module>
         <module>spring-swing-boot</module>
         <module>spring-swing-image</module>
+        <module>spring-swing-file</module>
         <module>spring-swing-test</module>
         <module>spring-swing-boot-starter</module>
     </modules>
@@ -41,9 +42,11 @@
         <darcula.version>2018.2</darcula.version>
         <jdatepicker.version>1.3.4</jdatepicker.version>
         <commons-imaging.version>1.0.0-alpha6</commons-imaging.version>
+        <oshi.version>6.6.0</oshi.version>
+        <commons-exec.version>1.5.0</commons-exec.version>
 
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
-        <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
+<!--        <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>-->
         <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
 <!--        <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>-->
 <!--        <maven-release-plugin.version>2.5.3</maven-release-plugin.version>-->
@@ -65,6 +68,11 @@
             <dependency>
                 <groupId>org.cosinuscode.swing</groupId>
                 <artifactId>spring-swing-image</artifactId>
+                <version>${parent.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.cosinuscode.swing</groupId>
+                <artifactId>spring-swing-file</artifactId>
                 <version>${parent.version}</version>
             </dependency>
             <dependency>
@@ -137,6 +145,16 @@
                 <artifactId>commons-imaging</artifactId>
                 <version>${commons-imaging.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.github.oshi</groupId>
+                <artifactId>oshi-core</artifactId>
+                <version>${oshi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-exec</artifactId>
+                <version>${commons-exec.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -163,19 +181,19 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>${maven-javadoc-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-javadoc-plugin</artifactId>-->
+<!--                <version>${maven-javadoc-plugin.version}</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>attach-javadocs</id>-->
+<!--                        <goals>-->
+<!--                            <goal>jar</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>

@@ -1,0 +1,338 @@
+/*
+ * Copyright 2025 Cosinus Software
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+package org.cosinus.swing.file.linux;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.cosinus.swing.file.Application;
+import org.cosinus.swing.file.DefaultFileSystemRoot;
+import org.cosinus.swing.file.FileSystem;
+import org.cosinus.swing.file.FileSystemRoot;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.cosinus.swing.error.ErrorHandler;
+import org.cosinus.swing.error.JsonConvertException;
+import org.cosinus.swing.error.ProcessExecutionException;
+import org.cosinus.swing.exec.ProcessExecutor;
+import org.cosinus.swing.file.mac.BlockDevice;
+import org.cosinus.swing.file.mac.BlockDevices;
+import org.cosinus.swing.translate.Translator;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.util.*;
+import java.util.stream.Stream;
+
+import static java.lang.String.format;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.file.Files.probeContentType;
+import static java.nio.file.Files.readAllLines;
+import static java.util.Arrays.stream;
+import static java.util.Optional.ofNullable;
+import static java.util.function.Function.identity;
+import static java.util.function.Predicate.not;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Stream.concat;
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.cosinus.swing.error.ProcessExecutionException.PERMISSION_DENIED;
+import static org.cosinus.swing.exec.Command.commands;
+import static org.cosinus.swing.exec.Command.of;
+import static org.cosinus.swing.file.linux.MtpFileSystemRoot.MTP_PROTOCOL;
+import static org.cosinus.swing.file.linux.MtpFileSystemRoot.MTP_PROTOCOL_MARK;
+import static org.cosinus.swing.image.icon.IconSize.X32;
+
+/**
+ * Implementation of {@link FileSystem} for Linux
+ */
+public class LinuxFileSystem implements FileSystem {
+
+    private final Translator translator;
+
+    Logger LOG = LogManager.getLogger(LinuxFileSystem.class);
+
+    private static final Set<String> IGNORED_FILESYSTEMS = Set.of("swap", "vfat");
+
+    private final ProcessExecutor processExecutor;
+
+    private final ObjectMapper objectMapper;
+
+    private final ErrorHandler errorHandler;
+
+    public LinuxFileSystem(final ProcessExecutor processExecutor,
+                           final ObjectMapper objectMapper,
+                           final ErrorHandler errorHandler,
+                           final Translator translator) {
+        this.processExecutor = processExecutor;
+        this.objectMapper = objectMapper;
+        this.errorHandler = errorHandler;
+        this.translator = translator;
+    }
+
+    @Override
+    public List<? extends FileSystemRoot> getFileSystemRoots() {
+        Map<String, ? extends FileSystemRoot> rootsMap = concat(
+            getDefaultFileSystemRoot()
+                .stream()
+                .filter(root -> !root.getMountPoint().startsWith("/tmp/")),
+            concat(
+                listPartitions().stream()
+                    .filter(root -> root.getType() != null &&
+                        !IGNORED_FILESYSTEMS.contains(root.getType())),
+                getMtpFilesystemRoots().stream()))
+            .collect(toMap(
+                FileSystemRoot::getId,
+                identity(),
+                this::fileSystemRootMerger,
+                LinkedHashMap::new));
+
+        return new ArrayList<>(rootsMap.values());
+    }
+
+    private FileSystemRoot fileSystemRootMerger(FileSystemRoot u, FileSystemRoot v) {
+        if (u instanceof LinuxFileSystemRoot linuxFileSystemRoot &&
+            v instanceof DefaultFileSystemRoot defaultFileSystemRoot) {
+            return mergeFileSystemRoots(defaultFileSystemRoot, linuxFileSystemRoot);
+        }
+        if (v instanceof LinuxFileSystemRoot linuxFileSystemRoot &&
+            u instanceof DefaultFileSystemRoot defaultFileSystemRoot) {
+            return mergeFileSystemRoots(defaultFileSystemRoot, linuxFileSystemRoot);
+        }
+        return u instanceof LinuxFileSystemRoot ? v : u;
+    }
+
+    private FileSystemRoot mergeFileSystemRoots(
+        final DefaultFileSystemRoot defaultFileSystemRoot,
+        final LinuxFileSystemRoot linuxFileSystemRoot) {
+        ofNullable(linuxFileSystemRoot.getDevice())
+            .ifPresent(defaultFileSystemRoot::setFileSystemDevice);
+        ofNullable(linuxFileSystemRoot.getType())
+            .ifPresent(defaultFileSystemRoot::setType);
+        return defaultFileSystemRoot;
+    }
+
+    @Override
+    public void mount(FileSystemRoot fileSystemRoot) {
+        String userName = System.getProperty("user.name");
+        if (fileSystemRoot.getVolume() == null || userName == null) {
+            return;
+        }
+
+        String mountPoint = "/media/" + userName + "/" + fileSystemRoot.getUuid();
+        String[] mkdirCommand = of("mkdir", mountPoint);
+        String[] mountCommand = of("mount", fileSystemRoot.getVolume(), mountPoint);
+        try {
+            processExecutor.executePipelineWithPrivileges(new File(mountPoint).exists() ?
+                commands(mountCommand) :
+                commands(mkdirCommand, mountCommand));
+            fileSystemRoot.setMountPoint(mountPoint);
+        } catch (ProcessExecutionException ex) {
+            if (ex.getProcessExitCode() != PERMISSION_DENIED) {
+                errorHandler.handleError(ex);
+            }
+        }
+    }
+
+    private List<? extends FileSystemRoot> listPartitions() {
+        return processExecutor.executeAndGetOutput("lsblk", "-J", "-b", "-o",
+                "UUID,NAME,LABEL,PATH,TYPE,SIZE,FSTYPE,RM,ROTA,HOTPLUG,VENDOR,MOUNTPOINT")
+            .map(this::getBlockDevices)
+            .map(BlockDevices::getBlockDevices)
+            .stream()
+            .flatMap(Collection::stream)
+            .flatMap(this::getChildrenDevices)
+            .map(LinuxFileSystemRoot::new)
+            .toList();
+    }
+
+    private Stream<BlockDevice> getChildrenDevices(BlockDevice parentDevice) {
+        parentDevice.getChildren()
+            .forEach(childDevice -> childDevice.setVendor(ofNullable(parentDevice.getVendor())
+                .map(String::trim)
+                .filter(not(String::isEmpty))
+                .orElse(null)));
+        return parentDevice.getChildren().stream();
+    }
+
+    private BlockDevices getBlockDevices(String input) {
+        try {
+            return objectMapper.readValue(input.getBytes(UTF_8), BlockDevices.class);
+        } catch (IOException e) {
+            throw new JsonConvertException(format("Failed to map the lsblk output: %s", input), e);
+        }
+    }
+
+    private List<MtpFileSystemRoot> getMtpFilesystemRoots() {
+        return getMtpMountFolder()
+            .map(mtpMountFolder -> getMtpMountedDevices()
+                .entrySet()
+                .stream()
+                .map(entry -> new MtpFileSystemRoot(
+                    entry.getKey().endsWith("/") ? substringBefore(entry.getKey(), "/") : entry.getKey(),
+                    entry.getValue(),
+                    mtpMountFolder))
+                .filter(MtpFileSystemRoot::isValid)
+                .toList())
+            .orElseGet(Collections::emptyList);
+    }
+
+    private Map<String, String> getMtpMountedDevices() {
+        return getGioMountOutput()
+            .map(output -> output.split("\\n"))
+            .stream()
+            .flatMap(Arrays::stream)
+            .filter(Objects::nonNull)
+            .map(output -> ImmutablePair.of(
+                substringAfter(output, MTP_PROTOCOL_MARK),
+                substringBetween(output, ":", MTP_PROTOCOL_MARK)))
+            .filter(pair -> pair.getKey() != null && pair.getValue() != null)
+            .collect(toMap(pair -> pair.getKey().trim(),
+                pair -> pair.getValue().trim(),
+                (key1, key2) -> key1));
+    }
+
+    private Optional<String> getGioMountOutput() {
+        try {
+            return processExecutor.executePipelineAndGetOutput(
+                of("gio", "mount", "-l"),
+                of("grep", MTP_PROTOCOL));
+        } catch (ProcessExecutionException ex) {
+            return ofNullable(ex.getOutput());
+        }
+    }
+
+    private Optional<String> getMtpMountFolder() {
+        try {
+            return processExecutor.executePipelineAndGetOutput(
+                    of("df", "-a"),
+                    of("grep", "gvfsd-fuse"))
+                .map(output -> output.split("\\s+"))
+                .stream()
+                .flatMap(Arrays::stream)
+                .reduce((first, second) -> second);
+        } catch (ProcessExecutionException ex) {
+            return ofNullable(ex.getOutput());
+        }
+    }
+
+    @Override
+    public Map<String, Application> findCompatibleApplicationsToExecuteFile(File file) {
+        try {
+            String mimeType = probeContentType(file.toPath());
+            return Stream.of("/usr/share/applications",
+                    System.getProperty("user.home") + "/.local/share/applications")
+                .map(File::new)
+                .filter(File::exists)
+                .filter(File::isDirectory)
+                .map(applicationFolder -> applicationFolder
+                    .listFiles((d, name) -> name.endsWith(".desktop")))
+                .filter(Objects::nonNull)
+                .flatMap(Arrays::stream)
+                .map(desktopFile -> getApplicationForDesktopFile(desktopFile, mimeType))
+                .filter(Objects::nonNull)
+                .collect(toMap(Application::getId, identity()));
+        } catch (IOException e) {
+            throw new UncheckedIOException(format("Failed to read the mimetype for file: %s", file), e);
+        }
+    }
+
+    @Override
+    public String getDefaultApplicationIdToExecuteFile(File file) {
+        try {
+            String mimeType = probeContentType(file.toPath());
+            return processExecutor.executeAndGetOutput("xdg-mime", "query", "default", mimeType)
+                .flatMap(applicationId -> stream(applicationId.split("\\n")).findFirst())
+                .orElse(null);
+        } catch (IOException e) {
+            throw new UncheckedIOException(
+                format("Failed to get the default application to execute the file: %s", file), e);
+        }
+    }
+
+    @Override
+    public void setDefaultApplicationToExecuteFile(String applicationId, File file) {
+        try {
+            String mimeType = probeContentType(file.toPath());
+            processExecutor.execute("xdg-mime", "default", applicationId, mimeType);
+        } catch (IOException e) {
+            throw new UncheckedIOException(
+                format("Failed to set the application %s as default to execute file: %s", applicationId, file), e);
+        }
+    }
+
+    @Override
+    public boolean moveToTrash(File file) {
+        processExecutor.execute("gio", "trash", file.getAbsolutePath());
+        return true;
+    }
+
+    @Override
+    public void copyPermissions(File fileSource, File fileTarget) {
+        processExecutor.execute(
+            "chmod", "--reference=" + fileSource.getAbsolutePath(), fileTarget.getAbsolutePath());
+    }
+
+    private Application getApplicationForDesktopFile(File desktopFile, String mimeType) {
+        try {
+            List<String> lines = readAllLines(desktopFile.toPath());
+            boolean supportsMime = mimeType != null && lines
+                .stream()
+                .anyMatch(line -> line.startsWith("MimeType=") && line.contains(mimeType));
+
+            if (!supportsMime) {
+                return null;
+            }
+
+            String name = findValue(lines, "Name");
+            String translatedName = translator.getLocale()
+                .map(locale -> ofNullable(findValue(lines, "Name[%s]".formatted(locale.toString())))
+                    .orElseGet(() -> findValue(lines, "Name[%s]".formatted(locale.getCountry()))))
+                .orElse(null);
+            String comment = findValue(lines, "Comment");
+            String translatedComment = translator.getLocale()
+                .map(locale -> ofNullable(findValue(lines, "Comment[%s]".formatted(locale.toString())))
+                    .orElseGet(() -> findValue(lines, "Comment[%s]".formatted(locale.getCountry()))))
+                .orElse(null);
+            boolean runInterminal = ofNullable(findValue(lines, "Terminal"))
+                .map(Boolean::parseBoolean)
+                .orElse(false);
+            String iconName = findValue(lines, "Icon");
+            String executable = findValue(lines, "Exec");
+            if (name == null || executable == null) {
+                return null;
+            }
+
+            String id = desktopFile.getName();
+            return new Application(id, name, executable, translatedName,
+                comment, translatedComment, iconName, X32, runInterminal);
+
+        } catch (IOException ex) {
+            LOG.error("Failed to read desktop file: {}", desktopFile.getAbsolutePath(), ex);
+            return null;
+        }
+    }
+
+    private String findValue(List<String> lines, String name) {
+        String prefix = name + "=";
+        return lines.stream()
+            .filter(line -> line.startsWith(prefix))
+            .findFirst()
+            .map(line -> line.substring(prefix.length()))
+            .map(String::trim)
+            .orElse(null);
+    }
+}
