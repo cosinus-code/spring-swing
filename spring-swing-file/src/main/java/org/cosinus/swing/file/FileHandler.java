@@ -149,11 +149,10 @@ public class FileHandler {
     }
 
     public Optional<String> getTypeDescription(final File file) {
-        return mimeTypeResolver.getMimeTypes(file.toPath())
-            .stream()
-            .map(mimeTypeResolver::getMimeTypeDescription)
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .findFirst();
+        return mimeTypeResolver.getMimeTypeDescription(file.toPath(), file.isDirectory());
+    }
+
+    public Optional<String> getTypeDescription(final Path path, boolean isDrectory) {
+        return mimeTypeResolver.getMimeTypeDescription(path, isDrectory);
     }
 }

@@ -132,14 +132,27 @@ public class MimeTypeResolver {
         return Optional.empty();
     }
 
-    public List<MimeType> getMimeTypes(Path path) {
-        if (path.toFile().isDirectory()) {
+    public List<MimeType> getMimeTypes(File file) {
+        return getMimeTypes(file.toPath(), file.isDirectory());
+    }
+
+    public List<MimeType> getMimeTypes(Path path, boolean isDirectory) {
+        if (isDirectory) {
             return singletonList(FOLDER);
         }
         return ofNullable(getFilenameExtension(path.toString()))
             .map(extension -> extension.toLowerCase(ENGLISH))
             .map(mimeTypesMap::get)
             .orElseGet(Collections::emptyList);
+    }
+
+    public Optional<String> getMimeTypeDescription(final Path path, boolean isDirectory) {
+        return getMimeTypes(path, isDirectory)
+            .stream()
+            .map(this::getMimeTypeDescription)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .findFirst();
     }
 
     public Optional<String> getMimeTypeDescription(final MimeType mimeType) {
@@ -159,7 +172,7 @@ public class MimeTypeResolver {
     }
 
     public boolean isCompatible(Path path, MimeType mimeType) {
-        return getMimeTypes(path)
+        return getMimeTypes(path, false)
             .stream()
             .anyMatch(mimeType::isCompatibleWith);
     }
@@ -185,7 +198,7 @@ public class MimeTypeResolver {
     }
 
     public boolean hasUnknownMimeType(Path path) {
-        return getMimeTypes(path).isEmpty();
+        return getMimeTypes(path, false).isEmpty();
     }
 
 //    public Optional<String> mimeType(Path path) {

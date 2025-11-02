@@ -92,7 +92,6 @@ public class LinuxIconProvider implements IconProvider {
     protected Optional<Icon> findIconFileByMimeType(File file, IconSize size, boolean genericMimeType) {
         return getPathsToIcons(size)
             .flatMap(iconsFolder -> ofNullable(file)
-                .map(File::toPath)
                 .map(mimeTypeResolver::getMimeTypes)
                 .map(mimeTypes -> genericMimeType ?
                     genericMimeTypesToIconNames(mimeTypes) :
