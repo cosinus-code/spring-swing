@@ -109,7 +109,10 @@ public class ActionController implements ActionListener {
             KeyStroke keyStroke = KeyStroke.getKeyStroke(keyEvent.getKeyCode(),
                 keyEvent.getModifiersEx());
             keyMapHandler.findActionByKeyStroke(keyStroke)
-                .ifPresent(action -> action.run(actionContextProvider.provideActionContext()));
+                .ifPresent(action -> {
+                    action.run(actionContextProvider.provideActionContext());
+                    keyEvent.consume();
+                });
         } catch (Throwable throwable) {
             errorHandler.handleError(throwable);
         }

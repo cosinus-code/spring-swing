@@ -27,10 +27,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
+import java.nio.file.NotLinkException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import static java.util.Optional.ofNullable;
 
 /**
  * Proxy for handling files.
@@ -154,5 +157,26 @@ public class FileHandler {
 
     public Optional<String> getTypeDescription(final Path path, boolean isDrectory) {
         return mimeTypeResolver.getMimeTypeDescription(path, isDrectory);
+    }
+
+    public boolean isLink(final File file) {
+        return ofNullable(file)
+            .map(File::toPath)
+            .map(Files::isSymbolicLink)
+            .orElse(false);
+    }
+
+    public Path getLinkedPath(final File file) {
+        return ofNullable(file)
+            .map(File::toPath)
+            .map(path -> {
+                try {
+                    return path.toRealPath();
+                } catch (IOException e) {
+                    LOG.warn("Failed to read symbolic link: {}", path, e);
+                    return null;
+                }
+            })
+            .orElse(null);
     }
 }

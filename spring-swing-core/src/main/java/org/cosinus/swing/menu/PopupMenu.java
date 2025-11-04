@@ -21,7 +21,11 @@ import org.cosinus.swing.form.FormComponent;
 
 import javax.swing.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static java.util.Arrays.stream;
+import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
 /**
@@ -29,13 +33,26 @@ import static org.cosinus.swing.context.ApplicationContextInjector.injectContext
  */
 public class PopupMenu extends JPopupMenu implements FormComponent {
 
+    private Map<String, MenuItem> menuItemMap;
+
     public PopupMenu() {
         injectContext(this);
+        menuItemMap = new HashMap<>();
     }
 
     public PopupMenu(String title) {
         super(title);
         injectContext(this);
+        menuItemMap = new HashMap<>();
+    }
+
+    @Override
+    public JMenuItem add(JMenuItem menuItemToAdd) {
+        JMenuItem jMenuItem = super.add(menuItemToAdd);
+        if (menuItemToAdd instanceof MenuItem menuItem) {
+            menuItemMap.put(menuItem.getActionKey(), menuItem);
+        }
+        return jMenuItem;
     }
 
     @Override
@@ -49,5 +66,10 @@ public class PopupMenu extends JPopupMenu implements FormComponent {
             .filter(FormComponent.class::isInstance)
             .map(FormComponent.class::cast)
             .forEach(FormComponent::translate);
+    }
+
+    public void setEnabled(String key, boolean enabled) {
+        ofNullable(menuItemMap.get(key))
+            .ifPresent(menuItem -> menuItem.setEnabled(enabled));
     }
 }
