@@ -20,6 +20,8 @@ package org.cosinus.swing.image.config;
 import com.twelvemonkeys.imageio.plugins.svg.SVGImageReaderSpi;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.cosinus.swing.action.ActionController;
+import org.cosinus.swing.action.ActionInContext;
 import org.cosinus.swing.boot.SwingApplicationFrame;
 import org.cosinus.swing.boot.initialize.ApplicationInitializer;
 import org.cosinus.swing.image.icon.IconHandler;
@@ -48,13 +50,16 @@ public class ApplicationImageInitializer implements ApplicationInitializer {
 
     private final SwingApplicationFrame applicationFrame;
 
+    private final ActionController actionController;
 
     public ApplicationImageInitializer(final IconHandler iconHandler,
                                        final IconProvider iconProvider,
-                                       final SwingApplicationFrame applicationFrame) {
+                                       final SwingApplicationFrame applicationFrame,
+                                       final ActionController actionController) {
         this.iconHandler = iconHandler;
         this.iconProvider = iconProvider;
         this.applicationFrame = applicationFrame;
+        this.actionController = actionController;
     }
 
     @Override
@@ -79,7 +84,10 @@ public class ApplicationImageInitializer implements ApplicationInitializer {
     private void setIcon(final MenuBar menuBar,
                          final String menuItemKey,
                          final MenuItemModel menuItemModel) {
-        iconHandler.findIconByName(menuItemModel.getIcon(), X16)
+        ofNullable(menuItemModel.getIcon())
+            .or(() -> actionController.findAction(menuItemKey)
+                .map(ActionInContext::getIconName))
+            .flatMap(iconName -> iconHandler.findIconByName(iconName, X16))
             .ifPresent(icon -> ofNullable(menuBar.getMenuComponent(menuItemKey))
                 .ifPresent(menuComponent -> menuComponent.setIcon(icon)));
     }

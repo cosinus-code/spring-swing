@@ -18,6 +18,7 @@
 package org.cosinus.swing.image.config;
 
 import org.apache.commons.imaging.formats.icns.IcnsImageParser;
+import org.cosinus.swing.action.ActionController;
 import org.cosinus.swing.boot.SwingApplicationFrame;
 import org.cosinus.swing.boot.condition.ConditionalOnLinux;
 import org.cosinus.swing.boot.condition.ConditionalOnMac;
@@ -102,8 +103,9 @@ public class SpringSwingImageAutoConfiguration {
     public ApplicationImageInitializer applicationImageInitializer(
         final IconHandler iconHandler,
         final IconProvider iconProvider,
-        final SwingApplicationFrame applicationFrame) {
-        return new ApplicationImageInitializer(iconHandler, iconProvider, applicationFrame);
+        final SwingApplicationFrame applicationFrame,
+        final ActionController actionController) {
+        return new ApplicationImageInitializer(iconHandler, iconProvider, applicationFrame, actionController);
     }
 
     @Bean("fileExtensionKeyGenerator")

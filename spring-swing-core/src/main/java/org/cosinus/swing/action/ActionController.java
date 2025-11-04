@@ -25,6 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -88,7 +89,7 @@ public class ActionController implements ActionListener {
      */
     public void runAction(String actionId, ActionContext context) {
         try {
-            ofNullable(actionMap.get(actionId))
+            findAction(actionId)
                 .orElseThrow(() -> new ActionNotFoundException("Action not implemented (" + actionId + ")"))
                 .run(context);
         } catch (Throwable throwable) {
@@ -148,5 +149,9 @@ public class ActionController implements ActionListener {
     public boolean isFunctionalKey(KeyEvent keyEvent) {
         return keyEvent.getKeyCode() >= KEY_CODE_F1 &&
             keyEvent.getKeyCode() <= KEY_CODE_F12;
+    }
+
+    public Optional<ActionInContext> findAction(String actionId) {
+        return ofNullable(actionMap.get(actionId));
     }
 }

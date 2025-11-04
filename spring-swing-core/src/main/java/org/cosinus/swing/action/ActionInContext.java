@@ -42,6 +42,15 @@ public interface ActionInContext {
     }
 
     /**
+     * Get the icon name associated with this action.
+     *
+     * @return the icon name
+     */
+    default String getIconName() {
+        return null;
+    }
+
+    /**
      * Get the id of the action.
      *
      * @return the id of the action
