@@ -17,7 +17,7 @@
 
 package org.cosinus.swing.ui.dark;
 
-import com.bulenkov.darcula.DarculaLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 
 import javax.swing.UIManager.LookAndFeelInfo;
 
@@ -27,7 +27,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 public class DarkLookAndFeel extends LookAndFeelInfo {
 
     public DarkLookAndFeel() {
-        super(DarculaLaf.NAME, DarculaLaf.class.getName());
+        super(FlatLightLaf.NAME, FlatLightLaf.class.getName());
     }
 
     public DarkLookAndFeel(String name, String className) {

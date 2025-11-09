@@ -17,7 +17,7 @@
 
 package org.cosinus.swing.boot.config;
 
-import com.bulenkov.darcula.DarculaLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import org.cosinus.swing.boot.condition.ConditionalOnWindows;
 import org.cosinus.swing.boot.initialize.LookAndFeelInitializer;
 import org.cosinus.swing.context.UIProperties;
@@ -62,12 +62,12 @@ public class ApplicationUIAutoConfiguration {
     }
 
     /**
-     * The Darcula based implementation of a dark look and feel bean
+     * The Darcula based implementation (FlatLight) of a dark look and feel bean
      *
      * @return the {@link DarkLookAndFeel} bean
      */
     @Bean
-    @ConditionalOnClass(DarculaLaf.class)
+    @ConditionalOnClass(FlatLightLaf.class)
     @ConditionalOnWindows
     @ConditionalOnMissingBean
     public DarkLookAndFeel darkLookAndFeel() {
