@@ -22,7 +22,6 @@ import org.cosinus.swing.form.control.*;
 import org.cosinus.swing.form.control.Button;
 import org.cosinus.swing.form.control.Label;
 import org.cosinus.swing.layout.SpringGridLayout;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -107,7 +106,7 @@ public class UIStructure extends Panel {
         }
     }
 
-    public void addControl(String id, @NotNull Control<?> control, Label label, UIField field) {
+    public void addControl(String id, Control<?> control, Label label, UIField field) {
         if (label != null) {
             if (uiDescriptor.getLayout() == VERTICAL_FLOW) {
                 label.setVerticalAlignment(SwingConstants.BOTTOM);
@@ -125,7 +124,7 @@ public class UIStructure extends Panel {
         controlsMap.put(id, control);
     }
 
-    public void addButton(String id, @NotNull Button button) {
+    public void addButton(String id, Button button) {
         buttonsPanel.add(button);
         buttonsMap.put(id, button);
     }

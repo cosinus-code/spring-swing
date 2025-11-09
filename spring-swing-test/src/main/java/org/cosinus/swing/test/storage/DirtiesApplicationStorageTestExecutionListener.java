@@ -20,7 +20,6 @@ package org.cosinus.swing.test.storage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.store.ApplicationStorage;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.test.context.TestContext;
@@ -57,7 +56,7 @@ public class DirtiesApplicationStorageTestExecutionListener extends AbstractTest
     }
 
     @Override
-    public void afterTestMethod(@NotNull TestContext testContext) {
+    public void afterTestMethod(TestContext testContext) {
         DirtiesApplicationStorage methodAnnotation = AnnotatedElementUtils
             .findMergedAnnotation(testContext.getTestMethod(), DirtiesApplicationStorage.class);
 
@@ -85,7 +84,7 @@ public class DirtiesApplicationStorageTestExecutionListener extends AbstractTest
     }
 
     @Override
-    public void afterTestClass(@NotNull TestContext testContext) {
+    public void afterTestClass(TestContext testContext) {
         DirtiesApplicationStorage classAnnotation = TestContextAnnotationUtils
             .findMergedAnnotation(testContext.getTestClass(), DirtiesApplicationStorage.class);
 

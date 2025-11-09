@@ -17,7 +17,6 @@
 
 package org.cosinus.swing.image.icon;
 
-import org.jetbrains.annotations.NotNull;
 import org.springframework.cache.interceptor.SimpleKeyGenerator;
 
 import java.io.File;
@@ -41,7 +40,7 @@ public class FileExtensionKeyGenerator extends SimpleKeyGenerator {
     }
 
     @Override
-    public Object generate(@NotNull Object target, @NotNull Method method, Object @NotNull ... params) {
+    public Object generate(Object target, Method method, Object... params) {
         return super.generate(target, method, stream(params)
             .map(param -> param instanceof File ? getFileKey((File) param) : param)
             .toArray());

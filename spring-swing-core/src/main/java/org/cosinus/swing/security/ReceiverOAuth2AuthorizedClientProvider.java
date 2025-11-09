@@ -17,10 +17,7 @@
 
 package org.cosinus.swing.security;
 
-import org.cosinus.swing.action.browser.Browser;
-import org.cosinus.swing.action.browser.DefaultBrowser;
 import org.cosinus.swing.security.receiver.OAuth2AuthenticationReceiver;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.security.crypto.keygen.Base64StringKeyGenerator;
@@ -144,7 +141,7 @@ public class ReceiverOAuth2AuthorizedClientProvider
     }
 
     @Override
-    public void setApplicationEventPublisher(@NotNull ApplicationEventPublisher applicationEventPublisher) {
+    public void setApplicationEventPublisher(final ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 }

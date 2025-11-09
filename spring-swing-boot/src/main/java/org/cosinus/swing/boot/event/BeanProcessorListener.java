@@ -17,7 +17,6 @@
 
 package org.cosinus.swing.boot.event;
 
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.ApplicationContext;
@@ -39,7 +38,7 @@ public class BeanProcessorListener implements BeanPostProcessor, ApplicationCont
     }
 
     @Override
-    public void setApplicationContext(@NotNull ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
 
@@ -51,7 +50,7 @@ public class BeanProcessorListener implements BeanPostProcessor, ApplicationCont
      * @return the bean
      */
     @Override
-    public Object postProcessBeforeInitialization(@NotNull Object bean, @NotNull String beanName) {
+    public Object postProcessBeforeInitialization(final Object bean, final String beanName) {
         applicationEventPublisher.publishEvent(
             new ApplicationContextBeforeInitializeBeanEvent(applicationContext, bean, beanName));
         return bean;
@@ -65,7 +64,7 @@ public class BeanProcessorListener implements BeanPostProcessor, ApplicationCont
      * @return the bean
      */
     @Override
-    public Object postProcessAfterInitialization(@NotNull Object bean, @NotNull String beanName) {
+    public Object postProcessAfterInitialization(final Object bean, final String beanName) {
         applicationEventPublisher.publishEvent(
             new ApplicationContextAfterInitializeBeanEvent(applicationContext, bean, beanName));
         return bean;

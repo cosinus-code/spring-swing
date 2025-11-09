@@ -16,7 +16,6 @@
  */
 package org.cosinus.swing.test.boot;
 
-import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.test.context.SpringBootTest.UseMainMethod;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ContextCustomizer;
@@ -46,9 +45,8 @@ public class SpringSwingBootTestAnnotation implements ContextCustomizer {
     }
 
     @Override
-    public void customizeContext(
-        @NotNull ConfigurableApplicationContext context,
-        @NotNull MergedContextConfiguration mergedConfig) {
+    public void customizeContext(final ConfigurableApplicationContext context,
+                                 final MergedContextConfiguration mergedConfig) {
     }
 
     @Override
