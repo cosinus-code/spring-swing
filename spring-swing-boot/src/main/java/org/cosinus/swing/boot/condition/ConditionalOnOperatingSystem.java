@@ -33,6 +33,6 @@ public @interface ConditionalOnOperatingSystem {
      *
      * @return the expected operating systems
      */
-    String[] value();
+    OperatingSystem[] value();
 
 }

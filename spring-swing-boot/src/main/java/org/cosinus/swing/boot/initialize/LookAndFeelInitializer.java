@@ -17,6 +17,7 @@
 
 package org.cosinus.swing.boot.initialize;
 
+import com.formdev.flatlaf.FlatDarkLaf;
 import jakarta.annotation.PostConstruct;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

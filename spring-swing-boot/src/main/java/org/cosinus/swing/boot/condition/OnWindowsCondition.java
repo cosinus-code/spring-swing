@@ -23,6 +23,7 @@ import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
 import static org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS;
+import static org.cosinus.swing.boot.condition.OperatingSystem.WINDOWS;
 import static org.springframework.boot.autoconfigure.condition.ConditionOutcome.match;
 import static org.springframework.boot.autoconfigure.condition.ConditionOutcome.noMatch;
 
@@ -34,7 +35,7 @@ public class OnWindowsCondition extends SpringBootCondition {
     public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
         ConditionMessage.Builder message = ConditionMessage.forCondition(ConditionalOnWindows.class);
         return IS_OS_WINDOWS ?
-            match(message.foundExactly("Windows")) :
-            noMatch(message.didNotFind("Windows").atAll());
+            match(message.foundExactly(WINDOWS.getName())) :
+            noMatch(message.didNotFind(WINDOWS.getName()).atAll());
     }
 }

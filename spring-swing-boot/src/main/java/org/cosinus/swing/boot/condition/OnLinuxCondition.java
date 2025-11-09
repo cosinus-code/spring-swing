@@ -23,6 +23,7 @@ import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
 import static org.apache.commons.lang3.SystemUtils.IS_OS_LINUX;
+import static org.cosinus.swing.boot.condition.OperatingSystem.LINUX;
 import static org.springframework.boot.autoconfigure.condition.ConditionOutcome.match;
 import static org.springframework.boot.autoconfigure.condition.ConditionOutcome.noMatch;
 
@@ -34,7 +35,7 @@ public class OnLinuxCondition extends SpringBootCondition {
     public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
         ConditionMessage.Builder message = ConditionMessage.forCondition(ConditionalOnLinux.class);
         return IS_OS_LINUX ?
-            match(message.foundExactly("Linux")) :
-            noMatch(message.didNotFind("Linux").atAll());
+            match(message.foundExactly(LINUX.getName())) :
+            noMatch(message.didNotFind(LINUX.getName()).atAll());
     }
 }

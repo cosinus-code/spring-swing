@@ -23,6 +23,7 @@ import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
 import static org.apache.commons.lang3.SystemUtils.IS_OS_MAC;
+import static org.cosinus.swing.boot.condition.OperatingSystem.MAC;
 import static org.springframework.boot.autoconfigure.condition.ConditionOutcome.match;
 import static org.springframework.boot.autoconfigure.condition.ConditionOutcome.noMatch;
 
@@ -34,7 +35,7 @@ public class OnMacCondition extends SpringBootCondition {
     public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
         ConditionMessage.Builder message = ConditionMessage.forCondition(ConditionalOnMac.class);
         return IS_OS_MAC ?
-            match(message.foundExactly("Mac")) :
-            noMatch(message.didNotFind("Mac").atAll());
+            match(message.foundExactly(MAC.getName())) :
+            noMatch(message.didNotFind(MAC.getName()).atAll());
     }
 }

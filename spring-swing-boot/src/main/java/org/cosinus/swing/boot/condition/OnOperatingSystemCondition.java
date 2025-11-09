@@ -44,19 +44,20 @@ public class OnOperatingSystemCondition extends SpringBootCondition {
     @Override
     public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
         Map<String, Object> attributes = metadata.getAnnotationAttributes(ConditionalOnOperatingSystem.class.getName());
-        String[] operatingSystems = ofNullable(attributes)
+        OperatingSystem[] operatingSystems = ofNullable(attributes)
             .map(attrs -> attrs.get("value"))
-            .map(value -> (String[]) value)
-            .orElseGet(() -> new String[]{});
+            .map(value -> (OperatingSystem[]) value)
+            .orElseGet(() -> new OperatingSystem[]{});
 
         ConditionMessage.Builder message = ConditionMessage.forCondition(ConditionalOnCloudPlatform.class);
-        return isCurrentOsOneOf() ?
+        return isCurrentOsOneOf(operatingSystems) ?
             match(message.foundExactly(Arrays.toString(operatingSystems))) :
             noMatch(message.didNotFind(Arrays.toString(operatingSystems)).atAll());
     }
 
-    public boolean isCurrentOsOneOf(String... operatingSystems) {
+    public boolean isCurrentOsOneOf(OperatingSystem... operatingSystems) {
         return stream(operatingSystems)
+            .map(OperatingSystem::getName)
             .anyMatch(OS_NAME::startsWith);
     }
 }

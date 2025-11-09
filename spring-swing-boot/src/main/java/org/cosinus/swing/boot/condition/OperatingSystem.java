@@ -15,22 +15,21 @@
  *
  */
 
-package org.cosinus.swing.ui.dark;
+package org.cosinus.swing.boot.condition;
 
-import com.formdev.flatlaf.FlatDarkLaf;
+public enum OperatingSystem {
 
-import javax.swing.UIManager.LookAndFeelInfo;
+    LINUX("Linux"),
+    MAC("Mac"),
+    WINDOWS("Windows");
 
-/**
- * Dark look-and-feel bean
- */
-public class DarkLookAndFeel extends LookAndFeelInfo {
+    private final String name;
 
-    public DarkLookAndFeel() {
-        super(FlatDarkLaf.NAME, FlatDarkLaf.class.getName());
+    OperatingSystem(String name) {
+        this.name = name;
     }
 
-    public DarkLookAndFeel(String name, String className) {
-        super(name, className);
+    public String getName() {
+        return name;
     }
 }
