@@ -17,6 +17,7 @@
 
 package org.cosinus.swing.menu;
 
+import lombok.Getter;
 import org.cosinus.swing.form.FormComponent;
 import org.cosinus.swing.translate.Translator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import java.util.Map;
 
 import static java.util.Arrays.stream;
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
+import static org.cosinus.swing.os.OperatingSystem.isMac;
 
 /**
  * Menu bar model
@@ -41,6 +43,7 @@ public class MenuBar extends JMenuBar implements FormComponent {
 
     private BoxMenu boxMenu;
 
+    @Getter
     private final MenuModel menuModel;
 
     private final boolean withBoxMenu;
@@ -75,7 +78,6 @@ public class MenuBar extends JMenuBar implements FormComponent {
 
         menuModel.forEach((menuKey, menuMap) -> {
             Menu menu = new Menu(menuKey, withBoxMenu);
-            add(menu);
             menuComponentsMap.putIfAbsent(menuKey, menu);
             menuMap.forEach((menuItemKey, menuItemModel) -> {
                 if (menuItemKey.startsWith(SEPARATOR)) {
@@ -85,15 +87,16 @@ public class MenuBar extends JMenuBar implements FormComponent {
                         menuItemKey,
                         KeyStroke.getKeyStroke(menuItemModel.getShortcut()),
                         withBoxMenu);
-                    menu.add(menuItem);
+                    if (!isMac() || !menuItemModel.isHideOnMac()) {
+                        menu.add(menuItem);
+                    }
                     menuComponentsMap.putIfAbsent(menuItemKey, menuItem);
                 }
             });
+            if (!menu.isEmpty()) {
+                add(menu);
+            }
         });
-    }
-
-    public MenuModel getMenuModel() {
-        return menuModel;
     }
 
     public AbstractButton getMenuComponent(String menuKey) {

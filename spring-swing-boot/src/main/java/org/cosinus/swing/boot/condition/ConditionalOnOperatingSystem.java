@@ -16,6 +16,7 @@
  */
 package org.cosinus.swing.boot.condition;
 
+import org.cosinus.swing.os.OperatingSystem;
 import org.springframework.context.annotation.Conditional;
 
 import java.lang.annotation.*;

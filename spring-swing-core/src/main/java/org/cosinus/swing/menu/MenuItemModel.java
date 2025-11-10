@@ -17,25 +17,17 @@
 
 package org.cosinus.swing.menu;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class MenuItemModel {
 
     private String shortcut;
 
     private String icon;
 
-    public String getShortcut() {
-        return shortcut;
-    }
+    private boolean hideOnMac;
 
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setShortcut(String shortcut) {
-        this.shortcut = shortcut;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
 }

@@ -19,7 +19,6 @@ package org.cosinus.swing.boot.config;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import org.cosinus.swing.boot.condition.ConditionalOnOperatingSystem;
-import org.cosinus.swing.boot.condition.ConditionalOnWindows;
 import org.cosinus.swing.boot.initialize.LookAndFeelInitializer;
 import org.cosinus.swing.context.UIProperties;
 import org.cosinus.swing.preference.Preferences;
@@ -33,8 +32,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 
-import static org.cosinus.swing.boot.condition.OperatingSystem.MAC;
-import static org.cosinus.swing.boot.condition.OperatingSystem.WINDOWS;
+import static org.cosinus.swing.os.OperatingSystem.MAC;
+import static org.cosinus.swing.os.OperatingSystem.WINDOWS;
 
 /**
  * Application UI Configuration.

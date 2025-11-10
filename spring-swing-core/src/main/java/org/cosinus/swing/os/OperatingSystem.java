@@ -15,8 +15,13 @@
  *
  */
 
-package org.cosinus.swing.boot.condition;
+package org.cosinus.swing.os;
 
+import lombok.Getter;
+
+import static org.apache.commons.lang3.SystemUtils.*;
+
+@Getter
 public enum OperatingSystem {
 
     LINUX("Linux"),
@@ -29,7 +34,15 @@ public enum OperatingSystem {
         this.name = name;
     }
 
-    public String getName() {
-        return name;
+    public static boolean isLinux() {
+        return IS_OS_LINUX;
+    }
+
+    public static boolean isMac() {
+        return IS_OS_MAC;
+    }
+
+    public static boolean isWindows() {
+        return IS_OS_WINDOWS;
     }
 }

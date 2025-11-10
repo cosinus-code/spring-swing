@@ -100,4 +100,8 @@ public class Menu extends JMenu implements FormComponent, DuplicateMenuHolder {
         setText(translator.translate(key));
         formComponents.forEach(FormComponent::translate);
     }
+
+    public boolean isEmpty() {
+        return formComponents.isEmpty();
+    }
 }
