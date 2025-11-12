@@ -20,7 +20,6 @@ import oshi.SystemInfo;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Custom interface for filesystem related functionality
@@ -48,9 +47,7 @@ public interface FileSystem {
 
     void mount(FileSystemRoot fileSystemRoot);
 
-    Map<String, Application> findCompatibleApplicationsToExecuteFile(File file);
-
-    String getDefaultApplicationIdToExecuteFile(File file);
+    FileCompatibleApplications findCompatibleApplicationsToExecuteFile(File file);
 
     void setDefaultApplicationToExecuteFile(String applicationId, File file);
 

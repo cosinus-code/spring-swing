@@ -19,24 +19,16 @@ package org.cosinus.swing.file;
 
 import lombok.Getter;
 
-import static org.cosinus.swing.image.icon.IconProvider.*;
-
 @Getter
 public enum FileSystemDevice {
-    HARD_DRIVE(ICON_STORAGE_INTERNAL),
-    SSD(ICON_STORAGE_INTERNAL_SSD),
-    EXTERNAL_DRIVE(ICON_STORAGE_EXTERNAL),
-    EXTERNAL_DRIVE_SEAGATE(ICON_STORAGE_EXTERNAL_SEAGATE),
-    EXTERNAL_DRIVE_WESTERN_DIGITAL(ICON_STORAGE_EXTERNAL_WESTERN_DIGITAL),
-    REMOVABLE_FLASH(ICON_STORAGE_REMOVABLE),
-    PHONE(ICON_STORAGE_PHONE),
-    WATCH(ICON_STORAGE_WATCH),
-    WATCH_GARMIN(ICON_STORAGE_WATCH_GARMIN),
-    CDROM(ICON_STORAGE_COMPACT_DISK);
-
-    private final String iconName;
-
-    FileSystemDevice(String iconName) {
-        this.iconName = iconName;
-    }
+    HARD_DRIVE,
+    SSD,
+    EXTERNAL_DRIVE,
+    EXTERNAL_DRIVE_SEAGATE,
+    EXTERNAL_DRIVE_WESTERN_DIGITAL,
+    REMOVABLE_FLASH,
+    PHONE,
+    WATCH,
+    WATCH_GARMIN,
+    CDROM;
 }

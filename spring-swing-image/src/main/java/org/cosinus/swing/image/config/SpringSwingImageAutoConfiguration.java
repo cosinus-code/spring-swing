@@ -24,6 +24,7 @@ import org.cosinus.swing.boot.condition.ConditionalOnLinux;
 import org.cosinus.swing.boot.condition.ConditionalOnMac;
 import org.cosinus.swing.boot.condition.ConditionalOnWindows;
 import org.cosinus.swing.context.ApplicationProperties;
+import org.cosinus.swing.file.FileSystem;
 import org.cosinus.swing.image.ImageHandler;
 import org.cosinus.swing.image.icon.DefaultIconProvider;
 import org.cosinus.swing.image.icon.FileExtensionKeyGenerator;
@@ -88,8 +89,10 @@ public class SpringSwingImageAutoConfiguration {
 
     @Bean
     @ConditionalOnMac
-    public IconProvider macIconProvider(IcnsImageParser icnsImageParser, ImageHandler imageHandler) {
-        return new MacIconProvider(icnsImageParser, imageHandler);
+    public IconProvider macIconProvider(final FileSystem fileSystem,
+                                        final IcnsImageParser icnsImageParser,
+                                        final ImageHandler imageHandler) {
+        return new MacIconProvider(fileSystem, icnsImageParser, imageHandler);
     }
 
     @Bean

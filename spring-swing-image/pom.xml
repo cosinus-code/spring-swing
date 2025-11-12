@@ -30,6 +30,10 @@
             <artifactId>spring-swing-boot</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.cosinuscode.swing</groupId>
+            <artifactId>spring-swing-file</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.twelvemonkeys.imageio</groupId>
             <artifactId>imageio-icns</artifactId>
         </dependency>

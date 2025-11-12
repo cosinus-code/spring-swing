@@ -36,8 +36,8 @@ public interface IconProvider {
     String ICON_REFRESH = "refresh";
     String ICON_STOP = "stop";
     String ICON_HOME = "home";
-    String ICON_NEW_FOLDER = "new-folder";
-    String ICON_DELETE = "delete";
+    String ICON_NEW_FOLDER = "folder-new";
+    String ICON_DELETE = "edit-delete";
     String ICON_FIND = "find";
     String ICON_HIDDEN = "hidden";
     String ICON_PREVIEW = "preview";
@@ -63,7 +63,7 @@ public interface IconProvider {
 
     String ICON_FONT = "font";
     String ICON_WRAP = "wrap";
-    String ICON_EXECUTE = "execute";
+    String ICON_EXECUTE = "system-run";
     String ICON_ARCHIVE = "archive";
     String ICON_CONSOLE = "console";
     String ICON_CONNECT = "connect";
@@ -106,6 +106,9 @@ public interface IconProvider {
     String ICON_VIEW_LEFT_PANE = "view-left-pane";
     String ICON_SETTINGS = "settings";
     String ICON_HELP = "help";
+
+    String ICON_FORWARD = "insert-link";
+    String ICON_MOVE_TO_TRASH = "user-trash";
 
     /**
      * Initialize this provider.

@@ -16,28 +16,6 @@
  */
 package org.cosinus.swing.file.linux;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.cosinus.swing.file.Application;
-import org.cosinus.swing.file.DefaultFileSystemRoot;
-import org.cosinus.swing.file.FileSystem;
-import org.cosinus.swing.file.FileSystemRoot;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.cosinus.swing.error.ErrorHandler;
-import org.cosinus.swing.error.JsonConvertException;
-import org.cosinus.swing.error.ProcessExecutionException;
-import org.cosinus.swing.exec.ProcessExecutor;
-import org.cosinus.swing.file.mac.BlockDevice;
-import org.cosinus.swing.file.mac.BlockDevices;
-import org.cosinus.swing.translate.Translator;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.util.*;
-import java.util.stream.Stream;
-
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.probeContentType;
@@ -48,13 +26,45 @@ import static java.util.function.Function.identity;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Stream.concat;
-import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.substringAfter;
+import static org.apache.commons.lang3.StringUtils.substringBefore;
+import static org.apache.commons.lang3.StringUtils.substringBetween;
 import static org.cosinus.swing.error.ProcessExecutionException.PERMISSION_DENIED;
 import static org.cosinus.swing.exec.Command.commands;
 import static org.cosinus.swing.exec.Command.of;
 import static org.cosinus.swing.file.linux.MtpFileSystemRoot.MTP_PROTOCOL;
 import static org.cosinus.swing.file.linux.MtpFileSystemRoot.MTP_PROTOCOL_MARK;
-import static org.cosinus.swing.image.icon.IconSize.X32;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Stream;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.cosinus.swing.error.ErrorHandler;
+import org.cosinus.swing.error.JsonConvertException;
+import org.cosinus.swing.error.ProcessExecutionException;
+import org.cosinus.swing.exec.ProcessExecutor;
+import org.cosinus.swing.file.Application;
+import org.cosinus.swing.file.DefaultFileSystemRoot;
+import org.cosinus.swing.file.FileCompatibleApplications;
+import org.cosinus.swing.file.FileSystem;
+import org.cosinus.swing.file.FileSystemRoot;
+import org.cosinus.swing.file.mac.BlockDevice;
+import org.cosinus.swing.file.mac.BlockDevices;
+import org.cosinus.swing.translate.Translator;
 
 /**
  * Implementation of {@link FileSystem} for Linux
@@ -182,7 +192,8 @@ public class LinuxFileSystem implements FileSystem {
                 .entrySet()
                 .stream()
                 .map(entry -> new MtpFileSystemRoot(
-                    entry.getKey().endsWith("/") ? substringBefore(entry.getKey(), "/") : entry.getKey(),
+                    entry.getKey().endsWith("/") ? substringBefore(entry.getKey(), "/") :
+                        entry.getKey(),
                     entry.getValue(),
                     mtpMountFolder))
                 .filter(MtpFileSystemRoot::isValid)
@@ -230,36 +241,36 @@ public class LinuxFileSystem implements FileSystem {
     }
 
     @Override
-    public Map<String, Application> findCompatibleApplicationsToExecuteFile(File file) {
+    public FileCompatibleApplications findCompatibleApplicationsToExecuteFile(File file) {
         try {
             String mimeType = probeContentType(file.toPath());
-            return Stream.of("/usr/share/applications",
-                    System.getProperty("user.home") + "/.local/share/applications")
-                .map(File::new)
-                .filter(File::exists)
-                .filter(File::isDirectory)
-                .map(applicationFolder -> applicationFolder
-                    .listFiles((d, name) -> name.endsWith(".desktop")))
-                .filter(Objects::nonNull)
-                .flatMap(Arrays::stream)
-                .map(desktopFile -> getApplicationForDesktopFile(desktopFile, mimeType))
-                .filter(Objects::nonNull)
-                .collect(toMap(Application::getId, identity()));
-        } catch (IOException e) {
-            throw new UncheckedIOException(format("Failed to read the mimetype for file: %s", file), e);
-        }
-    }
+            FileCompatibleApplications compatibleApplications =
+                Stream.of("/usr/share/applications",
+                        System.getProperty("user.home") + "/.local/share/applications")
+                    .map(File::new)
+                    .filter(File::exists)
+                    .filter(File::isDirectory)
+                    .map(applicationFolder -> applicationFolder
+                        .listFiles((d, name) -> name.endsWith(".desktop")))
+                    .filter(Objects::nonNull)
+                    .flatMap(Arrays::stream)
+                    .map(desktopFile -> getApplicationForDesktopFile(desktopFile, mimeType))
+                    .filter(Objects::nonNull)
+                    .collect(toMap(
+                        Application::getId,
+                        identity(),
+                        (u, v) -> u,
+                        FileCompatibleApplications::new));
 
-    @Override
-    public String getDefaultApplicationIdToExecuteFile(File file) {
-        try {
-            String mimeType = probeContentType(file.toPath());
-            return processExecutor.executeAndGetOutput("xdg-mime", "query", "default", mimeType)
+            processExecutor.executeAndGetOutput("xdg-mime", "query", "default", mimeType)
                 .flatMap(applicationId -> stream(applicationId.split("\\n")).findFirst())
-                .orElse(null);
+                .map(compatibleApplications::get)
+                .ifPresent(compatibleApplications::setDefaultApplication);
+
+            return compatibleApplications;
         } catch (IOException e) {
-            throw new UncheckedIOException(
-                format("Failed to get the default application to execute the file: %s", file), e);
+            throw new UncheckedIOException(format("Failed to find compatible applications for file: %s",
+                file), e);
         }
     }
 
@@ -270,7 +281,8 @@ public class LinuxFileSystem implements FileSystem {
             processExecutor.execute("xdg-mime", "default", applicationId, mimeType);
         } catch (IOException e) {
             throw new UncheckedIOException(
-                format("Failed to set the application %s as default to execute file: %s", applicationId, file), e);
+                format("Failed to set the application %s as default to execute file: %s",
+                    applicationId, file), e);
         }
     }
 
@@ -304,8 +316,10 @@ public class LinuxFileSystem implements FileSystem {
                 .orElse(null);
             String comment = findValue(lines, "Comment");
             String translatedComment = translator.getLocale()
-                .map(locale -> ofNullable(findValue(lines, "Comment[%s]".formatted(locale.toString())))
-                    .orElseGet(() -> findValue(lines, "Comment[%s]".formatted(locale.getCountry()))))
+                .map(locale -> ofNullable(findValue(lines,
+                    "Comment[%s]".formatted(locale.toString())))
+                    .orElseGet(() -> findValue(lines,
+                        "Comment[%s]".formatted(locale.getCountry()))))
                 .orElse(null);
             boolean runInterminal = ofNullable(findValue(lines, "Terminal"))
                 .map(Boolean::parseBoolean)
@@ -318,7 +332,7 @@ public class LinuxFileSystem implements FileSystem {
 
             String id = desktopFile.getName();
             return new Application(id, name, executable, translatedName,
-                comment, translatedComment, iconName, X32, runInterminal);
+                comment, translatedComment, iconName, runInterminal);
 
         } catch (IOException ex) {
             LOG.error("Failed to read desktop file: {}", desktopFile.getAbsolutePath(), ex);

@@ -17,18 +17,14 @@
 package org.cosinus.swing.file.windows;
 
 import com.sun.jna.platform.FileUtils;
-import org.cosinus.swing.file.Application;
-import org.cosinus.swing.file.DefaultFileSystemRoot;
-import org.cosinus.swing.file.FileSystem;
-import org.cosinus.swing.file.FileSystemRoot;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.List;
-import java.util.Map;
-
-import static java.util.Collections.emptyMap;
+import org.cosinus.swing.file.DefaultFileSystemRoot;
+import org.cosinus.swing.file.FileCompatibleApplications;
+import org.cosinus.swing.file.FileSystem;
+import org.cosinus.swing.file.FileSystemRoot;
 
 /**
  * Implementation of {@link FileSystem} for Windows
@@ -46,13 +42,8 @@ public class WindowsFileSystem implements FileSystem {
     }
 
     @Override
-    public Map<String, Application> findCompatibleApplicationsToExecuteFile(File file) {
-        return emptyMap();
-    }
-
-    @Override
-    public String getDefaultApplicationIdToExecuteFile(File file) {
-        return null;
+    public FileCompatibleApplications findCompatibleApplicationsToExecuteFile(File file) {
+        return new FileCompatibleApplications();
     }
 
     @Override

@@ -21,9 +21,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.exec.CommandLine;
 import org.cosinus.swing.form.control.ControlValue;
-import org.cosinus.swing.image.icon.IconProvider;
-import org.cosinus.swing.image.icon.IconSize;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
 import java.io.File;
@@ -40,9 +37,6 @@ public class Application implements ControlValue {
 
     private static final Set<String> FILE_OPTIONS = Set.of("%f", "%F", "%u", "%U");
 
-    @Autowired
-    private IconProvider iconProvider;
-
     private final String id;
 
     private final String name;
@@ -57,7 +51,7 @@ public class Application implements ControlValue {
 
     private final String iconName;
 
-    private final IconSize iconSize;
+    private Icon icon;
 
     private final boolean runInTerminal;
 
@@ -68,7 +62,6 @@ public class Application implements ControlValue {
                        String comment,
                        String translatedComment,
                        String iconName,
-                       IconSize iconSize,
                        boolean runInTerminal) {
         injectContext(this);
         this.id = id;
@@ -78,7 +71,6 @@ public class Application implements ControlValue {
         this.comment = comment;
         this.translatedComment = translatedComment;
         this.iconName = iconName;
-        this.iconSize = iconSize;
         this.runInTerminal = runInTerminal;
     }
 
@@ -87,11 +79,10 @@ public class Application implements ControlValue {
             .map(option -> FILE_OPTIONS.contains(option) ? file.getAbsolutePath() : option)
             .toArray(String[]::new);
     }
+
     @Override
     public Icon getIcon() {
-        return ofNullable(iconName)
-            .flatMap(name -> iconProvider.findIconByName(name, iconSize))
-            .orElse(null);
+        return icon;
     }
 
     @Override

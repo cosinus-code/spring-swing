@@ -21,10 +21,6 @@
         </dependency>
         <dependency>
             <groupId>org.cosinuscode.swing</groupId>
-            <artifactId>spring-swing-image</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.cosinuscode.swing</groupId>
             <artifactId>spring-swing-boot</artifactId>
         </dependency>
         <dependency>

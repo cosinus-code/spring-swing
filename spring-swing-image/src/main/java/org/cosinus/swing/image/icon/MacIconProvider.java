@@ -17,22 +17,32 @@
 
 package org.cosinus.swing.image.icon;
 
-import org.apache.commons.imaging.formats.icns.IcnsImageParser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.cosinus.swing.image.ImageHandler;
+import static java.util.Optional.ofNullable;
+import static org.cosinus.swing.image.icon.SpecialFileIcon.APPLICATIONS;
+import static org.cosinus.swing.image.icon.SpecialFileIcon.DESKTOP;
+import static org.cosinus.swing.image.icon.SpecialFileIcon.DOCUMENTS;
+import static org.cosinus.swing.image.icon.SpecialFileIcon.DOWNLOADS;
+import static org.cosinus.swing.image.icon.SpecialFileIcon.HOME;
+import static org.cosinus.swing.image.icon.SpecialFileIcon.MUSIC;
+import static org.cosinus.swing.image.icon.SpecialFileIcon.PICTURES;
+import static org.cosinus.swing.image.icon.SpecialFileIcon.PUBLIC;
+import static org.cosinus.swing.image.icon.SpecialFileIcon.VIDEOS;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
-import static java.util.Optional.ofNullable;
-import static org.cosinus.swing.image.icon.SpecialFileIcon.*;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import org.apache.commons.imaging.formats.icns.IcnsImageParser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.cosinus.swing.file.Application;
+import org.cosinus.swing.file.FileCompatibleApplications;
+import org.cosinus.swing.file.FileSystem;
+import org.cosinus.swing.image.ImageHandler;
 
 /**
  * Implementation of {@link IconProvider} for Mac
@@ -41,10 +51,16 @@ public class MacIconProvider implements IconProvider {
 
     private static final Logger LOG = LogManager.getLogger(MacIconProvider.class);
 
-    private static final String ICON_STORAGE_PATH = "/System/Library/Extensions/IOStorageFamily.kext/Contents/Resources/";
-    private static final String ICON_SCSI_PATH = "/System/Library/Extensions/IOSCSIArchitectureModelFamily.kext/Contents/Resources";
-    private static final String ICON_CORE_PATH = "/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/";
-    private static final String ICON_DOCK_PATH = "/System/Library/CoreServices/Dock.app/Contents/Resources/";
+    private static final String ICON_STORAGE_PATH = "/System/Library/Extensions/IOStorageFamily" +
+        ".kext/Contents/Resources/";
+    private static final String ICON_SCSI_PATH = "/System/Library/Extensions" +
+        "/IOSCSIArchitectureModelFamily.kext/Contents/Resources";
+    private static final String ICON_CORE_PATH = "/System/Library/CoreServices/CoreTypes" +
+        ".bundle/Contents/Resources/";
+    private static final String ICON_DOCK_PATH = "/System/Library/CoreServices/Dock" +
+        ".app/Contents/Resources/";
+
+    private final FileSystem fileSystem;
 
     private final Map<String, String> iconNameToFilePathMap;
 
@@ -52,7 +68,10 @@ public class MacIconProvider implements IconProvider {
 
     private final ImageHandler imageHandler;
 
-    public MacIconProvider(final IcnsImageParser icnsImageParser, final ImageHandler imageHandler) {
+    public MacIconProvider(final FileSystem fileSystem,
+                           final IcnsImageParser icnsImageParser,
+                           final ImageHandler imageHandler) {
+        this.fileSystem = fileSystem;
         this.icnsImageParser = icnsImageParser;
         this.imageHandler = imageHandler;
         this.iconNameToFilePathMap = new HashMap<>();
@@ -65,9 +84,16 @@ public class MacIconProvider implements IconProvider {
 
     @Override
     public Optional<Icon> findIconByFile(File file, IconSize size) {
-        return file.isDirectory() ? findIconByName(getFolderIconName(file), size)
-            .or(() -> findIconByName(ICON_FOLDER, size)) :
-            findIconByName(file.isDirectory() ? ICON_FOLDER : ICON_FILE, size);
+        return file.isDirectory() ?
+            findIconByName(getFolderIconName(file), size)
+                .or(() -> findIconByName(ICON_FOLDER, size)) :
+            ofNullable(fileSystem.findCompatibleApplicationsToExecuteFile(file))
+                .map(FileCompatibleApplications::getDefaultApplication)
+                .map(Application::getIconName)
+                .map(File::new)
+                .flatMap(icnsFile -> readFromIcnsFile(icnsFile, size))
+                .<Icon>map(ImageIcon::new)
+                .or(() -> findIconByName(ICON_FILE, size));
     }
 
     @Override
@@ -86,11 +112,18 @@ public class MacIconProvider implements IconProvider {
         try {
             return icnsImageParser.getAllBufferedImages(imageFile)
                 .stream()
-                .filter(image -> image.getWidth() == size.getSize() && image.getHeight() == size.getSize())
-                .findFirst();
+                .filter(image ->
+                    image.getWidth() >= size.getSize() &&
+                        image.getHeight() >= size.getSize())
+                .findFirst()
+                .map(image ->
+                    image.getWidth() == size.getSize() &&
+                        image.getHeight() == size.getSize() ?
+                        image :
+                        imageHandler.scaleImage(image, size.getSize()));
         } catch (IOException e) {
-            LOG.warn(String.format("Cannot read image of size %s from icns file %s",
-                size.getSize(), imageFile.getPath()));
+            LOG.warn("Cannot read image of size {} from icns file {}",
+                size.getSize(), imageFile.getPath());
             return Optional.empty();
         }
     }
@@ -124,7 +157,8 @@ public class MacIconProvider implements IconProvider {
         iconNameToFilePathMap.put(ICON_GRID, ICON_CORE_PATH + "GridIcon.icns");
 
         iconNameToFilePathMap.put(HOME.getName(), ICON_CORE_PATH + "HomeFolderIcon.icns");
-        iconNameToFilePathMap.put(APPLICATIONS.getName(), ICON_CORE_PATH + "ApplicationsFolderIcon.icns");
+        iconNameToFilePathMap.put(APPLICATIONS.getName(), ICON_CORE_PATH +
+            "ApplicationsFolderIcon.icns");
         iconNameToFilePathMap.put(DESKTOP.getName(), ICON_CORE_PATH + "DesktopFolderIcon.icns");
         iconNameToFilePathMap.put(DOCUMENTS.getName(), ICON_CORE_PATH + "DocumentsFolderIcon.icns");
         iconNameToFilePathMap.put(DOWNLOADS.getName(), ICON_CORE_PATH + "DownloadsFolderIcon.icns");
@@ -139,7 +173,8 @@ public class MacIconProvider implements IconProvider {
         iconNameToFilePathMap.put(ICON_STORAGE_USB_HD, ICON_SCSI_PATH + "USBHD.icns");
         iconNameToFilePathMap.put(ICON_STORAGE_SAS_HD, ICON_SCSI_PATH + "SASHD.icns");
         iconNameToFilePathMap.put(ICON_STORAGE_MEMORY_STICK, ICON_SCSI_PATH + "MemoryStick.icns");
-        iconNameToFilePathMap.put(ICON_STORAGE_MEMORY_STICK_PRO_DUO, ICON_SCSI_PATH + "MemoryStickProDuo.icns");
+        iconNameToFilePathMap.put(ICON_STORAGE_MEMORY_STICK_PRO_DUO, ICON_SCSI_PATH +
+            "MemoryStickProDuo.icns");
         iconNameToFilePathMap.put(ICON_STORAGE_MEDIA_FLASH, ICON_SCSI_PATH + "CompactFlash.icns");
         iconNameToFilePathMap.put(ICON_STORAGE_XD, ICON_SCSI_PATH + "XD.icns");
         iconNameToFilePathMap.put(ICON_STORAGE_SD, ICON_SCSI_PATH + "SD.icns");
@@ -148,5 +183,12 @@ public class MacIconProvider implements IconProvider {
         iconNameToFilePathMap.put(ICON_COMPUTER, ICON_CORE_PATH + "com.apple.macbookpro-15.icns");
         iconNameToFilePathMap.put(ICON_DATABASE, ICON_CORE_PATH + "GenericFileServerIcon.icns");
         iconNameToFilePathMap.put(ICON_NETWORK, ICON_CORE_PATH + "GenericNetworkIcon.icns");
+
+        iconNameToFilePathMap.put(ICON_NEW_FOLDER, ICON_CORE_PATH + "UtilitiesFolder.icns");
+        iconNameToFilePathMap.put(ICON_EXECUTE, ICON_CORE_PATH + "ToolbarAdvanced.icns");
+        iconNameToFilePathMap.put(ICON_REFRESH, ICON_CORE_PATH + "Sync.icns");
+        iconNameToFilePathMap.put(ICON_FORWARD, ICON_CORE_PATH + "ForwardArrowIcon.icns");
+        iconNameToFilePathMap.put(ICON_DELETE, ICON_CORE_PATH + "ToolbarDeleteIcon.icns");
+        iconNameToFilePathMap.put(ICON_MOVE_TO_TRASH, ICON_CORE_PATH + "FullTrashIcon.icns");
     }
 }

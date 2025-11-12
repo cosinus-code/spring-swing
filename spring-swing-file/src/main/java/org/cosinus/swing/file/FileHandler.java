@@ -143,7 +143,12 @@ public class FileHandler {
     }
 
     public void open(final File file) {
-        processExecutor.executeFile(file);
+        ofNullable(file)
+            .map(fileSystem::findCompatibleApplicationsToExecuteFile)
+            .map(FileCompatibleApplications::getDefaultApplication)
+            .ifPresent(application -> processExecutor
+                .execute(application.isRunInTerminal(), false, application.getCommandToExecuteFile(file)));
+//        processExecutor.executeFile(file);
     }
 
     public void copyPermissions(File fileSource, File fileTarget) {
