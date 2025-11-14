@@ -20,7 +20,7 @@ package org.cosinus.swing.file;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.exec.ProcessExecutor;
-import org.cosinus.swing.mimetype.MimeTypeResolver;
+import org.cosinus.swing.file.mimetype.MimeTypeResolver;
 
 import java.awt.*;
 import java.io.File;
@@ -156,11 +156,11 @@ public class FileHandler {
     }
 
     public Optional<String> getTypeDescription(final File file) {
-        return mimeTypeResolver.getMimeTypeDescription(file.toPath(), file.isDirectory());
+        return fileSystem.getFileTypeDescription(file.toPath(), file.isDirectory());
     }
 
     public Optional<String> getTypeDescription(final Path path, boolean isDrectory) {
-        return mimeTypeResolver.getMimeTypeDescription(path, isDrectory);
+        return fileSystem.getFileTypeDescription(path, isDrectory);
     }
 
     public boolean isLink(final File file) {

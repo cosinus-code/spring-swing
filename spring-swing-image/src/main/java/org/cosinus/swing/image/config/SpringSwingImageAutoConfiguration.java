@@ -25,6 +25,7 @@ import org.cosinus.swing.boot.condition.ConditionalOnMac;
 import org.cosinus.swing.boot.condition.ConditionalOnWindows;
 import org.cosinus.swing.context.ApplicationProperties;
 import org.cosinus.swing.file.FileSystem;
+import org.cosinus.swing.file.mimetype.MimeTypeResolver;
 import org.cosinus.swing.image.ImageHandler;
 import org.cosinus.swing.image.icon.DefaultIconProvider;
 import org.cosinus.swing.image.icon.FileExtensionKeyGenerator;
@@ -33,7 +34,6 @@ import org.cosinus.swing.image.icon.IconProvider;
 import org.cosinus.swing.image.icon.LinuxIconProvider;
 import org.cosinus.swing.image.icon.MacIconProvider;
 import org.cosinus.swing.image.icon.WindowsIconProvider;
-import org.cosinus.swing.mimetype.MimeTypeResolver;
 import org.cosinus.swing.resource.ClasspathResourceResolver;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -108,11 +108,12 @@ public class SpringSwingImageAutoConfiguration {
         final IconProvider iconProvider,
         final SwingApplicationFrame applicationFrame,
         final ActionController actionController) {
-        return new ApplicationImageInitializer(iconHandler, iconProvider, applicationFrame, actionController);
+        return new ApplicationImageInitializer(iconHandler, iconProvider, applicationFrame,
+            actionController);
     }
 
     @Bean("fileExtensionKeyGenerator")
-    public KeyGenerator keyGenerator(final IconProvider iconProvider) {
-        return new FileExtensionKeyGenerator(iconProvider);
+    public KeyGenerator keyGenerator() {
+        return new FileExtensionKeyGenerator();
     }
 }

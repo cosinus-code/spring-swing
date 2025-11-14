@@ -33,12 +33,6 @@ public class FileExtensionKeyGenerator extends SimpleKeyGenerator {
 
     private static final String FOLDER_ICON_KEY = ":folder:";
 
-    private final IconProvider iconProvider;
-
-    public FileExtensionKeyGenerator(IconProvider iconProvider) {
-        this.iconProvider = iconProvider;
-    }
-
     @Override
     public Object generate(Object target, Method method, Object... params) {
         return super.generate(target, method, stream(params)

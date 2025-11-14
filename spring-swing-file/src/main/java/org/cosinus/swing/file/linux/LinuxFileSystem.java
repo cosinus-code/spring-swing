@@ -39,6 +39,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -64,7 +65,10 @@ import org.cosinus.swing.file.FileSystem;
 import org.cosinus.swing.file.FileSystemRoot;
 import org.cosinus.swing.file.mac.BlockDevice;
 import org.cosinus.swing.file.mac.BlockDevices;
+import org.cosinus.swing.file.FileInfoProvider;
+import org.cosinus.swing.file.mimetype.MimeTypeResolver;
 import org.cosinus.swing.translate.Translator;
+import org.springframework.util.MimeType;
 
 /**
  * Implementation of {@link FileSystem} for Linux
@@ -79,6 +83,10 @@ public class LinuxFileSystem implements FileSystem {
 
     private final ProcessExecutor processExecutor;
 
+    private final MimeTypeResolver mimeTypeResolver;
+
+    private final FileInfoProvider fileInfoProvider;
+
     private final ObjectMapper objectMapper;
 
     private final ErrorHandler errorHandler;
@@ -86,11 +94,15 @@ public class LinuxFileSystem implements FileSystem {
     public LinuxFileSystem(final ProcessExecutor processExecutor,
                            final ObjectMapper objectMapper,
                            final ErrorHandler errorHandler,
-                           final Translator translator) {
+                           final Translator translator,
+                           final MimeTypeResolver mimeTypeResolver,
+                           final FileInfoProvider fileInfoProvider) {
         this.processExecutor = processExecutor;
         this.objectMapper = objectMapper;
         this.errorHandler = errorHandler;
         this.translator = translator;
+        this.mimeTypeResolver = mimeTypeResolver;
+        this.fileInfoProvider = fileInfoProvider;
     }
 
     @Override
@@ -298,6 +310,20 @@ public class LinuxFileSystem implements FileSystem {
             "chmod", "--reference=" + fileSource.getAbsolutePath(), fileTarget.getAbsolutePath());
     }
 
+    @Override
+    public Optional<String> getFileTypeDescription(final Path path, boolean isDirectory) {
+        return mimeTypeResolver.getMimeTypes(path, isDirectory)
+            .stream()
+            .map(this::getMimeTypeDescription)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .findFirst();
+    }
+
+    public Optional<String> getMimeTypeDescription(final MimeType mimeType) {
+        return fileInfoProvider.getFileTypeDescription(mimeType.toString());
+    }
+
     private Application getApplicationForDesktopFile(File desktopFile, String mimeType) {
         try {
             List<String> lines = readAllLines(desktopFile.toPath());
@@ -331,8 +357,8 @@ public class LinuxFileSystem implements FileSystem {
             }
 
             String id = desktopFile.getName();
-            return new Application(id, name, executable, translatedName,
-                comment, translatedComment, iconName, runInterminal);
+            return new Application(id, name, translatedName, comment, translatedComment,
+                executable, iconName, runInterminal);
 
         } catch (IOException ex) {
             LOG.error("Failed to read desktop file: {}", desktopFile.getAbsolutePath(), ex);

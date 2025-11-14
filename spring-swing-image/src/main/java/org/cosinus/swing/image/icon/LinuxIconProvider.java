@@ -20,7 +20,7 @@ package org.cosinus.swing.image.icon;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.context.ApplicationProperties;
-import org.cosinus.swing.mimetype.MimeTypeResolver;
+import org.cosinus.swing.file.mimetype.MimeTypeResolver;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.springframework.util.MimeType;
 

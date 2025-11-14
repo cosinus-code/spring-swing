@@ -17,13 +17,21 @@
 
 package org.cosinus.swing.boot.config;
 
+import static org.cosinus.swing.boot.SpringSwingApplication.applicationClass;
+import static org.cosinus.swing.ui.UIController.SWING_UI_INITIALIZER_PROPERTY;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.cosinus.swing.action.*;
+import java.util.Set;
+import org.cosinus.swing.action.ActionContextProvider;
+import org.cosinus.swing.action.ActionController;
+import org.cosinus.swing.action.ActionInContext;
+import org.cosinus.swing.action.DefaultActionContextProvider;
+import org.cosinus.swing.action.KeyMapHandler;
+import org.cosinus.swing.action.QuitAction;
 import org.cosinus.swing.action.execute.ActionExecutor;
 import org.cosinus.swing.action.execute.ActionExecutors;
 import org.cosinus.swing.boot.ApplicationFrame;
 import org.cosinus.swing.boot.ApplicationInitializationHandler;
-import org.cosinus.swing.boot.condition.ConditionalOnLinux;
 import org.cosinus.swing.boot.initialize.ApplicationFrameInitializer;
 import org.cosinus.swing.boot.initialize.ApplicationInitializer;
 import org.cosinus.swing.boot.initialize.TranslatorInitializer;
@@ -34,10 +42,6 @@ import org.cosinus.swing.error.form.DefaultErrorFormProvider;
 import org.cosinus.swing.format.FormatHandler;
 import org.cosinus.swing.menu.JsonMenuProvider;
 import org.cosinus.swing.menu.MenuProvider;
-import org.cosinus.swing.mimetype.DefaultMimeTypeInfoProvider;
-import org.cosinus.swing.mimetype.LinuxMimeTypeInfoProvider;
-import org.cosinus.swing.mimetype.MimeTypeInfoProvider;
-import org.cosinus.swing.mimetype.MimeTypeResolver;
 import org.cosinus.swing.preference.Preferences;
 import org.cosinus.swing.preference.dialog.DefaultPreferencesDialogProvider;
 import org.cosinus.swing.preference.dialog.PreferencesDialogProvider;
@@ -57,11 +61,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-
-import java.util.Set;
-
-import static org.cosinus.swing.boot.SpringSwingApplication.applicationClass;
-import static org.cosinus.swing.ui.UIController.SWING_UI_INITIALIZER_PROPERTY;
 
 /**
  * Application main configuration.
@@ -134,7 +133,8 @@ public class SpringSwingAutoConfiguration {
         final Set<ApplicationInitializer> applicationInitializers,
         final ApplicationFrameInitializer applicationFrameInitializer) {
 
-        return new ApplicationInitializationHandler(applicationInitializers, applicationFrameInitializer);
+        return new ApplicationInitializationHandler(applicationInitializers,
+            applicationFrameInitializer);
     }
 
     @Bean
@@ -177,23 +177,6 @@ public class SpringSwingAutoConfiguration {
     @Bean
     public FormatHandler formatService() {
         return new FormatHandler();
-    }
-
-    @Bean
-    @ConditionalOnLinux
-    public MimeTypeInfoProvider linuxMimeTypeInfoProvider(final Translator translator) {
-        return new LinuxMimeTypeInfoProvider(translator);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public MimeTypeInfoProvider mimeTypeInfoProvider() {
-        return new DefaultMimeTypeInfoProvider();
-    }
-
-    @Bean
-    public MimeTypeResolver mimeTypeResolver(final MimeTypeInfoProvider mimeTypeInfoProvider) {
-        return new MimeTypeResolver(mimeTypeInfoProvider);
     }
 
     @Bean

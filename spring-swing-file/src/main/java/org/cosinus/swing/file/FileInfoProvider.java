@@ -15,13 +15,11 @@
  *
  */
 
-package org.cosinus.swing.mimetype;
-
-import org.springframework.util.MimeType;
+package org.cosinus.swing.file;
 
 import java.util.Optional;
 
-public interface MimeTypeInfoProvider {
+public interface FileInfoProvider {
 
-    Optional<String> getMimeTypeDescription(MimeType mimeType);
+    Optional<String> getFileTypeDescription(String mimeType);
 }

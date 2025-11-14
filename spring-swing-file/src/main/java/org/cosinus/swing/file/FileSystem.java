@@ -16,6 +16,8 @@
  */
 package org.cosinus.swing.file;
 
+import java.nio.file.Path;
+import java.util.Optional;
 import oshi.SystemInfo;
 
 import java.io.File;
@@ -54,4 +56,6 @@ public interface FileSystem {
     boolean moveToTrash(File file);
 
     void copyPermissions(File fileSource, File fileTarget);
+
+    Optional<String> getFileTypeDescription(final Path path, boolean isDirectory);
 }

@@ -57,19 +57,19 @@ public class Application implements ControlValue {
 
     public Application(String id,
                        String name,
-                       String executable,
                        String translatedName,
                        String comment,
                        String translatedComment,
+                       String executable,
                        String iconName,
                        boolean runInTerminal) {
         injectContext(this);
         this.id = id;
         this.name = name;
-        this.executable = executable;
         this.translatedName = translatedName;
         this.comment = comment;
         this.translatedComment = translatedComment;
+        this.executable = executable;
         this.iconName = iconName;
         this.runInTerminal = runInTerminal;
     }
@@ -80,6 +80,11 @@ public class Application implements ControlValue {
             .toArray(String[]::new);
     }
 
+    public String getDescription() {
+        return ofNullable(translatedComment)
+            .orElse(comment);
+    }
+
     @Override
     public Icon getIcon() {
         return icon;
@@ -87,8 +92,7 @@ public class Application implements ControlValue {
 
     @Override
     public String getTooltip() {
-        return ofNullable(translatedComment)
-            .orElse(comment);
+        return getDescription();
     }
 
     @Override

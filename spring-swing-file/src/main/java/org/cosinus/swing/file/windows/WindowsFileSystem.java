@@ -20,11 +20,14 @@ import com.sun.jna.platform.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import org.cosinus.swing.file.DefaultFileSystemRoot;
 import org.cosinus.swing.file.FileCompatibleApplications;
 import org.cosinus.swing.file.FileSystem;
 import org.cosinus.swing.file.FileSystemRoot;
+import org.springframework.cache.annotation.Cacheable;
 
 /**
  * Implementation of {@link FileSystem} for Windows
@@ -65,4 +68,11 @@ public class WindowsFileSystem implements FileSystem {
     public void copyPermissions(File fileSource, File fileTarget) {
 
     }
+
+    @Override
+    @Cacheable("spring.swing.file.type.description")
+    public Optional<String> getFileTypeDescription(Path path, boolean isDirectory) {
+        return Optional.empty();
+    }
+
 }

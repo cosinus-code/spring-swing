@@ -19,30 +19,25 @@ package org.cosinus.swing.file.mac;
 import static java.util.Arrays.stream;
 import static java.util.function.Function.identity;
 import static java.util.function.Predicate.not;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toMap;
-import static java.util.stream.Collectors.toSet;
+import static org.cosinus.swing.file.mac.MacFileInfoProvider.FOLDER_MIME_TYPE;
+import static org.cosinus.swing.util.FileUtils.getExtension;
 
 import com.sun.jna.platform.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.cosinus.swing.error.ProcessExecutionException;
 import org.cosinus.swing.exec.ProcessExecutor;
 import org.cosinus.swing.file.Application;
 import org.cosinus.swing.file.FileCompatibleApplications;
+import org.cosinus.swing.file.FileInfoProvider;
 import org.cosinus.swing.file.FileSystem;
 import org.cosinus.swing.file.FileSystemRoot;
 
@@ -53,27 +48,14 @@ public class MacFileSystem implements FileSystem {
 
     private static final Logger LOG = LogManager.getLogger(MacFileSystem.class);
 
-    private static final String NAME = "name";
-    private static final String PATH = "path";
-    private static final String EXECUTABLE = "executable";
-    private static final String ICONS = "icons";
-    private static final String LOCALIZED_DESCRIPTION = "localizedDescription";
-    private static final String BUNDLE_ID = "bundle id";
-    private static final String CLAIMED_UTI = "claimed utis";
-    private static final String FLAGS = "flags";
-    private static final String BUNDLE = "bundle";
-    private static final String BINDINGS = "bindings";
-    private static final String APPLE_DEFAULT_FLAG = "apple-default";
-
     private final ProcessExecutor processExecutor;
 
-    private final Map<String, Set<Application>> compatibleApplicationsByContentTypeMap;
+    private final MacFileInfoProvider fileTypeInfoProvider;
 
-    private Map<String, Application> defaultApplicationsByContentTypeMap;
-
-    public MacFileSystem(final ProcessExecutor processExecutor) {
+    public MacFileSystem(final ProcessExecutor processExecutor,
+                         final FileInfoProvider fileTypeInfoProvider) {
         this.processExecutor = processExecutor;
-        this.compatibleApplicationsByContentTypeMap = buildApplicationsMap();
+        this.fileTypeInfoProvider = (MacFileInfoProvider) fileTypeInfoProvider;
     }
 
     @Override
@@ -127,9 +109,9 @@ public class MacFileSystem implements FileSystem {
 
     @Override
     public FileCompatibleApplications findCompatibleApplicationsToExecuteFile(File file) {
-        Optional<String> contentType = findFileContentType(file);
-        FileCompatibleApplications compatibleApplications = contentType
-            .map(compatibleApplicationsByContentTypeMap::get)
+        Optional<String> uniformTypeIdentifier = fileTypeInfoProvider.findUniformTypeIdentifier(file);
+        FileCompatibleApplications compatibleApplications = uniformTypeIdentifier
+            .map(fileTypeInfoProvider::getCompatibleApplications)
             .map(applications -> applications
                 .stream()
                 .collect(toMap(
@@ -139,8 +121,9 @@ public class MacFileSystem implements FileSystem {
                     FileCompatibleApplications::new)))
             .orElseGet(FileCompatibleApplications::new);
 
-        contentType
-            .map(defaultApplicationsByContentTypeMap::get)
+        uniformTypeIdentifier
+            .map(fileTypeInfoProvider::getUniformType)
+            .map(UniformType::getDefaultApplication)
             .or(() -> compatibleApplications
                 .values()
                 .stream()
@@ -148,18 +131,6 @@ public class MacFileSystem implements FileSystem {
             .ifPresent(compatibleApplications::setDefaultApplication);
 
         return compatibleApplications;
-    }
-
-    protected Optional<String> findFileContentType(final File file) {
-        try {
-            return processExecutor.executeAndGetOutput(
-                    "mdls", "-name", "kMDItemContentType", "-raw", file.getAbsolutePath())
-                .map(uti -> uti.endsWith("%") ? uti.substring(0, uti.length() - 1) : uti);
-        } catch (ProcessExecutionException executionException) {
-            LOG.warn("Failed to detect the content type of the file '%s'"
-                .formatted(file.getAbsolutePath()));
-            return Optional.empty();
-        }
     }
 
     @Override
@@ -182,83 +153,13 @@ public class MacFileSystem implements FileSystem {
 
     }
 
-    private Map<String, Set<Application>> buildApplicationsMap() {
-        List<Map<String, String>> entries = processExecutor.executeAndGetOutput(
-                "/System/Library/Frameworks/CoreServices.framework/Frameworks/" +
-                    "LaunchServices.framework/Support/lsregister", "-dump")
-            .map(output -> output.split("---+\\n"))
-            .stream()
-            .flatMap(Arrays::stream)
-            .map(this::toKeyValuesMap)
-            .toList();
-
-        Map<String, Application> applicationsByBundleMap = entries
-            .stream()
-            .filter(keyValueMap -> keyValueMap.containsKey(PATH))
-            .filter(keyValueMap -> keyValueMap.containsKey(BUNDLE_ID))
-            .collect(toMap(
-                keyValuesMap -> keyValuesMap.get(BUNDLE_ID),
-                this::builApplication,
-                (u, v) -> u,
-                LinkedHashMap::new));
-
-        defaultApplicationsByContentTypeMap = entries
-            .stream()
-            .filter(keyValueMap -> keyValueMap.containsKey(BUNDLE))
-            .filter(keyValueMap -> keyValueMap.containsKey(BINDINGS))
-            .filter(keyValueMap -> keyValueMap.containsKey(FLAGS))
-            .filter(keyValueMap ->
-                keyValueMap.get(FLAGS).contains(APPLE_DEFAULT_FLAG))
-            .flatMap(keyValueMap -> stream(keyValueMap.get(BINDINGS).split(",\\s*"))
-                .map(binding -> new ImmutablePair<>(
-                    binding,
-                    applicationsByBundleMap.get(keyValueMap.get(BUNDLE))
-                )))
-            .filter(pair -> Objects.nonNull(pair.getValue()))
-            .collect(toMap(
-                Pair::getKey,
-                Pair::getValue,
-                (u, v) -> v
-            ));
-
-        return entries
-            .stream()
-            .filter(keyValueMap -> keyValueMap.containsKey(BUNDLE_ID))
-            .filter(keyValueMap -> keyValueMap.containsKey(CLAIMED_UTI))
-            .flatMap(keyValueMap ->
-                stream(keyValueMap.get(CLAIMED_UTI).split(",\\s*"))
-                    .map(uri -> new ImmutablePair<>(
-                        uri,
-                        applicationsByBundleMap.get(keyValueMap.get(BUNDLE_ID)))))
-            .filter(pair -> Objects.nonNull(pair.getValue()))
-            .collect(groupingBy(
-                Pair::getKey,
-                mapping(Pair::getValue, toSet())));
-    }
-
-    private Map<String, String> toKeyValuesMap(String rawApplication) {
-        return stream(rawApplication.split("\\n"))
-            .filter(line -> !line.startsWith(" "))
-            .map(line -> line.split(":\\s+"))
-            .filter(linePieces -> linePieces.length > 1)
-            .collect(toMap(
-                linePieces -> linePieces[0].trim().toLowerCase(),
-                linePieces -> linePieces[1].trim(),
-                (u, v) -> u));
-    }
-
-    private Application builApplication(Map<String, String> keyValueMap) {
-        String applicationPath = keyValueMap.get(PATH).substring(
-            0, keyValueMap.get(PATH).lastIndexOf(" ("));
-
-        return new Application(
-            keyValueMap.get(BUNDLE_ID),
-            keyValueMap.get(NAME),
-            "\"" + applicationPath + "/" + keyValueMap.get(EXECUTABLE) + "\" %f",
-            keyValueMap.get(LOCALIZED_DESCRIPTION),
-            keyValueMap.get(NAME),
-            keyValueMap.get(LOCALIZED_DESCRIPTION),
-            applicationPath + "/" + keyValueMap.get(ICONS),
-            false);
+    @Override
+    public Optional<String> getFileTypeDescription(final Path path, boolean isDirectory) {
+        return isDirectory ?
+            fileTypeInfoProvider.getFileTypeDescription(FOLDER_MIME_TYPE) :
+            fileTypeInfoProvider.findUniformTypeIdentifier(path.toFile())
+                .flatMap(fileTypeInfoProvider::getFileTypeDescription)
+                .or(() -> fileTypeInfoProvider
+                    .getFileTypeDescription("." + getExtension(path.toFile())));
     }
 }

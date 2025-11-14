@@ -15,8 +15,32 @@
  *
  */
 
-package org.cosinus.swing.mimetype;
+package org.cosinus.swing.file.mimetype;
 
+import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.util.Arrays.stream;
+import static java.util.Collections.singletonList;
+import static java.util.Locale.ENGLISH;
+import static java.util.Optional.ofNullable;
+import static net.sf.jmimemagic.Magic.getMagicMatch;
+import static org.cosinus.swing.util.FileUtils.getExtension;
+import static org.springframework.util.MimeTypeUtils.APPLICATION_OCTET_STREAM;
+import static org.springframework.util.MimeTypeUtils.IMAGE_JPEG;
+import static org.springframework.util.MimeTypeUtils.TEXT_PLAIN;
+import static org.springframework.util.MimeTypeUtils.parseMimeType;
+import static org.springframework.util.StringUtils.getFilenameExtension;
+import static org.springframework.util.StringUtils.tokenizeToStringArray;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Path;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import net.sf.jmimemagic.MagicException;
 import net.sf.jmimemagic.MagicMatch;
 import net.sf.jmimemagic.MagicMatchNotFoundException;
@@ -27,24 +51,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.util.InvalidMimeTypeException;
 import org.springframework.util.MimeType;
-
-import java.io.*;
-import java.nio.file.Path;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import static java.nio.charset.StandardCharsets.US_ASCII;
-import static java.util.Arrays.stream;
-import static java.util.Collections.singletonList;
-import static java.util.Locale.ENGLISH;
-import static java.util.Optional.ofNullable;
-import static net.sf.jmimemagic.Magic.getMagicMatch;
-import static org.cosinus.swing.util.FileUtils.getExtension;
-import static org.springframework.util.MimeTypeUtils.*;
-import static org.springframework.util.StringUtils.getFilenameExtension;
-import static org.springframework.util.StringUtils.tokenizeToStringArray;
 
 public class MimeTypeResolver {
 
@@ -58,7 +64,8 @@ public class MimeTypeResolver {
     private static final MimeType IMAGE = new MimeType(IMAGE_JPEG.getType());
     private static final MimeType TEXT = new MimeType(TEXT_PLAIN.getType());
     private static final MimeType APPLICATION = new MimeType(APPLICATION_OCTET_STREAM.getType());
-    private static final MimeType SHELL_SCRIPT_MIME_TYPE = new MimeType(APPLICATION.getType(), SHELL_SCRIPT);
+    private static final MimeType SHELL_SCRIPT_MIME_TYPE = new MimeType(APPLICATION.getType(),
+        SHELL_SCRIPT);
 
     public static final String AR = "ar";
     public static final String ARJ = "arj";
@@ -83,12 +90,9 @@ public class MimeTypeResolver {
     public static Set<String> SHELL_SCRIPT_TYPES =
         Set.of(SH, BAT);
 
-    private final MimeTypeInfoProvider mimeTypeInfoProvider;
-
     private final ListValuedMap<String, MimeType> mimeTypesMap;
 
-    public MimeTypeResolver(final MimeTypeInfoProvider mimeTypeInfoProvider) {
-        this.mimeTypeInfoProvider = mimeTypeInfoProvider;
+    public MimeTypeResolver() {
         mimeTypesMap = initMimeTypes();
     }
 
@@ -98,7 +102,8 @@ public class MimeTypeResolver {
 
         try (InputStream input = MimeTypeResolver.class.getResourceAsStream(MIME_TYPES_FILE_NAME)) {
             if (input != null) {
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(input, US_ASCII))) {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(input,
+                    US_ASCII))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
                         if (line.isEmpty() || line.charAt(0) == '#') {
@@ -110,7 +115,8 @@ public class MimeTypeResolver {
                                 .ifPresent(mimeType -> {
                                     stream(tokens, 1, tokens.length)
                                         .map(extension -> extension.toLowerCase(ENGLISH))
-                                        .forEach(extension -> mimeTypesMap.put(extension, mimeType));
+                                        .forEach(extension -> mimeTypesMap.put(extension,
+                                            mimeType));
                                 });
                         }
                     }
@@ -144,19 +150,6 @@ public class MimeTypeResolver {
             .map(extension -> extension.toLowerCase(ENGLISH))
             .map(mimeTypesMap::get)
             .orElseGet(Collections::emptyList);
-    }
-
-    public Optional<String> getMimeTypeDescription(final Path path, boolean isDirectory) {
-        return getMimeTypes(path, isDirectory)
-            .stream()
-            .map(this::getMimeTypeDescription)
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .findFirst();
-    }
-
-    public Optional<String> getMimeTypeDescription(final MimeType mimeType) {
-        return mimeTypeInfoProvider.getMimeTypeDescription(mimeType);
     }
 
     public boolean isTextCompatible(Path path) {
@@ -217,11 +210,6 @@ public class MimeTypeResolver {
 //            return null;
 //        }
 //    }
-
-//        return processExecutor.executeAndGetOutput("file", "--mime-type", file.getAbsolutePath())
-//            .map(output -> output.substring(output.lastIndexOf(" ") + 1))
-//            .or(() -> processExecutor.executeAndGetOutput("xdg-mime", "query", "filetype", file.getAbsolutePath()))
-//            .map(output -> output.replaceAll("\\n", ""));
 
     public Optional<MimeType> getMagicMimeType(File file) {
         try {

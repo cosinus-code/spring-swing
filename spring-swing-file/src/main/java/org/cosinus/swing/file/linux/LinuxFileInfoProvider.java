@@ -15,12 +15,12 @@
  *
  */
 
-package org.cosinus.swing.mimetype;
+package org.cosinus.swing.file.linux;
 
+import org.cosinus.swing.file.FileInfoProvider;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.xml.Xml;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.util.MimeType;
 
 import javax.xml.xpath.XPathExpressionException;
 import java.io.File;
@@ -34,19 +34,19 @@ import java.util.Optional;
 import static java.util.Optional.ofNullable;
 import static java.util.function.Predicate.not;
 
-public class LinuxMimeTypeInfoProvider implements MimeTypeInfoProvider {
+public class LinuxFileInfoProvider implements FileInfoProvider {
 
     private final Translator translator;
 
-    public LinuxMimeTypeInfoProvider(final Translator translator) {
+    public LinuxFileInfoProvider(final Translator translator) {
         this.translator = translator;
     }
 
     @Override
-    @Cacheable("spring.swing.mimetype.description")
-    public Optional<String> getMimeTypeDescription(final MimeType mimeType) {
+    @Cacheable("spring.swing.file.type.description")
+    public Optional<String> getFileTypeDescription(final String mimeType) {
         return ofNullable(mimeType)
-            .map(this::getPathToMimeTypeXmlFile)
+            .flatMap(this::getPathToMimeTypeXmlFile)
             .map(Path::toFile)
             .filter(File::exists)
             .flatMap(this::getMimeTypeDescription);
@@ -81,10 +81,10 @@ public class LinuxMimeTypeInfoProvider implements MimeTypeInfoProvider {
         }
     }
 
-    protected Path getPathToMimeTypeXmlFile(final MimeType mimeType) {
-        return Paths.get(
-            "/usr/share/mime/",
-            mimeType.getType(),
-            mimeType.getSubtype() + ".xml");
+    protected Optional<Path> getPathToMimeTypeXmlFile(final String mimeType) {
+        return ofNullable(mimeType)
+            .map(mime -> mime.split("/"))
+            .filter(mime -> mime.length == 2)
+            .map(mime -> Paths.get("/usr/share/mime/", mime[0], mime[1] + ".xml"));
     }
 }

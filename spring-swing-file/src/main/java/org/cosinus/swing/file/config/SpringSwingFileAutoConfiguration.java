@@ -26,11 +26,16 @@ import org.cosinus.swing.exec.ProcessExecutor;
 import org.cosinus.swing.file.FileHandler;
 import org.cosinus.swing.file.FileSystem;
 import org.cosinus.swing.file.linux.LinuxFileSystem;
+import org.cosinus.swing.file.mac.MacFileInfoProvider;
 import org.cosinus.swing.file.mac.MacFileSystem;
+import org.cosinus.swing.file.DefaultFileInfoProvider;
+import org.cosinus.swing.file.linux.LinuxFileInfoProvider;
 import org.cosinus.swing.file.windows.WindowsFileSystem;
-import org.cosinus.swing.mimetype.MimeTypeResolver;
+import org.cosinus.swing.file.FileInfoProvider;
+import org.cosinus.swing.file.mimetype.MimeTypeResolver;
 import org.cosinus.swing.translate.Translator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 
 @AutoConfiguration
@@ -48,19 +53,50 @@ public class SpringSwingFileAutoConfiguration {
     public FileSystem linuxFileSystem(final ProcessExecutor processExecutor,
                                       final ObjectMapper objectMapper,
                                       final ErrorHandler errorHandler,
-                                      final Translator translator) {
-        return new LinuxFileSystem(processExecutor, objectMapper, errorHandler, translator);
+                                      final Translator translator,
+                                      final MimeTypeResolver mimeTypeResolver,
+                                      final FileInfoProvider fileInfoProvider) {
+        return new LinuxFileSystem(processExecutor,
+            objectMapper,
+            errorHandler,
+            translator,
+            mimeTypeResolver,
+            fileInfoProvider);
     }
 
     @Bean
     @ConditionalOnMac
-    public FileSystem macFileSystem(final ProcessExecutor processExecutor) {
-        return new MacFileSystem(processExecutor);
+    public FileSystem macFileSystem(final ProcessExecutor processExecutor,
+                                    final FileInfoProvider fileTypeInfoProvider) {
+        return new MacFileSystem(processExecutor, fileTypeInfoProvider);
     }
 
     @Bean
     @ConditionalOnWindows
     public FileSystem windowsFileSystem() {
         return new WindowsFileSystem();
+    }
+    @Bean
+    @ConditionalOnLinux
+    public FileInfoProvider linuxFileTypeInfoProvider(final Translator translator) {
+        return new LinuxFileInfoProvider(translator);
+    }
+
+    @Bean
+    @ConditionalOnMac
+    public FileInfoProvider macFileTypeInfoProvider(final ProcessExecutor processExecutor,
+                                                    final Translator translator) {
+        return new MacFileInfoProvider(processExecutor, translator);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public FileInfoProvider mimeTypeInfoProvider() {
+        return new DefaultFileInfoProvider();
+    }
+
+    @Bean
+    public MimeTypeResolver mimeTypeResolver() {
+        return new MimeTypeResolver();
     }
 }
