@@ -17,7 +17,11 @@
 
 package org.cosinus.swing.menu;
 
+import lombok.Setter;
+import org.cosinus.swing.action.ActionController;
+import org.cosinus.swing.action.ActionInContext;
 import org.cosinus.swing.form.FormComponent;
+import org.cosinus.swing.icon.IconHolder;
 import org.cosinus.swing.translate.Translator;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,14 +30,20 @@ import java.awt.event.ActionListener;
 
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
-public class RadioButtonMenuItem extends JRadioButtonMenuItem implements FormComponent, DuplicateMenuHolder {
+public class RadioButtonMenuItem extends JRadioButtonMenuItem implements FormComponent, DuplicateMenuHolder, IconHolder {
 
     @Autowired
     protected Translator translator;
 
+    @Autowired
+    protected ActionController actionController;
+
     private final JRadioButtonMenuItem altMenuItem;
 
     private final String key;
+
+    @Setter
+    private String iconName;
 
     public RadioButtonMenuItem(ActionListener action,
                                String key) {
@@ -68,6 +78,11 @@ public class RadioButtonMenuItem extends JRadioButtonMenuItem implements FormCom
         altMenuItem = new JRadioButtonMenuItem();
         altMenuItem.addActionListener(action);
         altMenuItem.setAccelerator(keyStroke);
+
+
+        this.iconName = actionController.findAction(key)
+            .map(ActionInContext::getIconName)
+            .orElse(null);
     }
 
     public void setText(String text) {
@@ -85,12 +100,12 @@ public class RadioButtonMenuItem extends JRadioButtonMenuItem implements FormCom
     }
 
     @Override
-    public void initComponents() {
-
+    public void translate() {
+        setText(translator.translate(key));
     }
 
     @Override
-    public void translate() {
-        setText(translator.translate(key));
+    public String getIconName() {
+        return iconName;
     }
 }

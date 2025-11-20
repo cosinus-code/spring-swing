@@ -25,7 +25,7 @@ import static org.cosinus.swing.context.ApplicationContextInjector.injectContext
  * Extension of the {@link JProgressBar}
  * which will automatically inject the application context.
  */
-public class ProgressBar extends JProgressBar {
+public class ProgressBar extends JProgressBar implements FormComponent {
 
     public ProgressBar() {
         injectContext(this);

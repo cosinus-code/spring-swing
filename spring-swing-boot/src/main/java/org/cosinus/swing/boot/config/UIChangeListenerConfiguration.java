@@ -14,15 +14,15 @@
  *  limitations under the License.
  *
  */
-package org.cosinus.swing.form;
 
-import javax.swing.*;
+package org.cosinus.swing.boot.config;
 
-import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
+import org.cosinus.swing.boot.condition.ConditionalOnListeningUIChanges;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
-public class TextArea extends JTextArea implements FormComponent {
-
-    public TextArea() {
-        injectContext(this);
-    }
+@Configuration
+@EnableScheduling
+@ConditionalOnListeningUIChanges
+public class UIChangeListenerConfiguration {
 }

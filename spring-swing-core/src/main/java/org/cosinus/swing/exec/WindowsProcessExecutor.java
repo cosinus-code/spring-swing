@@ -20,30 +20,15 @@ package org.cosinus.swing.exec;
 import java.io.File;
 import java.util.Optional;
 
-import static org.cosinus.swing.ui.ApplicationUIHandler.OS_DARK_THEME;
-import static org.cosinus.swing.ui.ApplicationUIHandler.OS_LIGHT_THEME;
-import static org.cosinus.swing.util.WindowsUtils.getRegistryBooleanValue;
-
 /**
  * Implementation of {@link ProcessExecutor} for Windows
  */
 public class WindowsProcessExecutor implements ProcessExecutor {
 
-    private static final String PERSONALIZE_REGISTRY = "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize";
-
-    private static final String APPS_USE_LIGHT_THEME = "AppsUseLightTheme";
-
     @Override
     public void executeFile(File file) {
         execute(false, file.getParentFile(), false,
             "rundll32", "url.dll,FileProtocolHandler", file.getName());
-    }
-
-    @Override
-    public Optional<String> getOsTheme() {
-        return Optional.of(getRegistryBooleanValue(PERSONALIZE_REGISTRY, APPS_USE_LIGHT_THEME) ?
-                               OS_LIGHT_THEME :
-                               OS_DARK_THEME);
     }
 
     @Override

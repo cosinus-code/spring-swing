@@ -17,9 +17,13 @@
 
 package org.cosinus.swing.image.icon;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.cosinus.swing.icon.IconSize;
 import org.cosinus.swing.image.ImageHandler;
 import org.cosinus.swing.resource.ClasspathResourceResolver;
 import org.cosinus.swing.ui.ApplicationUIHandler;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 
 import javax.swing.*;
@@ -29,14 +33,16 @@ import java.util.Optional;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
+import static org.cosinus.swing.icon.IconSize.X256;
 import static org.cosinus.swing.image.ImageHandler.DISABLED_FILTER;
 import static org.cosinus.swing.image.ImageHandler.GRAY_FILTER;
-import static org.cosinus.swing.image.icon.IconSize.X256;
 
 /**
  * Icons handler
  */
 public class IconHandler {
+
+    private static final Logger LOG = LogManager.getLogger(IconHandler.class);
 
     private static final String SPRING_SWING_ICONS_CACHE_NAME = "spring.swing.icons";
 
@@ -48,9 +54,10 @@ public class IconHandler {
 
     private final ImageHandler imageHandler;
 
-    public IconHandler(ClasspathResourceResolver resourceResolver,
-                       IconProvider iconProvider,
-                       ApplicationUIHandler uiHandler, ImageHandler imageHandler) {
+    public IconHandler(final ClasspathResourceResolver resourceResolver,
+                       final IconProvider iconProvider,
+                       final ApplicationUIHandler uiHandler,
+                       final ImageHandler imageHandler) {
         this.resourceResolver = resourceResolver;
         this.iconProvider = iconProvider;
         this.uiHandler = uiHandler;
@@ -71,12 +78,10 @@ public class IconHandler {
     @Cacheable(value = SPRING_SWING_ICONS_CACHE_NAME)
     public Optional<Icon> findIconByName(String name, IconSize size) {
         return getRemoteIcon(name)
-            .map(icon -> scaleIcon(icon, size))
             .or(() -> iconProvider.findIconByName(name, size)
                 .or(() -> iconProvider.findIconByName(name, X256)
-                    .map(icon -> scaleIcon(icon, size)))
-                .or(() -> this.findIconByResource(name + ".png")
-                    .map(icon -> scaleIcon(icon, size))));
+                    .or(() -> this.findIconByResource(name + ".png"))))
+            .map(icon -> scaleIcon(icon, size));
     }
 
     protected boolean isUrl(String text) {
@@ -164,4 +169,11 @@ public class IconHandler {
             .<Icon>map(ImageIcon::new)
             .orElse(iconToResize);
     }
+
+    @CacheEvict(value = SPRING_SWING_ICONS_CACHE_NAME, allEntries = true, beforeInvocation = true)
+    public void resetIcons() {
+        LOG.info("'{}' cache evicted due to icon theme changed.", SPRING_SWING_ICONS_CACHE_NAME);
+        iconProvider.initialize();
+    }
+
 }

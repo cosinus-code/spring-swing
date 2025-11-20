@@ -41,14 +41,6 @@ public class Panel extends JPanel implements FormComponent, Canvas {
         injectContext(this);
     }
 
-    @Override
-    public void initComponents() {
-    }
-
-    @Override
-    public void translate() {
-    }
-
     public void registerEscapeAction(Supplier<ActionListener> actionProvider) {
         registerKeyboardAction(actionProvider.get(),
             getKeyStroke(KeyEvent.VK_ESCAPE, 0),

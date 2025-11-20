@@ -17,7 +17,9 @@
 
 package org.cosinus.swing.form.control;
 
-import org.cosinus.swing.color.Colors;
+import lombok.Setter;
+import org.cosinus.swing.form.FormComponent;
+import org.cosinus.swing.icon.IconHolder;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -32,10 +34,13 @@ import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.border.Borders.emptyBorder;
 import static org.cosinus.swing.color.Colors.getLighterColor;
 
-public class NoBorderButton extends Button {
+public class NoBorderButton extends Button implements FormComponent, IconHolder {
 
     @Autowired
     private ApplicationUIHandler uiHandler;
+
+    @Setter
+    private String iconName;
 
     private Color initialBackground;
 
@@ -84,17 +89,13 @@ public class NoBorderButton extends Button {
     }
 
     public void init() {
-        initialBackground = getBackground();
-
-        setUI(new BasicButtonUI());
-        setBorder(emptyBorder(2, 5, 2, 5));
-        setCursor(uiHandler.getHandCursor());
-
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent mouseEvent) {
-
-                ofNullable(getBackground())
+                if (!getBackground().equals(initialBackground)) {
+                    initialBackground = getBackground();
+                }
+                ofNullable(initialBackground)
                     .map(background -> getLighterColor(background, 30))
                     .ifPresent(NoBorderButton.this::setBackground);
             }
@@ -106,4 +107,17 @@ public class NoBorderButton extends Button {
         });
     }
 
+    @Override
+    public void updateForm() {
+        initialBackground = getBackground();
+
+        setUI(new BasicButtonUI());
+        setBorder(emptyBorder(2, 5, 2, 5));
+        setCursor(uiHandler.getHandCursor());
+    }
+
+    @Override
+    public String getIconName() {
+        return iconName;
+    }
 }

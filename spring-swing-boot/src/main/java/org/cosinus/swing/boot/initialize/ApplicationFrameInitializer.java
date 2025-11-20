@@ -29,7 +29,7 @@ public class ApplicationFrameInitializer {
 
     private final ApplicationFrame applicationFrame;
 
-    public ApplicationFrameInitializer(ApplicationFrame applicationFrame) {
+    public ApplicationFrameInitializer(final ApplicationFrame applicationFrame) {
         this.applicationFrame = applicationFrame;
     }
 

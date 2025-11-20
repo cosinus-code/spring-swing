@@ -20,6 +20,7 @@ package org.cosinus.swing.preference.dialog;
 import org.cosinus.swing.border.Borders;
 import org.cosinus.swing.context.ApplicationHandler;
 import org.cosinus.swing.error.ErrorHandler;
+import org.cosinus.swing.form.ScrollPane;
 import org.cosinus.swing.form.control.Control;
 import org.cosinus.swing.form.control.ControlType;
 import org.cosinus.swing.layout.SpringGridLayout;
@@ -165,7 +166,7 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
 
         preferencesCardFramePanel.add(preferencesPanel, BorderLayout.NORTH);
 
-        JScrollPane preferencesScrollPane = new JScrollPane();
+        ScrollPane preferencesScrollPane = new ScrollPane();
         preferencesScrollPane.setFocusable(false);
         preferencesScrollPane.getVerticalScrollBar().setUnitIncrement(16);
         preferencesScrollPane.getHorizontalScrollBar().setUnitIncrement(16);

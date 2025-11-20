@@ -18,19 +18,25 @@
 package org.cosinus.swing.boot.config;
 
 import com.formdev.flatlaf.FlatLightLaf;
+import org.cosinus.swing.boot.condition.ConditionalOnLinux;
+import org.cosinus.swing.boot.condition.ConditionalOnMac;
 import org.cosinus.swing.boot.condition.ConditionalOnOperatingSystem;
+import org.cosinus.swing.boot.condition.ConditionalOnWindows;
 import org.cosinus.swing.boot.initialize.LookAndFeelInitializer;
 import org.cosinus.swing.context.UIProperties;
+import org.cosinus.swing.exec.ProcessExecutor;
 import org.cosinus.swing.preference.Preferences;
 import org.cosinus.swing.resource.ClasspathResourceResolver;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.cosinus.swing.ui.dark.DarkLookAndFeel;
+import org.cosinus.swing.ui.listener.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 
 import static org.cosinus.swing.os.OperatingSystem.MAC;
 import static org.cosinus.swing.os.OperatingSystem.WINDOWS;
@@ -41,12 +47,13 @@ import static org.cosinus.swing.os.OperatingSystem.WINDOWS;
  * This includes all UI related beans configuration.
  */
 @AutoConfiguration
+@Import(UIChangeListenerConfiguration.class)
 public class ApplicationUIAutoConfiguration {
 
     /**
      * LookAndFeel initializer using "swing.ui.theme" application property value.
      *
-     * @param preferences the application preferences
+     * @param preferences  the application preferences
      * @param uiHandler    the UI handler
      * @param uiProperties the UI properties
      * @return the {@link LookAndFeelInitializer} bean
@@ -57,11 +64,13 @@ public class ApplicationUIAutoConfiguration {
     public LookAndFeelInitializer defaultThemeInitializer(
         final Preferences preferences,
         final ApplicationUIHandler uiHandler,
+        final UIThemeProvider uiThemeProvider,
         final UIProperties uiProperties,
         final ClasspathResourceResolver resourceResolver,
         @Autowired(required = false) final DarkLookAndFeel darkLookAndFeel) {
 
-        return new LookAndFeelInitializer(uiProperties, preferences, uiHandler, resourceResolver, darkLookAndFeel);
+        return new LookAndFeelInitializer(
+            uiProperties, preferences, uiHandler, uiThemeProvider, resourceResolver, darkLookAndFeel);
     }
 
     /**
@@ -77,4 +86,26 @@ public class ApplicationUIAutoConfiguration {
         return new DarkLookAndFeel();
     }
 
+    @Bean
+    @ConditionalOnLinux
+    public UIThemeProvider linuxThemeProvider(final ProcessExecutor processExecutor) {
+        return new LinuxUIThemeProvider(processExecutor);
+    }
+
+    @Bean
+    @ConditionalOnMac
+    public UIThemeProvider macThemeProvider(final ProcessExecutor processExecutor) {
+        return new MacUIThemeProvider(processExecutor);
+    }
+
+    @Bean
+    @ConditionalOnWindows
+    public UIThemeProvider windowsThemeProvider() {
+        return new WindowsUIThemeProvider();
+    }
+
+    @Bean
+    public UIChangeController uiChangeController(final UIThemeProvider uiThemeProvider) {
+        return new UIChangeController(uiThemeProvider);
+    }
 }

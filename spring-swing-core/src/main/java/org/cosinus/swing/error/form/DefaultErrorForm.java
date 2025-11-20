@@ -21,6 +21,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.action.EscapeAction;
 import org.cosinus.swing.error.SpringSwingException;
+import org.cosinus.swing.form.ScrollPane;
+import org.cosinus.swing.form.TextArea;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.cosinus.swing.window.Dialog;
@@ -62,9 +64,9 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
 
     private JButton continueButton, exitButton, detailsButton;
 
-    private JTextArea txaDetails;
+    private TextArea txaDetails;
 
-    private JScrollPane panDetails;
+    private ScrollPane panDetails;
 
     private int detailsHeight = 280;
 
@@ -111,13 +113,13 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
             panImage.setBorder(emptyBorder(10));
             panImage.add(new JLabel(uiHandler.getErrorIcon()), NORTH);
 
-            txaDetails = new JTextArea();
+            txaDetails = new TextArea();
             txaDetails.setEditable(false);
             txaDetails.setFont(uiHandler.getLabelFont());
             uiHandler.getInactiveForegroundColor()
                 .ifPresent(txaDetails::setForeground);
 
-            panDetails = new JScrollPane();
+            panDetails = new ScrollPane();
             panDetails.setViewportView(txaDetails);
             panDetails.setVisible(false);
 

@@ -18,50 +18,28 @@
 package org.cosinus.swing.form;
 
 import javax.swing.*;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreeNode;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.awt.Component;
 
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
-/**
- * Extension of the {@link JTree}
- * which will automatically inject the application context.
- */
-public class Tree extends JTree implements FormComponent {
+public class ScrollPane extends JScrollPane implements FormComponent {
 
-    public Tree() {
+    public ScrollPane() {
         injectContext(this);
     }
 
-    public Tree(Object[] value) {
-        super(value);
+    public ScrollPane(Component view) {
+        super(view);
         injectContext(this);
     }
 
-    public Tree(Vector<?> value) {
-        super(value);
+    public ScrollPane(int vsbPolicy, int hsbPolicy) {
+        super(vsbPolicy, hsbPolicy);
         injectContext(this);
     }
 
-    public Tree(Hashtable<?, ?> value) {
-        super(value);
-        injectContext(this);
-    }
-
-    public Tree(TreeNode root) {
-        super(root);
-        injectContext(this);
-    }
-
-    public Tree(TreeNode root, boolean asksAllowsChildren) {
-        super(root, asksAllowsChildren);
-        injectContext(this);
-    }
-
-    public Tree(TreeModel newModel) {
-        super(newModel);
+    public ScrollPane(Component view, int vsbPolicy, int hsbPolicy) {
+        super(view, vsbPolicy, hsbPolicy);
         injectContext(this);
     }
 }

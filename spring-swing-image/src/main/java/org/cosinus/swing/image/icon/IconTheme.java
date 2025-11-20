@@ -15,32 +15,28 @@
  *
  */
 
-package org.cosinus.swing.form;
+package org.cosinus.swing.image.icon;
 
-import javax.swing.*;
-import java.io.IOException;
-import java.net.URL;
+public class IconTheme {
 
-import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
+    private final String lightName;
 
-public class EditorPane extends JEditorPane implements FormComponent {
+    private final String darkName;
 
-    public EditorPane() {
-        injectContext(this);
+    public IconTheme(String name) {
+        this(name, name);
     }
 
-    public EditorPane(URL initialPage) throws IOException {
-        super(initialPage);
-        injectContext(this);
+    public IconTheme(String lightName, String darkName) {
+        this.lightName = lightName;
+        this.darkName = darkName;
     }
 
-    public EditorPane(String url) throws IOException {
-        super(url);
-        injectContext(this);
+    public String getLightName() {
+        return lightName;
     }
 
-    public EditorPane(String type, String text) {
-        super(type, text);
-        injectContext(this);
+    public String getDarkName() {
+        return darkName;
     }
 }

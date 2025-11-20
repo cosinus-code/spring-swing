@@ -15,32 +15,25 @@
  *
  */
 
-package org.cosinus.swing.form;
+package org.cosinus.swing.icon;
 
 import javax.swing.*;
-import java.io.IOException;
-import java.net.URL;
 
-import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
+import static org.cosinus.swing.icon.IconSize.X16;
 
-public class EditorPane extends JEditorPane implements FormComponent {
+public interface IconHolder {
 
-    public EditorPane() {
-        injectContext(this);
+    default IconSize getIconSize() {
+        return X16;
     }
 
-    public EditorPane(URL initialPage) throws IOException {
-        super(initialPage);
-        injectContext(this);
-    }
+    String getIconName();
 
-    public EditorPane(String url) throws IOException {
-        super(url);
-        injectContext(this);
-    }
+    Icon getIcon();
 
-    public EditorPane(String type, String text) {
-        super(type, text);
-        injectContext(this);
+    void setIcon(Icon icon);
+
+    default String getTooltip() {
+        return null;
     }
 }

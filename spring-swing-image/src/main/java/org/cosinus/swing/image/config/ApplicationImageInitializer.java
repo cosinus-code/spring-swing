@@ -20,22 +20,15 @@ package org.cosinus.swing.image.config;
 import com.twelvemonkeys.imageio.plugins.svg.SVGImageReaderSpi;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.cosinus.swing.action.ActionController;
-import org.cosinus.swing.action.ActionInContext;
-import org.cosinus.swing.boot.SwingApplicationFrame;
 import org.cosinus.swing.boot.initialize.ApplicationInitializer;
-import org.cosinus.swing.image.icon.IconHandler;
-import org.cosinus.swing.image.icon.IconProvider;
+import org.cosinus.swing.image.icon.IconInitializer;
 import org.cosinus.swing.image.svg.SvgImageReaderSpi;
-import org.cosinus.swing.menu.MenuBar;
-import org.cosinus.swing.menu.MenuItemModel;
+import org.cosinus.swing.ui.listener.UIChangeController;
 
 import javax.imageio.spi.IIORegistry;
 import javax.imageio.spi.ImageReaderSpi;
 
-import static java.util.Optional.ofNullable;
 import static org.cosinus.stream.Streams.stream;
-import static org.cosinus.swing.image.icon.IconSize.X16;
 
 /**
  * Swing UI initializer
@@ -44,22 +37,14 @@ public class ApplicationImageInitializer implements ApplicationInitializer {
 
     private static final Logger LOG = LogManager.getLogger(ApplicationImageInitializer.class);
 
-    private final IconHandler iconHandler;
+    private final IconInitializer iconInitializer;
 
-    private final IconProvider iconProvider;
+    private final UIChangeController uiChangeController;
 
-    private final SwingApplicationFrame applicationFrame;
-
-    private final ActionController actionController;
-
-    public ApplicationImageInitializer(final IconHandler iconHandler,
-                                       final IconProvider iconProvider,
-                                       final SwingApplicationFrame applicationFrame,
-                                       final ActionController actionController) {
-        this.iconHandler = iconHandler;
-        this.iconProvider = iconProvider;
-        this.applicationFrame = applicationFrame;
-        this.actionController = actionController;
+    public ApplicationImageInitializer(final IconInitializer iconInitializer,
+                                       final UIChangeController uiChangeController) {
+        this.iconInitializer = iconInitializer;
+        this.uiChangeController = uiChangeController;
     }
 
     @Override
@@ -70,26 +55,8 @@ public class ApplicationImageInitializer implements ApplicationInitializer {
 
     protected void initializeImages() {
         registerSvgImageReader();
-
-        iconProvider.initialize();
-        ofNullable(applicationFrame.getMenu())
-            .ifPresent(menuBar -> menuBar.getMenuModel()
-                .values()
-                .stream()
-                .flatMap(menu -> menu.entrySet().stream())
-                .forEach(menuItamEntry ->
-                    setIcon(menuBar, menuItamEntry.getKey(), menuItamEntry.getValue())));
-    }
-
-    private void setIcon(final MenuBar menuBar,
-                         final String menuItemKey,
-                         final MenuItemModel menuItemModel) {
-        ofNullable(menuItemModel.getIcon())
-            .or(() -> actionController.findAction(menuItemKey)
-                .map(ActionInContext::getIconName))
-            .flatMap(iconName -> iconHandler.findIconByName(iconName, X16))
-            .ifPresent(icon -> ofNullable(menuBar.getMenuComponent(menuItemKey))
-                .ifPresent(menuComponent -> menuComponent.setIcon(icon)));
+        uiChangeController.registerUIChangeListener(iconInitializer);
+        iconInitializer.initializeIcons();
     }
 
     protected void registerSvgImageReader() {

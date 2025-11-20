@@ -16,6 +16,28 @@
  */
 package org.cosinus.swing.file.linux;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.cosinus.swing.error.ErrorHandler;
+import org.cosinus.swing.error.JsonConvertException;
+import org.cosinus.swing.error.ProcessExecutionException;
+import org.cosinus.swing.exec.ProcessExecutor;
+import org.cosinus.swing.file.*;
+import org.cosinus.swing.file.mac.BlockDevice;
+import org.cosinus.swing.file.mac.BlockDevices;
+import org.cosinus.swing.file.mimetype.MimeTypeResolver;
+import org.cosinus.swing.translate.Translator;
+import org.springframework.util.MimeType;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Path;
+import java.util.*;
+import java.util.stream.Stream;
+
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.probeContentType;
@@ -26,49 +48,13 @@ import static java.util.function.Function.identity;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Stream.concat;
-import static org.apache.commons.lang3.StringUtils.substringAfter;
-import static org.apache.commons.lang3.StringUtils.substringBefore;
-import static org.apache.commons.lang3.StringUtils.substringBetween;
+import static org.apache.commons.lang3.StringUtils.*;
 import static org.cosinus.swing.error.ProcessExecutionException.PERMISSION_DENIED;
 import static org.cosinus.swing.exec.Command.commands;
 import static org.cosinus.swing.exec.Command.of;
 import static org.cosinus.swing.file.linux.MtpFileSystemRoot.MTP_PROTOCOL;
 import static org.cosinus.swing.file.linux.MtpFileSystemRoot.MTP_PROTOCOL_MARK;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Stream;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.cosinus.swing.error.ErrorHandler;
-import org.cosinus.swing.error.JsonConvertException;
-import org.cosinus.swing.error.ProcessExecutionException;
-import org.cosinus.swing.exec.ProcessExecutor;
-import org.cosinus.swing.file.Application;
-import org.cosinus.swing.file.DefaultFileSystemRoot;
-import org.cosinus.swing.file.FileCompatibleApplications;
-import org.cosinus.swing.file.FileSystem;
-import org.cosinus.swing.file.FileSystemRoot;
-import org.cosinus.swing.file.mac.BlockDevice;
-import org.cosinus.swing.file.mac.BlockDevices;
-import org.cosinus.swing.file.FileInfoProvider;
-import org.cosinus.swing.file.mimetype.MimeTypeResolver;
-import org.cosinus.swing.translate.Translator;
-import org.springframework.util.MimeType;
+import static org.cosinus.swing.icon.IconSize.X32;
 
 /**
  * Implementation of {@link FileSystem} for Linux
@@ -358,7 +344,7 @@ public class LinuxFileSystem implements FileSystem {
 
             String id = desktopFile.getName();
             return new Application(id, name, translatedName, comment, translatedComment,
-                executable, iconName, runInterminal);
+                executable, X32, iconName, runInterminal);
 
         } catch (IOException ex) {
             LOG.error("Failed to read desktop file: {}", desktopFile.getAbsolutePath(), ex);

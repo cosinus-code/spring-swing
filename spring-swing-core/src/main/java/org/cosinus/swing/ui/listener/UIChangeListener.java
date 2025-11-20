@@ -15,32 +15,22 @@
  *
  */
 
-package org.cosinus.swing.form;
+package org.cosinus.swing.ui.listener;
 
-import javax.swing.*;
-import java.io.IOException;
-import java.net.URL;
+public interface UIChangeListener {
 
-import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
-
-public class EditorPane extends JEditorPane implements FormComponent {
-
-    public EditorPane() {
-        injectContext(this);
+    default void lookAndFeelChanged() {
     }
 
-    public EditorPane(URL initialPage) throws IOException {
-        super(initialPage);
-        injectContext(this);
+    default void uiThemeChanged() {
     }
 
-    public EditorPane(String url) throws IOException {
-        super(url);
-        injectContext(this);
+    default void iconThemeChanged() {
     }
 
-    public EditorPane(String type, String text) {
-        super(type, text);
-        injectContext(this);
+    default void colorThemeChanged() {
+    }
+
+    default void cursorThemeChanged() {
     }
 }

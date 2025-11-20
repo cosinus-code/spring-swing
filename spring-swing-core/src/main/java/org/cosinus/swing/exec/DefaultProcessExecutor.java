@@ -31,11 +31,6 @@ public class DefaultProcessExecutor implements ProcessExecutor {
     }
 
     @Override
-    public Optional<String> getOsTheme() {
-        return Optional.empty();
-    }
-
-    @Override
     public Optional<String> executeWithPrivilegesAndGetOutput(String... command) {
         return Optional.empty();
     }

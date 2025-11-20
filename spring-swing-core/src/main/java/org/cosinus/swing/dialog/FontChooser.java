@@ -18,6 +18,7 @@
 package org.cosinus.swing.dialog;
 
 import org.cosinus.swing.error.ErrorHandler;
+import org.cosinus.swing.form.ScrollPane;
 import org.cosinus.swing.window.Dialog;
 import org.cosinus.swing.window.Frame;
 import org.cosinus.swing.translate.Translator;
@@ -88,9 +89,9 @@ public class FontChooser extends Dialog<Font> implements ActionListener, ListSel
 
     @Override
     public void initComponents() {
-        JScrollPane scrFont = new JScrollPane();
-        JScrollPane scrStyle = new JScrollPane();
-        JScrollPane scrSize = new JScrollPane();
+        ScrollPane scrFont = new ScrollPane();
+        ScrollPane scrStyle = new ScrollPane();
+        ScrollPane scrSize = new ScrollPane();
 
         lstFont = new JList<>();
         lstStyle = new JList<>(new String[]{

@@ -17,9 +17,15 @@
 
 package org.cosinus.swing.form.control;
 
+import org.cosinus.stream.swing.ExtendedContainer;
+import org.cosinus.swing.icon.IconHolder;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.stream.Stream;
 
+import static java.util.Optional.ofNullable;
+import static java.util.stream.IntStream.range;
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
 /**
@@ -28,7 +34,7 @@ import static org.cosinus.swing.context.ApplicationContextInjector.injectContext
  *
  * @param <T> the type of the value
  */
-public class List<T> extends JList<T> implements Control<T>, MultipleValuesControl<T> {
+public class List<T> extends JList<T> implements Control<T>, MultipleValuesControl<T>, ExtendedContainer {
 
     public List(ComboBoxModel<T> aModel) {
         super(aModel);
@@ -73,6 +79,15 @@ public class List<T> extends JList<T> implements Control<T>, MultipleValuesContr
         setModel(new DefaultComboBoxModel<>(values));
     }
 
+    @Override
+    public Stream<Component> streamAdditionalContainers() {
+        DefaultComboBoxModel<T> model = (DefaultComboBoxModel<T>) getModel();
+        return range(0, model.getSize())
+            .mapToObj(model::getElementAt)
+            .filter(item -> item instanceof Component)
+            .map(Component.class::cast);
+    }
+
     private static class DelegateCellRenderer<T> extends DefaultListCellRenderer {
 
         private final ListCellRenderer<T> delegate;
@@ -82,17 +97,19 @@ public class List<T> extends JList<T> implements Control<T>, MultipleValuesContr
         }
 
         @Override
-        public Component getListCellRendererComponent(
-            JList list,
-            Object value,
-            int index,
-            boolean selected,
-            boolean expanded) {
+        public Component getListCellRendererComponent(JList list,
+                                                      Object value,
+                                                      int index,
+                                                      boolean selected,
+                                                      boolean expanded) {
+            JLabel label = (JLabel) delegate.getListCellRendererComponent(
+                list, (T) value, index, selected, expanded);
 
-            JLabel label = (JLabel) delegate.getListCellRendererComponent(list, (T) value, index, selected, expanded);
-            if (value instanceof ControlValue controlValue) {
-                label.setIcon(controlValue.getIcon());
-                label.setToolTipText(controlValue.getTooltip());
+            if (value instanceof IconHolder iconHolder) {
+                ofNullable(iconHolder.getIcon())
+                    .ifPresent(label::setIcon);
+                ofNullable(iconHolder.getTooltip())
+                    .ifPresent(label::setToolTipText);
             }
             return label;
         }

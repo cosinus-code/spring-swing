@@ -20,9 +20,11 @@ package org.cosinus.swing.file;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.exec.CommandLine;
-import org.cosinus.swing.form.control.ControlValue;
+import org.cosinus.swing.icon.IconHolder;
+import org.cosinus.swing.icon.IconSize;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.util.Objects;
 import java.util.Set;
@@ -33,7 +35,7 @@ import static org.cosinus.swing.context.ApplicationContextInjector.injectContext
 
 @Getter
 @Setter
-public class Application implements ControlValue {
+public class Application extends Component implements IconHolder {
 
     private static final Set<String> FILE_OPTIONS = Set.of("%f", "%F", "%u", "%U");
 
@@ -49,6 +51,8 @@ public class Application implements ControlValue {
 
     private final String translatedComment;
 
+    private final IconSize iconSize;
+
     private final String iconName;
 
     private Icon icon;
@@ -61,6 +65,7 @@ public class Application implements ControlValue {
                        String comment,
                        String translatedComment,
                        String executable,
+                       IconSize iconSize,
                        String iconName,
                        boolean runInTerminal) {
         injectContext(this);
@@ -70,6 +75,7 @@ public class Application implements ControlValue {
         this.comment = comment;
         this.translatedComment = translatedComment;
         this.executable = executable;
+        this.iconSize = iconSize;
         this.iconName = iconName;
         this.runInTerminal = runInTerminal;
     }

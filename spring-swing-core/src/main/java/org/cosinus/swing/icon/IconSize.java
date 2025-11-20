@@ -15,7 +15,7 @@
  *
  */
 
-package org.cosinus.swing.image.icon;
+package org.cosinus.swing.icon;
 
 import java.util.Optional;
 

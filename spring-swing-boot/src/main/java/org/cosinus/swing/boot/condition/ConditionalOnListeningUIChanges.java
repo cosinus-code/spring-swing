@@ -14,15 +14,16 @@
  *  limitations under the License.
  *
  */
-package org.cosinus.swing.form;
 
-import javax.swing.*;
+package org.cosinus.swing.boot.condition;
 
-import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
-public class TextArea extends JTextArea implements FormComponent {
+import java.lang.annotation.*;
 
-    public TextArea() {
-        injectContext(this);
-    }
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@ConditionalOnProperty(name = "swing.ui.listener", matchIfMissing = true)
+public @interface ConditionalOnListeningUIChanges {
 }

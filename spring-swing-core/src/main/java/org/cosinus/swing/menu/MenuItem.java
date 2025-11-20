@@ -17,8 +17,11 @@
 
 package org.cosinus.swing.menu;
 
+import org.cosinus.swing.action.ActionController;
+import org.cosinus.swing.action.ActionInContext;
 import org.cosinus.swing.action.ActionProducer;
 import org.cosinus.swing.form.FormComponent;
+import org.cosinus.swing.icon.IconHolder;
 import org.cosinus.swing.translate.Translator;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -31,14 +34,19 @@ import static org.cosinus.swing.context.ApplicationContextInjector.injectContext
 /**
  * Menu item model
  */
-public class MenuItem extends JMenuItem implements FormComponent, ActionProducer, DuplicateMenuHolder {
+public class MenuItem extends JMenuItem implements FormComponent, ActionProducer, DuplicateMenuHolder, IconHolder {
 
     @Autowired
     protected Translator translator;
 
+    @Autowired
+    protected ActionController actionController;
+
     private JMenuItem altMenuItem;
 
     private final String key;
+
+    private final String iconName;
 
     public MenuItem(ActionListener actionListener, String key) {
         this(actionListener, key, null, false);
@@ -63,6 +71,10 @@ public class MenuItem extends JMenuItem implements FormComponent, ActionProducer
             altMenuItem.addActionListener(actionListener);
             altMenuItem.setAccelerator(keyStroke);
         }
+
+        this.iconName = actionController.findAction(key)
+            .map(ActionInContext::getIconName)
+            .orElse(null);
     }
 
     public void setText(String text) {
@@ -83,11 +95,12 @@ public class MenuItem extends JMenuItem implements FormComponent, ActionProducer
     }
 
     @Override
-    public void initComponents() {
+    public void translate() {
+        setText(translator.translate(key));
     }
 
     @Override
-    public void translate() {
-        setText(translator.translate(key));
+    public String getIconName() {
+        return iconName;
     }
 }

@@ -33,25 +33,14 @@ public class SimpleButton extends Label implements MouseListener {
     @Autowired
     private ApplicationUIHandler uiHandler;
 
-    private Runnable runnable;
+    protected Runnable runnable;
 
-    public SimpleButton(String text, Icon icon, int horizontalAlignment) {
-        super(text, icon, horizontalAlignment);
-        initComponent();
-    }
+    protected String text;
 
-    public SimpleButton(String text, int horizontalAlignment) {
-        super(text, horizontalAlignment);
-        initComponent();
-    }
-
-    public SimpleButton(String text) {
+    public SimpleButton(String iconName, String text) {
         super(text);
-        initComponent();
-    }
-
-    public SimpleButton(Icon image, int horizontalAlignment) {
-        super(image, horizontalAlignment);
+        this.text = text;
+        this.iconName = iconName;
         initComponent();
     }
 
@@ -102,5 +91,10 @@ public class SimpleButton extends Label implements MouseListener {
     public void mouseExited(MouseEvent e) {
         setBackground(uiHandler.getColor(BUTTON_BACKGROUND));
         setBorder(null);
+    }
+
+    public void setIcon(Icon icon) {
+        super.setIcon(icon);
+        setText(getIcon() == null && text != null ? text : "");
     }
 }

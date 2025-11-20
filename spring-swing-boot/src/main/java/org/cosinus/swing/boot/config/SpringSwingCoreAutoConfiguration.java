@@ -160,8 +160,7 @@ public class SpringSwingCoreAutoConfiguration {
 
     @Bean
     public ApplicationUIHandler uiHandler(final Translator translator,
-                                          final ProcessExecutor processExecutor,
                                           final Set<UIManager.LookAndFeelInfo> lookAndFeels) {
-        return new ApplicationUIHandler(translator, processExecutor, lookAndFeels);
+        return new ApplicationUIHandler(translator, lookAndFeels);
     }
 }

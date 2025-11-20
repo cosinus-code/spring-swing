@@ -15,34 +15,30 @@
  *
  */
 
-package org.cosinus.swing.exec;
+package org.cosinus.swing.ui.listener;
 
-import java.io.File;
 import java.util.Optional;
 
-/**
- * Implementation of {@link ProcessExecutor} for Mac
- */
-public class MacProcessExecutor implements ProcessExecutor {
+import static org.cosinus.swing.util.WindowsUtils.getRegistryBooleanValue;
+
+public class WindowsUIThemeProvider implements UIThemeProvider {
+
+    private static final String PERSONALIZE_REGISTRY = "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize";
+
+    private static final String APPS_USE_LIGHT_THEME = "AppsUseLightTheme";
 
     @Override
-    public void executeFile(File file) {
-        execute(false, file.getParentFile(), false, "open", "-a", file.getName());
+    public UIThemeChecksum getUITheme() {
+        return null;
     }
 
     @Override
-    public Optional<String> executeWithPrivilegesAndGetOutput(String... command) {
-        //TODO
+    public boolean isDarkOsTheme() {
+        return !getRegistryBooleanValue(PERSONALIZE_REGISTRY, APPS_USE_LIGHT_THEME);
+    }
+
+    @Override
+    public Optional<String> getIconTheme() {
         return Optional.empty();
     }
-
-    @Override
-    public Optional<String> executePipelineWithPrivilegesAndGetOutput(String[]... commands) {
-        return Optional.empty();
-    }
-
-    @Override
-    public void executeWithPrivileges(String... command) {
-    }
-
 }

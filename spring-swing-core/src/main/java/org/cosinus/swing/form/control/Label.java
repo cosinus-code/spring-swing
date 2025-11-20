@@ -17,6 +17,9 @@
 
 package org.cosinus.swing.form.control;
 
+import lombok.Setter;
+import org.cosinus.swing.icon.IconHolder;
+
 import javax.swing.*;
 
 import static java.util.Optional.ofNullable;
@@ -26,7 +29,10 @@ import static org.cosinus.swing.context.ApplicationContextInjector.injectContext
  * Extension of the {@link JLabel}
  * which will automatically inject the application context.
  */
-public class Label extends JLabel implements Control<Object> {
+public class Label extends JLabel implements Control<Object>, IconHolder {
+
+    @Setter
+    protected String iconName;
 
     public Label(String text, Icon icon, int horizontalAlignment) {
         super(text, icon, horizontalAlignment);
@@ -68,11 +74,16 @@ public class Label extends JLabel implements Control<Object> {
             .map(Object::toString)
             .ifPresent(this::setText);
 
-        if (value instanceof ControlValue controlValue) {
-            ofNullable(controlValue.getIcon())
+        if (value instanceof IconHolder iconHolder) {
+            ofNullable(iconHolder.getIcon())
                 .ifPresent(this::setIcon);
-            ofNullable(controlValue.getTooltip())
+            ofNullable(iconHolder.getTooltip())
                 .ifPresent(this::setToolTipText);
         }
+    }
+
+    @Override
+    public String getIconName() {
+        return iconName;
     }
 }

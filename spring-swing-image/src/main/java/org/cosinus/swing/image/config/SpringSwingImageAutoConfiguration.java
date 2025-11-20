@@ -18,8 +18,6 @@
 package org.cosinus.swing.image.config;
 
 import org.apache.commons.imaging.formats.icns.IcnsImageParser;
-import org.cosinus.swing.action.ActionController;
-import org.cosinus.swing.boot.SwingApplicationFrame;
 import org.cosinus.swing.boot.condition.ConditionalOnLinux;
 import org.cosinus.swing.boot.condition.ConditionalOnMac;
 import org.cosinus.swing.boot.condition.ConditionalOnWindows;
@@ -27,15 +25,11 @@ import org.cosinus.swing.context.ApplicationProperties;
 import org.cosinus.swing.file.FileSystem;
 import org.cosinus.swing.file.mimetype.MimeTypeResolver;
 import org.cosinus.swing.image.ImageHandler;
-import org.cosinus.swing.image.icon.DefaultIconProvider;
-import org.cosinus.swing.image.icon.FileExtensionKeyGenerator;
-import org.cosinus.swing.image.icon.IconHandler;
-import org.cosinus.swing.image.icon.IconProvider;
-import org.cosinus.swing.image.icon.LinuxIconProvider;
-import org.cosinus.swing.image.icon.MacIconProvider;
-import org.cosinus.swing.image.icon.WindowsIconProvider;
+import org.cosinus.swing.image.icon.*;
 import org.cosinus.swing.resource.ClasspathResourceResolver;
 import org.cosinus.swing.ui.ApplicationUIHandler;
+import org.cosinus.swing.ui.listener.UIChangeController;
+import org.cosinus.swing.ui.listener.UIThemeProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -57,10 +51,10 @@ public class SpringSwingImageAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public IconHandler iconHandler(ClasspathResourceResolver resourceResolver,
-                                   IconProvider fileIcons,
-                                   ApplicationUIHandler uiHandler,
-                                   ImageHandler imageHandler) {
+    public IconHandler iconHandler(final ClasspathResourceResolver resourceResolver,
+                                   final IconProvider fileIcons,
+                                   final ApplicationUIHandler uiHandler,
+                                   final ImageHandler imageHandler) {
         return new IconHandler(resourceResolver,
             fileIcons,
             uiHandler,
@@ -77,8 +71,9 @@ public class SpringSwingImageAutoConfiguration {
     @ConditionalOnLinux
     public IconProvider linuxIconProvider(final ApplicationProperties applicationProperties,
                                           final ApplicationUIHandler uiHandler,
+                                          final UIThemeProvider uiThemeProvider,
                                           final MimeTypeResolver mimeTypeResolver) {
-        return new LinuxIconProvider(applicationProperties, uiHandler, mimeTypeResolver);
+        return new LinuxIconProvider(applicationProperties, uiHandler, uiThemeProvider, mimeTypeResolver);
     }
 
     @Bean
@@ -103,17 +98,18 @@ public class SpringSwingImageAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ApplicationImageInitializer applicationImageInitializer(
-        final IconHandler iconHandler,
-        final IconProvider iconProvider,
-        final SwingApplicationFrame applicationFrame,
-        final ActionController actionController) {
-        return new ApplicationImageInitializer(iconHandler, iconProvider, applicationFrame,
-            actionController);
+    public ApplicationImageInitializer applicationImageInitializer(final IconInitializer iconInitializer,
+                                                                   final UIChangeController uiChangeController) {
+        return new ApplicationImageInitializer(iconInitializer, uiChangeController);
     }
 
     @Bean("fileExtensionKeyGenerator")
     public KeyGenerator keyGenerator() {
         return new FileExtensionKeyGenerator();
+    }
+
+    @Bean
+    public IconInitializer iconInitializer(final IconHandler iconHandler) {
+        return new IconInitializer(iconHandler);
     }
 }

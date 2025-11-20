@@ -19,6 +19,7 @@ package org.cosinus.swing.image.icon;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.cosinus.swing.icon.IconSize;
 import org.cosinus.swing.image.ImageHandler;
 import org.cosinus.swing.util.AutoRemovableTemporaryFile;
 import org.cosinus.swing.util.WindowsUtils;
@@ -33,7 +34,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS_XP;
-import static org.cosinus.swing.image.icon.IconSize.X16;
+import static org.cosinus.swing.icon.IconSize.X16;
 import static org.cosinus.swing.util.AutoRemovableTemporaryFile.autoRemovableTemporaryFileWithExtension;
 import static org.cosinus.swing.util.FileUtils.getExtension;
 import static org.cosinus.swing.util.WindowsUtils.getRegistryValue;

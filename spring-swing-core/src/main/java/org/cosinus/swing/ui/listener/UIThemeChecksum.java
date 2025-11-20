@@ -15,13 +15,20 @@
  *
  */
 
-package org.cosinus.swing.form.control;
+package org.cosinus.swing.ui.listener;
 
-import javax.swing.*;
+import lombok.Getter;
+import lombok.Setter;
 
-public interface ControlValue {
+@Getter
+@Setter
+public class UIThemeChecksum {
 
-    Icon getIcon();
+    private String uiThemeChecksum;
 
-    String getTooltip();
+    private String iconThemeChecksum;
+
+    private String colorThemeChecksum;
+
+    private String cursorThemeChecksum;
 }

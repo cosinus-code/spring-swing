@@ -42,6 +42,7 @@ import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.file.Application;
 import org.cosinus.swing.file.FileCompatibleApplications;
 import org.cosinus.swing.file.FileSystem;
+import org.cosinus.swing.icon.IconSize;
 import org.cosinus.swing.image.ImageHandler;
 
 /**

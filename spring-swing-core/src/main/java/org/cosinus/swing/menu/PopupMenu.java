@@ -17,12 +17,15 @@
 
 package org.cosinus.swing.menu;
 
+import org.cosinus.stream.swing.ExtendedContainer;
 import org.cosinus.swing.form.FormComponent;
 
 import javax.swing.*;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
@@ -31,9 +34,9 @@ import static org.cosinus.swing.context.ApplicationContextInjector.injectContext
 /**
  * Popup menu model
  */
-public class PopupMenu extends JPopupMenu implements FormComponent {
+public class PopupMenu extends JPopupMenu implements FormComponent, ExtendedContainer {
 
-    private Map<String, MenuItem> menuItemMap;
+    private final Map<String, JMenuItem> menuItemMap;
 
     public PopupMenu() {
         injectContext(this);
@@ -51,13 +54,12 @@ public class PopupMenu extends JPopupMenu implements FormComponent {
         JMenuItem jMenuItem = super.add(menuItemToAdd);
         if (menuItemToAdd instanceof MenuItem menuItem) {
             menuItemMap.put(menuItem.getActionKey(), menuItem);
+        } else if (menuItemToAdd instanceof CheckBoxMenuItem menuItem) {
+            menuItemMap.put(menuItem.getActionKey(), menuItem);
+        } else if (menuItemToAdd instanceof RadioButtonMenuItem menuItem) {
+            menuItemMap.put(menuItem.getActionKey(), menuItem);
         }
         return jMenuItem;
-    }
-
-    @Override
-    public void initComponents() {
-
     }
 
     @Override
@@ -71,5 +73,11 @@ public class PopupMenu extends JPopupMenu implements FormComponent {
     public void setEnabled(String key, boolean enabled) {
         ofNullable(menuItemMap.get(key))
             .ifPresent(menuItem -> menuItem.setEnabled(enabled));
+    }
+
+    @Override
+    public Stream<Component> streamAdditionalContainers() {
+        return stream(getSubElements())
+            .map(Component.class::cast);
     }
 }

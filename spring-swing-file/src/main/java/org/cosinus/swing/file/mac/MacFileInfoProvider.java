@@ -6,6 +6,7 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
+import static org.cosinus.swing.icon.IconSize.X32;
 
 import java.io.File;
 import java.util.Arrays;
@@ -203,6 +204,7 @@ public class MacFileInfoProvider implements FileInfoProvider {
                 .map(localizedDescriptions::get)
                 .orElse(null),
             "\"" + applicationPath + "/" + keyValueMap.get(EXECUTABLE) + "\" %f",
+            X32,
             applicationPath + "/" + keyValueMap.get(ICONS),
             false);
     }

@@ -20,8 +20,10 @@ package org.cosinus.swing.image.icon;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.context.ApplicationProperties;
+import org.cosinus.swing.icon.IconSize;
 import org.cosinus.swing.file.mimetype.MimeTypeResolver;
 import org.cosinus.swing.ui.ApplicationUIHandler;
+import org.cosinus.swing.ui.listener.UIThemeProvider;
 import org.springframework.util.MimeType;
 
 import javax.swing.*;
@@ -35,7 +37,7 @@ import java.util.stream.Stream;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static javax.imageio.ImageIO.read;
-import static org.cosinus.swing.image.icon.IconSize.X16;
+import static org.cosinus.swing.icon.IconSize.X16;
 
 /**
  * Implementation of {@link IconProvider} for Linux
@@ -48,6 +50,8 @@ public class LinuxIconProvider implements IconProvider {
 
     private final ApplicationUIHandler uiHandler;
 
+    private final UIThemeProvider uiThemeProvider;
+
     private final MimeTypeResolver mimeTypeResolver;
 
     private IconThemeIndex iconThemeIndex;
@@ -56,9 +60,11 @@ public class LinuxIconProvider implements IconProvider {
 
     public LinuxIconProvider(final ApplicationProperties applicationProperties,
                              final ApplicationUIHandler uiHandler,
+                             final UIThemeProvider uiThemeProvider,
                              final MimeTypeResolver mimeTypeResolver) {
         this.applicationProperties = applicationProperties;
         this.uiHandler = uiHandler;
+        this.uiThemeProvider = uiThemeProvider;
         this.mimeTypeResolver = mimeTypeResolver;
 
         this.iconThemeIndex = new IconThemeIndex();
@@ -234,7 +240,10 @@ public class LinuxIconProvider implements IconProvider {
                     "/opt/gnome2/share/icons", // SUSE
                     System.getProperty("swing.gtkthomedir") + "/icons")
                 .map(Paths::get)
-                .map(iconsFolderName -> iconsFolderName.resolve(getIconsTheme()))
+                .map(iconsFolderName -> getIconsTheme()
+                    .map(iconsFolderName::resolve))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .map(Path::toFile)
                 .filter(folder -> folder.exists() && folder.canRead())
                 .findFirst());
@@ -248,8 +257,8 @@ public class LinuxIconProvider implements IconProvider {
         return iconsThemeFolder;
     }
 
-    private String getIconsTheme() {
-        return uiHandler.getGnomeIconTheme();
+    private Optional<String> getIconsTheme() {
+        return uiThemeProvider.getIconTheme();
     }
 
 }

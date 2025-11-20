@@ -22,6 +22,8 @@ import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.boot.event.ApplicationFrameAfterInitializeEvent;
 import org.cosinus.swing.boot.event.ApplicationFrameBeforeInitializeEvent;
 import org.cosinus.swing.context.ApplicationProperties;
+import org.cosinus.swing.ui.listener.UIChangeController;
+import org.cosinus.swing.ui.listener.UIChangeListener;
 import org.cosinus.swing.window.Frame;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -32,7 +34,7 @@ import org.springframework.context.ApplicationEventPublisher;
  * Keeping this application frame instance as static field is a compromise
  * to avoid circular dependencies when the main frame is needed as parent for other windows.
  */
-public abstract class SwingApplicationFrame extends Frame implements ApplicationFrame {
+public abstract class SwingApplicationFrame extends Frame implements ApplicationFrame, UIChangeListener {
 
     private static final Logger LOG = LogManager.getLogger(SwingApplicationFrame.class);
 
@@ -43,6 +45,10 @@ public abstract class SwingApplicationFrame extends Frame implements Application
 
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
+
+
+    @Autowired
+    protected UIChangeController uiChangeController;
 
     /**
      * Initialize the application frame.
@@ -58,6 +64,7 @@ public abstract class SwingApplicationFrame extends Frame implements Application
         applicationEventPublisher.publishEvent(new ApplicationFrameAfterInitializeEvent(this));
 
         applicationFrame = this;
+        uiChangeController.registerUIChangeListener(this);
     }
 
     /**
@@ -66,6 +73,7 @@ public abstract class SwingApplicationFrame extends Frame implements Application
     @Override
     public void showApplicationFrame() {
         initComponents();
+        triggerFormUpdate();
 
         LOG.info("Showing application frame...");
         setVisible(true);
@@ -79,6 +87,12 @@ public abstract class SwingApplicationFrame extends Frame implements Application
         LOG.info("Loading application frame...");
         loadContent();
         translate();
+    }
+
+    @Override
+    public void uiThemeChanged() {
+        triggerFormUpdate();
+        LOG.info("Form updated due to UI theme change");
     }
 
     protected abstract void loadContent();

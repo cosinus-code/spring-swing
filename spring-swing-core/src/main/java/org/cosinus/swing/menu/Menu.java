@@ -17,27 +17,38 @@
 
 package org.cosinus.swing.menu;
 
+import org.cosinus.stream.swing.ExtendedContainer;
+import org.cosinus.swing.action.ActionController;
+import org.cosinus.swing.action.ActionInContext;
 import org.cosinus.swing.form.FormComponent;
+import org.cosinus.swing.icon.IconHolder;
 import org.cosinus.swing.translate.Translator;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
 /**
  * Menu list model
  */
-public class Menu extends JMenu implements FormComponent, DuplicateMenuHolder {
+public class Menu extends JMenu implements FormComponent, DuplicateMenuHolder, IconHolder, ExtendedContainer {
 
     @Autowired
     protected Translator translator;
 
+    @Autowired
+    protected ActionController actionController;
+
     private JMenu duplicateMenu;
 
     private final String key;
+
+    private final String iconName;
 
     private final List<FormComponent> formComponents;
 
@@ -50,6 +61,9 @@ public class Menu extends JMenu implements FormComponent, DuplicateMenuHolder {
         injectContext(this);
 
         this.key = key;
+        this.iconName = actionController.findAction(key)
+            .map(ActionInContext::getIconName)
+            .orElse(null);
         this.formComponents = new ArrayList<>();
 
         if (duplicate) {
@@ -91,11 +105,6 @@ public class Menu extends JMenu implements FormComponent, DuplicateMenuHolder {
     }
 
     @Override
-    public void initComponents() {
-
-    }
-
-    @Override
     public void translate() {
         setText(translator.translate(key));
         formComponents.forEach(FormComponent::translate);
@@ -103,5 +112,17 @@ public class Menu extends JMenu implements FormComponent, DuplicateMenuHolder {
 
     public boolean isEmpty() {
         return formComponents.isEmpty();
+    }
+
+    @Override
+    public String getIconName() {
+        return iconName;
+    }
+
+    @Override
+    public Stream<Component> streamAdditionalContainers() {
+        return formComponents
+            .stream()
+            .map(Component.class::cast);
     }
 }

@@ -52,13 +52,6 @@ public interface ProcessExecutor {
     void executeFile(File file);
 
     /**
-     * Get the current OS theme.
-     *
-     * @return the current OS theme
-     */
-    Optional<String> getOsTheme();
-
-    /**
      * Execute a command with privileges and get the output.
      *
      * @param command the command to execute

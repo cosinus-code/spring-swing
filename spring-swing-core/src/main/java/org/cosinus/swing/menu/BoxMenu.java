@@ -17,6 +17,7 @@
 
 package org.cosinus.swing.menu;
 
+import lombok.Getter;
 import org.cosinus.swing.form.FormComponent;
 
 import javax.swing.*;
@@ -32,6 +33,7 @@ public class BoxMenu implements FormComponent {
     public static final Dimension BOX_MENU_DIMENSION = new Dimension(BOX_MENU_SIZE,
                                                                      BOX_MENU_SIZE);
 
+    @Getter
     private JMenuBar boxMenuBar;
 
     private JMenu boxMenu;
@@ -56,17 +58,4 @@ public class BoxMenu implements FormComponent {
         boxMenu.add(menu.getDuplicateMenu());
     }
 
-    public JMenuBar getBoxMenuBar() {
-        return boxMenuBar;
-    }
-
-    @Override
-    public void initComponents() {
-
-    }
-
-    @Override
-    public void translate() {
-
-    }
 }

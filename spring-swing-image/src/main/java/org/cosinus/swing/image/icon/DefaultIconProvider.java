@@ -17,6 +17,7 @@
 
 package org.cosinus.swing.image.icon;
 
+import org.cosinus.swing.icon.IconSize;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 
 import javax.swing.*;

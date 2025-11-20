@@ -17,8 +17,11 @@
 
 package org.cosinus.swing.menu;
 
+import org.cosinus.swing.action.ActionController;
+import org.cosinus.swing.action.ActionInContext;
 import org.cosinus.swing.action.ActionProducer;
 import org.cosinus.swing.form.FormComponent;
+import org.cosinus.swing.icon.IconHolder;
 import org.cosinus.swing.translate.Translator;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,30 +33,35 @@ import static org.cosinus.swing.context.ApplicationContextInjector.injectContext
 /**
  * Checkbox menu model
  */
-public class CheckBoxMenuItem extends JCheckBoxMenuItem implements FormComponent, ActionProducer {
+public class CheckBoxMenuItem extends JCheckBoxMenuItem implements FormComponent, ActionProducer, IconHolder {
 
     @Autowired
     protected Translator translator;
+
+    @Autowired
+    protected ActionController actionController;
 
     private final JCheckBoxMenuItem altMenuItem;
 
     private final String key;
 
+    private final String iconName;
+
     public CheckBoxMenuItem(ActionListener action,
                             String key) {
         this(action,
-             key,
-             false,
-             null);
+            key,
+            false,
+            null);
     }
 
     public CheckBoxMenuItem(ActionListener action,
                             boolean selected,
                             String key) {
         this(action,
-             key,
-             selected,
-             null);
+            key,
+            selected,
+            null);
     }
 
     public CheckBoxMenuItem(ActionListener action,
@@ -72,6 +80,10 @@ public class CheckBoxMenuItem extends JCheckBoxMenuItem implements FormComponent
         altMenuItem = new JCheckBoxMenuItem();
         altMenuItem.addActionListener(action);
         altMenuItem.setAccelerator(keyStroke);
+
+        this.iconName = actionController.findAction(key)
+            .map(ActionInContext::getIconName)
+            .orElse(null);
     }
 
     public void setText(String text) {
@@ -79,21 +91,17 @@ public class CheckBoxMenuItem extends JCheckBoxMenuItem implements FormComponent
         super.setText(text);
     }
 
-    public JCheckBoxMenuItem getAltMenuItem() {
-        return altMenuItem;
-    }
-
     public String getActionKey() {
         return key;
     }
 
     @Override
-    public void initComponents() {
-
+    public void translate() {
+        setText(translator.translate(key));
     }
 
     @Override
-    public void translate() {
-        setText(translator.translate(key));
+    public String getIconName() {
+        return iconName;
     }
 }

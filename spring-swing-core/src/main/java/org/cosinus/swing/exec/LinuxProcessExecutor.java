@@ -20,7 +20,6 @@ package org.cosinus.swing.exec;
 import java.io.File;
 import java.util.Optional;
 
-import static java.util.Arrays.stream;
 import static java.util.stream.IntStream.range;
 
 /**
@@ -36,11 +35,6 @@ public class LinuxProcessExecutor implements ProcessExecutor {
     @Override
     public void executeFile(File file) {
         execute(false, false, "xdg-open", file.getAbsolutePath());
-    }
-
-    @Override
-    public Optional<String> getOsTheme() {
-        return Optional.empty();
     }
 
     @Override

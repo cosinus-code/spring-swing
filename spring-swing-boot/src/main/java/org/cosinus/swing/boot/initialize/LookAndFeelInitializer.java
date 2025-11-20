@@ -27,6 +27,7 @@ import org.cosinus.swing.preference.Preferences;
 import org.cosinus.swing.resource.ClasspathResourceResolver;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.cosinus.swing.ui.dark.DarkLookAndFeel;
+import org.cosinus.swing.ui.listener.UIThemeProvider;
 
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -51,6 +52,8 @@ public class LookAndFeelInitializer implements ApplicationInitializer {
 
     private final ApplicationUIHandler uiHandler;
 
+    private final UIThemeProvider uiThemeProvider;
+
     private final ClasspathResourceResolver resourceResolver;
 
     private final DarkLookAndFeel darkLookAndFeel;
@@ -58,11 +61,13 @@ public class LookAndFeelInitializer implements ApplicationInitializer {
     public LookAndFeelInitializer(final UIProperties uiProperties,
                                   final Preferences preferences,
                                   final ApplicationUIHandler uiHandler,
+                                  final UIThemeProvider uiThemeProvider,
                                   final ClasspathResourceResolver resourceResolver,
                                   final DarkLookAndFeel darkLookAndFeel) {
         this.uiProperties = uiProperties;
         this.preferences = preferences;
         this.uiHandler = uiHandler;
+        this.uiThemeProvider = uiThemeProvider;
         this.resourceResolver = resourceResolver;
         this.darkLookAndFeel = darkLookAndFeel;
     }
@@ -100,10 +105,10 @@ public class LookAndFeelInitializer implements ApplicationInitializer {
     }
 
     private Optional<String> getDefaultLookAndFeelClassName() {
-        return !uiHandler.isDarkTheme() ?
-            Optional.of(uiHandler.getDefaultLookAndFeelClassName()) :
-            ofNullable(darkLookAndFeel)
-                .map(DarkLookAndFeel::getClassName);
+        return ofNullable(darkLookAndFeel)
+            .filter(laf -> uiThemeProvider.isDarkOsTheme())
+            .map(DarkLookAndFeel::getClassName)
+            .or(() -> ofNullable(uiHandler.getDefaultLookAndFeelClassName()));
     }
 
     private void customizeLookAndFeel(String lookAndFeelClassName) {

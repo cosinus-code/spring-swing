@@ -35,6 +35,7 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
 
+        <stream-pipeline.version>1.0-SNAPSHOT</stream-pipeline.version>
         <commons-io.version>2.20.0</commons-io.version>
         <org.apache.common.version>4.5.0</org.apache.common.version>
         <log4j.version>2.25.1</log4j.version>
@@ -84,6 +85,11 @@
                 <groupId>org.cosinuscode.swing</groupId>
                 <artifactId>spring-swing-test</artifactId>
                 <version>${parent.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.cosinuscode.stream</groupId>
+                <artifactId>stream-pipeline</artifactId>
+                <version>${stream-pipeline.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.twelvemonkeys.imageio</groupId>

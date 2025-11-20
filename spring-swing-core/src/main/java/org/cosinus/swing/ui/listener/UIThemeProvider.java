@@ -14,15 +14,19 @@
  *  limitations under the License.
  *
  */
-package org.cosinus.swing.form;
 
-import javax.swing.*;
+package org.cosinus.swing.ui.listener;
 
-import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
+import java.util.Optional;
 
-public class TextArea extends JTextArea implements FormComponent {
+public interface UIThemeProvider {
 
-    public TextArea() {
-        injectContext(this);
-    }
+    String OS_DARK_THEME = "Dark";
+
+    UIThemeChecksum getUITheme();
+
+    boolean isDarkOsTheme();
+
+    Optional<String> getIconTheme();
+
 }

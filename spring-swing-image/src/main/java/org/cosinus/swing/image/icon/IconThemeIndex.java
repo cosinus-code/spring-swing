@@ -17,7 +17,11 @@
 
 package org.cosinus.swing.image.icon;
 
+import org.cosinus.swing.icon.IconSize;
+import org.cosinus.swing.ui.ApplicationUIHandler;
+import org.cosinus.swing.ui.listener.UIThemeProvider;
 import org.cosinus.swing.util.GroupedProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -30,6 +34,7 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 import static java.util.stream.Stream.concat;
+import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
 /**
  * Icon theme index representation.
@@ -41,14 +46,22 @@ public class IconThemeIndex extends GroupedProperties {
     @Serial
     private static final long serialVersionUID = 5424656492329188366L;
 
+    @Autowired
+    private ApplicationUIHandler uiHandler;
+
+    @Autowired
+    private UIThemeProvider uiThemeProvider;
+
     public static final String INDEX_THEME_FILE_NAME = "index.theme";
 
     public static final String ICON_THEME = "Icon Theme";
 
     public static final String INHERITS = "Inherits";
 
-    public static final String[] ADDITIONAL_ICON_THEMES = new String[]{
-        "Papirus"
+    public static final IconTheme ICON_THEME_PAPIRUS = new IconTheme("Papirus", "Papirus-Dark");
+
+    public static final IconTheme[] ADDITIONAL_ICON_THEMES = new IconTheme[]{
+        ICON_THEME_PAPIRUS
     };
 
     private List<Path> iconPaths;
@@ -58,6 +71,7 @@ public class IconThemeIndex extends GroupedProperties {
     private Set<String> internalPathsWithoutSize;
 
     public IconThemeIndex() {
+        injectContext(this);
         this.iconPaths = new ArrayList<>();
     }
 
@@ -123,12 +137,20 @@ public class IconThemeIndex extends GroupedProperties {
                 .map(inherits -> inherits.split(","))
                 .stream()
                 .flatMap(Arrays::stream),
-            stream(ADDITIONAL_ICON_THEMES));
+            stream(ADDITIONAL_ICON_THEMES)
+                .map(iconTheme -> uiThemeProvider.isDarkOsTheme() ?
+                    iconTheme.getDarkName() :
+                    iconTheme.getLightName()));
     }
 
     public Stream<String> getIconInternalPath(IconSize size) {
         return concat(
-            iconInternalPathMap.get(size).stream(),
-            internalPathsWithoutSize.stream());
+            ofNullable(iconInternalPathMap)
+                .map(pathsMap -> pathsMap.get(size))
+                .stream()
+                .flatMap(Collection::stream),
+            ofNullable(internalPathsWithoutSize)
+                .stream()
+                .flatMap(Collection::stream));
     }
 }

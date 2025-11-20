@@ -17,6 +17,7 @@
 
 package org.cosinus.swing.window;
 
+import lombok.Getter;
 import org.cosinus.swing.form.FormComponent;
 import org.cosinus.swing.form.control.Button;
 import org.cosinus.swing.listener.SimpleMouseListener;
@@ -48,6 +49,7 @@ public abstract class Dialog<T> extends JDialog implements Window, FormComponent
 
     private WindowSettings windowSettings;
 
+    @Getter
     private boolean cancelled;
 
     public Dialog(Frame frame, String title, boolean modal, boolean manageWindowSettings) {
@@ -74,6 +76,7 @@ public abstract class Dialog<T> extends JDialog implements Window, FormComponent
 
     public void init() {
         initComponents();
+        triggerFormUpdate();
         initPositionAndSize();
         initFrameBasicActions();
     }
@@ -133,14 +136,6 @@ public abstract class Dialog<T> extends JDialog implements Window, FormComponent
 
     public void close() {
         dispose();
-    }
-
-    public boolean isCancelled() {
-        return cancelled;
-    }
-
-    @Override
-    public void initComponents() {
     }
 
     @Override

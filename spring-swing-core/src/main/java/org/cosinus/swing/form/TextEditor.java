@@ -44,7 +44,7 @@ import static java.util.Optional.ofNullable;
 import static javax.swing.text.PlainDocument.tabSizeAttribute;
 import static org.cosinus.swing.color.SystemColor.TEXT_PANE_SELECTION_BACKGROUND;
 
-public class TextEditor extends EditorPane implements DocumentListener {
+public class TextEditor extends EditorPane implements DocumentListener, FormComponent {
 
     public static final int DEFAULT_TAB_SIZE = 4;
 

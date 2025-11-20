@@ -22,7 +22,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.color.SystemColor;
-import org.cosinus.swing.exec.ProcessExecutor;
 import org.cosinus.swing.translate.Translator;
 
 import javax.swing.*;
@@ -32,36 +31,26 @@ import javax.swing.plaf.FontUIResource;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static java.awt.Cursor.DEFAULT_CURSOR;
-import static java.awt.Cursor.HAND_CURSOR;
-import static java.awt.Cursor.getPredefinedCursor;
+import static java.awt.Cursor.*;
 import static java.awt.Toolkit.getDefaultToolkit;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.META_DOWN_MASK;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
-import static java.util.stream.Collectors.toSet;
 import static java.util.stream.Stream.concat;
 import static javax.swing.KeyStroke.getKeyStroke;
 import static org.apache.commons.lang3.SystemUtils.IS_OS_MAC;
 import static org.cosinus.swing.border.Borders.emptyBorder;
-import static org.cosinus.swing.color.SystemColor.CONTROL;
-import static org.cosinus.swing.color.SystemColor.CONTROL_DK_SHADOW;
-import static org.cosinus.swing.color.SystemColor.CONTROL_HIGHLIGHT;
-import static org.cosinus.swing.color.SystemColor.INACTIVE_CAPTION;
-import static org.cosinus.swing.color.SystemColor.INACTIVE_CAPTION_TEXT;
-import static org.cosinus.swing.color.SystemColor.INTERNAL_FRAME_INACTIVE_TITLE_BACKGROUND;
-import static org.cosinus.swing.color.SystemColor.TEXTAREA_INACTIVE_FOREGROUND;
-import static org.cosinus.swing.color.SystemColor.TEXT_PANE_SELECTION_BACKGROUND;
+import static org.cosinus.swing.color.SystemColor.*;
+import static org.cosinus.swing.util.FontUtils.getFontDescription;
 
 /**
  * UIManager handler.
@@ -72,10 +61,6 @@ import static org.cosinus.swing.color.SystemColor.TEXT_PANE_SELECTION_BACKGROUND
 public class ApplicationUIHandler {
 
     private static final Logger LOG = LogManager.getLogger(ApplicationUIHandler.class);
-
-    private static final String DEFAULT_GNOME_ICON_THEME = "Default";
-
-    private static final String GNOME_ICON_THEME_NAME_PROPERTY = "gnome.Net/IconThemeName";
 
     public static final String OPTION_PANE_MESSAGE_DIALOG_TITLE = "OptionPane.messageDialogTitle";
 
@@ -91,25 +76,15 @@ public class ApplicationUIHandler {
 
     public static final String LABEL_FONT_KEY = "Label.font";
 
-    public static final String OS_LIGHT_THEME = "Light";
-
-    public static final String OS_DARK_THEME = "Dark";
-
     private Map<String, LookAndFeelInfo> lookAndFeelMap;
-
-    private Set<String> uiTranslationKeys;
 
     private final Translator translator;
 
-    private final ProcessExecutor processExecutor;
-
     private final Set<LookAndFeelInfo> lookAndFeels;
 
-    public ApplicationUIHandler(Translator translator,
-                                ProcessExecutor processExecutor,
-                                Set<LookAndFeelInfo> lookAndFeels) {
+    public ApplicationUIHandler(final Translator translator,
+                                final Set<LookAndFeelInfo> lookAndFeels) {
         this.translator = translator;
-        this.processExecutor = processExecutor;
         this.lookAndFeels = lookAndFeels;
     }
 
@@ -117,7 +92,9 @@ public class ApplicationUIHandler {
      * Translate default UI related texts.
      */
     public void translateDefaultUILabels() {
-        getTranslationKeys().forEach(this::translateDefaultUILabel);
+        stream(SystemText.values())
+            .map(SystemText::getKey)
+            .forEach(this::translateDefaultUILabel);
     }
 
     /**
@@ -262,17 +239,6 @@ public class ApplicationUIHandler {
     }
 
     /**
-     * Check if the current theme of the Operating System is dark.
-     *
-     * @return true if the current OS theme is dark
-     */
-    public boolean isDarkTheme() {
-        return processExecutor.getOsTheme()
-            .map(theme -> theme.startsWith(OS_DARK_THEME))
-            .orElse(false);
-    }
-
-    /**
      * Check if the current look-and-feel is GTK.
      *
      * @return true if the current look-and-feel is GTK
@@ -328,67 +294,6 @@ public class ApplicationUIHandler {
      */
     public KeyStroke getAltDownKeyStroke(int keyCode) {
         return getKeyStroke(keyCode, ALT_DOWN_MASK);
-    }
-
-    /**
-     * Get UI default translation keys.
-     *
-     * @return the UI default translation keys
-     */
-    public Set<String> getTranslationKeys() {
-        if (uiTranslationKeys == null) {
-            uiTranslationKeys = Stream.of(
-                    "OptionPane.yesButtonText",
-                    "OptionPane.noButtonText",
-                    "OptionPane.cancelButtonText",
-                    "ColorChooser.okText",
-                    "ColorChooser.cancelText",
-                    "ColorChooser.resetText",
-                    "ColorChooser.swatchesNameText",
-                    "ColorChooser.swatchesRecentText",
-                    "ColorChooser.hsbNameText",
-                    "ColorChooser.rgbNameText",
-                    "ColorChooser.previewText",
-                    "ColorChooser.rgbRedText",
-                    "ColorChooser.rgbGreenText",
-                    "ColorChooser.rgbBlueText",
-                    "ColorChooser.hsbRedText",
-                    "ColorChooser.hsbGreenText",
-                    "ColorChooser.hsbBlueText",
-                    "ColorChooser.hsbHueText",
-                    "ColorChooser.hsbSaturationText",
-                    "ColorChooser.hsbBrightnessText",
-                    "ColorChooser.sampleText",
-                    "FileChooser.acceptAllFileFilterText",
-                    "FileChooser.cancelButtonText",
-                    "FileChooser.cancelButtonToolTipText",
-                    "FileChooser.detailsViewButtonAccessibleName",
-                    "FileChooser.detailsViewButtonToolTipText",
-                    "FileChooser.directoryDescriptionText",
-                    "FileChooser.fileDescriptionText",
-                    "FileChooser.fileNameLabelText",
-                    "FileChooser.filesOfTypeLabelText",
-                    "FileChooser.helpButtonText",
-                    "FileChooser.helpButtonToolTipText",
-                    "FileChooser.homeFolderAccessibleName",
-                    "FileChooser.homeFolderToolTipText",
-                    "FileChooser.listViewButtonAccessibleName",
-                    "FileChooser.listViewButtonToolTipText",
-                    "FileChooser.lookInLabelText",
-                    "FileChooser.newFolderAccessibleName",
-                    "FileChooser.newFolderErrorText",
-                    "FileChooser.newFolderToolTipText",
-                    "FileChooser.openButtonText",
-                    "FileChooser.openButtonToolTipText",
-                    "FileChooser.saveButtonText",
-                    "FileChooser.saveButtonToolTipText",
-                    "FileChooser.updateButtonText",
-                    "FileChooser.updateButtonToolTipText",
-                    "FileChooser.upFolderAccessibleName",
-                    "FileChooser.upFolderToolTipText")
-                .collect(toSet());
-        }
-        return uiTranslationKeys;
     }
 
     /**
@@ -504,17 +409,6 @@ public class ApplicationUIHandler {
     }
 
     /**
-     * Get the Gnome icon theme.
-     *
-     * @return the Gnome icon theme
-     */
-    public String getGnomeIconTheme() {
-        return ofNullable(getDefaultToolkit().getDesktopProperty(GNOME_ICON_THEME_NAME_PROPERTY))
-            .map(Object::toString)
-            .orElse(DEFAULT_GNOME_ICON_THEME);
-    }
-
-    /**
      * Initialize default UI fonts.
      */
     public void initializeDefaultUIFonts() {
@@ -591,4 +485,41 @@ public class ApplicationUIHandler {
             }
         });
     }
+
+    public String computeColorThemeChecksum() {
+        return computeUIThemeChecksum(value -> value instanceof Color);
+    }
+
+    public String computeUIThemeChecksum() {
+        return computeUIThemeChecksum(value -> true);
+    }
+
+    public String computeUIThemeChecksum(final Predicate<Object> filter) {
+        try {
+            MessageDigest sha = MessageDigest.getInstance("SHA-256");
+            UIManager
+                .getDefaults()
+                .keySet()
+                .stream()
+                .filter(Objects::nonNull)
+                .filter(filter)
+                .forEach(value -> {
+                    switch (value) {
+                        case Color color -> {
+                            sha.update((byte) color.getRed());
+                            sha.update((byte) color.getGreen());
+                            sha.update((byte) color.getBlue());
+                        }
+                        case Font font -> sha.update(getFontDescription(font).getBytes());
+                        case Integer intValue -> sha.update((byte) intValue.intValue());
+                        case Boolean booleanValue -> sha.update((byte) (booleanValue ? 1 : 0));
+                        default -> sha.update(value.toString().getBytes());
+                    }
+                });
+            return new String(sha.digest());
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
