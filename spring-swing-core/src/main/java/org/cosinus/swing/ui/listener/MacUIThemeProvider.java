@@ -46,9 +46,8 @@ public class MacUIThemeProvider implements UIThemeProvider {
         try {
             return processExecutor.executeAndGetOutput("defaults", "read", "-g", "AppleInterfaceStyle")
                 .map(UIThemeChecksum::cleanup);
-
         } catch (Exception ex) {
-            log.warn("Failed to get the ui theme", ex);
+            log.debug("Failed to get the ui theme: {}", ex.getMessage());
             return empty();
         }
     }

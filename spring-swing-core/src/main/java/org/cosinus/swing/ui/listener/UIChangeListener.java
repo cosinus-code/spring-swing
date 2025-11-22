@@ -19,9 +19,6 @@ package org.cosinus.swing.ui.listener;
 
 public interface UIChangeListener {
 
-    default void lookAndFeelChanged() {
-    }
-
     default void uiThemeChanged() {
     }
 

@@ -238,6 +238,7 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
 
     private void updateLookAndFeel() {
         try {
+
             updateComponentTreeUI(getParent());
             updateComponentTreeUI(this);
             updateUI();
