@@ -18,10 +18,15 @@
 package org.cosinus.swing.ui.listener;
 
 import lombok.Getter;
-import lombok.Setter;
+
+import java.util.Objects;
+import java.util.Optional;
+
+import static java.util.Arrays.stream;
+import static java.util.function.Predicate.not;
+import static java.util.stream.Collectors.joining;
 
 @Getter
-@Setter
 public class UIThemeChecksum {
 
     private String uiThemeChecksum;
@@ -31,4 +36,29 @@ public class UIThemeChecksum {
     private String colorThemeChecksum;
 
     private String cursorThemeChecksum;
+
+    public void setUIThemeChecksum(Object... values) {
+        this.uiThemeChecksum = toChecksum(values);
+    }
+
+    public void setIconThemeChecksum(Object... values) {
+        this.iconThemeChecksum = toChecksum(values);
+    }
+
+    public void setColorThemeChecksum(Object... values) {
+        this.colorThemeChecksum = toChecksum(values);
+    }
+
+    public void setCursorThemeChecksum(Object... values) {
+        this.cursorThemeChecksum = toChecksum(values);
+    }
+
+    protected String toChecksum(Object... pieces) {
+        return stream(pieces)
+            .map(piece -> piece instanceof Optional optional ? optional.orElse(null) : piece)
+            .filter(Objects::nonNull)
+            .map(Object::toString)
+            .filter(not(String::isEmpty))
+            .collect(joining("|"));
+    }
 }

@@ -25,7 +25,6 @@ import java.awt.*;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static org.cosinus.stream.Streams.flatComponentsStream;
-import static org.cosinus.swing.icon.IconSize.X16;
 
 public class IconInitializer implements UIChangeListener {
 
@@ -42,7 +41,6 @@ public class IconInitializer implements UIChangeListener {
 
     public void initializeIcons() {
         iconHandler.resetIcons();
-
         stream(Frame.getWindows())
             .filter(Component::isVisible)
             .forEach(window -> {

@@ -16,7 +16,7 @@
  */
 package org.cosinus.swing.boot.condition;
 
-import org.springframework.boot.autoconfigure.condition.ConditionMessage;
+import org.springframework.boot.autoconfigure.condition.ConditionMessage.Builder;
 import org.springframework.boot.autoconfigure.condition.ConditionOutcome;
 import org.springframework.boot.autoconfigure.condition.SpringBootCondition;
 import org.springframework.context.annotation.ConditionContext;
@@ -24,6 +24,7 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
 
 import static org.cosinus.swing.os.OperatingSystem.WINDOWS;
 import static org.cosinus.swing.os.OperatingSystem.isWindows;
+import static org.springframework.boot.autoconfigure.condition.ConditionMessage.forCondition;
 import static org.springframework.boot.autoconfigure.condition.ConditionOutcome.match;
 import static org.springframework.boot.autoconfigure.condition.ConditionOutcome.noMatch;
 
@@ -33,7 +34,7 @@ import static org.springframework.boot.autoconfigure.condition.ConditionOutcome.
 public class OnWindowsCondition extends SpringBootCondition {
     @Override
     public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
-        ConditionMessage.Builder message = ConditionMessage.forCondition(ConditionalOnWindows.class);
+        Builder message = forCondition(ConditionalOnWindows.class);
         return isWindows() ?
             match(message.foundExactly(WINDOWS.getName())) :
             noMatch(message.didNotFind(WINDOWS.getName()).atAll());

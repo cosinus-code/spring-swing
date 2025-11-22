@@ -18,7 +18,6 @@
 package org.cosinus.swing.image.icon;
 
 import org.cosinus.swing.icon.IconSize;
-import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.cosinus.swing.ui.listener.UIThemeProvider;
 import org.cosinus.swing.util.GroupedProperties;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +44,6 @@ public class IconThemeIndex extends GroupedProperties {
 
     @Serial
     private static final long serialVersionUID = 5424656492329188366L;
-
-    @Autowired
-    private ApplicationUIHandler uiHandler;
 
     @Autowired
     private UIThemeProvider uiThemeProvider;

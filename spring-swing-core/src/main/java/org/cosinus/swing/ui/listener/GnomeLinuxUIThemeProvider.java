@@ -20,16 +20,13 @@ package org.cosinus.swing.ui.listener;
 import org.cosinus.swing.error.ProcessExecutionException;
 import org.cosinus.swing.exec.ProcessExecutor;
 
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.awt.Toolkit.getDefaultToolkit;
-import static java.util.Arrays.stream;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 
-public class LinuxUIThemeProvider implements UIThemeProvider {
+public class GnomeLinuxUIThemeProvider implements UIThemeProvider {
 
     private static final String DEFAULT_GNOME_ICON_THEME = "Default";
 
@@ -41,46 +38,29 @@ public class LinuxUIThemeProvider implements UIThemeProvider {
 
     private final ProcessExecutor processExecutor;
 
-    public LinuxUIThemeProvider(final ProcessExecutor processExecutor) {
+    public GnomeLinuxUIThemeProvider(final ProcessExecutor processExecutor) {
         this.processExecutor = processExecutor;
     }
 
     @Override
-    public UIThemeChecksum getUITheme() {
+    public UIThemeChecksum getUIThemeChecksum() {
         UIThemeChecksum uiTheme = new UIThemeChecksum();
 
-        String gnomeTheme = getGnomeTheme().orElse(null);
-        String gnomeIconTheme = getGnomeIconTheme().orElse(null);
-        String gnomeCursorTheme = getGnomeCursorTheme().orElse(null);
-        String cinamonTheme = getCinamonSetting("name").orElse(null);
+        Optional<String> gnomeTheme = getUITheme();
+        Optional<String> gnomeIconTheme = getGnomeIconTheme();
+        Optional<String> gnomeCursorTheme = getGnomeCursorTheme();
+        Optional<String> cinamonTheme = getCinamonSetting("name");
+        Optional<String> iconTheme = getIconTheme();
 
-        uiTheme.setUiThemeChecksum(buildChecksum(gnomeTheme, cinamonTheme));
-        uiTheme.setIconThemeChecksum(buildChecksum(gnomeIconTheme, cinamonTheme));
-        uiTheme.setCursorThemeChecksum(buildChecksum(gnomeCursorTheme));
+        uiTheme.setUIThemeChecksum(gnomeTheme, cinamonTheme);
+        uiTheme.setIconThemeChecksum(iconTheme, gnomeIconTheme, gnomeTheme, cinamonTheme);
+        uiTheme.setCursorThemeChecksum(gnomeCursorTheme);
 
         return uiTheme;
     }
 
-    protected String buildChecksum(String... pieces) {
-        return stream(pieces)
-            .filter(Objects::nonNull)
-            .map(piece -> piece.replaceAll("(\\'|\\r|\\n)", ""))
-            .collect(Collectors.joining("|"));
-    }
-
-    /**
-     * Check if the current theme of the Operating System is dark.
-     *
-     * @return true if the current OS theme is dark
-     */
     @Override
-    public boolean isDarkOsTheme() {
-        return getGnomeTheme()
-            .map(theme -> theme.contains(OS_DARK_THEME))
-            .orElse(false);
-    }
-
-    public Optional<String> getGnomeTheme() {
+    public Optional<String> getUITheme() {
         return getGnomeSetting("gtk-theme");
     }
 
@@ -102,7 +82,8 @@ public class LinuxUIThemeProvider implements UIThemeProvider {
 
     protected Optional<String> getSetting(String schema, String name) {
         try {
-            return processExecutor.executeAndGetOutput("gsettings", "get", schema, name);
+            return processExecutor.executeAndGetOutput("gsettings", "get", schema, name)
+                .map(this::cleanup);
         } catch (ProcessExecutionException ex) {
             return empty();
         }
@@ -113,5 +94,12 @@ public class LinuxUIThemeProvider implements UIThemeProvider {
         return ofNullable(getDefaultToolkit().getDesktopProperty(GNOME_ICON_THEME_NAME_PROPERTY))
             .map(Object::toString)
             .or(() -> Optional.of(DEFAULT_GNOME_ICON_THEME));
+    }
+
+    private String cleanup(String setting) {
+        return ofNullable(setting)
+            .map(piece -> piece.replaceAll("('|\\r|\\n)", ""))
+            .map(String::trim)
+            .orElse(setting);
     }
 }

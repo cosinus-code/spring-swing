@@ -15,23 +15,18 @@
  *
  */
 
-package org.cosinus.swing.ui.listener;
+package org.cosinus.swing.boot.condition;
 
-import java.util.Optional;
+import org.springframework.context.annotation.Conditional;
 
-public interface UIThemeProvider {
+import java.lang.annotation.*;
 
-    String OS_DARK_THEME = "dark";
-
-    UIThemeChecksum getUIThemeChecksum();
-
-    Optional<String> getUITheme();
-
-    Optional<String> getIconTheme();
-
-    default boolean isDarkOsTheme() {
-        return getUITheme()
-            .map(theme -> theme.contains(OS_DARK_THEME))
-            .orElse(false);
-    }
+/**
+ * {@link Conditional @Conditional} that only matches when the current desktop is Gnome.
+ */
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@ConditionalOnDesktop({"GNOME", "Cinnamon"})
+public @interface ConditionalOnGnome {
 }

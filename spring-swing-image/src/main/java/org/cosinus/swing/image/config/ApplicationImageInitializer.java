@@ -70,4 +70,9 @@ public class ApplicationImageInitializer implements ApplicationInitializer {
             LOG.warn("Error deregistering svg image reader", e);
         }
     }
+
+    @Override
+    public boolean beforeInitializeApplicationFrame() {
+        return false;
+    }
 }

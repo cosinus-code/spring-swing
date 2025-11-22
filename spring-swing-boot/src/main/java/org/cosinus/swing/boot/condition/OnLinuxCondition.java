@@ -16,7 +16,7 @@
  */
 package org.cosinus.swing.boot.condition;
 
-import org.springframework.boot.autoconfigure.condition.ConditionMessage;
+import org.springframework.boot.autoconfigure.condition.ConditionMessage.Builder;
 import org.springframework.boot.autoconfigure.condition.ConditionOutcome;
 import org.springframework.boot.autoconfigure.condition.SpringBootCondition;
 import org.springframework.context.annotation.ConditionContext;
@@ -24,6 +24,7 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
 
 import static org.cosinus.swing.os.OperatingSystem.LINUX;
 import static org.cosinus.swing.os.OperatingSystem.isLinux;
+import static org.springframework.boot.autoconfigure.condition.ConditionMessage.forCondition;
 import static org.springframework.boot.autoconfigure.condition.ConditionOutcome.match;
 import static org.springframework.boot.autoconfigure.condition.ConditionOutcome.noMatch;
 
@@ -32,8 +33,9 @@ import static org.springframework.boot.autoconfigure.condition.ConditionOutcome.
  */
 public class OnLinuxCondition extends SpringBootCondition {
     @Override
-    public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
-        ConditionMessage.Builder message = ConditionMessage.forCondition(ConditionalOnLinux.class);
+    public ConditionOutcome getMatchOutcome(final ConditionContext context,
+                                            final AnnotatedTypeMetadata metadata) {
+        Builder message = forCondition(ConditionalOnLinux.class);
         return isLinux() ?
             match(message.foundExactly(LINUX.getName())) :
             noMatch(message.didNotFind(LINUX.getName()).atAll());

@@ -53,7 +53,7 @@ public class UIChangeController {
 
     @Scheduled(fixedDelay = 200)
     public void checkForUIChanges() {
-        ofNullable(uiThemeProvider.getUITheme())
+        ofNullable(uiThemeProvider.getUIThemeChecksum())
             .ifPresent(uiTheme -> {
                 checkAndFireUIChange(uiTheme,
                     UIThemeChecksum::getUiThemeChecksum,

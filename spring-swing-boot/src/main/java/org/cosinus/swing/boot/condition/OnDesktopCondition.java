@@ -16,7 +16,6 @@
  */
 package org.cosinus.swing.boot.condition;
 
-import org.cosinus.swing.os.OperatingSystem;
 import org.springframework.boot.autoconfigure.condition.ConditionMessage.Builder;
 import org.springframework.boot.autoconfigure.condition.ConditionOutcome;
 import org.springframework.boot.autoconfigure.condition.SpringBootCondition;
@@ -26,40 +25,42 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
 import java.util.Arrays;
 import java.util.Map;
 
+import static java.lang.System.getenv;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.SystemUtils.OS_NAME;
 import static org.springframework.boot.autoconfigure.condition.ConditionMessage.forCondition;
 import static org.springframework.boot.autoconfigure.condition.ConditionOutcome.match;
 import static org.springframework.boot.autoconfigure.condition.ConditionOutcome.noMatch;
 
 /**
  * {@link SpringBootCondition} for controlling what implementation of beans to be instantiated
- * based on current operating system.
+ * based on current desktop.
  * <p>
- * The current value of system property "os.name" should start with one of the values
- * specified in the {@link ConditionalOnOperatingSystem} annotation
+ * The environment variable XDG_CURRENT_DESKTOP should be one of the values
+ * specified in the {@link ConditionalOnDesktop} annotation
  */
-public class OnOperatingSystemCondition extends SpringBootCondition {
+public class OnDesktopCondition extends SpringBootCondition {
+
+    public static final String XDG_CURRENT_DESKTOP = "XDG_CURRENT_DESKTOP";
 
     @Override
     public ConditionOutcome getMatchOutcome(final ConditionContext context,
                                             final AnnotatedTypeMetadata metadata) {
-        Map<String, Object> attributes = metadata.getAnnotationAttributes(ConditionalOnOperatingSystem.class.getName());
-        OperatingSystem[] operatingSystems = ofNullable(attributes)
+        Map<String, Object> attributes = metadata.getAnnotationAttributes(ConditionalOnDesktop.class.getName());
+        String[] desktops = ofNullable(attributes)
             .map(attrs -> attrs.get("value"))
-            .map(value -> (OperatingSystem[]) value)
-            .orElseGet(() -> new OperatingSystem[]{});
+            .map(value -> (String[]) value)
+            .orElseGet(() -> new String[]{});
 
-        Builder message = forCondition(ConditionalOnOperatingSystem.class);
-        return isCurrentOsOneOf(operatingSystems) ?
-            match(message.foundExactly(Arrays.toString(operatingSystems))) :
-            noMatch(message.didNotFind(Arrays.toString(operatingSystems)).atAll());
+        Builder message = forCondition(ConditionalOnDesktop.class);
+        return isCurrentDesktopOneOf(desktops) ?
+            match(message.foundExactly(Arrays.toString(desktops))) :
+            noMatch(message.didNotFind(Arrays.toString(desktops)).atAll());
     }
 
-    public boolean isCurrentOsOneOf(OperatingSystem... operatingSystems) {
-        return stream(operatingSystems)
-            .map(OperatingSystem::getName)
-            .anyMatch(OS_NAME::startsWith);
+    public boolean isCurrentDesktopOneOf(String... desktops) {
+        String desktop = getenv(XDG_CURRENT_DESKTOP);
+        return stream(desktops)
+            .anyMatch(desktop::contains);
     }
 }

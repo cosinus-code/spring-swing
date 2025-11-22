@@ -17,33 +17,37 @@
 
 package org.cosinus.swing.ui.listener;
 
+import org.cosinus.swing.exec.ProcessExecutor;
+
 import java.util.Optional;
 
-import static org.cosinus.swing.util.WindowsUtils.getRegistryBooleanValue;
+public class XfceUIThemeProvider implements UIThemeProvider {
 
-public class WindowsUIThemeProvider implements UIThemeProvider {
+    private final ProcessExecutor processExecutor;
 
-    private static final String PERSONALIZE_REGISTRY = "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize";
-
-    private static final String APPS_USE_LIGHT_THEME = "AppsUseLightTheme";
+    public XfceUIThemeProvider(final ProcessExecutor processExecutor) {
+        this.processExecutor = processExecutor;
+    }
 
     @Override
     public UIThemeChecksum getUIThemeChecksum() {
-        return new UIThemeChecksum();
+        UIThemeChecksum uiThemeChecksum = new UIThemeChecksum();
+        uiThemeChecksum.setUIThemeChecksum(getUITheme());
+        uiThemeChecksum.setIconThemeChecksum(getIconTheme());
+        return uiThemeChecksum;
     }
 
     @Override
     public Optional<String> getUITheme() {
-        return Optional.empty();
+        return getUiSetting("/Net/ThemeName");
     }
 
     @Override
     public Optional<String> getIconTheme() {
-        return Optional.empty();
+        return getUiSetting("/Net/IconThemeName");
     }
 
-    @Override
-    public boolean isDarkOsTheme() {
-        return !getRegistryBooleanValue(PERSONALIZE_REGISTRY, APPS_USE_LIGHT_THEME);
+    public Optional<String> getUiSetting(String name) {
+        return processExecutor.executeAndGetOutput("xfconf-query", "-c", "xsettings", "-p", name);
     }
 }

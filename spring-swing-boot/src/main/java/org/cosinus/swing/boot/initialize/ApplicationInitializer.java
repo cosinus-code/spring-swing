@@ -24,4 +24,8 @@ public interface ApplicationInitializer {
 
     void initialize();
 
+    default boolean beforeInitializeApplicationFrame() {
+        return true;
+    }
+
 }

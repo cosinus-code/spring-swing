@@ -17,10 +17,11 @@
 
 package org.cosinus.swing.ui.listener;
 
-import org.cosinus.swing.error.ProcessExecutionException;
 import org.cosinus.swing.exec.ProcessExecutor;
 
 import java.util.Optional;
+
+import static java.util.Optional.empty;
 
 public class MacUIThemeProvider implements UIThemeProvider {
 
@@ -31,23 +32,20 @@ public class MacUIThemeProvider implements UIThemeProvider {
     }
 
     @Override
-    public UIThemeChecksum getUITheme() {
-        return null;
+    public UIThemeChecksum getUIThemeChecksum() {
+        UIThemeChecksum uiThemeChecksum = new UIThemeChecksum();
+        uiThemeChecksum.setUIThemeChecksum(getUITheme());
+        uiThemeChecksum.setIconThemeChecksum(getUITheme());
+        return uiThemeChecksum;
     }
 
     @Override
-    public boolean isDarkOsTheme() {
-        try {
-            return processExecutor.executeAndGetOutput("defaults", "read", "-g", "AppleInterfaceStyle")
-                .map(theme -> theme.contains(OS_DARK_THEME))
-                .orElse(false);
-        } catch (ProcessExecutionException e) {
-            return false;
-        }
+    public Optional<String> getUITheme() {
+        return processExecutor.executeAndGetOutput("defaults", "read", "-g", "AppleInterfaceStyle");
     }
 
     @Override
     public Optional<String> getIconTheme() {
-        return Optional.empty();
+        return empty();
     }
 }

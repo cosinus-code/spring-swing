@@ -19,14 +19,7 @@ package org.cosinus.swing.ui.listener;
 
 import java.util.Optional;
 
-import static org.cosinus.swing.util.WindowsUtils.getRegistryBooleanValue;
-
-public class WindowsUIThemeProvider implements UIThemeProvider {
-
-    private static final String PERSONALIZE_REGISTRY = "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize";
-
-    private static final String APPS_USE_LIGHT_THEME = "AppsUseLightTheme";
-
+public class DefaultUIThemeProvider implements UIThemeProvider {
     @Override
     public UIThemeChecksum getUIThemeChecksum() {
         return new UIThemeChecksum();
@@ -38,12 +31,12 @@ public class WindowsUIThemeProvider implements UIThemeProvider {
     }
 
     @Override
-    public Optional<String> getIconTheme() {
-        return Optional.empty();
+    public boolean isDarkOsTheme() {
+        return false;
     }
 
     @Override
-    public boolean isDarkOsTheme() {
-        return !getRegistryBooleanValue(PERSONALIZE_REGISTRY, APPS_USE_LIGHT_THEME);
+    public Optional<String> getIconTheme() {
+        return Optional.empty();
     }
 }

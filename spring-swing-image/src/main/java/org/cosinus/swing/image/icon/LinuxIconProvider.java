@@ -75,7 +75,7 @@ public class LinuxIconProvider implements IconProvider {
     public void initialize() {
         initPathsToIcons();
         initIconNamesMap();
-        ofNullable(System.getProperty("user.home"))
+        ofNullable(System.getProperty("java.io.tmpdir"))
             .map(File::new)
             .flatMap(folder -> findIconByFile(folder, X16))
             .ifPresent(uiHandler::setDefaultFolderIcon);
@@ -178,8 +178,14 @@ public class LinuxIconProvider implements IconProvider {
     }
 
     protected Stream<File> getIconFromPath(Path path, String name) {
-        return Stream.of("", "gnome-", "gnome-mime-", "gtk-", "stock-")
-            .flatMap(prefix -> getIconFile(path, prefix + name))
+        return Stream.of(
+            name,
+                name + "-symbolic",
+                "gnome-" + name,
+                "gnome-mime-" + name,
+                "gtk-" + name,
+                "stock-" + name)
+            .flatMap(fileName -> getIconFile(path, fileName))
             .filter(File::exists);
     }
 
@@ -223,7 +229,7 @@ public class LinuxIconProvider implements IconProvider {
         iconNamesMap.put(ICON_DATABASE, "sqlitebrowser");
 
         iconNamesMap.put(ICON_VIEW_ICON, "view-grid-symbolic");
-        iconNamesMap.put(ICON_VIEW_GRID, "view-list");
+        iconNamesMap.put(ICON_VIEW_GRID, "format-justify-fill");
         iconNamesMap.put(ICON_VIEW_DETAILS, "view-list-symbolic");
         iconNamesMap.put(ICON_VIEW_TREE, "view-list-tree");
 
@@ -236,10 +242,14 @@ public class LinuxIconProvider implements IconProvider {
             .filter(File::exists)
             .or(() -> Stream.of(
                     System.getProperty("user.home") + "/.icons",
-                    "/usr/share/icons", // Redhat/Debian/Solaris
+                    "/usr/share/icons",
                     "/opt/gnome2/share/icons", // SUSE
-                    System.getProperty("swing.gtkthomedir") + "/icons")
+                    ofNullable(System.getProperty("swing.gtkthomedir"))
+                        .map(path -> path.concat("/icons"))
+                        .orElse(null))
+                .filter(Objects::nonNull)
                 .map(Paths::get)
+                .filter(path -> path.toFile().exists() && path.toFile().canRead())
                 .map(iconsFolderName -> getIconsTheme()
                     .map(iconsFolderName::resolve))
                 .filter(Optional::isPresent)

@@ -25,6 +25,7 @@ import org.springframework.boot.ApplicationRunner;
 
 import java.util.Set;
 
+import static java.util.function.Predicate.not;
 import static javax.swing.SwingUtilities.invokeLater;
 
 /**
@@ -54,8 +55,17 @@ public class ApplicationInitializationHandler implements ApplicationRunner, Appl
      * Run all {@link ApplicationInitializer} beans from application context
      */
     public void initApplication() {
-        applicationInitializers.forEach(ApplicationInitializer::initialize);
+        applicationInitializers
+            .stream()
+            .filter(ApplicationInitializer::beforeInitializeApplicationFrame)
+            .forEach(ApplicationInitializer::initialize);
+
         applicationFrameInitializer.initialize();
+
+        applicationInitializers
+            .stream()
+            .filter(not(ApplicationInitializer::beforeInitializeApplicationFrame))
+            .forEach(ApplicationInitializer::initialize);
     }
 
     /**

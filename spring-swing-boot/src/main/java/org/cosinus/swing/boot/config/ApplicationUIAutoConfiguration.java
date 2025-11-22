@@ -18,10 +18,7 @@
 package org.cosinus.swing.boot.config;
 
 import com.formdev.flatlaf.FlatLightLaf;
-import org.cosinus.swing.boot.condition.ConditionalOnLinux;
-import org.cosinus.swing.boot.condition.ConditionalOnMac;
-import org.cosinus.swing.boot.condition.ConditionalOnOperatingSystem;
-import org.cosinus.swing.boot.condition.ConditionalOnWindows;
+import org.cosinus.swing.boot.condition.*;
 import org.cosinus.swing.boot.initialize.LookAndFeelInitializer;
 import org.cosinus.swing.context.UIProperties;
 import org.cosinus.swing.exec.ProcessExecutor;
@@ -88,8 +85,23 @@ public class ApplicationUIAutoConfiguration {
 
     @Bean
     @ConditionalOnLinux
-    public UIThemeProvider linuxThemeProvider(final ProcessExecutor processExecutor) {
-        return new LinuxUIThemeProvider(processExecutor);
+    @ConditionalOnGnome
+    public UIThemeProvider gnomeLinuxThemeProvider(final ProcessExecutor processExecutor) {
+        return new GnomeLinuxUIThemeProvider(processExecutor);
+    }
+
+    @Bean
+    @ConditionalOnLinux
+    @ConditionalOnKDE
+    public UIThemeProvider kdeLinuxThemeProvider(final ProcessExecutor processExecutor) {
+        return new KdeLinuxUIThemeProvider(processExecutor);
+    }
+
+    @Bean
+    @ConditionalOnLinux
+    @ConditionalOnXFCE
+    public UIThemeProvider XfceUIThemeProvider(final ProcessExecutor processExecutor) {
+        return new XfceUIThemeProvider(processExecutor);
     }
 
     @Bean
@@ -102,6 +114,12 @@ public class ApplicationUIAutoConfiguration {
     @ConditionalOnWindows
     public UIThemeProvider windowsThemeProvider() {
         return new WindowsUIThemeProvider();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public UIThemeProvider defaultThemeProvider() {
+        return new DefaultUIThemeProvider();
     }
 
     @Bean

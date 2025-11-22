@@ -14,24 +14,25 @@
  *  limitations under the License.
  *
  */
+package org.cosinus.swing.boot.condition;
 
-package org.cosinus.swing.ui.listener;
+import org.springframework.context.annotation.Conditional;
 
-import java.util.Optional;
+import java.lang.annotation.*;
 
-public interface UIThemeProvider {
+/**
+ * {@link Conditional @Conditional} that only matches when the current desktop match one of the values.
+ */
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Conditional(OnDesktopCondition.class)
+public @interface ConditionalOnDesktop {
 
-    String OS_DARK_THEME = "dark";
+    /**
+     *
+     * @return the expected operating systems
+     */
+    String[] value();
 
-    UIThemeChecksum getUIThemeChecksum();
-
-    Optional<String> getUITheme();
-
-    Optional<String> getIconTheme();
-
-    default boolean isDarkOsTheme() {
-        return getUITheme()
-            .map(theme -> theme.contains(OS_DARK_THEME))
-            .orElse(false);
-    }
 }
