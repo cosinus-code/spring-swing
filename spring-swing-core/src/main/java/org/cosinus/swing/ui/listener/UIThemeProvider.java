@@ -31,6 +31,7 @@ public interface UIThemeProvider {
 
     default boolean isDarkOsTheme() {
         return getUITheme()
+            .map(String::toLowerCase)
             .map(theme -> theme.contains(OS_DARK_THEME))
             .orElse(false);
     }

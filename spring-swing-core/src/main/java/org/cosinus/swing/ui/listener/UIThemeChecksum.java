@@ -23,6 +23,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.Arrays.stream;
+import static java.util.Optional.ofNullable;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.joining;
 
@@ -61,4 +62,12 @@ public class UIThemeChecksum {
             .filter(not(String::isEmpty))
             .collect(joining("|"));
     }
+
+    public static String cleanup(String setting) {
+        return ofNullable(setting)
+            .map(piece -> piece.replaceAll("('|\\r|\\n)", ""))
+            .map(String::trim)
+            .orElse(setting);
+    }
+
 }

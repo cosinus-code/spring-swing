@@ -97,7 +97,7 @@ public class KdeLinuxUIThemeProvider implements UIThemeProvider {
             KDE_READ_CONFIG_FILE, configFile,
             KDE_READ_CONFIG_GROUP, groupName,
             KDE_READ_CONFIG_KEY, keyName)
-        .map(this::cleanup);
+        .map(UIThemeChecksum::cleanup);
     }
 
     protected String kdeReadConfig() {
@@ -116,12 +116,5 @@ public class KdeLinuxUIThemeProvider implements UIThemeProvider {
         }
 
         return kdeReadConfig;
-    }
-
-    private String cleanup(String setting) {
-        return ofNullable(setting)
-            .map(piece -> piece.replaceAll("('|\\r|\\n)", ""))
-            .map(String::trim)
-            .orElse(setting);
     }
 }

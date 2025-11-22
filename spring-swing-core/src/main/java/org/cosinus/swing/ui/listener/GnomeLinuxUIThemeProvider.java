@@ -83,7 +83,7 @@ public class GnomeLinuxUIThemeProvider implements UIThemeProvider {
     protected Optional<String> getSetting(String schema, String name) {
         try {
             return processExecutor.executeAndGetOutput("gsettings", "get", schema, name)
-                .map(this::cleanup);
+                .map(UIThemeChecksum::cleanup);
         } catch (ProcessExecutionException ex) {
             return empty();
         }
@@ -94,12 +94,5 @@ public class GnomeLinuxUIThemeProvider implements UIThemeProvider {
         return ofNullable(getDefaultToolkit().getDesktopProperty(GNOME_ICON_THEME_NAME_PROPERTY))
             .map(Object::toString)
             .or(() -> Optional.of(DEFAULT_GNOME_ICON_THEME));
-    }
-
-    private String cleanup(String setting) {
-        return ofNullable(setting)
-            .map(piece -> piece.replaceAll("('|\\r|\\n)", ""))
-            .map(String::trim)
-            .orElse(setting);
     }
 }

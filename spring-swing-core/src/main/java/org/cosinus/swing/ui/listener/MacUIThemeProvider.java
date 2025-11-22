@@ -17,12 +17,14 @@
 
 package org.cosinus.swing.ui.listener;
 
+import lombok.extern.slf4j.Slf4j;
 import org.cosinus.swing.exec.ProcessExecutor;
 
 import java.util.Optional;
 
 import static java.util.Optional.empty;
 
+@Slf4j
 public class MacUIThemeProvider implements UIThemeProvider {
 
     private final ProcessExecutor processExecutor;
@@ -41,7 +43,14 @@ public class MacUIThemeProvider implements UIThemeProvider {
 
     @Override
     public Optional<String> getUITheme() {
-        return processExecutor.executeAndGetOutput("defaults", "read", "-g", "AppleInterfaceStyle");
+        try {
+            return processExecutor.executeAndGetOutput("defaults", "read", "-g", "AppleInterfaceStyle")
+                .map(UIThemeChecksum::cleanup);
+
+        } catch (Exception ex) {
+            log.warn("Failed to get the ui theme", ex);
+            return empty();
+        }
     }
 
     @Override
