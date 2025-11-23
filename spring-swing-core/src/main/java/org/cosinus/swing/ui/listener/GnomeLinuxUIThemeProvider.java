@@ -20,8 +20,10 @@ package org.cosinus.swing.ui.listener;
 import org.cosinus.swing.error.ProcessExecutionException;
 import org.cosinus.swing.exec.ProcessExecutor;
 import org.cosinus.swing.ui.ApplicationUIHandler;
+import org.cosinus.swing.ui.IconTheme;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static java.awt.Toolkit.getDefaultToolkit;
 import static java.util.Optional.empty;
@@ -36,6 +38,10 @@ public class GnomeLinuxUIThemeProvider implements UIThemeProvider {
     private static final String GNOME_DESKTOP_INTERFACE_SCHEMA = "org.gnome.desktop.interface";
 
     private static final String CINAMON_THEME_SCHEMA = "org.cinnamon.theme";
+
+    public static final IconTheme ICON_THEME_PAPIRUS = new IconTheme("Papirus", "Papirus-Dark");
+
+    public static final Stream<IconTheme> ADDITIONAL_ICON_THEMES = Stream.of(ICON_THEME_PAPIRUS);
 
     private final ProcessExecutor processExecutor;
 
@@ -104,5 +110,10 @@ public class GnomeLinuxUIThemeProvider implements UIThemeProvider {
     @Override
     public Optional<String> getDefaultLookAndFeel() {
         return uiHandler.findLookAndFeelByName("GTK");
+    }
+
+    @Override
+    public Stream<IconTheme> getAdditionalIconThemes() {
+        return ADDITIONAL_ICON_THEMES;
     }
 }

@@ -17,7 +17,12 @@
 
 package org.cosinus.swing.ui.listener;
 
+import org.cosinus.swing.ui.IconTheme;
+
 import java.util.Optional;
+import java.util.stream.Stream;
+
+import static java.util.stream.Stream.empty;
 
 public interface UIThemeProvider {
 
@@ -36,5 +41,9 @@ public interface UIThemeProvider {
             .map(String::toLowerCase)
             .map(theme -> theme.contains(OS_DARK_THEME))
             .orElse(false);
+    }
+
+    default Stream<IconTheme> getAdditionalIconThemes() {
+        return empty();
     }
 }

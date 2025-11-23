@@ -21,8 +21,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.cosinus.swing.exec.Command;
 import org.cosinus.swing.exec.ProcessExecutor;
 import org.cosinus.swing.ui.ApplicationUIHandler;
+import org.cosinus.swing.ui.IconTheme;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Slf4j
 public class KdeLinuxUIThemeProvider implements UIThemeProvider {
@@ -40,6 +42,10 @@ public class KdeLinuxUIThemeProvider implements UIThemeProvider {
     private static final String KDE_READ_CONFIG_GROUP = "--group";
 
     private static final String KDE_READ_CONFIG_KEY = "--key";
+
+    public static final IconTheme ICON_THEME_BREEZE = new IconTheme("breeze", "breeze-dark");
+
+    public static final Stream<IconTheme> ADDITIONAL_ICON_THEMES = Stream.of(ICON_THEME_BREEZE);
 
     private final ProcessExecutor processExecutor;
 
@@ -85,6 +91,11 @@ public class KdeLinuxUIThemeProvider implements UIThemeProvider {
     @Override
     public Optional<String> getDefaultLookAndFeel() {
         return uiHandler.findLookAndFeelByName("GTK");
+    }
+
+    @Override
+    public Stream<IconTheme> getAdditionalIconThemes() {
+        return ADDITIONAL_ICON_THEMES;
     }
 
     protected Optional<String> getKdeGlobalSetting(String groupName, String keyName) {

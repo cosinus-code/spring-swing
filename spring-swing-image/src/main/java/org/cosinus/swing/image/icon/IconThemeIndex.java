@@ -54,15 +54,6 @@ public class IconThemeIndex extends GroupedProperties {
 
     public static final String INHERITS = "Inherits";
 
-    public static final IconTheme ICON_THEME_PAPIRUS = new IconTheme("Papirus", "Papirus-Dark");
-
-    public static final IconTheme ICON_THEME_BREEZE = new IconTheme("breeze", "breeze-dark");
-
-    public static final IconTheme[] ADDITIONAL_ICON_THEMES = new IconTheme[]{
-        ICON_THEME_PAPIRUS,
-        ICON_THEME_BREEZE
-    };
-
     private List<Path> iconPaths;
 
     private EnumMap<IconSize, List<String>> iconInternalPathMap;
@@ -136,7 +127,7 @@ public class IconThemeIndex extends GroupedProperties {
                 .map(inherits -> inherits.split(","))
                 .stream()
                 .flatMap(Arrays::stream),
-            stream(ADDITIONAL_ICON_THEMES)
+            uiThemeProvider.getAdditionalIconThemes()
                 .map(iconTheme -> uiThemeProvider.isDarkOsTheme() ?
                     iconTheme.darkName() :
                     iconTheme.lightName()));
