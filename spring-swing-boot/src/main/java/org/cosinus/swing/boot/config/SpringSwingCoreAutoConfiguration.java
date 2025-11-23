@@ -23,7 +23,7 @@ import org.cosinus.swing.boot.condition.ConditionalOnLinux;
 import org.cosinus.swing.boot.condition.ConditionalOnMac;
 import org.cosinus.swing.boot.condition.ConditionalOnWindows;
 import org.cosinus.swing.context.ApplicationProperties;
-import org.cosinus.swing.context.UIProperties;
+import org.cosinus.swing.ui.UIProperties;
 import org.cosinus.swing.exec.*;
 import org.cosinus.swing.preference.JsonPreferencesProvider;
 import org.cosinus.swing.preference.Preferences;

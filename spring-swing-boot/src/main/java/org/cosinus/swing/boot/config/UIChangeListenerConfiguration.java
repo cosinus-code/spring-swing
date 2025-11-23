@@ -18,11 +18,35 @@
 package org.cosinus.swing.boot.config;
 
 import org.cosinus.swing.boot.condition.ConditionalOnListeningUIChanges;
+import org.cosinus.swing.boot.condition.ConditionalOnOperatingSystem;
+import org.cosinus.swing.boot.initialize.LookAndFeelInitializer;
+import org.cosinus.swing.boot.ui.DefaultUIChangeListener;
+import org.cosinus.swing.ui.UIProperties;
+import org.cosinus.swing.ui.listener.UIChangeController;
+import org.cosinus.swing.ui.listener.UIThemeProvider;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
+
+import static org.cosinus.swing.os.OperatingSystem.MAC;
+import static org.cosinus.swing.os.OperatingSystem.WINDOWS;
 
 @Configuration
 @EnableScheduling
 @ConditionalOnListeningUIChanges
 public class UIChangeListenerConfiguration {
+
+    @Bean
+    public UIChangeController uiChangeController(final UIThemeProvider uiThemeProvider,
+                                                 final UIProperties uiProperties) {
+        return new UIChangeController(uiThemeProvider, uiProperties);
+    }
+
+    @Bean
+    @ConditionalOnOperatingSystem({MAC, WINDOWS})
+    public DefaultUIChangeListener defaultUIChangeListener(final UIChangeController uiChangeController,
+                                                           final LookAndFeelInitializer lookAndFeelInitializer) {
+        return new DefaultUIChangeListener(uiChangeController, lookAndFeelInitializer);
+    }
+
 }

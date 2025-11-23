@@ -15,9 +15,12 @@
  *
  */
 
-package org.cosinus.swing.context;
+package org.cosinus.swing.ui;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 /**
  * Swing UI properties
@@ -25,13 +28,27 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "swing.ui")
 public class UIProperties {
 
+    @Setter
+    @Getter
     private String theme;
 
-    public String getTheme() {
-        return theme;
-    }
+    @Setter
+    @Getter
+    private boolean initializer;
 
-    public void setTheme(String theme) {
-        this.theme = theme;
+    @Setter
+    @Getter
+    @NestedConfigurationProperty
+    private Listener listener;
+
+    @Getter
+    @Setter
+    public static class Listener {
+
+        private boolean enabled;
+
+        private boolean trace;
+
+        private int frequency;
     }
 }

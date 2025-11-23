@@ -30,6 +30,7 @@ import org.cosinus.swing.resource.ClasspathResourceResolver;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.cosinus.swing.ui.listener.UIChangeController;
 import org.cosinus.swing.ui.listener.UIThemeProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -99,6 +100,7 @@ public class SpringSwingImageAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public ApplicationImageInitializer applicationImageInitializer(final IconInitializer iconInitializer,
+                                                                   @Autowired(required = false)
                                                                    final UIChangeController uiChangeController) {
         return new ApplicationImageInitializer(iconInitializer, uiChangeController);
     }

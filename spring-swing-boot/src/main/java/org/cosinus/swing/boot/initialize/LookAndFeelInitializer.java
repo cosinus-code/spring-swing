@@ -19,7 +19,7 @@ package org.cosinus.swing.boot.initialize;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.cosinus.swing.context.UIProperties;
+import org.cosinus.swing.ui.UIProperties;
 import org.cosinus.swing.preference.Preference;
 import org.cosinus.swing.preference.Preferences;
 import org.cosinus.swing.resource.ClasspathResourceResolver;

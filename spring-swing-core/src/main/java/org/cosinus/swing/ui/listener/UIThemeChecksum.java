@@ -69,5 +69,4 @@ public class UIThemeChecksum {
             .map(String::trim)
             .orElse(setting);
     }
-
 }

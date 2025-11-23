@@ -55,7 +55,7 @@ public class KdeLinuxUIThemeProvider implements UIThemeProvider {
 
     @Override
     public UIThemeChecksum getUIThemeChecksum() {
-        UIThemeChecksum uiTheme = new UIThemeChecksum();
+        UIThemeChecksum uiThemeChecksum = new UIThemeChecksum();
 
         String kdeTheme = getUITheme().orElse(null);
         String iconTheme = getIconTheme().orElse(null);
@@ -65,11 +65,11 @@ public class KdeLinuxUIThemeProvider implements UIThemeProvider {
         Optional<String> mouseCursorTheme = getKdeInputSetting("Mouse", "cursorTheme");
         Optional<String> cursorThemeName = getKdeInputSetting("CursorTheme", "name");
 
-        uiTheme.setUIThemeChecksum(kdeTheme, widgetStyle, plasmaTheme, colorScheme);
-        uiTheme.setIconThemeChecksum(kdeTheme, iconTheme);
-        uiTheme.setCursorThemeChecksum(mouseCursorTheme, cursorThemeName);
+        uiThemeChecksum.setUIThemeChecksum(kdeTheme, widgetStyle, plasmaTheme, colorScheme, iconTheme);
+        uiThemeChecksum.setIconThemeChecksum(kdeTheme, iconTheme);
+        uiThemeChecksum.setCursorThemeChecksum(mouseCursorTheme, cursorThemeName);
 
-        return uiTheme;
+        return uiThemeChecksum;
     }
 
     @Override
@@ -101,11 +101,11 @@ public class KdeLinuxUIThemeProvider implements UIThemeProvider {
 
     protected Optional<String> getKdeSetting(String configFile, String groupName, String keyName) {
         return processExecutor.executeAndGetOutput(
-            kdeReadConfig(),
-            KDE_READ_CONFIG_FILE, configFile,
-            KDE_READ_CONFIG_GROUP, groupName,
-            KDE_READ_CONFIG_KEY, keyName)
-        .map(UIThemeChecksum::cleanup);
+                kdeReadConfig(),
+                KDE_READ_CONFIG_FILE, configFile,
+                KDE_READ_CONFIG_GROUP, groupName,
+                KDE_READ_CONFIG_KEY, keyName)
+            .map(UIThemeChecksum::cleanup);
     }
 
     protected String kdeReadConfig() {

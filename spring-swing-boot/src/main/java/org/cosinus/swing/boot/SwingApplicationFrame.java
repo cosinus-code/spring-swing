@@ -46,8 +46,7 @@ public abstract class SwingApplicationFrame extends Frame implements Application
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
 
-
-    @Autowired
+    @Autowired(required = false)
     protected UIChangeController uiChangeController;
 
     /**
@@ -64,7 +63,9 @@ public abstract class SwingApplicationFrame extends Frame implements Application
         applicationEventPublisher.publishEvent(new ApplicationFrameAfterInitializeEvent(this));
 
         applicationFrame = this;
-        uiChangeController.registerUIChangeListener(this);
+        if (uiChangeController != null) {
+            uiChangeController.registerUIChangeListener(this);
+        }
     }
 
     /**

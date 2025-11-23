@@ -17,6 +17,8 @@
 
 package org.cosinus.swing.context;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
@@ -28,76 +30,37 @@ import static java.util.Optional.ofNullable;
 @ConfigurationProperties(prefix = "swing.application")
 public class ApplicationProperties {
 
+    @Getter
+    @Setter
     private String name;
 
+    @Setter
     private String version;
 
+    @Getter
+    @Setter
     private String icon;
 
+    @Getter
+    @Setter
     private String home;
 
+    @Getter
+    @Setter
     private String menu = "menu";
 
+    @Getter
+    @Setter
     private String iconsPath;
 
+    @Getter
+    @Setter
     @NestedConfigurationProperty
     private Frame frame = new Frame();
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getVersion() {
         return ofNullable(version)
             .orElseGet(this::getManifestVersion);
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    public String getHome() {
-        return home;
-    }
-
-    public void setHome(String home) {
-        this.home = home;
-    }
-
-    public String getMenu() {
-        return menu;
-    }
-
-    public void setMenu(String menu) {
-        this.menu = menu;
-    }
-
-    public Frame getFrame() {
-        return frame;
-    }
-
-    public void setFrame(Frame frame) {
-        this.frame = frame;
-    }
-
-    public String getIconsPath() {
-        return iconsPath;
-    }
-
-    public void setIconsPath(String iconsPath) {
-        this.iconsPath = iconsPath;
     }
 
     public String getManifestVersion() {
@@ -111,16 +74,10 @@ public class ApplicationProperties {
             .orElseGet(this::getName);
     }
 
+    @Getter
+    @Setter
     public static class Frame {
 
         private String name;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
     }
 }

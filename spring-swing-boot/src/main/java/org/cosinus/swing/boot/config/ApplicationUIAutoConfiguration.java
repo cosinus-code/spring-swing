@@ -21,7 +21,7 @@ import com.formdev.flatlaf.FlatLightLaf;
 import org.cosinus.swing.boot.condition.*;
 import org.cosinus.swing.boot.ui.DefaultUIChangeListener;
 import org.cosinus.swing.boot.initialize.LookAndFeelInitializer;
-import org.cosinus.swing.context.UIProperties;
+import org.cosinus.swing.ui.UIProperties;
 import org.cosinus.swing.exec.ProcessExecutor;
 import org.cosinus.swing.preference.Preferences;
 import org.cosinus.swing.resource.ClasspathResourceResolver;
@@ -69,15 +69,6 @@ public class ApplicationUIAutoConfiguration {
 
         return new LookAndFeelInitializer(
             uiProperties, preferences, uiHandler, uiThemeProvider, resourceResolver, darkLookAndFeel);
-    }
-
-    @Bean
-    @ConditionalOnOperatingSystem({MAC, WINDOWS})
-    public DefaultUIChangeListener darkLookAndFeelUIChangeListener(
-        final UIChangeController uiChangeController,
-        final LookAndFeelInitializer lookAndFeelInitializer) {
-
-        return new DefaultUIChangeListener(uiChangeController, lookAndFeelInitializer);
     }
 
     /**
@@ -134,10 +125,5 @@ public class ApplicationUIAutoConfiguration {
     @ConditionalOnMissingBean
     public UIThemeProvider defaultThemeProvider(final ApplicationUIHandler uiHandler) {
         return new DefaultUIThemeProvider(uiHandler);
-    }
-
-    @Bean
-    public UIChangeController uiChangeController(final UIThemeProvider uiThemeProvider) {
-        return new UIChangeController(uiThemeProvider);
     }
 }

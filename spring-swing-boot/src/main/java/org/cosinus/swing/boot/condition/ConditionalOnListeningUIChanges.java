@@ -24,6 +24,6 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@ConditionalOnProperty(name = "swing.ui.listener", matchIfMissing = true)
+@ConditionalOnProperty(name = "swing.ui.listener.enabled", matchIfMissing = true)
 public @interface ConditionalOnListeningUIChanges {
 }
