@@ -21,7 +21,6 @@ import com.twelvemonkeys.imageio.plugins.svg.SVGImageReaderSpi;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.boot.initialize.ApplicationInitializer;
-import org.cosinus.swing.boot.ui.DefaultUIChangeListener;
 import org.cosinus.swing.image.icon.IconInitializer;
 import org.cosinus.swing.image.svg.SvgImageReaderSpi;
 import org.cosinus.swing.ui.listener.UIChangeController;

@@ -56,8 +56,11 @@ public class IconThemeIndex extends GroupedProperties {
 
     public static final IconTheme ICON_THEME_PAPIRUS = new IconTheme("Papirus", "Papirus-Dark");
 
+    public static final IconTheme ICON_THEME_BREEZE = new IconTheme("breeze", "breeze-dark");
+
     public static final IconTheme[] ADDITIONAL_ICON_THEMES = new IconTheme[]{
-        ICON_THEME_PAPIRUS
+        ICON_THEME_PAPIRUS,
+        ICON_THEME_BREEZE
     };
 
     private List<Path> iconPaths;
@@ -135,8 +138,8 @@ public class IconThemeIndex extends GroupedProperties {
                 .flatMap(Arrays::stream),
             stream(ADDITIONAL_ICON_THEMES)
                 .map(iconTheme -> uiThemeProvider.isDarkOsTheme() ?
-                    iconTheme.getDarkName() :
-                    iconTheme.getLightName()));
+                    iconTheme.darkName() :
+                    iconTheme.lightName()));
     }
 
     public Stream<String> getIconInternalPath(IconSize size) {

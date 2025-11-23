@@ -19,13 +19,12 @@ package org.cosinus.swing.boot.config;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import org.cosinus.swing.boot.condition.*;
-import org.cosinus.swing.boot.ui.DefaultUIChangeListener;
 import org.cosinus.swing.boot.initialize.LookAndFeelInitializer;
-import org.cosinus.swing.ui.UIProperties;
 import org.cosinus.swing.exec.ProcessExecutor;
 import org.cosinus.swing.preference.Preferences;
 import org.cosinus.swing.resource.ClasspathResourceResolver;
 import org.cosinus.swing.ui.ApplicationUIHandler;
+import org.cosinus.swing.ui.UIProperties;
 import org.cosinus.swing.ui.dark.DarkLookAndFeel;
 import org.cosinus.swing.ui.listener.*;
 import org.springframework.beans.factory.annotation.Autowired;

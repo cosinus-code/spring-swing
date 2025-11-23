@@ -17,26 +17,5 @@
 
 package org.cosinus.swing.image.icon;
 
-public class IconTheme {
-
-    private final String lightName;
-
-    private final String darkName;
-
-    public IconTheme(String name) {
-        this(name, name);
-    }
-
-    public IconTheme(String lightName, String darkName) {
-        this.lightName = lightName;
-        this.darkName = darkName;
-    }
-
-    public String getLightName() {
-        return lightName;
-    }
-
-    public String getDarkName() {
-        return darkName;
-    }
+public record IconTheme(String lightName, String darkName) {
 }

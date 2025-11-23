@@ -17,6 +17,7 @@
 
 package org.cosinus.swing.menu;
 
+import lombok.Setter;
 import org.cosinus.swing.action.ActionController;
 import org.cosinus.swing.action.ActionInContext;
 import org.cosinus.swing.action.ActionProducer;
@@ -46,7 +47,8 @@ public class MenuItem extends JMenuItem implements FormComponent, ActionProducer
 
     private final String key;
 
-    private final String iconName;
+    @Setter
+    private String iconName;
 
     public MenuItem(ActionListener actionListener, String key) {
         this(actionListener, key, null, false);

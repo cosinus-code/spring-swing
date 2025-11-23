@@ -87,6 +87,9 @@ public class MenuBar extends JMenuBar implements FormComponent {
                         menuItemKey,
                         KeyStroke.getKeyStroke(menuItemModel.getShortcut()),
                         withBoxMenu);
+                    if (menuItemModel.getIcon() != null && menuItem.getIconName() == null) {
+                        menuItem.setIconName(menuItemModel.getIcon());
+                    }
                     if (!isMac() || !menuItemModel.isHideOnMac()) {
                         menu.add(menuItem);
                     }
