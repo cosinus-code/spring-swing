@@ -20,10 +20,9 @@ package org.cosinus.swing.ui.listener;
 import lombok.extern.slf4j.Slf4j;
 import org.cosinus.swing.exec.Command;
 import org.cosinus.swing.exec.ProcessExecutor;
+import org.cosinus.swing.ui.ApplicationUIHandler;
 
 import java.util.Optional;
-
-import static java.util.Optional.ofNullable;
 
 @Slf4j
 public class KdeLinuxUIThemeProvider implements UIThemeProvider {
@@ -44,10 +43,14 @@ public class KdeLinuxUIThemeProvider implements UIThemeProvider {
 
     private final ProcessExecutor processExecutor;
 
+    private final ApplicationUIHandler uiHandler;
+
     private String kdeReadConfig;
 
-    public KdeLinuxUIThemeProvider(final ProcessExecutor processExecutor) {
+    public KdeLinuxUIThemeProvider(final ProcessExecutor processExecutor,
+                                   final ApplicationUIHandler uiHandler) {
         this.processExecutor = processExecutor;
+        this.uiHandler = uiHandler;
     }
 
     @Override
@@ -77,6 +80,11 @@ public class KdeLinuxUIThemeProvider implements UIThemeProvider {
     @Override
     public Optional<String> getIconTheme() {
         return getKdeGlobalSetting("Icons", "Theme");
+    }
+
+    @Override
+    public Optional<String> getDefaultLookAndFeel() {
+        return uiHandler.findLookAndFeelByName("GTK");
     }
 
     protected Optional<String> getKdeGlobalSetting(String groupName, String keyName) {

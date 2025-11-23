@@ -19,18 +19,24 @@ package org.cosinus.swing.ui.listener;
 
 import lombok.extern.slf4j.Slf4j;
 import org.cosinus.swing.exec.ProcessExecutor;
+import org.cosinus.swing.ui.ApplicationUIHandler;
 
 import java.util.Optional;
 
 import static java.util.Optional.empty;
+import static java.util.Optional.ofNullable;
 
 @Slf4j
 public class MacUIThemeProvider implements UIThemeProvider {
 
     private final ProcessExecutor processExecutor;
 
-    public MacUIThemeProvider(final ProcessExecutor processExecutor) {
+    private final ApplicationUIHandler uiHandler;
+
+    public MacUIThemeProvider(final ProcessExecutor processExecutor,
+                              final ApplicationUIHandler uiHandler) {
         this.processExecutor = processExecutor;
+        this.uiHandler = uiHandler;
     }
 
     @Override
@@ -55,5 +61,10 @@ public class MacUIThemeProvider implements UIThemeProvider {
     @Override
     public Optional<String> getIconTheme() {
         return empty();
+    }
+
+    @Override
+    public Optional<String> getDefaultLookAndFeel() {
+        return ofNullable(uiHandler.getDefaultLookAndFeelClassName());
     }
 }

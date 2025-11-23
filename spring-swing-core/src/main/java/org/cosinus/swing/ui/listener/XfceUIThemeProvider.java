@@ -18,6 +18,7 @@
 package org.cosinus.swing.ui.listener;
 
 import org.cosinus.swing.exec.ProcessExecutor;
+import org.cosinus.swing.ui.ApplicationUIHandler;
 
 import java.util.Optional;
 
@@ -25,8 +26,12 @@ public class XfceUIThemeProvider implements UIThemeProvider {
 
     private final ProcessExecutor processExecutor;
 
-    public XfceUIThemeProvider(final ProcessExecutor processExecutor) {
+    private final ApplicationUIHandler uiHandler;
+
+    public XfceUIThemeProvider(final ProcessExecutor processExecutor,
+                               final ApplicationUIHandler uiHandler) {
         this.processExecutor = processExecutor;
+        this.uiHandler = uiHandler;
     }
 
     @Override
@@ -45,6 +50,11 @@ public class XfceUIThemeProvider implements UIThemeProvider {
     @Override
     public Optional<String> getIconTheme() {
         return getUiSetting("/Net/IconThemeName");
+    }
+
+    @Override
+    public Optional<String> getDefaultLookAndFeel() {
+        return uiHandler.findLookAndFeelByName("GTK");
     }
 
     public Optional<String> getUiSetting(String name) {

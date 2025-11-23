@@ -238,6 +238,16 @@ public class ApplicationUIHandler {
         return lookAndFeelMap;
     }
 
+    public Optional<String> findLookAndFeelByName(String nameToFind) {
+        return getAvailableLookAndFeels()
+            .values()
+            .stream()
+            .filter(lookAdnFeel -> lookAdnFeel.getName().startsWith(nameToFind))
+            .findFirst()
+            .map(LookAndFeelInfo::getClassName);
+    }
+
+
     /**
      * Check if the current look-and-feel is GTK.
      *

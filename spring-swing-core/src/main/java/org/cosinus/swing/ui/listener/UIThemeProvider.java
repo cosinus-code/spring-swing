@@ -29,6 +29,8 @@ public interface UIThemeProvider {
 
     Optional<String> getIconTheme();
 
+    Optional<String> getDefaultLookAndFeel();
+
     default boolean isDarkOsTheme() {
         return getUITheme()
             .map(String::toLowerCase)

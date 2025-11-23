@@ -94,19 +94,21 @@ public class LookAndFeelInitializer implements ApplicationInitializer {
     }
 
     private void setLookAndFeel(String lookAndFeelClassName) {
-        LOG.info("Initializing application look-and-feel to {}...", lookAndFeelClassName);
-        uiHandler.setLookAndFeel(lookAndFeelClassName);
-        customizeLookAndFeel(lookAndFeelClassName);
+        if (!uiHandler.getLookAndFeel().equals(lookAndFeelClassName)) {
+            LOG.info("Initializing application look-and-feel to {}...", lookAndFeelClassName);
+            uiHandler.setLookAndFeel(lookAndFeelClassName);
+            customizeLookAndFeel(lookAndFeelClassName);
 
-        uiHandler.translateDefaultUILabels();
-        uiHandler.initializeDefaultUIFonts();
+            uiHandler.translateDefaultUILabels();
+            uiHandler.initializeDefaultUIFonts();
+        }
     }
 
     private Optional<String> getDefaultLookAndFeelClassName() {
         return ofNullable(darkLookAndFeel)
             .filter(laf -> uiThemeProvider.isDarkOsTheme())
             .map(DarkLookAndFeel::getClassName)
-            .or(() -> ofNullable(uiHandler.getDefaultLookAndFeelClassName()));
+            .or(uiThemeProvider::getDefaultLookAndFeel);
     }
 
     private void customizeLookAndFeel(String lookAndFeelClassName) {

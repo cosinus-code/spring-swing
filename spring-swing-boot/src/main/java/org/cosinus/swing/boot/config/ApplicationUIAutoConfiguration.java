@@ -96,40 +96,44 @@ public class ApplicationUIAutoConfiguration {
     @Bean
     @ConditionalOnLinux
     @ConditionalOnGnome
-    public UIThemeProvider gnomeLinuxThemeProvider(final ProcessExecutor processExecutor) {
-        return new GnomeLinuxUIThemeProvider(processExecutor);
+    public UIThemeProvider gnomeLinuxThemeProvider(final ProcessExecutor processExecutor,
+                                                   final ApplicationUIHandler uiHandler) {
+        return new GnomeLinuxUIThemeProvider(processExecutor, uiHandler);
     }
 
     @Bean
     @ConditionalOnLinux
     @ConditionalOnKDE
-    public UIThemeProvider kdeLinuxThemeProvider(final ProcessExecutor processExecutor) {
-        return new KdeLinuxUIThemeProvider(processExecutor);
+    public UIThemeProvider kdeLinuxThemeProvider(final ProcessExecutor processExecutor,
+                                                 final ApplicationUIHandler uiHandler) {
+        return new KdeLinuxUIThemeProvider(processExecutor, uiHandler);
     }
 
     @Bean
     @ConditionalOnLinux
     @ConditionalOnXFCE
-    public UIThemeProvider XfceUIThemeProvider(final ProcessExecutor processExecutor) {
-        return new XfceUIThemeProvider(processExecutor);
+    public UIThemeProvider XfceUIThemeProvider(final ProcessExecutor processExecutor,
+                                               final ApplicationUIHandler uiHandler) {
+        return new XfceUIThemeProvider(processExecutor, uiHandler);
     }
 
     @Bean
     @ConditionalOnMac
-    public UIThemeProvider macThemeProvider(final ProcessExecutor processExecutor) {
-        return new MacUIThemeProvider(processExecutor);
+    public UIThemeProvider macThemeProvider(final ProcessExecutor processExecutor,
+                                            final ApplicationUIHandler uiHandler) {
+        return new MacUIThemeProvider(processExecutor, uiHandler);
     }
 
     @Bean
     @ConditionalOnWindows
-    public UIThemeProvider windowsThemeProvider() {
-        return new WindowsUIThemeProvider();
+    public UIThemeProvider windowsThemeProvider(final ApplicationUIHandler uiHandler) {
+        return new WindowsUIThemeProvider(uiHandler);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public UIThemeProvider defaultThemeProvider() {
-        return new DefaultUIThemeProvider();
+    public UIThemeProvider defaultThemeProvider(final ApplicationUIHandler uiHandler) {
+        return new DefaultUIThemeProvider(uiHandler);
     }
 
     @Bean

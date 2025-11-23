@@ -17,9 +17,20 @@
 
 package org.cosinus.swing.ui.listener;
 
+import org.cosinus.swing.ui.ApplicationUIHandler;
+
 import java.util.Optional;
 
+import static java.util.Optional.ofNullable;
+
 public class DefaultUIThemeProvider implements UIThemeProvider {
+
+    private final ApplicationUIHandler uiHandler;
+
+    public DefaultUIThemeProvider(final ApplicationUIHandler uiHandler) {
+        this.uiHandler = uiHandler;
+    }
+
     @Override
     public UIThemeChecksum getUIThemeChecksum() {
         return new UIThemeChecksum();
@@ -38,5 +49,10 @@ public class DefaultUIThemeProvider implements UIThemeProvider {
     @Override
     public Optional<String> getIconTheme() {
         return Optional.empty();
+    }
+
+    @Override
+    public Optional<String> getDefaultLookAndFeel() {
+        return ofNullable(uiHandler.getDefaultLookAndFeelClassName());
     }
 }

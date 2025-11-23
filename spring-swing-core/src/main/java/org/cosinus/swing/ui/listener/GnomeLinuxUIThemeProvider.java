@@ -19,6 +19,7 @@ package org.cosinus.swing.ui.listener;
 
 import org.cosinus.swing.error.ProcessExecutionException;
 import org.cosinus.swing.exec.ProcessExecutor;
+import org.cosinus.swing.ui.ApplicationUIHandler;
 
 import java.util.Optional;
 
@@ -38,8 +39,12 @@ public class GnomeLinuxUIThemeProvider implements UIThemeProvider {
 
     private final ProcessExecutor processExecutor;
 
-    public GnomeLinuxUIThemeProvider(final ProcessExecutor processExecutor) {
+    private final ApplicationUIHandler uiHandler;
+
+    public GnomeLinuxUIThemeProvider(final ProcessExecutor processExecutor,
+                                     final ApplicationUIHandler uiHandler) {
         this.processExecutor = processExecutor;
+        this.uiHandler = uiHandler;
     }
 
     @Override
@@ -94,5 +99,10 @@ public class GnomeLinuxUIThemeProvider implements UIThemeProvider {
         return ofNullable(getDefaultToolkit().getDesktopProperty(GNOME_ICON_THEME_NAME_PROPERTY))
             .map(Object::toString)
             .or(() -> Optional.of(DEFAULT_GNOME_ICON_THEME));
+    }
+
+    @Override
+    public Optional<String> getDefaultLookAndFeel() {
+        return uiHandler.findLookAndFeelByName("GTK");
     }
 }
