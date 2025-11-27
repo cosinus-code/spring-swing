@@ -19,19 +19,18 @@ package org.cosinus.swing.image.icon;
 
 import org.cosinus.swing.icon.IconSize;
 import org.cosinus.swing.ui.listener.UIThemeProvider;
-import org.cosinus.swing.util.GroupedProperties;
+import org.ini4j.Ini;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toMap;
-import static java.util.stream.Collectors.toSet;
 import static java.util.stream.Stream.concat;
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
@@ -40,10 +39,7 @@ import static org.cosinus.swing.context.ApplicationContextInjector.injectContext
  * <p>
  * It is used to read icon theme index files in Linux.
  */
-public class IconThemeIndex extends GroupedProperties {
-
-    @Serial
-    private static final long serialVersionUID = 5424656492329188366L;
+public class IconThemeIndex {
 
     @Autowired
     private UIThemeProvider uiThemeProvider;
@@ -54,92 +50,121 @@ public class IconThemeIndex extends GroupedProperties {
 
     public static final String INHERITS = "Inherits";
 
-    private List<Path> iconPaths;
+    private final List<Path> iconPaths;
 
-    private EnumMap<IconSize, List<String>> iconInternalPathMap;
+    private final EnumMap<IconSize, Set<String>> iconInternalPathMap;
 
-    private Set<String> internalPathsWithoutSize;
+    private final Set<String> internalPathsWithoutSize;
 
     public IconThemeIndex() {
         injectContext(this);
         this.iconPaths = new ArrayList<>();
+        this.iconInternalPathMap = new EnumMap<>(IconSize.class);
+        this.internalPathsWithoutSize = new HashSet<>();
     }
 
     public IconThemeIndex load(File iconThemeFolder) {
-        loadTheme(iconThemeFolder);
-        initIconPaths(iconThemeFolder);
-        iconPaths
+        ofNullable(iconThemeFolder)
+            .map(this::loadTheme)
             .stream()
-            .map(Path::toFile)
+            .flatMap(index -> getSiblingIconThemes(iconThemeFolder, index).stream())
             .forEach(this::loadTheme);
-
-        this.iconInternalPathMap = new EnumMap<>(stream(IconSize.values())
-            .collect(toMap(identity(), size -> keySet()
-                .stream()
-                .filter(key -> key.startsWith(size + "/") ||
-                    key.endsWith("/" + size) ||
-                    key.startsWith(size.getSize() + "/") ||
-                    key.endsWith("/" + size.getSize()))
-                .toList())));
-
-        this.internalPathsWithoutSize = keySet()
-            .stream()
-            .filter(key -> !key.matches("^\\d.*\\d$"))
-            .collect(toSet());
 
         return this;
     }
 
-    protected void loadTheme(File iconThemeFolder) {
-        Optional.of(iconThemeFolder)
+    protected boolean isPathForSize(String path, IconSize iconSize) {
+        String size = "" + iconSize.getSize();
+        return path.matches("^" + size + "[x/].*") ||
+            path.matches(".*" + "[x/]" + size + "@?2?x?$");
+    }
+
+    protected boolean isPathWithoutSize(String path) {
+        return !path.matches("^\\d.*") &&
+            !path.matches(".*\\d$") &&
+            !path.matches(".*@\\dx$");
+    }
+
+    protected Ini loadTheme(File iconThemeFolder) {
+        iconPaths.add(iconThemeFolder.toPath());
+
+        Ini iconThemeIndex = Optional.of(iconThemeFolder)
             .map(File::toPath)
             .map(path -> path.resolve(INDEX_THEME_FILE_NAME))
             .map(Path::toFile)
             .filter(File::exists)
-            .ifPresent(this::loadFromIndexFile);
+            .map(this::parseIconThemeIndexFile)
+            .orElse(null);
+
+        if (iconThemeIndex != null) {
+            iconThemeIndex.keySet()
+                .forEach(path -> stream(IconSize.values())
+                    .filter(size -> isPathForSize(path, size))
+                    .findFirst()
+                    .ifPresentOrElse(size ->
+                            iconInternalPathMap
+                                .computeIfAbsent(size, k -> new HashSet<>())
+                                .add(path),
+                        () -> {
+                            if (isPathWithoutSize(path)) {
+                                internalPathsWithoutSize.add(path);
+                            }
+                        }));
+        }
+
+        return iconThemeIndex;
     }
 
-    protected void loadFromIndexFile(File indexFile) {
-        try (InputStream input = new FileInputStream(indexFile)) {
-            load(input);
+    protected Ini parseIconThemeIndexFile(File indexIconThemeFile) {
+//        try (InputStream input = new FileInputStream(indexIconThemeFile)) {
+//            load(input);
+//        } catch (IOException e) {
+//            throw new UncheckedIOException(e);
+//        }
+
+        try {
+            return new Ini(indexIconThemeFile);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 
-    public void initIconPaths(File iconThemeFolder) {
-        iconPaths = ofNullable(iconThemeFolder)
+    public List<File> getSiblingIconThemes(File iconThemeFolder, Ini index) {
+        return ofNullable(iconThemeFolder)
             .map(File::toPath)
-            .map(iconThemPath -> concat(Stream.of(iconThemPath),
-                getIconThemeInherits()
-                    .map(iconThemPath::resolveSibling)))
+            .map(iconThemPath -> getSiblingIconThemeNames(index)
+                .map(iconThemPath::resolveSibling))
             .orElseGet(Stream::empty)
+            .map(Path::toFile)
             .toList();
     }
 
-    public List<Path> getIconPaths() {
-        return iconPaths;
-    }
-
-    public Stream<String> getIconThemeInherits() {
+    public Stream<String> getSiblingIconThemeNames(Ini index) {
         return concat(
-            getProperty(ICON_THEME, INHERITS)
+            ofNullable(index.get(ICON_THEME, INHERITS))
                 .map(inherits -> inherits.split(","))
                 .stream()
                 .flatMap(Arrays::stream),
-            uiThemeProvider.getAdditionalIconThemes()
+            uiThemeProvider.getMainIconThemes()
                 .map(iconTheme -> uiThemeProvider.isDarkOsTheme() ?
                     iconTheme.darkName() :
                     iconTheme.lightName()));
     }
 
-    public Stream<String> getIconInternalPath(IconSize size) {
-        return concat(
-            ofNullable(iconInternalPathMap)
+    public Stream<Path> getPathsToIcons(IconSize size) {
+        return iconPaths
+            .stream()
+            .flatMap(path -> getIconInternalPath(size)
+                .map(path::resolve));
+    }
+
+    protected Stream<String> getIconInternalPath(IconSize iconSize) {
+        return ofNullable(iconSize)
+            .map(size -> ofNullable(iconInternalPathMap)
                 .map(pathsMap -> pathsMap.get(size))
                 .stream()
-                .flatMap(Collection::stream),
-            ofNullable(internalPathsWithoutSize)
+                .flatMap(Collection::stream))
+            .orElseGet(() -> ofNullable(internalPathsWithoutSize)
                 .stream()
                 .flatMap(Collection::stream));
     }

@@ -33,7 +33,6 @@ import java.util.Optional;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
-import static org.cosinus.swing.icon.IconSize.X256;
 import static org.cosinus.swing.image.ImageHandler.DISABLED_FILTER;
 import static org.cosinus.swing.image.ImageHandler.GRAY_FILTER;
 
@@ -78,9 +77,8 @@ public class IconHandler {
     @Cacheable(value = SPRING_SWING_ICONS_CACHE_NAME)
     public Optional<Icon> findIconByName(String name, IconSize size) {
         return getRemoteIcon(name)
-            .or(() -> iconProvider.findIconByName(name, size)
-                .or(() -> iconProvider.findIconByName(name, X256)
-                    .or(() -> this.findIconByResource(name + ".png"))))
+            .or(() -> iconProvider.findIconByName(name, size))
+            .or(() -> this.findIconByResource(name + ".png"))
             .map(icon -> scaleIcon(icon, size));
     }
 
@@ -130,8 +128,8 @@ public class IconHandler {
         keyGenerator = "fileExtensionKeyGenerator")
     public Optional<Icon> findIconByFile(File file, IconSize size) {
         return iconProvider.findIconByFile(file, size)
-            .or(() -> uiHandler.getDefaultFileIcon(file.isDirectory())
-                .map(icon -> scaleIcon(icon, size)));
+            .or(() -> uiHandler.getDefaultFileIcon(file.isDirectory()))
+            .map(icon -> scaleIcon(icon, size));
         //TODO
         //.map(icon -> file.isHidden() ? getGrayFilteredIcon(icon) : icon);
     }

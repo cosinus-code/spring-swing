@@ -43,7 +43,7 @@ public interface UIThemeProvider {
             .orElse(false);
     }
 
-    default Stream<IconTheme> getAdditionalIconThemes() {
+    default Stream<IconTheme> getMainIconThemes() {
         return empty();
     }
 }

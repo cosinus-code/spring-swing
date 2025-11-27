@@ -20,8 +20,8 @@ package org.cosinus.swing.image.icon;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.context.ApplicationProperties;
-import org.cosinus.swing.icon.IconSize;
 import org.cosinus.swing.file.mimetype.MimeTypeResolver;
+import org.cosinus.swing.icon.IconSize;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.cosinus.swing.ui.listener.UIThemeProvider;
 import org.springframework.util.MimeType;
@@ -36,8 +36,9 @@ import java.util.stream.Stream;
 
 import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
+import static java.util.function.Predicate.not;
 import static javax.imageio.ImageIO.read;
-import static org.cosinus.swing.icon.IconSize.X16;
+import static org.cosinus.swing.icon.IconSize.*;
 
 /**
  * Implementation of {@link IconProvider} for Linux
@@ -87,7 +88,11 @@ public class LinuxIconProvider implements IconProvider {
             findIconByName(getFolderIconName(file), size)
                 .or(() -> findIconByName(ICON_FOLDER, size)) :
             findIconFileByMimeType(file, size, false)
+                .or(() -> findIconFileByMimeType(file, X48, false))
+                .or(() -> findIconFileByMimeType(file, X256, false))
+                .or(() -> findIconFileByMimeType(file, null, false))
                 .or(() -> findIconFileByMimeType(file, size, true))
+                .or(() -> findIconFileByMimeType(file, null, true))
                 .or(() -> getSpecialIconNameByFile(file)
                     .flatMap(iconName -> findIconByName(iconName, size)))
                 //TODO: to re-enable magic
@@ -96,7 +101,7 @@ public class LinuxIconProvider implements IconProvider {
     }
 
     protected Optional<Icon> findIconFileByMimeType(File file, IconSize size, boolean genericMimeType) {
-        return getPathsToIcons(size)
+        return iconThemeIndex.getPathsToIcons(size)
             .flatMap(iconsFolder -> ofNullable(file)
                 .map(mimeTypeResolver::getMimeTypes)
                 .map(mimeTypes -> genericMimeType ?
@@ -149,7 +154,8 @@ public class LinuxIconProvider implements IconProvider {
     protected Stream<String> genericMimeTypesToIconNames(List<MimeType> mimeTypes) {
         return mimeTypes
             .stream()
-            .map(MimeType::getType);
+            .map(MimeType::getType)
+            .filter(not("application"::equals));
 //            .flatMap(mimeType -> Stream.of(
 //                mimeType.getType(),
 //                mimeType.getType() + "-x-generic"
@@ -158,9 +164,20 @@ public class LinuxIconProvider implements IconProvider {
 
     @Override
     public Optional<Icon> findIconByName(String name, IconSize size) {
+        return findIconByNameInternal(name, size)
+            .or(() -> findIconByNameInternal(name, X48))
+            .or(() -> findIconByNameInternal(name, X256))
+            .or(() -> findIconByNameInternal(name));
+    }
+
+    public Optional<Icon> findIconByNameInternal(String name) {
+        return findIconByNameInternal(name, null);
+    }
+
+    public Optional<Icon> findIconByNameInternal(String name, IconSize size) {
         String iconName = ofNullable(iconNamesMap.get(name))
             .orElse(name);
-        return getPathsToIcons(size)
+        return iconThemeIndex.getPathsToIcons(size)
             .flatMap(iconsFolder -> getIconFromPath(iconsFolder, iconName))
             .map(this::createIcon)
             .filter(Optional::isPresent)
@@ -168,18 +185,9 @@ public class LinuxIconProvider implements IconProvider {
             .findFirst();
     }
 
-    protected Stream<Path> getPathsToIcons(IconSize size) {
-        return iconThemeIndex()
-            .getIconPaths()
-            .stream()
-            .flatMap(path -> iconThemeIndex()
-                .getIconInternalPath(size)
-                .map(path::resolve));
-    }
-
     protected Stream<File> getIconFromPath(Path path, String name) {
         return Stream.of(
-            name,
+                name,
                 name + "-symbolic",
                 "gnome-" + name,
                 "gnome-mime-" + name,
@@ -204,10 +212,6 @@ public class LinuxIconProvider implements IconProvider {
             LOG.error("Failed to create icon from file: {}", file.getAbsolutePath(), e);
             return Optional.empty();
         }
-    }
-
-    protected IconThemeIndex iconThemeIndex() {
-        return iconThemeIndex;
     }
 
     protected void initPathsToIcons() {
@@ -258,11 +262,11 @@ public class LinuxIconProvider implements IconProvider {
                 .filter(folder -> folder.exists() && folder.canRead())
                 .findFirst());
 
-        if (iconsThemeFolder.isPresent()) {
-            LOG.info("Path to icons resolved: " + iconsThemeFolder.get().getAbsolutePath());
-        } else {
-            LOG.warn("Path to icons unresolved");
-        }
+        iconsThemeFolder
+            .map(File::getAbsolutePath)
+            .ifPresentOrElse(
+                path -> LOG.info("Path to icons resolved: {}", path),
+                () -> LOG.warn("Path to icons unresolved"));
 
         return iconsThemeFolder;
     }
