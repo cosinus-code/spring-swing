@@ -35,6 +35,7 @@ import org.cosinus.swing.resource.ResourceResolver;
 import org.cosinus.swing.translate.MessageSourceTranslator;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
+import org.cosinus.swing.worker.WorkerListenerHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -162,5 +163,10 @@ public class SpringSwingCoreAutoConfiguration {
     public ApplicationUIHandler uiHandler(final Translator translator,
                                           final Set<UIManager.LookAndFeelInfo> lookAndFeels) {
         return new ApplicationUIHandler(translator, lookAndFeels);
+    }
+
+    @Bean
+    public WorkerListenerHandler workerListenerHandler() {
+        return new WorkerListenerHandler();
     }
 }

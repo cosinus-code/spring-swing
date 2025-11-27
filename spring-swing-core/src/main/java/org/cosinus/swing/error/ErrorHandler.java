@@ -64,6 +64,10 @@ public class ErrorHandler {
                     throwable.getLocalizedMessage());
     }
 
+    public void handleError(String errorMessage) {
+        handleError(null, errorMessage);
+    }
+
     /**
      * Handle an error message by showing the error message in an error message dialog.
      *
