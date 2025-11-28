@@ -18,7 +18,6 @@
 package org.cosinus.swing.image.icon;
 
 import org.cosinus.stream.Streams;
-import org.cosinus.stream.consumer.StreamConsumer;
 import org.cosinus.stream.pipeline.PipelineStrategy;
 import org.cosinus.swing.action.execute.ActionModel;
 import org.cosinus.swing.icon.IconHolder;
@@ -34,9 +33,6 @@ public class UpdateIconsWorker extends DirectPipelineWorker<IconInitializerModel
 
     @Autowired
     private IconHandler iconHandler;
-
-    @Autowired
-    private IconInitializer iconInitializer;
 
     protected UpdateIconsWorker() {
         super(new ActionModel("icon-initializer", "icon-initializer", "icon-initializer"),
@@ -56,10 +52,5 @@ public class UpdateIconsWorker extends DirectPipelineWorker<IconInitializerModel
             .flatMap(Streams::flatComponentsStream)
             .filter(component -> component instanceof IconHolder)
             .map(IconHolder.class::cast);
-    }
-
-    @Override
-    protected StreamConsumer<IconHolder> streamConsumer() {
-        return null;
     }
 }

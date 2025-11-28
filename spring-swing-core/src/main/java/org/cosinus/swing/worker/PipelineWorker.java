@@ -28,14 +28,10 @@ import java.io.UncheckedIOException;
 import static java.util.Optional.ofNullable;
 
 public abstract class PipelineWorker<M extends WorkerModel<V>, T, V>
-    extends Worker<M, V>
-    implements StreamPipeline<T>, StreamConsumer<T> {
-
-    private final StreamConsumer<T> streamConsumer;
+    extends Worker<M, V> implements StreamPipeline<T> {
 
     protected PipelineWorker(ActionModel actionModel, M workerModel) {
         super(actionModel, workerModel);
-        this.streamConsumer = streamConsumer();
     }
 
     @Override
@@ -49,25 +45,36 @@ public abstract class PipelineWorker<M extends WorkerModel<V>, T, V>
 
     @Override
     public final StreamConsumer<T> openPipelineOutputStream(PipelineStrategy pipelineStrategy) {
-        return this;
+        return new WorkerConsumer(streamConsumer());
     }
 
-    protected abstract StreamConsumer<T> streamConsumer();
-
-    @Override
-    public void accept(T item) {
-        checkWorkerStatus();
-        ofNullable(streamConsumer)
-            .ifPresent(consumer -> consumer.accept(item));
-        publish(transform(item));
+    protected StreamConsumer<T> streamConsumer() {
+        return null;
     }
 
     protected abstract V transform(T item);
 
-    @Override
-    public void close() throws IOException {
-        if (streamConsumer != null) {
-            streamConsumer.close();
+    private class WorkerConsumer implements StreamConsumer<T> {
+
+        protected final StreamConsumer<T> streamConsumer;
+
+        private WorkerConsumer(final StreamConsumer<T> streamConsumer) {
+            this.streamConsumer = streamConsumer;
+        }
+
+        @Override
+        public void accept(T item) {
+            checkWorkerStatus();
+            ofNullable(streamConsumer)
+                .ifPresent(consumer -> consumer.accept(item));
+            publish(transform(item));
+        }
+
+        @Override
+        public void close() throws IOException {
+            if (streamConsumer != null) {
+                streamConsumer.close();
+            }
         }
     }
 }

@@ -20,13 +20,11 @@ package org.cosinus.swing.image.icon;
 import org.cosinus.swing.icon.IconHolder;
 import org.cosinus.swing.ui.listener.UIChangeListener;
 
-import java.awt.*;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
-import static org.cosinus.stream.Streams.flatComponentsStream;
 
 public class IconInitializer implements UIChangeListener {
 
@@ -42,11 +40,7 @@ public class IconInitializer implements UIChangeListener {
     }
 
     public void initializeIcons() {
-        try (UpdateIconsWorker worker = new UpdateIconsWorker()) {
-            worker.execute();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+        new UpdateIconsWorker().execute();
     }
 
     public void updateIcon(final IconHolder... iconHolders) {
