@@ -17,14 +17,14 @@
 
 package org.cosinus.swing.image.icon;
 
+import org.apache.commons.configuration2.INIConfiguration;
+import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.commons.configuration2.io.FileHandler;
 import org.cosinus.swing.icon.IconSize;
 import org.cosinus.swing.ui.listener.UIThemeProvider;
-import org.ini4j.Ini;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Stream;
@@ -46,9 +46,7 @@ public class IconThemeIndex {
 
     public static final String INDEX_THEME_FILE_NAME = "index.theme";
 
-    public static final String ICON_THEME = "Icon Theme";
-
-    public static final String INHERITS = "Inherits";
+    public static final String ICON_THEME_INHERITS = "Icon Theme.Inherits";
 
     private final List<Path> iconPaths;
 
@@ -85,10 +83,10 @@ public class IconThemeIndex {
             !path.matches(".*@\\dx$");
     }
 
-    protected Ini loadTheme(File iconThemeFolder) {
+    protected INIConfiguration loadTheme(File iconThemeFolder) {
         iconPaths.add(iconThemeFolder.toPath());
 
-        Ini iconThemeIndex = Optional.of(iconThemeFolder)
+        INIConfiguration iconThemeIndex = Optional.of(iconThemeFolder)
             .map(File::toPath)
             .map(path -> path.resolve(INDEX_THEME_FILE_NAME))
             .map(Path::toFile)
@@ -97,7 +95,7 @@ public class IconThemeIndex {
             .orElse(null);
 
         if (iconThemeIndex != null) {
-            iconThemeIndex.keySet()
+            iconThemeIndex.getSections()
                 .forEach(path -> stream(IconSize.values())
                     .filter(size -> isPathForSize(path, size))
                     .findFirst()
@@ -115,21 +113,19 @@ public class IconThemeIndex {
         return iconThemeIndex;
     }
 
-    protected Ini parseIconThemeIndexFile(File indexIconThemeFile) {
-//        try (InputStream input = new FileInputStream(indexIconThemeFile)) {
-//            load(input);
-//        } catch (IOException e) {
-//            throw new UncheckedIOException(e);
-//        }
-
+    protected INIConfiguration parseIconThemeIndexFile(File indexIconThemeFile) {
         try {
-            return new Ini(indexIconThemeFile);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
+            INIConfiguration index = new INIConfiguration();
+            FileHandler handler = new FileHandler(index);
+            handler.load(indexIconThemeFile);
+
+            return index;
+        } catch (ConfigurationException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public List<File> getSiblingIconThemes(File iconThemeFolder, Ini index) {
+    public List<File> getSiblingIconThemes(File iconThemeFolder, INIConfiguration index) {
         return ofNullable(iconThemeFolder)
             .map(File::toPath)
             .map(iconThemPath -> getSiblingIconThemeNames(index)
@@ -139,9 +135,9 @@ public class IconThemeIndex {
             .toList();
     }
 
-    public Stream<String> getSiblingIconThemeNames(Ini index) {
+    public Stream<String> getSiblingIconThemeNames(INIConfiguration index) {
         return concat(
-            ofNullable(index.get(ICON_THEME, INHERITS))
+            ofNullable(index.getString(ICON_THEME_INHERITS))
                 .map(inherits -> inherits.split(","))
                 .stream()
                 .flatMap(Arrays::stream),
