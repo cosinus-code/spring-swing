@@ -41,8 +41,6 @@ public class GnomeLinuxUIThemeProvider implements UIThemeProvider {
 
     public static final IconTheme ICON_THEME_PAPIRUS = new IconTheme("Papirus", "Papirus-Dark");
 
-    public static final Stream<IconTheme> MAIN_ICON_THEMES = Stream.of(ICON_THEME_PAPIRUS);
-
     private final ProcessExecutor processExecutor;
 
     private final ApplicationUIHandler uiHandler;
@@ -114,6 +112,6 @@ public class GnomeLinuxUIThemeProvider implements UIThemeProvider {
 
     @Override
     public Stream<IconTheme> getMainIconThemes() {
-        return MAIN_ICON_THEMES;
+        return Stream.of(ICON_THEME_PAPIRUS);
     }
 }

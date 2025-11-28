@@ -17,6 +17,8 @@
 
 package org.cosinus.swing.worker;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.cosinus.swing.error.AbortActionException;
 import org.cosinus.swing.error.ActionException;
 import org.apache.logging.log4j.LogManager;
@@ -48,16 +50,21 @@ public abstract class Worker<M extends WorkerModel<T>, T> extends SwingWorker<M,
     @Autowired
     protected ErrorHandler errorHandler;
 
+    @Getter
     protected final String id;
 
     protected final ActionModel actionModel;
 
+    @Getter
     protected final M workerModel;
 
     protected Exception error;
 
+    @Setter
+    @Getter
     protected boolean paused;
 
+    @Getter
     protected boolean aborted;
 
     protected Worker(ActionModel actionModel, M workerModel) {
@@ -66,20 +73,8 @@ public abstract class Worker<M extends WorkerModel<T>, T> extends SwingWorker<M,
         this.workerModel = workerModel;
     }
 
-    public String getId() {
-        return id;
-    }
-
     public void start() {
         execute();
-    }
-
-    public boolean isPaused() {
-        return paused;
-    }
-
-    public void setPaused(boolean paused) {
-        this.paused = paused;
     }
 
     protected void setError(Exception error) {
@@ -163,16 +158,8 @@ public abstract class Worker<M extends WorkerModel<T>, T> extends SwingWorker<M,
         }
     }
 
-    public M getWorkerModel() {
-        return workerModel;
-    }
-
     public boolean isSuccessful() {
         return error == null && !isCancelled() && !isAborted();
-    }
-
-    public boolean isAborted() {
-        return aborted;
     }
 
     protected abstract void doWork();

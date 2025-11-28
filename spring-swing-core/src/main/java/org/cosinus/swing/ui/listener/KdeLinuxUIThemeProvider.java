@@ -45,8 +45,6 @@ public class KdeLinuxUIThemeProvider implements UIThemeProvider {
 
     public static final IconTheme ICON_THEME_BREEZE = new IconTheme("breeze", "breeze-dark");
 
-    public static final Stream<IconTheme> MAIN_ICON_THEMES = Stream.of(ICON_THEME_BREEZE);
-
     private final ProcessExecutor processExecutor;
 
     private final ApplicationUIHandler uiHandler;
@@ -95,7 +93,7 @@ public class KdeLinuxUIThemeProvider implements UIThemeProvider {
 
     @Override
     public Stream<IconTheme> getMainIconThemes() {
-        return MAIN_ICON_THEMES;
+        return Stream.of(ICON_THEME_BREEZE);
     }
 
     protected Optional<String> getKdeGlobalSetting(String groupName, String keyName) {

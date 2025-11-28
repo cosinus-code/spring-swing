@@ -21,6 +21,8 @@ import org.cosinus.swing.icon.IconHolder;
 import org.cosinus.swing.ui.listener.UIChangeListener;
 
 import java.awt.*;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
@@ -40,16 +42,11 @@ public class IconInitializer implements UIChangeListener {
     }
 
     public void initializeIcons() {
-        iconHandler.resetIcons();
-        stream(Frame.getWindows())
-            .filter(Component::isVisible)
-            .forEach(window -> {
-                flatComponentsStream(window)
-                    .filter(component -> component instanceof IconHolder)
-                    .map(IconHolder.class::cast)
-                    .forEach(this::updateIcon);
-                window.repaint();
-            });
+        try (UpdateIconsWorker worker = new UpdateIconsWorker()) {
+            worker.execute();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     public void updateIcon(final IconHolder... iconHolders) {
