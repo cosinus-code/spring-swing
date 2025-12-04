@@ -20,9 +20,6 @@ package org.cosinus.swing.image.icon;
 import org.cosinus.swing.icon.IconHolder;
 import org.cosinus.swing.ui.listener.UIChangeListener;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 

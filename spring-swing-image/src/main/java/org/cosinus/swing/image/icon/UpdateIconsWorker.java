@@ -31,12 +31,13 @@ import static java.util.Arrays.stream;
 
 public class UpdateIconsWorker extends DirectPipelineWorker<IconInitializerModel, IconHolder> {
 
+    public static final String ACTION_ID = "update-icons";
+
     @Autowired
     private IconHandler iconHandler;
 
     protected UpdateIconsWorker() {
-        super(new ActionModel("icon-initializer", "icon-initializer", "icon-initializer"),
-            new IconInitializerModel());
+        super(new ActionModel(ACTION_ID, ACTION_ID), new IconInitializerModel());
     }
 
     @Override
