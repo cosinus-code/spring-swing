@@ -266,6 +266,21 @@ public abstract class JsonFileConverter<T> {
     }
 
     /**
+     * Delete the corresponding json file identified by a name.
+     *
+     * @param name the name to identify the json file
+     * @return true if the file was deleted, false otherwise
+     * @throws IOException if an IO error occurs
+     */
+    public boolean deleteFile(String name) throws IOException {
+        String fileName = adjustName(name);
+        File file = resolveFilesystemPath(fileName)
+            .map(Path::toFile)
+            .orElseThrow(() -> new IOException("Failed to identify file for deletion: " + fileName));
+        return file.exists() && file.delete();
+    }
+
+    /**
      * Create an output stream for a file identified by a name.
      *
      * @param name the name to identify the file
@@ -273,10 +288,10 @@ public abstract class JsonFileConverter<T> {
      * @throws IOException if an IO error occurs
      */
     protected OutputStream createOutputStream(String name) throws IOException {
-        File file = resolveFilesystemPath(name)
+        String fileName = adjustName(name);
+        File file = resolveFilesystemPath(fileName)
             .map(Path::toFile)
-            .orElseThrow(() -> new IOException("No application home folder (probably due to missing application name) " +
-                "to save file: " + name));
+            .orElseThrow(() -> new IOException("Failed to identify file for saving: " + fileName));
         if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
             throw new IOException("Failed to create folders for file: " + file);
         }

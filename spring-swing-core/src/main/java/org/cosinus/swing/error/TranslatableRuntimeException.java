@@ -17,6 +17,7 @@
 
 package org.cosinus.swing.error;
 
+import lombok.Getter;
 import org.cosinus.swing.translate.Translator;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -27,8 +28,10 @@ public class TranslatableRuntimeException extends RuntimeException {
     @Autowired
     private Translator translator;
 
+    @Getter
     private final String messageKey;
 
+    @Getter
     private Object[] messageArguments;
 
     public TranslatableRuntimeException(String messageKey, Object[] messageArguments) {
@@ -55,14 +58,6 @@ public class TranslatableRuntimeException extends RuntimeException {
         injectContext(this);
         this.messageKey = messageKey;
         this.messageArguments = messageArguments;
-    }
-
-    public String getMessageKey() {
-        return messageKey;
-    }
-
-    public Object[] getMessageArguments() {
-        return messageArguments;
     }
 
     @Override
