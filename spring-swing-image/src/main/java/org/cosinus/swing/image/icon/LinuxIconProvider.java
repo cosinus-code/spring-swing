@@ -102,6 +102,7 @@ public class LinuxIconProvider implements IconProvider {
 
     protected Optional<Icon> findIconFileByMimeType(File file, IconSize size, boolean genericMimeType) {
         return iconThemeIndex.getPathsToIcons(size)
+            .stream()
             .flatMap(iconsFolder -> ofNullable(file)
                 .map(mimeTypeResolver::getMimeTypes)
                 .map(mimeTypes -> genericMimeType ?
@@ -178,6 +179,7 @@ public class LinuxIconProvider implements IconProvider {
         String iconName = ofNullable(iconNamesMap.get(name))
             .orElse(name);
         return iconThemeIndex.getPathsToIcons(size)
+            .stream()
             .flatMap(iconsFolder -> getIconFromPath(iconsFolder, iconName))
             .map(this::createIcon)
             .filter(Optional::isPresent)

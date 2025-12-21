@@ -37,7 +37,7 @@ public class IconInitializer implements UIChangeListener {
     }
 
     public void initializeIcons() {
-        new UpdateIconsWorker().execute();
+        new UpdateIconsWorker().start();
     }
 
     public void updateIcon(final IconHolder... iconHolders) {

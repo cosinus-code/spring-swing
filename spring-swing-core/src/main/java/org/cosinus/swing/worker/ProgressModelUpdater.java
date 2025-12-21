@@ -17,16 +17,10 @@
 
 package org.cosinus.swing.worker;
 
-import org.cosinus.swing.action.execute.ActionModel;
+import org.cosinus.swing.progress.ProgressModel;
 
-public abstract class DirectPipelineWorker<M extends WorkerModel<T>, T> extends PipelineWorker<M, T, T> {
+@FunctionalInterface
+public interface ProgressModelUpdater<P extends ProgressModel> {
 
-    protected DirectPipelineWorker(ActionModel actionModel, M workerModel) {
-        super(actionModel, workerModel);
-    }
-
-    @Override
-    protected T transform(T item) {
-        return item;
-    }
+    void update(P progressModel);
 }

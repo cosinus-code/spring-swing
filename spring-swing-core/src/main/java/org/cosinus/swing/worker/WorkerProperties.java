@@ -17,37 +17,18 @@
 
 package org.cosinus.swing.worker;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
 /**
- * Worker listener.
- *
- * @param <M> the worker model type
+ * Swing UI properties
  */
-public interface WorkerListener<M extends WorkerModel<T>, T> {
+@ConfigurationProperties(prefix = "swing.worker")
+public class WorkerProperties {
 
-    /**
-     * Signal the worker was started
-     *
-     * @param workerModel the worker model
-     */
-    default void workerStarted(M workerModel) {
+    @Setter
+    @Getter
+    private Integer delay;
 
-    }
-
-    /**
-     * Signal the worker was updated
-     *
-     * @param workerModel the worker model
-     */
-    default void workerUpdated(M workerModel) {
-
-    }
-
-    /**
-     * Signal the worker was finished
-     *
-     * @param workerModel the worker model
-     */
-    default void workerFinished(M workerModel) {
-
-    }
 }

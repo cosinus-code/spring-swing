@@ -14,25 +14,35 @@
  *  limitations under the License.
  *
  */
-package org.cosinus.swing.worker;
 
-import org.cosinus.swing.action.execute.ActionModel;
+package org.cosinus.swing.progress;
 
-import java.util.List;
+public interface ProgressListener<M extends ProgressModel> {
 
-public abstract class SimpleWorker<M extends WorkerModel<M>> extends Worker<M, M> {
-    protected SimpleWorker(ActionModel actionModel, M workerModel) {
-        super(actionModel, workerModel);
+    /**
+     * Signal the progress was started
+     *
+     * @param progressModel the progress model
+     */
+    default void progressStarted(M progressModel) {
+
     }
 
-    public void updateModel(Runnable runnable) {
-        checkWorkerStatus();
-        runnable.run();
-        publish(workerModel);
+    /**
+     * Signal the progress was updated
+     *
+     * @param progressModel the progress model
+     */
+    default void progressUpdated(M progressModel) {
+
     }
 
-    @Override
-    protected void process(List<M> items) {
-        workerListenerHandler.workerUpdated(getId(), workerModel);
+    /**
+     * Signal the progress was finished
+     *
+     * @param progressModel the progress model
+     */
+    default void progressFinished(M progressModel) {
+
     }
 }

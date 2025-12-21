@@ -19,6 +19,8 @@ package org.cosinus.swing.worker;
 
 import org.cosinus.swing.action.execute.ActionExecutor;
 import org.cosinus.swing.action.execute.ActionModel;
+import org.cosinus.swing.progress.ProgressListener;
+import org.cosinus.swing.progress.ProgressModel;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,15 +30,10 @@ import static java.util.Optional.ofNullable;
 /**
  * Implementation of {@link ActionExecutor} for deleting streamers based on {@link Worker}
  */
-public abstract class WorkerExecutor<A extends ActionModel, M extends WorkerModel<T>, T> implements ActionExecutor<A> {
+public abstract class WorkerExecutor<A extends ActionModel, M extends WorkerModel<T>, T, P extends ProgressModel>
+    implements ActionExecutor<A> {
 
-    protected final WorkerListenerHandler workerListenerHandler;
-
-    private final Map<String, Worker<M, T>> workersMap = new ConcurrentHashMap<>();
-
-    protected WorkerExecutor(final WorkerListenerHandler workerListenerHandler) {
-        this.workerListenerHandler = workerListenerHandler;
-    }
+    private final Map<String, Worker<M, T, P>> workersMap = new ConcurrentHashMap<>();
 
     @Override
     public void execute(A actionModel) {
@@ -45,16 +42,22 @@ public abstract class WorkerExecutor<A extends ActionModel, M extends WorkerMode
             .ifPresent(worker -> {
                 cancel(actionModel.getExecutionId());
                 workersMap.put(actionModel.getExecutionId(), worker);
-                registerWorkerListeners(actionModel, worker.getWorkerModel());
+                registerWorkerListeners(actionModel, worker);
+                registerProgressListeners(actionModel, worker);
                 worker.start();
             });
     }
 
-    protected void registerWorkerListeners(A actionModel, M workerModel) {
-        Class<M> modelClass = (Class<M>) workerModel.getClass();
-        ofNullable(createWorkerListener(actionModel))
-            .ifPresent(workerListener -> workerListenerHandler
-                .register(modelClass, actionModel.getExecutionId(), workerListener));
+    protected void registerWorkerListeners(A actionModel, Worker<M, T, P> worker) {
+        ofNullable(actionModel)
+            .map(this::getWorkerListener)
+            .ifPresent(worker::registerListener);
+    }
+
+    protected void registerProgressListeners(A actionModel, Worker<M, T, P> worker) {
+        ofNullable(actionModel)
+            .map(this::getProgressListener)
+            .ifPresent(worker::registerListener);
     }
 
     @Override
@@ -81,7 +84,9 @@ public abstract class WorkerExecutor<A extends ActionModel, M extends WorkerMode
 //                });
 //    }
 
-    protected abstract WorkerListener<M, T> createWorkerListener(A actionModel);
+    protected abstract WorkerListener<M, T> getWorkerListener(A actionModel);
 
-    protected abstract Worker<M, T> createWorker(A actionModel);
+    protected abstract ProgressListener<P> getProgressListener(A actionModel);
+
+    protected abstract Worker<M, T, P> createWorker(A actionModel);
 }

@@ -147,11 +147,12 @@ public class IconThemeIndex {
                     iconTheme.lightName()));
     }
 
-    public Stream<Path> getPathsToIcons(IconSize size) {
+    public List<Path> getPathsToIcons(IconSize size) {
         return iconPaths
             .stream()
             .flatMap(path -> getIconInternalPath(size)
-                .map(path::resolve));
+                .map(path::resolve))
+            .toList();
     }
 
     protected Stream<String> getIconInternalPath(IconSize iconSize) {

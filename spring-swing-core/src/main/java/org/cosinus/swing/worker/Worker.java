@@ -19,44 +19,53 @@ package org.cosinus.swing.worker;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.cosinus.swing.error.AbortActionException;
-import org.cosinus.swing.error.ActionException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.cosinus.swing.action.execute.ActionExecutors;
 import org.cosinus.swing.action.execute.ActionModel;
+import org.cosinus.swing.error.AbortActionException;
+import org.cosinus.swing.error.ActionException;
 import org.cosinus.swing.error.ErrorHandler;
 import org.cosinus.swing.error.TranslatableRuntimeException;
+import org.cosinus.swing.progress.ProgressListener;
+import org.cosinus.swing.progress.ProgressModel;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
 
 import static java.lang.Thread.currentThread;
+import static java.util.Optional.ofNullable;
 
 /**
- * Abstract {@link javax.swing.SwingWorker} with custom progress
+ * Abstract {@link javax.swing.SwingWorker} with custom progress and worker model
  */
-public abstract class Worker<M extends WorkerModel<T>, T> extends SwingWorker<M, T> {
-
-    private static final Logger LOG = LogManager.getLogger(Worker.class);
+@Slf4j
+public abstract class Worker<M extends WorkerModel<T>, T, P extends ProgressModel> extends SwingWorker<M, T> {
 
     @Autowired
     protected ActionExecutors actionExecutors;
 
     @Autowired
-    protected WorkerListenerHandler workerListenerHandler;
+    protected ErrorHandler errorHandler;
 
     @Autowired
-    protected ErrorHandler errorHandler;
+    protected WorkerProperties workerProperties;
 
     @Getter
     protected final String id;
 
     protected final ActionModel actionModel;
 
-    @Getter
+    protected final Queue<WorkerListener<M, T>> workerListeners;
+
+    protected final Queue<ProgressListener<P>> progressListeners;
+
     protected final M workerModel;
+
+    protected final P progressModel;
 
     protected Exception error;
 
@@ -68,12 +77,33 @@ public abstract class Worker<M extends WorkerModel<T>, T> extends SwingWorker<M,
     protected boolean aborted;
 
     protected Worker(ActionModel actionModel, M workerModel) {
+        this(actionModel, workerModel, null);
+    }
+
+    protected Worker(ActionModel actionModel, P progressModel) {
+        this(actionModel, null, progressModel);
+    }
+
+    protected Worker(ActionModel actionModel, M workerModel, P progressModel) {
         this.id = actionModel.getExecutionId();
         this.actionModel = actionModel;
         this.workerModel = workerModel;
+        this.progressModel = progressModel;
+        this.workerListeners = new ConcurrentLinkedQueue<>();
+        this.progressListeners = new ConcurrentLinkedQueue<>();
+    }
+
+    public void registerListener(final WorkerListener<M, T> workerListener) {
+        workerListeners.add(workerListener);
+    }
+
+    public void registerListener(final ProgressListener<P> progressListener) {
+        progressListeners.add(progressListener);
     }
 
     public void start() {
+        fireWorkerListeners(workerListener -> workerListener.workerStarted(workerModel));
+        fireProgressListeners(progressListener -> progressListener.progressStarted(progressModel));
         execute();
     }
 
@@ -83,14 +113,13 @@ public abstract class Worker<M extends WorkerModel<T>, T> extends SwingWorker<M,
 
     protected void setAborted() {
         aborted = true;
-        logUserAbort();
+        logWorkerStatus("aborted");
     }
 
     @Override
-    protected M doInBackground() {
-        LOG.trace("Work for action `{}` started: {}", actionModel.getActionName(), id);
+    protected final M doInBackground() {
+        logWorkerStatus("started");
         try {
-            workerListenerHandler.workerStarted(getId(), workerModel);
             doWork();
         } catch (ActionException ex) {
             setError(ex);
@@ -100,18 +129,22 @@ public abstract class Worker<M extends WorkerModel<T>, T> extends SwingWorker<M,
         return workerModel;
     }
 
+    public void updateProgress(final ProgressModelUpdater<P> progressUpdater) {
+        progressUpdater.update(progressModel);
+        checkStatusAndPublish();
+    }
+
     @Override
-    protected void process(List<T> items) {
+    protected void process(final List<T> items) {
         try {
-            workerModel.update(items);
-            workerListenerHandler.workerUpdated(getId(), workerModel);
+            if (workerModel != null) {
+                workerModel.update(items);
+            }
+            fireWorkerListeners(workerListener -> workerListener.workerUpdated(workerModel));
+            fireProgressListeners(progressListener -> progressListener.progressUpdated(progressModel));
         } catch (Exception ex) {
             setError(ex);
         }
-    }
-
-    protected void logUserAbort() {
-        LOG.trace("Work for action `{}` aborted: {}", actionModel.getActionName(), id);
     }
 
     @Override
@@ -129,18 +162,37 @@ public abstract class Worker<M extends WorkerModel<T>, T> extends SwingWorker<M,
         }
 
         if (error != null) {
-            LOG.error("Error while worker run", error);
+            log.error("Error while worker run", error);
             errorHandler.handleError(error.getLocalizedMessage());
         }
 
         onWorkerDoneBeforeFinishing();
-        workerListenerHandler.workerFinished(getId(), workerModel);
+        fireWorkerListeners(workerListener -> workerListener.workerFinished(workerModel));
+        fireProgressListeners(progressListener -> progressListener.progressFinished(progressModel));
         actionExecutors.getActionExecutor(actionModel)
             .ifPresent(executor -> executor.remove(getId()));
-        LOG.trace("Work for action `{}` finished: {}", actionModel.getActionName(), id);
+        logWorkerStatus("finished");
+    }
+
+    protected void fireWorkerListeners(Consumer<WorkerListener<M, T>> workerListenerCall) {
+        if (workerModel != null) {
+            workerListeners.forEach(workerListenerCall);
+        }
+    }
+
+    protected void fireProgressListeners(Consumer<ProgressListener<P>> progressListenerCall) {
+        if (progressModel != null) {
+            progressListeners.forEach(progressListenerCall);
+        }
     }
 
     protected void onWorkerDoneBeforeFinishing() {
+        //TODO: to move to worker listener
+    }
+
+    public void checkStatusAndPublish(T... item) {
+        checkWorkerStatus();
+        publish(item);
     }
 
     public void checkWorkerStatus() {
@@ -156,10 +208,33 @@ public abstract class Worker<M extends WorkerModel<T>, T> extends SwingWorker<M,
                 }
             }
         }
+        delayWorker();
+    }
+
+    protected void delayWorker() {
+        ofNullable(workerProperties.getDelay())
+            .filter(delay -> delay > 0)
+            .ifPresent(delay -> {
+                try {
+                    java.lang.Thread.sleep(delay);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
     }
 
     public boolean isSuccessful() {
         return error == null && !isCancelled() && !isAborted();
+    }
+
+    @Override
+    public boolean cancel() {
+        logWorkerStatus("cancelled");
+        return super.cancel();
+    }
+
+    protected void logWorkerStatus(String status) {
+        log.debug("Work for action `{}` {}: {}", actionModel.getActionName(), status, id);
     }
 
     protected abstract void doWork();

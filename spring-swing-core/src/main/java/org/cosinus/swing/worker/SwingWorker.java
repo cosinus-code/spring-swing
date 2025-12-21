@@ -68,6 +68,6 @@ public abstract class SwingWorker<T, V> extends javax.swing.SwingWorker<T, V> {
      * @return {@inheritDoc}
      */
     public boolean cancel() {
-        return cancel(true);
+        return cancel(false);
     }
 }

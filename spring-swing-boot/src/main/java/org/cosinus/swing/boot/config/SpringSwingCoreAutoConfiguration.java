@@ -35,7 +35,7 @@ import org.cosinus.swing.resource.ResourceResolver;
 import org.cosinus.swing.translate.MessageSourceTranslator;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
-import org.cosinus.swing.worker.WorkerListenerHandler;
+import org.cosinus.swing.worker.WorkerProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -62,7 +62,8 @@ import static org.springframework.beans.factory.config.BeanDefinition.ROLE_INFRA
 @AutoConfiguration
 @EnableConfigurationProperties({
     ApplicationProperties.class,
-    UIProperties.class
+    UIProperties.class,
+    WorkerProperties.class
 })
 @Role(ROLE_INFRASTRUCTURE)
 public class SpringSwingCoreAutoConfiguration {
@@ -163,10 +164,5 @@ public class SpringSwingCoreAutoConfiguration {
     public ApplicationUIHandler uiHandler(final Translator translator,
                                           final Set<UIManager.LookAndFeelInfo> lookAndFeels) {
         return new ApplicationUIHandler(translator, lookAndFeels);
-    }
-
-    @Bean
-    public WorkerListenerHandler workerListenerHandler() {
-        return new WorkerListenerHandler();
     }
 }

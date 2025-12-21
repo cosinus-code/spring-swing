@@ -18,18 +18,16 @@
 package org.cosinus.swing.image.icon;
 
 import org.cosinus.stream.Streams;
-import org.cosinus.stream.pipeline.PipelineStrategy;
-import org.cosinus.swing.action.execute.ActionModel;
 import org.cosinus.swing.icon.IconHolder;
-import org.cosinus.swing.worker.DirectPipelineWorker;
+import org.cosinus.swing.progress.ProgressModel;
+import org.cosinus.swing.worker.StreamWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.awt.*;
-import java.util.stream.Stream;
 
 import static java.util.Arrays.stream;
 
-public class UpdateIconsWorker extends DirectPipelineWorker<IconInitializerModel, IconHolder> {
+public class UpdateIconsWorker extends StreamWorker<IconInitializerModel, IconHolder, ProgressModel> {
 
     public static final String ACTION_ID = "update-icons";
 
@@ -37,21 +35,18 @@ public class UpdateIconsWorker extends DirectPipelineWorker<IconInitializerModel
     private IconHandler iconHandler;
 
     protected UpdateIconsWorker() {
-        super(new ActionModel(ACTION_ID, ACTION_ID), new IconInitializerModel());
+        super(ACTION_ID,
+            new IconInitializerModel(),
+            () -> stream(Frame.getWindows())
+                .filter(Component::isVisible)
+                .flatMap(Streams::flatComponentsStream)
+                .filter(component -> component instanceof IconHolder)
+                .map(IconHolder.class::cast),
+            new ProgressModel());
     }
 
     @Override
-    protected void doWork() {
+    public void beforePipelineOpen() {
         iconHandler.resetIcons();
-        super.doWork();
-    }
-
-    @Override
-    public Stream<IconHolder> openPipelineInputStream(PipelineStrategy pipelineStrategy) {
-        return stream(Frame.getWindows())
-            .filter(Component::isVisible)
-            .flatMap(Streams::flatComponentsStream)
-            .filter(component -> component instanceof IconHolder)
-            .map(IconHolder.class::cast);
     }
 }
