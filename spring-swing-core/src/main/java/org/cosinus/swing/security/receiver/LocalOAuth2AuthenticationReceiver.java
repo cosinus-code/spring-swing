@@ -21,6 +21,7 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import lombok.Getter;
 import org.cosinus.swing.action.browser.Browser;
 import org.cosinus.swing.action.browser.DefaultBrowser;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
@@ -51,22 +52,29 @@ public class LocalOAuth2AuthenticationReceiver implements OAuth2AuthenticationRe
 
     private HttpServer server;
 
+    @Getter
     private String authorizationCode;
 
+    @Getter
     private String errorCode;
 
+    @Getter
     private String state;
 
     private String scope;
 
-    final Semaphore waitUnlessSignaled = new Semaphore(0 /* initially zero permit */);
+    final Semaphore waitUnlessSignaled = new Semaphore(0);
 
+    @Getter
     private int port;
 
+    @Getter
     private final String host;
 
+    @Getter
     private final String callbackPath;
 
+    @Getter
     private String redirectUri;
 
     private final String successLandingPageUrl;
@@ -153,22 +161,6 @@ public class LocalOAuth2AuthenticationReceiver implements OAuth2AuthenticationRe
         return authorizationCode != null;
     }
 
-    public String getRedirectUri() {
-        return redirectUri;
-    }
-
-    public String getAuthorizationCode() {
-        return authorizationCode;
-    }
-
-    public String getErrorCode() {
-        return errorCode;
-    }
-
-    public String getState() {
-        return state;
-    }
-
     @Override
     public void stop() throws IOException {
         waitUnlessSignaled.release();
@@ -187,18 +179,6 @@ public class LocalOAuth2AuthenticationReceiver implements OAuth2AuthenticationRe
         }
     }
 
-    public String getHost() {
-        return host;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public String getCallbackPath() {
-        return callbackPath;
-    }
-
     public static LocalOAuth2AuthenticationReceiver callbackReceiver(String host, int port) {
         return new LocalOAuth2AuthenticationReceiver
             .Builder()
@@ -209,13 +189,16 @@ public class LocalOAuth2AuthenticationReceiver implements OAuth2AuthenticationRe
 
     public static final class Builder {
 
+        @Getter
         private String host = LOCALHOST;
 
+        @Getter
         private int port = -1;
 
         private String successLandingPageUrl;
         private String failureLandingPageUrl;
 
+        @Getter
         private String callbackPath = CALLBACK_PATH;
 
         public LocalOAuth2AuthenticationReceiver build() {
@@ -223,26 +206,14 @@ public class LocalOAuth2AuthenticationReceiver implements OAuth2AuthenticationRe
                 host, port, callbackPath, successLandingPageUrl, failureLandingPageUrl);
         }
 
-        public String getHost() {
-            return host;
-        }
-
         public Builder setHost(String host) {
             this.host = host;
             return this;
         }
 
-        public int getPort() {
-            return port;
-        }
-
         public Builder setPort(int port) {
             this.port = port;
             return this;
-        }
-
-        public String getCallbackPath() {
-            return callbackPath;
         }
 
         public Builder setCallbackPath(String callbackPath) {

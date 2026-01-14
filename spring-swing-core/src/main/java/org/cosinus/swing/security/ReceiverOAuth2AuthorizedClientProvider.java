@@ -17,6 +17,7 @@
 
 package org.cosinus.swing.security;
 
+import org.cosinus.swing.security.properties.SwingOAuth2ClientProperties;
 import org.cosinus.swing.security.receiver.OAuth2AuthenticationReceiver;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
@@ -34,6 +35,7 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenRespon
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationExchange;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationResponse;
+import org.cosinus.swing.security.properties.SwingOAuth2ClientProperties.OAuth2ClientReceiver;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -43,6 +45,8 @@ import java.time.Duration;
 import static java.util.Base64.getUrlEncoder;
 import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.security.receiver.LocalOAuth2AuthenticationReceiver.callbackReceiver;
+import static org.cosinus.swing.security.receiver.OAuth2AuthenticationReceiver.DEFAULT_PORT;
+import static org.cosinus.swing.security.receiver.OAuth2AuthenticationReceiver.LOCALHOST;
 import static org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest.authorizationCode;
 import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.REGISTRATION_ID;
 
@@ -53,24 +57,20 @@ public class ReceiverOAuth2AuthorizedClientProvider
 
     private final OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> accessTokenResponseClient;
 
+    private final SwingOAuth2ClientProperties oAuth2ClientProperties;
+
     private ApplicationEventPublisher applicationEventPublisher;
 
     private final Duration clockSkew = Duration.ofSeconds(60);
 
     private final Clock clock = Clock.systemUTC();
 
-    private final String receiverHost;
-
-    private final int receiverPort;
-
     public ReceiverOAuth2AuthorizedClientProvider(
         final OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> accessTokenResponseClient,
-        final String receiverHost,
-        final int receiverPort) {
+        final SwingOAuth2ClientProperties oAuth2ClientProperties) {
 
         this.accessTokenResponseClient = accessTokenResponseClient;
-        this.receiverHost = receiverHost;
-        this.receiverPort = receiverPort;
+        this.oAuth2ClientProperties = oAuth2ClientProperties;
     }
 
     @Override
@@ -81,11 +81,21 @@ public class ReceiverOAuth2AuthorizedClientProvider
         }
 
         ClientRegistration clientRegistration = context.getClientRegistration();
-        try (OAuth2AuthenticationReceiver receiver = callbackReceiver(receiverHost, receiverPort)) {
-            receiver.start();
+
+        OAuth2ClientReceiver receiverProperties = oAuth2ClientProperties
+            .getReceiver()
+            .get(clientRegistration.getRegistrationId());
+        final String receiverHost = ofNullable(receiverProperties)
+            .map(OAuth2ClientReceiver::getHost)
+            .orElse(LOCALHOST);
+        final int receiverPort = ofNullable(receiverProperties)
+            .map(OAuth2ClientReceiver::getPort)
+            .orElse(DEFAULT_PORT);
+        try (OAuth2AuthenticationReceiver authenticationReceiver = callbackReceiver(receiverHost, receiverPort)) {
+            authenticationReceiver.start();
 
             OAuth2AuthorizationRequest authorizationRequest = createAuthorizationRequest(clientRegistration);
-            OAuth2AuthorizationResponse authorizationResponse = receiver.execute(authorizationRequest);
+            OAuth2AuthorizationResponse authorizationResponse = authenticationReceiver.execute(authorizationRequest);
 
             OAuth2AccessTokenResponse tokenResponse = exchangeAuthorizationForAccessToken(
                 clientRegistration, authorizationRequest, authorizationResponse);

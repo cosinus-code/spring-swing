@@ -144,7 +144,9 @@ public abstract class PipelineWorker<M extends WorkerModel<T>, T, P extends Prog
         @Override
         public void afterPipelineClose(boolean pipelineFailed) {
             triggerPipelineListener(listener -> listener.afterPipelineClose(pipelineFailed));
-            workerConsumer.afterClose(pipelineFailed);
+            if (workerConsumer != null) {
+                workerConsumer.afterClose(pipelineFailed);
+            }
             updateProgress(ProgressModel::finishProgress);
         }
 

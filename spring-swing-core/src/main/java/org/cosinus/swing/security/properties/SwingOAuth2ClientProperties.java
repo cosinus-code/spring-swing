@@ -17,32 +17,25 @@
 
 package org.cosinus.swing.security.properties;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.HashMap;
+import java.util.Map;
+
+@Setter
+@Getter
 @ConfigurationProperties("spring.security.oauth2.client")
 public class SwingOAuth2ClientProperties extends OAuth2ClientProperties {
 
-    private OAuth2ClientReceiver receiver;
+    private boolean enabled;
 
-    private OAuth2ClientStoring storing;
+    private Map<String, OAuth2ClientReceiver> receiver = new HashMap<>();
 
-    public OAuth2ClientReceiver getReceiver() {
-        return receiver;
-    }
-
-    public void setReceiver(OAuth2ClientReceiver receiver) {
-        this.receiver = receiver;
-    }
-
-    public OAuth2ClientStoring getStoring() {
-        return storing;
-    }
-
-    public void setStoring(OAuth2ClientStoring storing) {
-        this.storing = storing;
-    }
-
+    @Setter
+    @Getter
     public static class OAuth2ClientReceiver {
 
         private boolean enabled;
@@ -51,41 +44,9 @@ public class SwingOAuth2ClientProperties extends OAuth2ClientProperties {
 
         private int port;
 
-        public boolean isEnabled() {
-            return enabled;
-        }
+        private String storingLocation;
 
-        public void setEnabled(boolean enabled) {
-            this.enabled = enabled;
-        }
+        private String fileName;
 
-        public String getHost() {
-            return host;
-        }
-
-        public void setHost(String host) {
-            this.host = host;
-        }
-
-        public int getPort() {
-            return port;
-        }
-
-        public void setPort(int port) {
-            this.port = port;
-        }
-    }
-
-    public static class OAuth2ClientStoring {
-
-        private String location;
-
-        public String getLocation() {
-            return location;
-        }
-
-        public void setLocation(String location) {
-            this.location = location;
-        }
     }
 }

@@ -18,97 +18,38 @@
 package org.cosinus.swing.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.cosinus.swing.convert.JsonFileConverter;
-import org.cosinus.swing.error.JsonConvertException;
 import org.cosinus.swing.resource.FilesystemResourceResolver;
-import org.cosinus.swing.resource.ResourceLocator;
+import org.cosinus.swing.security.properties.SwingOAuth2ClientProperties;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Optional;
 
-import static java.nio.file.Files.isSymbolicLink;
-import static java.util.Collections.singleton;
-import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toMap;
-import static org.cosinus.swing.resource.ResourceSource.FILESYSTEM;
 
-public class LocalStorageOAuth2AuthorizedClientService extends JsonFileConverter<AuthorizedClient>
+public class LocalStorageOAuth2AuthorizedClientService
     implements OAuth2AuthorizedClientService {
 
-    private static final Logger LOG = LogManager.getLogger(LocalStorageOAuth2AuthorizedClientService.class);
-
-    public static final String FILE_NAME = "authorizedClients";
+    public static final String REFRESH_TOKEN_EXPIRES_IN = "refresh_token_expires_in";
 
     private final ClientRegistrationRepository clientRegistrationRepository;
 
-    private final String storingLocation;
-
-    private final Map<String, AuthorizedClient> authorizedClientsMap;
+    private final AuthorizedClients authorizedClients;
 
     public LocalStorageOAuth2AuthorizedClientService(final ObjectMapper objectMapper,
                                                      final FilesystemResourceResolver filesystemResourceResolver,
                                                      final ClientRegistrationRepository clientRegistrationRepository,
-                                                     final String storingLocation) {
-        super(objectMapper, AuthorizedClient.class, singleton(filesystemResourceResolver));
+                                                     final SwingOAuth2ClientProperties properties) {
         this.clientRegistrationRepository = clientRegistrationRepository;
-        this.storingLocation = storingLocation;
-
-        try {
-            File storeFile = filesystemResourceResolver.getFilePath(Paths.get(storingLocation))
-                .map(Path::toFile)
-                .orElseThrow(() -> new IOException("Failed to resolve storing file " + FILE_NAME));
-
-            if (storeFile.exists() && isSymbolicLink(storeFile.toPath())) {
-                throw new IOException("Unable to use a symbolic link for storing: " + storeFile);
-            }
-
-            // create new file (if necessary)
-            if (!storeFile.exists()) {
-                ofNullable(storeFile.getParentFile())
-                    .ifPresent(File::mkdirs);
-                authorizedClientsMap = new LinkedHashMap<>();
-            } else {
-                authorizedClientsMap = filesystemResourceResolver
-                    .resolveAllFiles(resourceLocator(), true)
-                    .collect(toMap(
-                        File::getName,
-                        userFolder -> convert(FILESYSTEM, userFolder.getName() + "/" + FILE_NAME)
-                            .orElseGet(AuthorizedClient::new),
-                        (userName1, userName2) -> userName1,
-                        LinkedHashMap::new));
-            }
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    @Override
-    public Optional<Map<String, AuthorizedClient>> convertToMapOfModels(String name) {
-        try {
-            return super.convertToMapOfModels(name);
-        } catch (JsonConvertException ex) {
-            LOG.error("Failed to read objects from storing file {}", name, ex);
-            return empty();
-        }
+        authorizedClients = new AuthorizedClients(objectMapper, filesystemResourceResolver, properties);
     }
 
     @Override
     public DetailedOAuth2AuthorizedClient loadAuthorizedClient(String clientRegistrationId, String principalName) {
-        return ofNullable(authorizedClientsMap.get(principalName))
+        return ofNullable(authorizedClients.getAuthorizedClient(clientRegistrationId, principalName))
             .flatMap(authorizedClient -> ofNullable(authorizedClient.getRegistrationId())
                 .map(clientRegistrationRepository::findByRegistrationId)
                 .map(authorizedClient::toOAuth2AuthorizedClient))
@@ -122,7 +63,8 @@ public class LocalStorageOAuth2AuthorizedClientService extends JsonFileConverter
         Map<String, Object> details = ofNullable(authorizedClient.getDetails())
             .orElseGet(HashMap::new);
 
-        ofNullable(authorizedClientsMap.get(principal.getName()))
+        String registrationId = oAuth2AuthorizedClient.getClientRegistration().getRegistrationId();
+        ofNullable(authorizedClients.getAuthorizedClient(registrationId, principal.getName()))
             .map(AuthorizedClient::getDetails)
             .stream()
             .flatMap(existingDetails -> existingDetails.entrySet().stream())
@@ -130,38 +72,27 @@ public class LocalStorageOAuth2AuthorizedClientService extends JsonFileConverter
                 .map(newValue -> !newValue.equals(entry.getValue()))
                 .orElse(true))
             .forEach(entry -> details.put(entry.getKey(), entry.getValue()));
+        ofNullable(details.get(REFRESH_TOKEN_EXPIRES_IN))
+            .map(Object::toString)
+            .map(Long::parseLong)
+            .ifPresent(authorizedClient::setRefreshTokenExpiresIn);
         authorizedClient.setDetails(details);
 
-        authorizedClientsMap.put(principal.getName(), authorizedClient);
-        save(principal.getName());
+        authorizedClients.setAuthorizedClient(registrationId, principal.getName(), authorizedClient);
+        save(registrationId, principal.getName());
     }
 
     @Override
     public void removeAuthorizedClient(String clientRegistrationId, String principalName) {
-        authorizedClientsMap.remove(principalName);
-        resolveFilesystemPath(principalName + "/" + FILE_NAME)
-            .map(Path::toFile)
-            .ifPresent(File::delete);
+        authorizedClients.removeAuthorizedClient(clientRegistrationId, principalName);
     }
 
-    public void save(String principalName) {
-        ofNullable(authorizedClientsMap.get(principalName))
-            .ifPresent(authorizedClient -> {
-                try {
-                    saveModel(principalName + "/" + FILE_NAME, authorizedClient);
-                } catch (IOException e) {
-                    throw new UncheckedIOException(e);
-                }
-            });
+    public void save(String registrationId, String principalName) {
+        authorizedClients.saveAuthorizedClient(registrationId, principalName);
     }
 
-    public Map<String, AuthorizedClient> getAuthorizedClientsMap() {
-        return authorizedClientsMap;
-    }
-
-    @Override
-    protected ResourceLocator resourceLocator() {
-        return () -> storingLocation;
+    public Map<String, AuthorizedClient> getAuthorizedClientsMap(String registrationId) {
+        return authorizedClients.getAuthorizedClientsMap(registrationId);
     }
 }
 

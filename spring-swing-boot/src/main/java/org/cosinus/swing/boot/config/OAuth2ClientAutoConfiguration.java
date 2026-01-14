@@ -17,6 +17,7 @@
 
 package org.cosinus.swing.boot.config;
 
+import org.cosinus.swing.boot.config.OAuth2ClientConfigurations.SwingClientRegistrationRepositoryConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Import;
@@ -24,9 +25,6 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 
 @AutoConfiguration
 @ConditionalOnClass(ClientRegistration.class)
-@Import({
-    OAuth2ClientConfigurations.SwingClientRegistrationRepositoryConfiguration.class,
-    OAuth2ClientConfigurations.OAuth2AuthorizedClientServiceConfiguration.class
-})
+@Import(SwingClientRegistrationRepositoryConfiguration.class)
 public class OAuth2ClientAutoConfiguration {
 }

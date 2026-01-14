@@ -20,13 +20,12 @@ package org.cosinus.swing.boot.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.cosinus.swing.resource.FilesystemResourceResolver;
 import org.cosinus.swing.security.LocalStorageOAuth2AuthorizedClientService;
+import org.cosinus.swing.security.OAuth2AccessTokenInterceptor;
 import org.cosinus.swing.security.ReceiverOAuth2AuthorizedClientProvider;
 import org.cosinus.swing.security.properties.SwingOAuth2ClientProperties;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.oauth2.client.ConditionalOnOAuth2ClientRegistrationProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientPropertiesMapper;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -56,22 +55,24 @@ public class OAuth2ClientConfigurations {
 
     @Configuration(proxyBeanMethods = false)
     @ConditionalOnOAuth2ClientRegistrationProperties
-    @ConditionalOnBooleanProperty("spring.security.oauth2.client.receiver.enabled")
+    @ConditionalOnBooleanProperty("spring.security.oauth2.client.enabled")
     @EnableConfigurationProperties(SwingOAuth2ClientProperties.class)
     @ConditionalOnMissingBean(ClientRegistrationRepository.class)
     static class SwingClientRegistrationRepositoryConfiguration {
 
         @Bean
-        InMemoryClientRegistrationRepository clientRegistrationRepository(SwingOAuth2ClientProperties properties) {
+        InMemoryClientRegistrationRepository clientRegistrationRepository(final SwingOAuth2ClientProperties properties) {
             properties.getRegistration()
-                .values()
+                .entrySet()
                 .stream()
-                .filter(registration -> isNull(registration.getRedirectUri()))
-                .forEach(registration -> registration.setRedirectUri(buildUrl(
+                .filter(entry -> isNull(entry.getValue().getRedirectUri()))
+                .forEach(entry -> entry.getValue().setRedirectUri(buildUrl(
                     ofNullable(properties.getReceiver())
+                        .map(receiver -> receiver.get(entry.getKey()))
                         .map(SwingOAuth2ClientProperties.OAuth2ClientReceiver::getHost)
                         .orElse(LOCALHOST),
                     ofNullable(properties.getReceiver())
+                        .map(receiver -> receiver.get(entry.getKey()))
                         .map(SwingOAuth2ClientProperties.OAuth2ClientReceiver::getPort)
                         .orElse(DEFAULT_PORT))));
             List<ClientRegistration> registrations = new ArrayList<>(
@@ -110,31 +111,42 @@ public class OAuth2ClientConfigurations {
         }
 
         @Bean
-        public ReceiverOAuth2AuthorizedClientProvider receiverOAuth2AuthorizedClientProvider(
-            final OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> accessTokenResponseClient,
-            @Value("${spring.security.oauth2.client.receiver.host:" + LOCALHOST + "}") final String receiverHost,
-            @Value("${spring.security.oauth2.client.receiver.port:" + DEFAULT_PORT + "}") final int receiverPort) {
-            return new ReceiverOAuth2AuthorizedClientProvider(accessTokenResponseClient, receiverHost, receiverPort);
+        @ConditionalOnBean({OAuth2AuthorizedClientService.class, ClientRegistrationRepository.class})
+        @ConditionalOnMissingBean
+        OAuth2AuthorizedClientManager feignOAuth2AuthorizedClientManager(
+            ClientRegistrationRepository clientRegistrationRepository,
+            OAuth2AuthorizedClientService oAuth2AuthorizedClientService) {
+            return new AuthorizedClientServiceOAuth2AuthorizedClientManager(clientRegistrationRepository,
+                oAuth2AuthorizedClientService);
+
         }
 
-    }
+        @Bean
+        @ConditionalOnBean(OAuth2AuthorizedClientManager.class)
+        public OAuth2AccessTokenInterceptor oAuth2AccessTokenInterceptor(
+            final OAuth2AuthorizedClientManager oAuth2AuthorizedClientManager) {
 
-    @Configuration(proxyBeanMethods = false)
-    @ConditionalOnBean(ClientRegistrationRepository.class)
-    @ConditionalOnProperty("spring.security.oauth2.client.storing.location")
-    static class OAuth2AuthorizedClientServiceConfiguration {
+            return new OAuth2AccessTokenInterceptor(oAuth2AuthorizedClientManager);
+        }
 
         @Bean
+        public ReceiverOAuth2AuthorizedClientProvider receiverOAuth2AuthorizedClientProvider(
+            final OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> accessTokenResponseClient,
+            final SwingOAuth2ClientProperties oAuth2ClientProperties) {
+            return new ReceiverOAuth2AuthorizedClientProvider(accessTokenResponseClient, oAuth2ClientProperties);
+        }
+
+        @Bean
+        @ConditionalOnBean(ClientRegistrationRepository.class)
         @ConditionalOnMissingBean
         public LocalStorageOAuth2AuthorizedClientService localStorageOAuth2AuthorizedClientService(
             final ObjectMapper objectMapper,
             final FilesystemResourceResolver filesystemResourceResolver,
             final ClientRegistrationRepository clientRegistrationRepository,
-            @Value("${spring.security.oauth2.client.storing.location}") final String storingLocation) {
+            final SwingOAuth2ClientProperties oAuth2ClientProperties) {
 
             return new LocalStorageOAuth2AuthorizedClientService(
-                objectMapper, filesystemResourceResolver, clientRegistrationRepository, storingLocation);
+                objectMapper, filesystemResourceResolver, clientRegistrationRepository, oAuth2ClientProperties);
         }
-
     }
 }
