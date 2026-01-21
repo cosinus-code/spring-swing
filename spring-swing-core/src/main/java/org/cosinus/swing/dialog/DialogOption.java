@@ -21,6 +21,7 @@ package org.cosinus.swing.dialog;
  * Dialog options enum
  */
 public enum DialogOption {
+    SKIP_ALL,
     SKIP,
     IGNORE,
     RETRY,
@@ -32,7 +33,7 @@ public enum DialogOption {
     }
 
     public static DialogOption[] retryWithSkip() {
-        return new DialogOption[]{SKIP, RETRY, ABORT};
+        return new DialogOption[]{SKIP_ALL, SKIP, RETRY, ABORT};
     }
 
     @Override
