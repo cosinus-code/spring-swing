@@ -16,14 +16,21 @@
  */
 package org.cosinus.swing.ui;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Setter
+@Getter
 public class UIDescriptor {
 
     private String title;
 
     private UILayout layout;
+
+    private UIIcon icon;
 
     private List<UIField> fields = new ArrayList<>();
 
@@ -31,43 +38,4 @@ public class UIDescriptor {
 
     private String defaultButton;
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public UILayout getLayout() {
-        return layout;
-    }
-
-    public void setLayout(UILayout layout) {
-        this.layout = layout;
-    }
-
-    public List<UIField> getFields() {
-        return fields;
-    }
-
-    public void setFields(List<UIField> fields) {
-        this.fields = fields;
-    }
-
-    public List<UIButton> getButtons() {
-        return buttons;
-    }
-
-    public void setButtons(List<UIButton> buttons) {
-        this.buttons = buttons;
-    }
-
-    public String getDefaultButton() {
-        return defaultButton;
-    }
-
-    public void setDefaultButton(String defaultButton) {
-        this.defaultButton = defaultButton;
-    }
 }

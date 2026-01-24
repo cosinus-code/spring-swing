@@ -29,6 +29,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -182,5 +183,18 @@ public class FileHandler {
                 }
             })
             .orElse(null);
+    }
+
+    public File createVirtualFile(final Path path, final String name, final boolean isParent) {
+        String fileName = ofNullable(path)
+            .map(Objects::toString)
+            .or(() -> ofNullable(name))
+            .orElse("tmp");
+        return new File(fileName) {
+            @Override
+            public boolean isDirectory() {
+                return isParent;
+            }
+        };
     }
 }

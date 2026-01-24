@@ -17,6 +17,9 @@
 
 package org.cosinus.swing.form.control;
 
+import lombok.Setter;
+import org.cosinus.swing.icon.IconHolder;
+
 import javax.swing.*;
 import java.awt.event.ActionListener;
 
@@ -26,7 +29,10 @@ import static org.cosinus.swing.context.ApplicationContextInjector.injectContext
  * Extension of the {@link JButton}
  * which will automatically inject the application context.
  */
-public class Button extends JButton implements Control<String> {
+public class Button extends JButton implements Control<String>, IconHolder {
+
+    @Setter
+    protected String iconName;
 
     public Button() {
         injectContext(this);
@@ -84,5 +90,10 @@ public class Button extends JButton implements Control<String> {
 
     public void addAction(Runnable runnable) {
         addActionListener(event -> runnable.run());
+    }
+
+    @Override
+    public String getIconName() {
+        return iconName;
     }
 }

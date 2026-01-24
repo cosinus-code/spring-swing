@@ -14,32 +14,10 @@
  *  limitations under the License.
  *
  */
+
 package org.cosinus.swing.ui;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.cosinus.swing.form.control.ControlType;
+public interface Refreshable {
 
-@Setter
-@Getter
-public class UIField {
-
-    private String id;
-
-    private String label;
-
-    private ControlType type;
-
-    private UIAlign align;
-
-    private int width;
-
-    private int height;
-
-    private boolean disabled;
-
-    private boolean action;
-
-    private boolean focus;
-
+    void refresh();
 }

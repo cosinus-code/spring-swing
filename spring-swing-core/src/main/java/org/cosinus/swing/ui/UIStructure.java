@@ -16,6 +16,8 @@
  */
 package org.cosinus.swing.ui;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.cosinus.swing.error.SpringSwingException;
 import org.cosinus.swing.form.Panel;
 import org.cosinus.swing.form.control.*;
@@ -45,6 +47,7 @@ public class UIStructure extends Panel {
 
     private final Map<String, Button> buttonsMap;
 
+    @Getter
     private final Collection<Component> actionComponents;
 
     private Button defaultButton;
@@ -53,6 +56,9 @@ public class UIStructure extends Panel {
 
     private Panel buttonsPanel;
 
+    private Panel iconPanel;
+
+    @Setter
     private Component focusComponent;
 
     public UIStructure(UIDescriptor uiDescriptor) {
@@ -66,6 +72,7 @@ public class UIStructure extends Panel {
 
     @Override
     public void initComponents() {
+        setLayout(new BorderLayout(5, 5));
         setBorder(emptyBorder(5, 10, 5, 10));
 
         ofNullable(uiDescriptor.getTitle())
@@ -76,6 +83,11 @@ public class UIStructure extends Panel {
                 titlePanel.add(titleLabel);
                 add(titlePanel, NORTH);
             });
+
+        ofNullable(uiDescriptor.getIcon()).ifPresent(uiIcon -> {
+            iconPanel = new Panel(new BorderLayout());
+            add(iconPanel, WEST);
+        });
 
         int fieldsCount = uiDescriptor.getFields().size();
         if (fieldsCount > 0) {
@@ -142,10 +154,6 @@ public class UIStructure extends Panel {
             .or(() -> findButton(OK_BUTTON_ID));
     }
 
-    public Collection<Component> getActionComponents() {
-        return actionComponents;
-    }
-
     public void setDefaultButton(Button defaultButton) {
         this.defaultButton = defaultButton;
     }
@@ -168,11 +176,17 @@ public class UIStructure extends Panel {
         actionComponents.add(component);
     }
 
-    public void setFocusComponent(Component focusComponent) {
-        this.focusComponent = focusComponent;
-    }
-
     public Optional<Component> getFocusComponent() {
         return ofNullable(focusComponent);
+    }
+
+    public void addIcon(final UIIcon uiIcon, final Control<?> iconControl) {
+        iconPanel.add(iconControl.getComponent(), NORTH);
+        controlsMap.put(uiIcon.getId(), iconControl);
+    }
+
+    public Optional<String> getIconId() {
+        return ofNullable(uiDescriptor.getIcon())
+            .map(UIIcon::getId);
     }
 }

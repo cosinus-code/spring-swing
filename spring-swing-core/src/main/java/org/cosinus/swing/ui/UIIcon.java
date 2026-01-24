@@ -14,23 +14,17 @@
  *  limitations under the License.
  *
  */
+
 package org.cosinus.swing.ui;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.cosinus.swing.form.control.ControlType;
 
-@Setter
 @Getter
-public class UIField {
+@Setter
+public class UIIcon {
 
     private String id;
-
-    private String label;
-
-    private ControlType type;
-
-    private UIAlign align;
 
     private int width;
 
@@ -40,6 +34,5 @@ public class UIField {
 
     private boolean action;
 
-    private boolean focus;
-
+    private boolean editable;
 }

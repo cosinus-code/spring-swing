@@ -17,6 +17,8 @@
 
 package org.cosinus.swing.form;
 
+import org.cosinus.swing.ui.Refreshable;
+
 import java.awt.*;
 import java.util.stream.Stream;
 
@@ -26,7 +28,7 @@ import static org.cosinus.stream.Streams.flatComponentsStream;
 /**
  * Generic form component interface
  */
-public interface FormComponent {
+public interface FormComponent extends Refreshable {
 
     /**
      * Initialize form components.
@@ -63,6 +65,13 @@ public interface FormComponent {
                 .filter(component -> FormComponent.class.isAssignableFrom(component.getClass()))
                 .map(FormComponent.class::cast) :
             Stream.empty();
+    }
+
+    @Override
+    default void refresh() {
+        if (this instanceof Container container) {
+            container.repaint();
+        }
     }
 
     /**

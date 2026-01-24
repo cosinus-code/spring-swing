@@ -46,6 +46,17 @@ public class UIController {
         UIStructure uiStructure = new UIStructure(uiDescriptor);
         uiStructure.initComponents();
 
+        ofNullable(uiDescriptor.getIcon()).ifPresent(uiIcon -> {
+            Control<?> control = uiIcon.isEditable() ? new IconButton() : new Label();
+            if (uiIcon.getWidth() > 0 || uiIcon.getHeight() > 0) {
+                control.getComponent().setPreferredSize(new Dimension(uiIcon.getWidth(), uiIcon.getHeight()));
+            }
+            if (uiIcon.isDisabled()) {
+                control.setControlEnabled(false);
+            }
+            uiStructure.addIcon(uiIcon, control);
+        });
+
         uiDescriptor.getFields()
             .forEach(field -> ofNullable(createControl(field))
                 .ifPresent(control -> {
@@ -76,6 +87,15 @@ public class UIController {
     }
 
     public void fillUIStructure(final UIStructure uiStructure, final UIModel model) {
+        uiStructure.getIconId()
+            .map(uiStructure::getControl)
+            .ifPresent(control -> {
+                if (control instanceof Label label) {
+                    label.setIcon(model.getIcon());
+                } else if (control instanceof IconButton button) {
+                    button.setIcon(model.getIcon());
+                }
+            });
         model.keys()
             .forEach(key -> ofNullable(uiStructure.getControl(key))
                 .ifPresent(control -> fillControl(key, control, model)));

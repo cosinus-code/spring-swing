@@ -16,6 +16,9 @@
  */
 package org.cosinus.swing.window;
 
+import org.cosinus.swing.dialog.DialogHandler;
+import org.cosinus.swing.form.control.Button;
+import org.cosinus.swing.ui.UIController;
 import org.cosinus.swing.ui.UIModel;
 import org.cosinus.swing.ui.UIStructure;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +26,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.awt.*;
 import java.awt.Frame;
 
+import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.ui.UIStructure.CANCEL_BUTTON_ID;
 import static org.cosinus.swing.ui.UIStructure.OK_BUTTON_ID;
 
 public class SimpleDialog<M extends UIModel> extends Dialog<M> {
 
     @Autowired
-    protected org.cosinus.swing.ui.UIController uiController;
+    protected UIController uiController;
+
+    @Autowired
+    protected DialogHandler dialogHandler;
 
     protected final String descriptorName;
 
@@ -88,5 +95,11 @@ public class SimpleDialog<M extends UIModel> extends Dialog<M> {
     protected void setDefaultFocus() {
         uiStructure.getFocusComponent()
             .ifPresent(Component::requestFocus);
+    }
+
+    @Override
+    public void refresh() {
+        uiController.fillUIStructure(uiStructure, model);
+        super.refresh();
     }
 }

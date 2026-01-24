@@ -16,6 +16,8 @@
  */
 package org.cosinus.swing.ui;
 
+import javax.swing.*;
+import java.io.File;
 import java.util.Set;
 
 public interface UIModel {
@@ -28,5 +30,12 @@ public interface UIModel {
 
     default Object[] getValues(String key) {
         return null;
+    }
+
+    default Icon getIcon() {
+        return null;
+    }
+
+    default void setIconFile(File iconFile) {
     }
 }
