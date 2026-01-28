@@ -30,6 +30,7 @@ import static java.util.Arrays.stream;
 public enum ControlType {
     TEXT(new TextControlProvider()),
     BOOLEAN(new BooleanControlProvider()),
+    BOOLEAN_LIST(new BooleanListControlProvider()),
     INTEGER(new IntegerControlProvider()),
     LONG(new LongControlProvider()),
     FLOAT(new FloatControlProvider()),
@@ -56,7 +57,10 @@ public enum ControlType {
     @JsonCreator
     public static ControlType fromValue(String value) {
         return stream(values())
-            .filter(type -> type.toString().equals(value))
+            .filter(type -> type
+                .toString()
+                .replace('_', '-')
+                .equals(value))
             .findFirst()
             .orElse(null);
     }

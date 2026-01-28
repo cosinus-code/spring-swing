@@ -23,10 +23,8 @@ import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
-import org.cosinus.swing.file.DefaultFileSystemRoot;
-import org.cosinus.swing.file.FileCompatibleApplications;
-import org.cosinus.swing.file.FileSystem;
-import org.cosinus.swing.file.FileSystemRoot;
+
+import org.cosinus.swing.file.*;
 import org.springframework.cache.annotation.Cacheable;
 
 /**
@@ -75,4 +73,18 @@ public class WindowsFileSystem implements FileSystem {
         return Optional.empty();
     }
 
+    @Override
+    public Permissions getFilePermissions(File file) {
+        return null;
+    }
+
+    @Override
+    public void setGroupOwnerForFile(File file, String groupName) {
+
+    }
+
+    @Override
+    public void setPermissions(File file, Permissions permissions) {
+
+    }
 }

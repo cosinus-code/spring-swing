@@ -297,6 +297,51 @@ public class LinuxFileSystem implements FileSystem {
     }
 
     @Override
+    public Permissions getFilePermissions(final File file) {
+        return processExecutor.executeAndGetOutput("ls", "-ld", file.getAbsolutePath())
+            .map(ls -> ls.split(" "))
+            .filter(parts -> parts.length > 0)
+            .map(parts -> Permissions.builder()
+                .textView(parts[0])
+                .ownerRead(parts[0].charAt(1) == 'r')
+                .ownerWrite(parts[0].charAt(2) == 'w')
+                .ownerExecute(parts[0].charAt(3) == 'x' || parts[0].charAt(3) == 's')
+                .groupRead(parts[0].charAt(4) == 'r')
+                .groupWrite(parts[0].charAt(5) == 'w')
+                .groupExecute(parts[0].charAt(6) == 'x' || parts[0].charAt(6) == 's')
+                .othersRead(parts[0].charAt(7) == 'r')
+                .othersWrite(parts[0].charAt(8) == 'w')
+                .othersExecute(parts[0].charAt(9) == 'x' || parts[0].charAt(9) == 't')
+                .setUserId(parts[0].charAt(3) == 's' || parts[0].charAt(3) == 'S')
+                .setGroupId(parts[0].charAt(6) == 's' || parts[0].charAt(6) == 'S')
+                .sticky(parts[0].charAt(9) == 't' || parts[0].charAt(9) == 'T')
+                .ownerName(parts.length > 2 ? parts[2] : null)
+                .groupName(parts.length > 3 ? parts[3] : null)
+                .availableGroupNames(getAvailableGroupNames(parts.length > 2 ? parts[2] : null))
+                .build())
+            .orElseGet(() -> Permissions.builder().build());
+    }
+
+    @Override
+    public void setPermissions(final File file, final Permissions permissions) {
+        processExecutor.execute("chmod", permissions.numberView(), file.getAbsolutePath());
+    }
+
+    @Override
+    public void setGroupOwnerForFile(File file, String groupName) {
+        processExecutor.execute("chgrp", groupName, file.getAbsolutePath());
+    }
+
+    private String[] getAvailableGroupNames(final String ownerName) {
+        return ofNullable(ownerName)
+            .flatMap(user -> processExecutor.executeAndGetOutput("groups", user))
+            .map(output -> output.split(":"))
+            .filter(parts -> parts.length > 1)
+            .map(parts -> parts[1].trim().split("\\s+"))
+            .orElse(new String[0]);
+    }
+
+    @Override
     public Optional<String> getFileTypeDescription(final Path path, boolean isDirectory) {
         return mimeTypeResolver.getMimeTypes(path, isDirectory)
             .stream()

@@ -35,11 +35,7 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.exec.ProcessExecutor;
-import org.cosinus.swing.file.Application;
-import org.cosinus.swing.file.FileCompatibleApplications;
-import org.cosinus.swing.file.FileInfoProvider;
-import org.cosinus.swing.file.FileSystem;
-import org.cosinus.swing.file.FileSystemRoot;
+import org.cosinus.swing.file.*;
 
 /**
  * Implementation of {@link FileSystem} for Mac
@@ -161,5 +157,20 @@ public class MacFileSystem implements FileSystem {
                 .flatMap(fileTypeInfoProvider::getFileTypeDescription)
                 .or(() -> fileTypeInfoProvider
                     .getFileTypeDescription("." + getExtension(path.toFile())));
+    }
+
+    @Override
+    public Permissions getFilePermissions(File file) {
+        return null;
+    }
+
+    @Override
+    public void setGroupOwnerForFile(File file, String groupName) {
+
+    }
+
+    @Override
+    public void setPermissions(File file, Permissions permissions) {
+
     }
 }

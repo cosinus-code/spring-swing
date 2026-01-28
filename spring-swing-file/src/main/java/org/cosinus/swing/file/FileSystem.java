@@ -57,5 +57,11 @@ public interface FileSystem {
 
     void copyPermissions(File fileSource, File fileTarget);
 
-    Optional<String> getFileTypeDescription(final Path path, boolean isDirectory);
+    Optional<String> getFileTypeDescription(Path path, boolean isDirectory);
+    
+    Permissions getFilePermissions(File file);
+
+    void setPermissions(File file, Permissions permissions);
+
+    void setGroupOwnerForFile(File file, String groupName);
 }

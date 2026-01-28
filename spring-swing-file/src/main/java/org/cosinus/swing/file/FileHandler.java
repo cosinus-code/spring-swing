@@ -197,4 +197,16 @@ public class FileHandler {
             }
         };
     }
+
+    public Permissions getFilePermissions(final File file) {
+        return fileSystem.getFilePermissions(file);
+    }
+
+    public void setFilePermissions(final File file, final Permissions permissions) {
+        fileSystem.setPermissions(file, permissions);
+    }
+
+    public void setGroupOwnerForFile(final File file, final String groupName) {
+        fileSystem.setGroupOwnerForFile(file, groupName);
+    }
 }
