@@ -79,7 +79,7 @@ public class WindowsFileSystem implements FileSystem {
     }
 
     @Override
-    public void setGroupOwnerForFile(File file, String groupName) {
+    public void setOwnerForFile(File file, String ownerName, String groupName) {
 
     }
 

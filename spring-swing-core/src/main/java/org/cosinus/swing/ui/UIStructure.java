@@ -30,6 +30,7 @@ import java.awt.*;
 import java.util.*;
 
 import static java.awt.BorderLayout.*;
+import static java.util.Collections.emptySet;
 import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.border.Borders.emptyBorder;
 import static org.cosinus.swing.ui.UILayout.SPRING_GRID;
@@ -48,7 +49,10 @@ public class UIStructure extends Panel {
     private final Map<String, Button> buttonsMap;
 
     @Getter
-    private final Collection<Component> actionComponents;
+    private final Map<String, Set<Control<?>>> actionControls;
+
+    @Getter
+    private final Set<Control<?>> doubleClickActionControls = new HashSet<>();
 
     private Button defaultButton;
 
@@ -67,7 +71,7 @@ public class UIStructure extends Panel {
         this.uiDescriptor = uiDescriptor;
         this.controlsMap = new HashMap<>();
         this.buttonsMap = new HashMap<>();
-        this.actionComponents = new ArrayList<>();
+        this.actionControls = new HashMap<>();
     }
 
     @Override
@@ -172,8 +176,10 @@ public class UIStructure extends Panel {
             .orElseThrow(() -> new SpringSwingException("Cannot find control with id: " + id));
     }
 
-    public void addActionComponent(Component component) {
-        actionComponents.add(component);
+    public void addActionComponent(String action, Control<?> control) {
+        actionControls
+            .computeIfAbsent(action, key -> new HashSet<>())
+            .add(control);
     }
 
     public Optional<Component> getFocusComponent() {
@@ -188,5 +194,13 @@ public class UIStructure extends Panel {
     public Optional<String> getIconId() {
         return ofNullable(uiDescriptor.getIcon())
             .map(UIIcon::getId);
+    }
+
+    public Set<Control<?>> getControlsWithAction(final String action) {
+        return actionControls.getOrDefault(action, emptySet());
+    }
+
+    public void addDoubleClickActionComponents(Control<?> control) {
+        doubleClickActionControls.add(control);
     }
 }

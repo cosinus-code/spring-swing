@@ -67,6 +67,9 @@ public class LinuxFileSystem implements FileSystem {
 
     private static final Set<String> IGNORED_FILESYSTEMS = Set.of("swap", "vfat");
 
+    private static final Set<String> POSIX_COMPLIANT_FILESYSTEMS = Set.of(
+        "ext4", "ext3", "ext2", "xfs", "btrfs", "jfs", "reiserfs", "zfs", "f2fs", "ufs", "ffs");
+
     private final ProcessExecutor processExecutor;
 
     private final MimeTypeResolver mimeTypeResolver;
@@ -318,19 +321,46 @@ public class LinuxFileSystem implements FileSystem {
                 .ownerName(parts.length > 2 ? parts[2] : null)
                 .groupName(parts.length > 3 ? parts[3] : null)
                 .availableGroupNames(getAvailableGroupNames(parts.length > 2 ? parts[2] : null))
-                .build())
-            .orElseGet(() -> Permissions.builder().build());
+                .editable(getFileSystemTypeForFile(file)
+                    .map(POSIX_COMPLIANT_FILESYSTEMS::contains)
+                    .orElse(false))
+                .build()
+                .updateNumberViews())
+            .orElse(null);
+    }
+
+    private Optional<String> getFileSystemTypeForFile(final File file) {
+        return processExecutor.executeAndGetOutput("df", "-T", file.getAbsolutePath())
+            .map(output -> output.split("\\n"))
+            .filter(lines -> lines.length > 1)
+            .map(lines -> lines[1].split("\\s+"))
+            .filter(parts -> parts.length > 1)
+            .map(parts -> parts[1]);
     }
 
     @Override
     public void setPermissions(final File file, final Permissions permissions) {
-        processExecutor.execute("chmod", permissions.numberView(), file.getAbsolutePath());
+        processExecutor.execute("chmod", permissions.getNumberView(), file.getAbsolutePath());
     }
 
     @Override
-    public void setGroupOwnerForFile(File file, String groupName) {
-        processExecutor.execute("chgrp", groupName, file.getAbsolutePath());
+    public void setOwnerForFile(final File file, final String ownerName, final String groupName) {
+        if (groupName != null) {
+            if (ownerName != null) {
+                processExecutor.execute("chown", ownerName + ":" + groupName, file.getAbsolutePath());
+            } else {
+                processExecutor.execute("chgrp", groupName, file.getAbsolutePath());
+            }
+        } else if (ownerName != null) {
+            processExecutor.execute("chown", ownerName, file.getAbsolutePath());
+        }
     }
+
+//    private String[] getAvailableUserNames() {
+//        return processExecutor.executeAndGetOutput("cut", "-d:", "-f1", "/etc/passwd")
+//            .map(output -> output.split("\\n"))
+//            .orElse(new String[0]);
+//    }
 
     private String[] getAvailableGroupNames(final String ownerName) {
         return ofNullable(ownerName)

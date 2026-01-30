@@ -25,10 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import java.awt.*;
-import java.awt.event.FocusEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
@@ -181,5 +178,10 @@ public class FileTextField extends JTextField implements Control<File>, MouseLis
     @Override
     public void mouseDragged(MouseEvent e) {
 
+    }
+
+    @Override
+    public void addActionListener(ActionListener actionListener) {
+        super.addActionListener(actionListener);
     }
 }

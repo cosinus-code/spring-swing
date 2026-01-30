@@ -14,33 +14,22 @@
  *  limitations under the License.
  *
  */
+
 package org.cosinus.swing.ui;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.cosinus.swing.form.control.ControlType;
+public enum UIAction {
 
-@Setter
-@Getter
-public class UIField {
+    OK("ok"),
+    CANCEL("cancel"),
+    REFRESH("refresh");
 
-    private String id;
+    private final String name;
 
-    private String label;
+    UIAction(String name) {
+        this.name = name;
+    }
 
-    private ControlType type;
-
-    private UIAlign align;
-
-    private int width;
-
-    private int height;
-
-    private boolean disabled;
-
-    private String action;
-
-    private boolean focus;
-
-    private boolean doubleClickAction;
+    public String getName() {
+        return name;
+    }
 }

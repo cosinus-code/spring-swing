@@ -23,6 +23,7 @@ import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
+import java.awt.event.ActionListener;
 import java.util.Date;
 import java.util.Properties;
 
@@ -49,5 +50,10 @@ public class DatePicker extends JDatePickerImpl implements Control<Date> {
     @Override
     public void setControlValue(Date date) {
         getModel().setValue(date);
+    }
+
+    @Override
+    public void addActionListener(ActionListener actionListener) {
+        super.addActionListener(actionListener);
     }
 }

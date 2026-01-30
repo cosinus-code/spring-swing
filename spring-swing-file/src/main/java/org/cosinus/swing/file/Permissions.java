@@ -25,6 +25,7 @@ import lombok.Setter;
 @Builder
 public class Permissions {
 
+    @Setter
     private String ownerName;
 
     @Setter
@@ -32,45 +33,121 @@ public class Permissions {
 
     private String[] availableGroupNames;
 
-    @Setter
+    private boolean editable;
+
     private boolean ownerRead;
 
-    @Setter
     private boolean ownerWrite;
 
-    @Setter
     private boolean ownerExecute;
 
-    @Setter
     private boolean groupRead;
 
-    @Setter
     private boolean groupWrite;
 
-    @Setter
     private boolean groupExecute;
 
-    @Setter
     private boolean othersRead;
 
-    @Setter
     private boolean othersWrite;
 
-    @Setter
     private boolean othersExecute;
 
-    @Setter
     private boolean setUserId;
 
-    @Setter
     private boolean setGroupId;
 
-    @Setter
     private boolean sticky;
 
     private String textView;
 
-    public String numberView() {
+    private String numberView;
+
+    public void setOwnerRead(boolean ownerRead) {
+        this.ownerRead = ownerRead;
+        updateViews();
+    }
+
+    public void setOthersWrite(boolean othersWrite) {
+        this.othersWrite = othersWrite;
+        updateViews();
+    }
+
+    public void setOwnerExecute(boolean ownerExecute) {
+        this.ownerExecute = ownerExecute;
+        updateViews();
+    }
+
+    public void setGroupRead(boolean groupRead) {
+        this.groupRead = groupRead;
+        updateViews();
+    }
+
+    public void setGroupWrite(boolean groupWrite) {
+        this.groupWrite = groupWrite;
+        updateViews();
+    }
+
+    public void setGroupExecute(boolean groupExecute) {
+        this.groupExecute = groupExecute;
+        updateViews();
+    }
+
+    public void setOthersRead(boolean othersRead) {
+        this.othersRead = othersRead;
+        updateViews();
+    }
+
+    public void setOwnerWrite(boolean ownerWrite) {
+        this.ownerWrite = ownerWrite;
+        updateViews();
+    }
+
+    public void setOthersExecute(boolean othersExecute) {
+        this.othersExecute = othersExecute;
+        updateViews();
+    }
+
+    public void setSetUserId(boolean setUserId) {
+        this.setUserId = setUserId;
+        updateViews();
+    }
+
+    public void setSetGroupId(boolean setGroupId) {
+        this.setGroupId = setGroupId;
+        updateViews();
+    }
+
+    public void setSticky(boolean sticky) {
+        this.sticky = sticky;
+        updateViews();
+    }
+
+    public Permissions updateViews() {
+        this.textView = computeTextView();
+        this.numberView = computeNumberView();
+        return this;
+    }
+
+    public Permissions updateNumberViews() {
+        this.numberView = computeNumberView();
+        return this;
+    }
+
+    public String computeTextView() {
+        return textView.charAt(0) +
+            (ownerRead ? "r" : "-") +
+            (ownerWrite ? "w" : "-") +
+            (ownerExecute ? setUserId ? "s" : "x" : setUserId ? "S" : "-") +
+            (groupRead ? "r" : "-") +
+            (groupWrite ? "w" : "-") +
+            (groupExecute ? setGroupId ? "s" : "x" : setGroupId ? "S" : "-") +
+            (othersRead ? "r" : "-") +
+            (othersWrite ? "w" : "-") +
+            (othersExecute ? sticky ? "t" : "x" : sticky ? "T" : "-");
+    }
+
+    public String computeNumberView() {
         String numberView = "%d%d%d".formatted(ownerNumber(), groupNumber(), othersNumber());
         int stickyNumber = numberFormat(setUserId, setGroupId, sticky);
         return stickyNumber > 0 ? stickyNumber + numberView : numberView;

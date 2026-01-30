@@ -20,6 +20,7 @@ package org.cosinus.swing.form.control;
 import org.cosinus.swing.form.Panel;
 
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,5 +71,15 @@ public class CheckBoxList extends Panel implements Control<List<CheckBoxValue>> 
             range(0, checkBoxes.size())
                 .forEach(i -> checkBoxes.get(i).setSelected(values.get(i).selected()));
         }
+    }
+
+    @Override
+    public void addActionListener(ActionListener actionListener) {
+        checkBoxes.forEach(checkBox -> checkBox.addActionListener(actionListener));
+    }
+
+    @Override
+    public void setControlEnabled(boolean enabled) {
+        checkBoxes.forEach(checkBox -> checkBox.setControlEnabled(enabled));
     }
 }

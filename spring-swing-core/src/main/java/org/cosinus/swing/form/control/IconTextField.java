@@ -137,6 +137,11 @@ public abstract class IconTextField extends JTextField implements MouseListener,
         return false;
     }
 
+    @Override
+    public void addActionListener(ActionListener actionListener) {
+        super.addActionListener(actionListener);
+    }
+
     protected abstract Icon getIcon();
 
     protected abstract void performAction();

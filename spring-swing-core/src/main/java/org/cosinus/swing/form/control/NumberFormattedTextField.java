@@ -23,6 +23,7 @@ import org.cosinus.swing.error.ValidationException;
 import org.cosinus.swing.validation.ValidationError;
 
 import javax.swing.*;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.text.Format;
 import java.text.ParseException;
@@ -127,5 +128,10 @@ public class NumberFormattedTextField<T extends Number> extends JFormattedTextFi
             setErrorState();
             throw ex;
         }
+    }
+
+    @Override
+    public void addActionListener(ActionListener actionListener) {
+        super.addActionListener(actionListener);
     }
 }

@@ -96,4 +96,9 @@ public class Button extends JButton implements Control<String>, IconHolder {
     public String getIconName() {
         return iconName;
     }
+
+    @Override
+    public void addActionListener(ActionListener actionListener) {
+        super.addActionListener(actionListener);
+    }
 }

@@ -67,10 +67,12 @@ public class UIController {
                     if (field.isDisabled()) {
                         control.setControlEnabled(false);
                     }
+                    ofNullable(field.getAction())
+                        .ifPresent(action -> uiStructure.addActionComponent(action, control));
+                    if (field.isDoubleClickAction()) {
+                        uiStructure.addDoubleClickActionComponents(control);
+                    }
                     if (control instanceof Component component) {
-                        if (field.isAction()) {
-                            uiStructure.addActionComponent(component);
-                        }
                         if (field.isFocus()) {
                             uiStructure.setFocusComponent(component);
                         }
@@ -108,6 +110,9 @@ public class UIController {
         }
         ofNullable(model.getValue(key))
             .ifPresent(value -> control.setControlValue((T) value));
+        if (model.isReadonly(key)) {
+            control.setControlEnabled(false);
+        }
     }
 
     public void updateUIModel(final UIStructure uiStructure, final UIModel model) {

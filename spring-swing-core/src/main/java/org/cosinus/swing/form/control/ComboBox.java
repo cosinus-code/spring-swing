@@ -19,6 +19,8 @@ package org.cosinus.swing.form.control;
 
 import javax.swing.*;
 
+import java.awt.event.ActionListener;
+
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
 /**
@@ -62,5 +64,10 @@ public class ComboBox<T> extends JComboBox<T> implements Control<T>, MultipleVal
     @Override
     public void setValues(T[] values) {
         setModel(new DefaultComboBoxModel<>(values));
+    }
+
+    @Override
+    public void addActionListener(ActionListener actionListener) {
+        super.addActionListener(actionListener);
     }
 }

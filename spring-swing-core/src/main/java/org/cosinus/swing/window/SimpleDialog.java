@@ -17,7 +17,6 @@
 package org.cosinus.swing.window;
 
 import org.cosinus.swing.dialog.DialogHandler;
-import org.cosinus.swing.form.control.Button;
 import org.cosinus.swing.ui.UIController;
 import org.cosinus.swing.ui.UIModel;
 import org.cosinus.swing.ui.UIStructure;
@@ -25,12 +24,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.awt.*;
 import java.awt.Frame;
+import java.awt.event.ActionListener;
+import java.util.Map;
 
-import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.ui.UIStructure.CANCEL_BUTTON_ID;
 import static org.cosinus.swing.ui.UIStructure.OK_BUTTON_ID;
 
 public class SimpleDialog<M extends UIModel> extends Dialog<M> {
+
+    public static final String OK_ACTION = "ok";
+
+    public static final String CANCEL_ACTION = "cancel";
+
+    public static final String REFRESH_ACTION = "refresh";
 
     @Autowired
     protected UIController uiController;
@@ -44,11 +50,14 @@ public class SimpleDialog<M extends UIModel> extends Dialog<M> {
 
     protected UIStructure uiStructure;
 
+    protected final Map<String, ActionListener> actionsMap;
+
     public SimpleDialog(final Frame frame, String title, boolean modal, boolean manageWindowSettings,
                         String descriptorName, M model) {
         super(frame, title, modal, manageWindowSettings);
         this.descriptorName = descriptorName;
         this.model = model;
+        this.actionsMap = createActionsMap();
     }
 
     public SimpleDialog(final Dialog dialog, String title, boolean modal, boolean manageWindowSettings,
@@ -56,6 +65,14 @@ public class SimpleDialog<M extends UIModel> extends Dialog<M> {
         super(dialog, title, modal, manageWindowSettings);
         this.descriptorName = descriptorName;
         this.model = model;
+        this.actionsMap = createActionsMap();
+    }
+
+    protected Map<String, ActionListener> createActionsMap() {
+        return Map.of(
+            OK_ACTION, e -> this.dispose(),
+            CANCEL_ACTION, e -> this.cancel(),
+            REFRESH_ACTION, e -> this.refresh());
     }
 
     @Override
@@ -64,9 +81,9 @@ public class SimpleDialog<M extends UIModel> extends Dialog<M> {
 
         uiStructure = uiController.createUiStructure(descriptorName);
         getContentPane().add(uiStructure);
-        registerDefaultActions(uiStructure);
 
         uiController.fillUIStructure(uiStructure, model);
+        registerDefaultActions(uiStructure);
 
         pack();
         centerWindow();
@@ -82,14 +99,21 @@ public class SimpleDialog<M extends UIModel> extends Dialog<M> {
 
     protected void registerDefaultActions(UIStructure uiStructure) {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        registerActions();
         uiStructure.findButton(OK_BUTTON_ID)
-            .ifPresent(this::registerOkAction);
-        uiStructure.getActionComponents()
-            .forEach(this::registerDoubleClickOkAction);
+            .ifPresent(button -> registerAction(button, actionsMap.get(OK_ACTION)));
         uiStructure.findButton(CANCEL_BUTTON_ID)
-            .ifPresent(this::registerCancelAction);
+            .ifPresent(button -> registerAction(button, actionsMap.get(CANCEL_ACTION)));
         uiStructure.findDefaultButton()
             .ifPresent(uiStructure.getRootPane()::setDefaultButton);
+        uiStructure.getDoubleClickActionControls()
+            .forEach(this::registerDoubleClickOkAction);
+    }
+
+    protected void registerActions() {
+        actionsMap
+            .forEach((actionName, actionListener) -> uiStructure.getControlsWithAction(actionName)
+                .forEach(control -> control.addActionListener(actionListener)));
     }
 
     protected void setDefaultFocus() {
@@ -99,6 +123,7 @@ public class SimpleDialog<M extends UIModel> extends Dialog<M> {
 
     @Override
     public void refresh() {
+        uiController.updateUIModel(uiStructure, model);
         uiController.fillUIStructure(uiStructure, model);
         super.refresh();
     }

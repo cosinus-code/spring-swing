@@ -38,4 +38,8 @@ public interface UIModel {
 
     default void setIconFile(File iconFile) {
     }
+
+    default boolean isReadonly(String key) {
+        return false;
+    }
 }

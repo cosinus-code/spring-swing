@@ -206,7 +206,7 @@ public class FileHandler {
         fileSystem.setPermissions(file, permissions);
     }
 
-    public void setGroupOwnerForFile(final File file, final String groupName) {
-        fileSystem.setGroupOwnerForFile(file, groupName);
+    public void setOwnerForFile(final File file, final String ownerName, final String groupName) {
+        fileSystem.setOwnerForFile(file, ownerName, groupName);
     }
 }

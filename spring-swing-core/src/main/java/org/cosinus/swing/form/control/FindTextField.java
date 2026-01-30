@@ -220,4 +220,9 @@ public class FindTextField extends JTextField
         ofNullable(action)
             .ifPresent(Runnable::run);
     }
+
+    @Override
+    public void addActionListener(ActionListener actionListener) {
+        super.addActionListener(actionListener);
+    }
 }

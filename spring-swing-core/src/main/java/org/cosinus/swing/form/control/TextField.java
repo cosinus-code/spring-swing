@@ -71,7 +71,8 @@ public class TextField extends JTextField implements Control<String> {
         setText(text);
     }
 
-    public void addAction(Runnable runnable) {
-        addActionListener(event -> runnable.run());
+    @Override
+    public void addActionListener(ActionListener actionListener) {
+        super.addActionListener(actionListener);
     }
 }

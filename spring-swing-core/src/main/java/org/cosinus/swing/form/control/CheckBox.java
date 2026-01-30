@@ -18,6 +18,7 @@
 package org.cosinus.swing.form.control;
 
 import javax.swing.*;
+import java.awt.event.ActionListener;
 import java.util.Optional;
 
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
@@ -91,5 +92,10 @@ public class CheckBox extends JCheckBox implements Control<Boolean> {
     @Override
     public void updateAssociatedLabel(String labelText) {
         setText(labelText);
+    }
+
+    @Override
+    public void addActionListener(ActionListener actionListener) {
+        super.addActionListener(actionListener);
     }
 }

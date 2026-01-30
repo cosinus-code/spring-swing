@@ -21,6 +21,7 @@ import org.cosinus.swing.validation.ValidationError;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.util.List;
 import java.util.Optional;
@@ -234,5 +235,8 @@ public interface Control<T> {
     default void setControlEnabled(boolean enabled) {
         getComponent().setEnabled(enabled);
         getAssociatedLabel().ifPresent(label -> label.setEnabled(enabled));
+    }
+
+    default void addActionListener(final ActionListener actionListener) {
     }
 }

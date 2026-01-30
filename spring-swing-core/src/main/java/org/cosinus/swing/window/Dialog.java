@@ -19,14 +19,14 @@ package org.cosinus.swing.window;
 
 import lombok.Getter;
 import org.cosinus.swing.form.FormComponent;
-import org.cosinus.swing.form.control.Button;
+import org.cosinus.swing.form.control.Control;
 import org.cosinus.swing.listener.SimpleMouseListener;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.Frame;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
@@ -142,20 +142,16 @@ public abstract class Dialog<T> extends JDialog implements Window, FormComponent
     public void translate() {
     }
 
-    protected void registerOkAction(final Button button) {
-        button.addActionListener(event -> dispose());
+    protected void registerAction(final Control<?> control, final ActionListener actionListener) {
+        control.addActionListener(actionListener);
     }
 
-    protected void registerDoubleClickOkAction(final Component component) {
-        component.addMouseListener(new SimpleMouseListener() {
+    protected void registerDoubleClickOkAction(final Control<?> control) {
+        control.getComponent().addMouseListener(new SimpleMouseListener() {
             @Override
             public void mouseDoubleClicked(MouseEvent event) {
                 dispose();
             }
         });
-    }
-
-    protected void registerCancelAction(final Button button) {
-        button.addActionListener(event -> cancel());
     }
 }

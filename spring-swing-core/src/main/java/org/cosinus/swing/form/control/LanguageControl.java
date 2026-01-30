@@ -18,6 +18,7 @@
 package org.cosinus.swing.form.control;
 
 import javax.swing.*;
+import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Locale;
 
@@ -46,5 +47,10 @@ public class LanguageControl extends JComboBox<DisplayLocale> implements Control
     @Override
     public void setControlValue(Locale locale) {
         setSelectedItem(new DisplayLocale(locale));
+    }
+
+    @Override
+    public void addActionListener(ActionListener actionListener) {
+        super.addActionListener(actionListener);
     }
 }
