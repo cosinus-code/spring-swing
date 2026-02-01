@@ -198,11 +198,11 @@ public class FileHandler {
         };
     }
 
-    public Permissions getFilePermissions(final File file) {
+    public FilePermissions getFilePermissions(final File file) {
         return fileSystem.getFilePermissions(file);
     }
 
-    public void setFilePermissions(final File file, final Permissions permissions) {
+    public void setFilePermissions(final File file, final FilePermissions permissions) {
         fileSystem.setPermissions(file, permissions);
     }
 

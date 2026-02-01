@@ -59,9 +59,9 @@ public interface FileSystem {
 
     Optional<String> getFileTypeDescription(Path path, boolean isDirectory);
     
-    Permissions getFilePermissions(File file);
+    FilePermissions getFilePermissions(File file);
 
-    void setPermissions(File file, Permissions permissions);
+    void setPermissions(File file, FilePermissions permissions);
 
     void setOwnerForFile(File file, String ownerName, String groupName);
 }

@@ -300,11 +300,11 @@ public class LinuxFileSystem implements FileSystem {
     }
 
     @Override
-    public Permissions getFilePermissions(final File file) {
+    public FilePermissions getFilePermissions(final File file) {
         return processExecutor.executeAndGetOutput("ls", "-ld", file.getAbsolutePath())
             .map(ls -> ls.split(" "))
             .filter(parts -> parts.length > 0)
-            .map(parts -> Permissions.builder()
+            .map(parts -> FilePermissions.builder()
                 .textView(parts[0])
                 .ownerRead(parts[0].charAt(1) == 'r')
                 .ownerWrite(parts[0].charAt(2) == 'w')
@@ -339,7 +339,7 @@ public class LinuxFileSystem implements FileSystem {
     }
 
     @Override
-    public void setPermissions(final File file, final Permissions permissions) {
+    public void setPermissions(final File file, final FilePermissions permissions) {
         processExecutor.execute("chmod", permissions.getNumberView(), file.getAbsolutePath());
     }
 

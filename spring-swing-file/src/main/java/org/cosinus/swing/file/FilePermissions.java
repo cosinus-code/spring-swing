@@ -20,10 +20,11 @@ package org.cosinus.swing.file;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.cosinus.swing.security.Permissions;
 
 @Getter
 @Builder
-public class Permissions {
+public class FilePermissions implements Permissions {
 
     @Setter
     private String ownerName;
@@ -123,13 +124,13 @@ public class Permissions {
         updateViews();
     }
 
-    public Permissions updateViews() {
+    public FilePermissions updateViews() {
         this.textView = computeTextView();
         this.numberView = computeNumberView();
         return this;
     }
 
-    public Permissions updateNumberViews() {
+    public FilePermissions updateNumberViews() {
         this.numberView = computeNumberView();
         return this;
     }

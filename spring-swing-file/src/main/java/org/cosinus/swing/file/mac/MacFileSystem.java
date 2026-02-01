@@ -160,7 +160,7 @@ public class MacFileSystem implements FileSystem {
     }
 
     @Override
-    public Permissions getFilePermissions(File file) {
+    public FilePermissions getFilePermissions(File file) {
         return null;
     }
 
@@ -170,7 +170,7 @@ public class MacFileSystem implements FileSystem {
     }
 
     @Override
-    public void setPermissions(File file, Permissions permissions) {
+    public void setPermissions(File file, FilePermissions permissions) {
 
     }
 }
