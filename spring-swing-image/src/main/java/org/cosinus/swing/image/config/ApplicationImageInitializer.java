@@ -50,7 +50,7 @@ public class ApplicationImageInitializer implements ApplicationInitializer {
     @Override
     public void initialize() {
         LOG.info("Initializing application image handlers...");
-        new Thread(this::initializeImages).start();
+        initializeImages();
     }
 
     protected void initializeImages() {

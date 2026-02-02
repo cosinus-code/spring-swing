@@ -62,11 +62,13 @@ public class IconThemeIndex {
     }
 
     public IconThemeIndex load(File iconThemeFolder) {
-        ofNullable(iconThemeFolder)
-            .map(this::loadTheme)
-            .stream()
-            .flatMap(index -> getSiblingIconThemes(iconThemeFolder, index).stream())
-            .forEach(this::loadTheme);
+        synchronized (iconPaths) {
+            ofNullable(iconThemeFolder)
+                .map(this::loadTheme)
+                .stream()
+                .flatMap(index -> getSiblingIconThemes(iconThemeFolder, index).stream())
+                .forEach(this::loadTheme);
+        }
 
         return this;
     }
@@ -148,11 +150,13 @@ public class IconThemeIndex {
     }
 
     public List<Path> getPathsToIcons(IconSize size) {
-        return iconPaths
-            .stream()
-            .flatMap(path -> getIconInternalPath(size)
-                .map(path::resolve))
-            .toList();
+        synchronized (iconPaths) {
+            return iconPaths
+                .stream()
+                .flatMap(path -> getIconInternalPath(size)
+                    .map(path::resolve))
+                .toList();
+        }
     }
 
     protected Stream<String> getIconInternalPath(IconSize iconSize) {
