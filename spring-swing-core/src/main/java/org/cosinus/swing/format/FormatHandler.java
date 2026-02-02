@@ -163,14 +163,21 @@ public class FormatHandler {
         return get2DecimalsFormatted(elevation) + " m";
     }
 
-    public String formatPace(double pace) {
-        return get2DecimalsFormatted(pace) + " min/km";
-    }
-
     public String formatIndexAsString(int index, int count) {
         String indexFormat = count < 10 ? "%01d" :
             count < 100 ? "%02d" :
                 count < 1000 ? "%03d" : "%04d";
         return indexFormat.formatted(index);
+    }
+
+    /**
+     * Format speed in m/s as pace in min/km
+     *
+     * @param speed speed in m/s
+     * @return pace in min/km
+     */
+    public String formatSpeedAsPace(double speed) {
+        return (int) (1000 / (60 * speed)) + ":" +
+            String.format("%02d", (int) (1000 / speed - 60 * (int) (1000 / (60 * speed)))) + " min/km";
     }
 }
