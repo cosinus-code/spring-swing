@@ -43,7 +43,8 @@ public class IconInitializer implements UIChangeListener {
     public void updateIcon(final IconHolder... iconHolders) {
         stream(iconHolders)
             .forEach(iconHolder -> ofNullable(iconHolder.getIconName())
-                .flatMap(iconName -> iconHandler.findIconByName(iconName, iconHolder.getIconSize()))
+                .flatMap(iconName ->
+                    iconHandler.findIconByName(iconName, iconHolder.getIconSize(), iconHolder.isIconRounded()))
                 .ifPresent(iconHolder::setIcon));
     }
 }

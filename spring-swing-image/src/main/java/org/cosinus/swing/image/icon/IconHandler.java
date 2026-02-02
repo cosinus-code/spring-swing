@@ -21,20 +21,30 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.icon.IconSize;
 import org.cosinus.swing.image.ImageHandler;
+import org.cosinus.swing.image.ImageSettings;
 import org.cosinus.swing.resource.ClasspathResourceResolver;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.geom.Ellipse2D;
+import java.awt.image.BufferedImage;
 import java.awt.image.ImageFilter;
 import java.io.File;
 import java.util.Optional;
 
+import static java.awt.Color.WHITE;
+import static java.awt.RenderingHints.*;
+import static java.awt.RenderingHints.KEY_ALPHA_INTERPOLATION;
+import static java.awt.RenderingHints.KEY_INTERPOLATION;
+import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.image.ImageHandler.DISABLED_FILTER;
 import static org.cosinus.swing.image.ImageHandler.GRAY_FILTER;
+import static org.cosinus.swing.image.ImageSettings.QUALITY;
 
 /**
  * Icons handler
@@ -72,14 +82,16 @@ public class IconHandler {
      *
      * @param name the name to search for
      * @param size the size of the icon to search for
+     * @param rounded whether the icon must be rounded
      * @return the found icon, or {@link Optional#empty()}
      */
     @Cacheable(value = SPRING_SWING_ICONS_CACHE_NAME)
-    public Optional<Icon> findIconByName(String name, IconSize size) {
+    public Optional<Icon> findIconByName(String name, IconSize size, boolean rounded) {
         return getRemoteIcon(name)
             .or(() -> iconProvider.findIconByName(name, size))
             .or(() -> this.findIconByResource(name + ".png"))
-            .map(icon -> scaleIcon(icon, size));
+            .map(icon -> scaleIcon(icon, size))
+            .map(icon -> rounded ? toCircularIcon(icon, size) : icon);
     }
 
     protected boolean isUrl(String text) {
@@ -174,4 +186,29 @@ public class IconHandler {
         iconProvider.initialize();
     }
 
+
+    public Icon toCircularIcon(Icon icon, IconSize iconSize) {
+        Image image = imageHandler.iconToImage(icon);
+        int size = iconSize.getSize();
+
+        BufferedImage output = new BufferedImage(size, size, TYPE_INT_ARGB);
+        Graphics2D g2d = output.createGraphics();
+
+        g2d.setRenderingHint(KEY_RENDERING, QUALITY.getRenderingHint());
+        g2d.setRenderingHint(KEY_ANTIALIASING, QUALITY.getAntialiasingHint());
+        g2d.setRenderingHint(KEY_INTERPOLATION, QUALITY.getInterpolationHint());
+        g2d.setRenderingHint(KEY_ALPHA_INTERPOLATION, QUALITY.getAlphaInterpolationHint());
+
+        g2d.setClip(new Ellipse2D.Float(1, 1, size - 2, size - 2));
+        g2d.drawImage(image, 0, 0, size, size, null);
+
+        g2d.setClip(null);
+        g2d.setStroke(new BasicStroke(2));
+        g2d.setColor(WHITE);
+        g2d.drawOval(1, 1, size - 2, size - 2);
+
+        g2d.dispose();
+
+        return new ImageIcon(output);
+    }
 }

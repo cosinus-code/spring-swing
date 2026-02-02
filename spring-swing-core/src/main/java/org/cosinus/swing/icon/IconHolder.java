@@ -27,6 +27,10 @@ public interface IconHolder {
         return X16;
     }
 
+    default boolean isIconRounded() {
+        return false;
+    }
+
     String getIconName();
 
     Icon getIcon();
