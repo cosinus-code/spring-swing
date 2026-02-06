@@ -17,6 +17,7 @@
 
 package org.cosinus.swing.boot.config;
 
+import org.cosinus.swing.boot.condition.ConditionalOnKDE;
 import org.cosinus.swing.boot.condition.ConditionalOnListeningUIChanges;
 import org.cosinus.swing.boot.condition.ConditionalOnOperatingSystem;
 import org.cosinus.swing.boot.initialize.LookAndFeelInitializer;
@@ -49,4 +50,10 @@ public class UIChangeListenerConfiguration {
         return new DefaultUIChangeListener(uiChangeController, lookAndFeelInitializer);
     }
 
+    @Bean
+    @ConditionalOnKDE
+    public DefaultUIChangeListener kdeUIChangeListener(final UIChangeController uiChangeController,
+                                                       final LookAndFeelInitializer lookAndFeelInitializer) {
+        return new DefaultUIChangeListener(uiChangeController, lookAndFeelInitializer);
+    }
 }

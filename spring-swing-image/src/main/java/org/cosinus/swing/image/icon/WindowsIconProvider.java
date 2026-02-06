@@ -33,12 +33,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS_XP;
 import static org.cosinus.swing.icon.IconSize.X16;
 import static org.cosinus.swing.util.AutoRemovableTemporaryFile.autoRemovableTemporaryFileWithExtension;
 import static org.cosinus.swing.util.FileUtils.getExtension;
 import static org.cosinus.swing.util.WindowsUtils.getRegistryValue;
-import static java.util.Optional.ofNullable;
 
 /**
  * Implementation of {@link IconProvider} for Windows
@@ -47,35 +47,36 @@ public class WindowsIconProvider implements IconProvider {
 
     private static final Logger LOG = LogManager.getLogger(WindowsIconProvider.class);
 
-    private static final String REGISTRY_HKCR = "HKCR\\";
+    public static final String REGISTRY_HKCR = "HKCR\\";
 
-    private static final String REGISTRY_HKCU_EXPLORER = "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\";
+    public static final String REGISTRY_HKCU_EXPLORER = "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\";
 
-    private static final String REGISTRY_FILE_EXTENSIONS = REGISTRY_HKCU_EXPLORER + "FileExts\\.";
+    public static final String REGISTRY_FILE_EXTENSIONS = REGISTRY_HKCU_EXPLORER + "FileExts\\.";
 
-    private static final String REGISTRY_HKCR_SYSTEM_FILE_ASSOCIATIONS = REGISTRY_HKCR + "SystemFileAssociations\\";
+    public static final String REGISTRY_HKCR_SYSTEM_FILE_ASSOCIATIONS = REGISTRY_HKCR + "SystemFileAssociations\\";
 
-    private static final String ICON_COMPUTER_PATH = REGISTRY_HKCU_EXPLORER + "CLSID\\{20D04FE0-3AEA-1069-A2D8-08002B30309D}\\DefaultIcon";
+    public static final String ICON_COMPUTER_PATH = REGISTRY_HKCU_EXPLORER + "CLSID\\{20D04FE0-3AEA-1069-A2D8-08002B30309D}\\DefaultIcon";
 
-    private static final String WINDOWS_SHELL_PATH = "%SystemRoot%\\System32\\shell32.dll";
+    public static final String WINDOWS_SHELL_PATH = "%SystemRoot%\\System32\\shell32.dll";
 
-    private static final String EXTENSION_EXE = "exe";
-
-    private final Map<String, String> iconNameToRegistryPathMap;
-
-    private final Map<String, Integer> extensionsToIconIndexMap;
+    public static final String EXTENSION_EXE = "exe";
 
     private final ImageHandler imageHandler;
 
-    public WindowsIconProvider(ImageHandler imageHandler) {
+    private final IconNameProvider iconNameProvider;
+
+    private final Map<String, Integer> extensionsToIconIndexMap;
+
+    public WindowsIconProvider(final ImageHandler imageHandler,
+                               final IconNameProvider iconNameProvider) {
         this.imageHandler = imageHandler;
-        this.iconNameToRegistryPathMap = new HashMap<>();
+        this.iconNameProvider = iconNameProvider;
         this.extensionsToIconIndexMap = new HashMap<>();
     }
 
     @Override
     public void initialize() {
-        initIconNameToFilePathMap();
+        iconNameProvider.initialize();
         initExtensionsToIconIndexMap();
     }
 
@@ -105,7 +106,7 @@ public class WindowsIconProvider implements IconProvider {
 
     @Override
     public Optional<Icon> findIconByName(String name, IconSize size) {
-        return ofNullable(getIconNameToRegistryPathMap().get(name))
+        return iconNameProvider.getIconName(name)
             .flatMap(WindowsUtils::getRegistryValue)
             .flatMap(iconFilePath -> createIconFromSystemFile(iconFilePath, size.getSize()))
             .map(bytes -> createIconFromBytes(bytes, size.getSize()));
@@ -141,14 +142,6 @@ public class WindowsIconProvider implements IconProvider {
 
     private Icon getSystemIconForExistingFile(File file) {
         return FileSystemView.getFileSystemView().getSystemIcon(file);
-    }
-
-    private Map<String, String> getIconNameToRegistryPathMap() {
-        return iconNameToRegistryPathMap;
-    }
-
-    private void initIconNameToFilePathMap() {
-        iconNameToRegistryPathMap.put(ICON_COMPUTER, ICON_COMPUTER_PATH);
     }
 
     /**

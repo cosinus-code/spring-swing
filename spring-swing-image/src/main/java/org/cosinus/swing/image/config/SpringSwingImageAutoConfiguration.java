@@ -18,9 +18,7 @@
 package org.cosinus.swing.image.config;
 
 import org.apache.commons.imaging.formats.icns.IcnsImageParser;
-import org.cosinus.swing.boot.condition.ConditionalOnLinux;
-import org.cosinus.swing.boot.condition.ConditionalOnMac;
-import org.cosinus.swing.boot.condition.ConditionalOnWindows;
+import org.cosinus.swing.boot.condition.*;
 import org.cosinus.swing.context.ApplicationProperties;
 import org.cosinus.swing.file.FileSystem;
 import org.cosinus.swing.file.mimetype.MimeTypeResolver;
@@ -64,8 +62,27 @@ public class SpringSwingImageAutoConfiguration {
 
     @Bean
     @ConditionalOnWindows
-    public IconProvider windowsIconProvider(ImageHandler imageHandler) {
-        return new WindowsIconProvider(imageHandler);
+    public IconNameProvider windowsIconNameProvider() {
+        return new WindowsIconNameProvider();
+    }
+
+    @Bean
+    @ConditionalOnWindows
+    public IconProvider windowsIconProvider(final ImageHandler imageHandler,
+                                            final IconNameProvider iconNameProvider) {
+        return new WindowsIconProvider(imageHandler, iconNameProvider);
+    }
+
+    @Bean
+    @ConditionalOnKDE
+    public KdeIconNameProvider kdeIconNameProvider() {
+        return new KdeIconNameProvider();
+    }
+
+    @Bean
+    @ConditionalOnGnome
+    public GnomeIconNameProvider gnomeIconNameProvider() {
+        return new GnomeIconNameProvider();
     }
 
     @Bean
@@ -73,8 +90,10 @@ public class SpringSwingImageAutoConfiguration {
     public IconProvider linuxIconProvider(final ApplicationProperties applicationProperties,
                                           final ApplicationUIHandler uiHandler,
                                           final UIThemeProvider uiThemeProvider,
-                                          final MimeTypeResolver mimeTypeResolver) {
-        return new LinuxIconProvider(applicationProperties, uiHandler, uiThemeProvider, mimeTypeResolver);
+                                          final MimeTypeResolver mimeTypeResolver,
+                                          final IconNameProvider iconNameProvider) {
+        return new LinuxIconProvider(
+            applicationProperties, uiHandler, uiThemeProvider, mimeTypeResolver, iconNameProvider);
     }
 
     @Bean
@@ -85,10 +104,17 @@ public class SpringSwingImageAutoConfiguration {
 
     @Bean
     @ConditionalOnMac
+    public IconNameProvider macIconNameProvider() {
+        return new MacIconNameProvider();
+    }
+
+    @Bean
+    @ConditionalOnMac
     public IconProvider macIconProvider(final FileSystem fileSystem,
                                         final IcnsImageParser icnsImageParser,
-                                        final ImageHandler imageHandler) {
-        return new MacIconProvider(fileSystem, icnsImageParser, imageHandler);
+                                        final ImageHandler imageHandler,
+                                        final IconNameProvider iconNameProvider) {
+        return new MacIconProvider(fileSystem, icnsImageParser, imageHandler, iconNameProvider);
     }
 
     @Bean
@@ -96,6 +122,13 @@ public class SpringSwingImageAutoConfiguration {
     public IconProvider iconProvider(ApplicationUIHandler uiHandler) {
         return new DefaultIconProvider(uiHandler);
     }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public IconNameProvider defaultIconNameProvider() {
+        return new DefaultIconNameProvider();
+    }
+
 
     @Bean
     @ConditionalOnMissingBean

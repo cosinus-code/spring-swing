@@ -111,6 +111,9 @@ public interface IconProvider {
 
     String ICON_FORWARD = "insert-link";
     String ICON_MOVE_TO_TRASH = "user-trash";
+    String ICON_GOOGLE = "google";
+    String ICON_GOOGLE_DRIVE = "google-drive";
+    String ICON_PERMISSIONS = "permissions";
 
     /**
      * Initialize this provider.

@@ -55,27 +55,28 @@ public class LinuxIconProvider implements IconProvider {
 
     private final MimeTypeResolver mimeTypeResolver;
 
-    private IconThemeIndex iconThemeIndex;
+    private final IconNameProvider iconNameProvider;
 
-    private final Map<String, String> iconNamesMap;
+    private IconThemeIndex iconThemeIndex;
 
     public LinuxIconProvider(final ApplicationProperties applicationProperties,
                              final ApplicationUIHandler uiHandler,
                              final UIThemeProvider uiThemeProvider,
-                             final MimeTypeResolver mimeTypeResolver) {
+                             final MimeTypeResolver mimeTypeResolver,
+                             final IconNameProvider iconNameProvider) {
         this.applicationProperties = applicationProperties;
         this.uiHandler = uiHandler;
         this.uiThemeProvider = uiThemeProvider;
         this.mimeTypeResolver = mimeTypeResolver;
+        this.iconNameProvider = iconNameProvider;
 
         this.iconThemeIndex = new IconThemeIndex();
-        this.iconNamesMap = new HashMap<>();
     }
 
     @Override
     public void initialize() {
         initPathsToIcons();
-        initIconNamesMap();
+        iconNameProvider.initialize();
         ofNullable(System.getProperty("java.io.tmpdir"))
             .map(File::new)
             .flatMap(folder -> findIconByFile(folder, X16))
@@ -168,6 +169,7 @@ public class LinuxIconProvider implements IconProvider {
         return findIconByNameInternal(name, size)
             .or(() -> findIconByNameInternal(name, X48))
             .or(() -> findIconByNameInternal(name, X256))
+            .or(() -> findIconByNameInternal(name, X22))
             .or(() -> findIconByNameInternal(name));
     }
 
@@ -176,7 +178,7 @@ public class LinuxIconProvider implements IconProvider {
     }
 
     public Optional<Icon> findIconByNameInternal(String name, IconSize size) {
-        String iconName = ofNullable(iconNamesMap.get(name))
+        String iconName = iconNameProvider.getIconName(name)
             .orElse(name);
         return iconThemeIndex.getPathsToIcons(size)
             .stream()
@@ -220,26 +222,6 @@ public class LinuxIconProvider implements IconProvider {
         this.iconThemeIndex = new IconThemeIndex();
         getIconsThemeFolder()
             .ifPresent(iconThemeIndex::load);
-    }
-
-    protected void initIconNamesMap() {
-        iconNamesMap.put(ICON_STORAGE_INTERNAL, "drive-harddisk");
-        iconNamesMap.put(ICON_STORAGE_EXTERNAL, "drive-storage-external");
-        iconNamesMap.put(ICON_STORAGE_REMOVABLE, "drive-removable-media-usb");
-        iconNamesMap.put(ICON_STORAGE_MEMORY_STICK, "drive-removable-media-usb");
-        iconNamesMap.put(ICON_STORAGE_MEDIA_FLASH, "media-flash");
-        iconNamesMap.put(ICON_STORAGE_PHONE, "phone");
-        iconNamesMap.put(ICON_STORAGE_WATCH, "watch");
-        iconNamesMap.put(ICON_STORAGE_COMPACT_DISK, "media-optical");
-        iconNamesMap.put(ICON_NETWORK, "network-server");
-        iconNamesMap.put(ICON_DATABASE, "sqlitebrowser");
-
-        iconNamesMap.put(ICON_VIEW_ICON, "view-grid-symbolic");
-        iconNamesMap.put(ICON_VIEW_GRID, "format-justify-fill");
-        iconNamesMap.put(ICON_VIEW_DETAILS, "view-list-symbolic");
-        iconNamesMap.put(ICON_VIEW_TREE, "view-list-tree");
-
-        iconNamesMap.put(ICON_VIEW_LEFT_PANE, "sidebar-show-symbolic");
     }
 
     private Optional<File> getIconsThemeFolder() {

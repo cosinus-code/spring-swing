@@ -26,6 +26,7 @@ import static java.util.Arrays.stream;
  */
 public enum IconSize {
     X16(16, "small"),
+    X22(22, ""),
     X32(32, "normal"),
     X48(48, "large"),
     X64(64, "extra-large"),
