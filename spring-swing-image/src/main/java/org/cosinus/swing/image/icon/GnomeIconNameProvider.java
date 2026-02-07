@@ -56,5 +56,6 @@ public class GnomeIconNameProvider implements IconNameProvider {
         iconNamesMap.put(ICON_VIEW_TREE, "view-list-tree");
 
         iconNamesMap.put(ICON_VIEW_LEFT_PANE, "sidebar-show-symbolic");
+        iconNamesMap.put(ICON_PERMISSIONS, "changes-allow");
     }
 }

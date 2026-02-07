@@ -86,7 +86,7 @@ public class ImageHandler {
      */
     @CachePut(SPRING_SWING_IMAGE_THUMBNAIL_CACHE_NAME)
     public Optional<Icon> createThumbnail(File file, int size) throws IOException {
-        if (file.exists() && file.isFile() && fileHandler.isImage(file.toPath())) {
+        if (file.exists()) {
             try (InputStream input = new FileInputStream(file)) {
                 final UpdatableImage image = new UpdatableImage(getExtension(file.getName()));
                 image.update(toByteArray(input));
