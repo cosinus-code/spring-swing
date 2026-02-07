@@ -21,7 +21,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.icon.IconSize;
 import org.cosinus.swing.image.ImageHandler;
-import org.cosinus.swing.image.ImageSettings;
 import org.cosinus.swing.resource.ClasspathResourceResolver;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.springframework.cache.annotation.CacheEvict;
@@ -37,8 +36,6 @@ import java.util.Optional;
 
 import static java.awt.Color.WHITE;
 import static java.awt.RenderingHints.*;
-import static java.awt.RenderingHints.KEY_ALPHA_INTERPOLATION;
-import static java.awt.RenderingHints.KEY_INTERPOLATION;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
