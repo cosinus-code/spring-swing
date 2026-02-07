@@ -20,6 +20,7 @@ package org.cosinus.swing.image.config;
 import org.apache.commons.imaging.formats.icns.IcnsImageParser;
 import org.cosinus.swing.boot.condition.*;
 import org.cosinus.swing.context.ApplicationProperties;
+import org.cosinus.swing.file.FileHandler;
 import org.cosinus.swing.file.FileSystem;
 import org.cosinus.swing.file.mimetype.MimeTypeResolver;
 import org.cosinus.swing.image.ImageHandler;
@@ -44,8 +45,8 @@ public class SpringSwingImageAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ImageHandler imageHandler() {
-        return new ImageHandler();
+    public ImageHandler imageHandler(final FileHandler fileHandler) {
+        return new ImageHandler(fileHandler);
     }
 
     @Bean

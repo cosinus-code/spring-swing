@@ -17,40 +17,33 @@
 
 package org.cosinus.swing.image;
 
+import org.cosinus.swing.file.FileHandler;
 import org.cosinus.swing.form.Canvas;
 import org.cosinus.swing.form.SquareCanvas;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.FilteredImageSource;
-import java.awt.image.ImageFilter;
-import java.awt.image.ImageObserver;
-import java.awt.image.ImageProducer;
-import java.awt.image.RGBImageFilter;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UncheckedIOException;
+import java.awt.image.*;
+import java.io.*;
 import java.net.URL;
 import java.util.Optional;
 
 import static java.awt.Image.SCALE_SMOOTH;
-import static java.awt.RenderingHints.KEY_ALPHA_INTERPOLATION;
-import static java.awt.RenderingHints.KEY_ANTIALIASING;
-import static java.awt.RenderingHints.KEY_INTERPOLATION;
-import static java.awt.RenderingHints.KEY_RENDERING;
+import static java.awt.RenderingHints.*;
 import static java.awt.Toolkit.getDefaultToolkit;
 import static java.awt.Transparency.OPAQUE;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
+import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static javax.imageio.ImageIO.read;
+import static org.apache.commons.io.FilenameUtils.getExtension;
+import static org.apache.commons.io.IOUtils.toByteArray;
 import static org.cosinus.swing.image.ImageSettings.QUALITY;
 
 /**
@@ -58,9 +51,17 @@ import static org.cosinus.swing.image.ImageSettings.QUALITY;
  */
 public class ImageHandler {
 
+    public static final String SPRING_SWING_IMAGE_THUMBNAIL_CACHE_NAME = "spring.swing.image.thumbnails";
+
     public static final ImageFilter GRAY_FILTER = new GrayFilter();
 
     public static final ImageFilter DISABLED_FILTER = new javax.swing.GrayFilter(true, 50);
+
+    private final FileHandler fileHandler;
+
+    public ImageHandler(final FileHandler fileHandler) {
+        this.fileHandler = fileHandler;
+    }
 
     /**
      * Get the preview icon of a file.
@@ -70,11 +71,29 @@ public class ImageHandler {
      * @return the preview image
      * @throws IOException if an IO error occurs
      */
+    @Cacheable(SPRING_SWING_IMAGE_THUMBNAIL_CACHE_NAME)
     public Optional<Icon> getThumbnail(File file, int size) throws IOException {
-        try (InputStream in = new FileInputStream(file)) {
-            return ofNullable(ImageIO.read(in))
-                .map(image -> scaleImage(image, size))
-                .map(ImageIcon::new);
+        return empty();
+    }
+
+    /**
+     * Put in cache the preview icon of a file.
+     *
+     * @param file the file to preview
+     * @param size the size of the preview image
+     * @return the preview image
+     * @throws IOException if an IO error occurs
+     */
+    @CachePut(SPRING_SWING_IMAGE_THUMBNAIL_CACHE_NAME)
+    public Optional<Icon> createThumbnail(File file, int size) throws IOException {
+        if (file.exists() && file.isFile() && fileHandler.isImage(file.toPath())) {
+            try (InputStream input = new FileInputStream(file)) {
+                final UpdatableImage image = new UpdatableImage(getExtension(file.getName()));
+                image.update(toByteArray(input));
+                return Optional.of(new ImageIcon(scaleImage(image.getImage(), size)));
+            }
+        } else {
+            return empty();
         }
     }
 
@@ -93,7 +112,7 @@ public class ImageHandler {
      * Scale an image to fit to the provided canvas.
      *
      * @param image  the image to scale
-     * @param canvas  the canvas
+     * @param canvas the canvas
      * @return the scaled image
      */
     public BufferedImage fitImageToCanvas(Image image, Canvas canvas) {
@@ -103,8 +122,8 @@ public class ImageHandler {
     /**
      * Scale an image to fit to the provided width/height.
      *
-     * @param image                the image to scale
-     * @param canvas               the canvas
+     * @param image         the image to scale
+     * @param canvas        the canvas
      * @param imageSettings the image processing hints
      * @return the scaled image, or null if the image cannot be scaled
      */
@@ -152,9 +171,9 @@ public class ImageHandler {
     /**
      * Scale image by half.
      *
-     * @param image                yhe image to scale
+     * @param image         yhe image to scale
      * @param imageSettings the image processing hints
-     * @param imageType            the image type
+     * @param imageType     the image type
      * @return the scaled image
      */
     public BufferedImage scaleImageByHalf(final Image image,
@@ -449,8 +468,8 @@ public class ImageHandler {
     /**
      * Scale up an image.
      *
-     * @param image the image to scale
-     * @param width the new width
+     * @param image  the image to scale
+     * @param width  the new width
      * @param height the new height
      * @return the scaled image
      */

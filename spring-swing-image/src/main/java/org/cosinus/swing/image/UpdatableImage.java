@@ -87,8 +87,10 @@ public class UpdatableImage {
                     findImageRotation(exifInfo.getInt(TAG_ORIENTATION))
                         .ifPresent(this::setImageRotation);
                 }
-            } catch (ImageProcessingException | MetadataException ex) {
+            } catch (ImageProcessingException ex) {
                 LOG.error("Failed to read image metadata", ex);
+            } catch (MetadataException ex) {
+                LOG.debug("No 'Orientation' metadata", ex);
             }
         }
 
