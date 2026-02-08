@@ -76,6 +76,8 @@ public abstract class Worker<M extends WorkerModel<T>, T, P extends ProgressMode
     @Getter
     protected boolean aborted;
 
+    protected long startTime;
+
     protected Worker(ActionModel actionModel, M workerModel) {
         this(actionModel, workerModel, null);
     }
@@ -102,6 +104,7 @@ public abstract class Worker<M extends WorkerModel<T>, T, P extends ProgressMode
     }
 
     public void start() {
+        startTime = System.currentTimeMillis();
         fireWorkerListeners(workerListener -> workerListener.workerStarted(workerModel));
         fireProgressListeners(progressListener -> progressListener.progressStarted(progressModel));
         execute();
@@ -172,6 +175,9 @@ public abstract class Worker<M extends WorkerModel<T>, T, P extends ProgressMode
         actionExecutors.getActionExecutor(actionModel)
             .ifPresent(executor -> executor.remove(getId()));
         logWorkerStatus("finished");
+
+        long duration = System.currentTimeMillis() - startTime;
+        log.debug("*** Finished worker {} in {} ms", actionModel.getActionName(), duration);
     }
 
     protected void fireWorkerListeners(Consumer<WorkerListener<M, T>> workerListenerCall) {

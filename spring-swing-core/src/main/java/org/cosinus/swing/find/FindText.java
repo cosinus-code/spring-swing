@@ -17,13 +17,18 @@
 
 package org.cosinus.swing.find;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Objects;
 
+@Getter
 public class FindText {
 
+    @Setter
     private String text;
 
-    private boolean caseSensitive;
+    private boolean caseSensitive = true;
 
     private boolean wholeWord;
 
@@ -33,34 +38,14 @@ public class FindText {
         this.text = text;
     }
 
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public boolean isCaseSensitive() {
-        return caseSensitive;
-    }
-
     public FindText caseSensitive(boolean caseSensitive) {
         this.caseSensitive = caseSensitive;
         return this;
     }
 
-    public boolean isWholeWord() {
-        return wholeWord;
-    }
-
     public FindText wholeWord(boolean wholeWord) {
         this.wholeWord = wholeWord;
         return this;
-    }
-
-    public boolean isRegularExpression() {
-        return regularExpression;
     }
 
     public FindText regularExpression(boolean regularExpression) {

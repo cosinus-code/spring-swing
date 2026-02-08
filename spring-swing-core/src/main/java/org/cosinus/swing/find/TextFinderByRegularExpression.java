@@ -145,4 +145,14 @@ public class TextFinderByRegularExpression extends TextFinder {
             return found;
         }
     }
+
+    @Override
+    public boolean containsText() {
+        if (textToFind.isWholeWord() || textToFind.isRegularExpression()) {
+            return super.containsText();
+        }
+        return textToFind.isCaseSensitive() ?
+            inputText.contains(textToFind.getText()) :
+            inputText.toLowerCase().contains(textToFind.getText().toLowerCase());
+    }
 }
