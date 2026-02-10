@@ -17,8 +17,7 @@
 
 package org.cosinus.swing.file;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.cosinus.swing.exec.ProcessExecutor;
 import org.cosinus.swing.file.mimetype.MimeTypeResolver;
 
@@ -33,14 +32,16 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static java.nio.file.Files.createSymbolicLink;
 import static java.util.Optional.ofNullable;
 
 /**
  * Proxy for handling files.
  */
+@Slf4j
 public class FileHandler {
 
-    private static final Logger LOG = LogManager.getLogger(FileHandler.class);
+    public static final String PROTOCOL_MARK = "://";
 
     private final MimeTypeResolver mimeTypeResolver;
 
@@ -65,7 +66,7 @@ public class FileHandler {
         try {
             return Desktop.getDesktop();
         } catch (UnsupportedOperationException e) {
-            LOG.warn(e.getMessage());
+            log.warn(e.getMessage());
             return null;
         }
     }
@@ -98,7 +99,7 @@ public class FileHandler {
                 path2.toFile().exists() &&
                 Files.isSameFile(path1, path2);
         } catch (IOException ex) {
-            LOG.error("Failed to compare files: {} and {}", path1, path2, ex);
+            log.error("Failed to compare files: {} and {}", path1, path2, ex);
             return false;
         }
     }
@@ -178,7 +179,7 @@ public class FileHandler {
                 try {
                     return path.toRealPath();
                 } catch (IOException e) {
-                    LOG.warn("Failed to read symbolic link: {}", path, e);
+                    log.warn("Failed to read symbolic link: {}", path, e);
                     return null;
                 }
             })
@@ -208,5 +209,16 @@ public class FileHandler {
 
     public void setOwnerForFile(final File file, final String ownerName, final String groupName) {
         fileSystem.setOwnerForFile(file, ownerName, groupName);
+    }
+
+    public void createLink(final Path linkPath, final Path targetPath) {
+        try {
+            if (Files.exists(linkPath)) {
+                throw new IOException("There is already a file at the link path: " + linkPath);
+            }
+            createSymbolicLink(linkPath, targetPath);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
