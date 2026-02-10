@@ -17,6 +17,8 @@
 package org.cosinus.swing.file.windows;
 
 import com.sun.jna.platform.FileUtils;
+
+import java.awt.datatransfer.Transferable;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;

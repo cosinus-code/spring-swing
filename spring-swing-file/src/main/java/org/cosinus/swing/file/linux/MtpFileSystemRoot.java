@@ -25,6 +25,7 @@ import java.io.File;
 import java.nio.file.Paths;
 
 import static org.cosinus.swing.file.DriveVendor.findByName;
+import static org.cosinus.swing.file.FileHandler.PROTOCOL_MARK;
 import static org.cosinus.swing.file.FileSystemDevice.REMOVABLE_FLASH;
 
 /**
@@ -34,7 +35,7 @@ public class MtpFileSystemRoot implements FileSystemRoot {
 
     public static final String MTP = "mtp";
 
-    public static final String MTP_PROTOCOL = MTP + "://";
+    public static final String MTP_PROTOCOL = MTP + PROTOCOL_MARK;
 
     public static final String MTP_PROTOCOL_MARK = "-> " + MTP_PROTOCOL;
 

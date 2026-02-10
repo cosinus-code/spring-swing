@@ -31,14 +31,17 @@ import org.cosinus.swing.file.mimetype.MimeTypeResolver;
 import org.cosinus.swing.translate.Translator;
 import org.springframework.util.MimeType;
 
+import java.awt.datatransfer.Transferable;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
+import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.probeContentType;
 import static java.nio.file.Files.readAllLines;
