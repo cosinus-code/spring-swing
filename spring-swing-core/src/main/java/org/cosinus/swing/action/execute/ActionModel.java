@@ -26,19 +26,10 @@ public class ActionModel {
 
     private final String actionId;
 
-    private final String actionName;
-
     public ActionModel(String executionId,
                        String actionId) {
-        this(executionId, actionId, actionId);
-    }
-
-    public ActionModel(String executionId,
-                       String actionId,
-                       String actionName) {
         this.executionId = executionId;
         this.actionId = actionId;
-        this.actionName = actionName;
     }
 
     public String getExecutionId() {
@@ -47,9 +38,5 @@ public class ActionModel {
 
     public String getActionId() {
         return actionId;
-    }
-
-    public String getActionName() {
-        return actionName;
     }
 }

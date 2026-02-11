@@ -29,13 +29,13 @@ import static java.util.Optional.ofNullable;
 /**
  * Key maps handler.
  * <p>
- * It takes all action defined in context and build a map from key strokes to actions.
+ * It takes all action defined in context and build a map from keystrokes to actions.
  */
 public class KeyMapHandler {
 
-    private final Map<KeyStroke, ActionInContext> keyMap;
+    private final Map<KeyStroke, SwingAction> keyMap;
 
-    public KeyMapHandler(Set<ActionInContext> actions) {
+    public KeyMapHandler(Set<SwingAction> actions) {
         this.keyMap = actions
             .stream()
             .filter(action -> action.getKeyStroke().isPresent())
@@ -49,7 +49,7 @@ public class KeyMapHandler {
      * @param keyStroke the keystroke to search for
      * @return the found action, or {@link Optional#empty()}
      */
-    public Optional<ActionInContext> findActionByKeyStroke(KeyStroke keyStroke) {
+    public Optional<SwingAction> findActionByKeyStroke(KeyStroke keyStroke) {
         return ofNullable(keyMap.get(keyStroke));
     }
 }

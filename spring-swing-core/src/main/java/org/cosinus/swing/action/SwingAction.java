@@ -20,26 +20,19 @@ package org.cosinus.swing.action;
 import javax.swing.*;
 import java.util.Optional;
 
-import static org.cosinus.swing.action.ActionContext.EMPTY_CONTEXT;
-
-/**
- * Interface for a swing action in context
- */
-public interface ActionInContext {
+public interface SwingAction {
 
     /**
-     * Run the action in the given context.
+     * Get the id of the action.
      *
-     * @param context the context to run the action
+     * @return the id of the action
      */
-    void run(ActionContext context);
+    String getId();
 
     /**
-     * Run the action in the given context.
+     * Run the action.
      */
-    default void run() {
-        run(EMPTY_CONTEXT);
-    }
+    void run();
 
     /**
      * Get the icon name associated with this action.
@@ -49,13 +42,6 @@ public interface ActionInContext {
     default String getIconName() {
         return null;
     }
-
-    /**
-     * Get the id of the action.
-     *
-     * @return the id of the action
-     */
-    String getId();
 
     /**
      * Get the keystroke corresponding to the action.

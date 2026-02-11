@@ -19,7 +19,7 @@ package org.cosinus.swing.menu;
 
 import lombok.Setter;
 import org.cosinus.swing.action.ActionController;
-import org.cosinus.swing.action.ActionInContext;
+import org.cosinus.swing.action.SwingAction;
 import org.cosinus.swing.form.FormComponent;
 import org.cosinus.swing.icon.IconHolder;
 import org.cosinus.swing.translate.Translator;
@@ -81,7 +81,7 @@ public class RadioButtonMenuItem extends JRadioButtonMenuItem implements FormCom
 
 
         this.iconName = actionController.findAction(key)
-            .map(ActionInContext::getIconName)
+            .map(SwingAction::getIconName)
             .orElse(null);
     }
 

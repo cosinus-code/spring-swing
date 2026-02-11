@@ -177,7 +177,7 @@ public abstract class Worker<M extends WorkerModel<T>, T, P extends ProgressMode
         logWorkerStatus("finished");
 
         long duration = System.currentTimeMillis() - startTime;
-        log.info("Finished worker {} in {} ms", actionModel.getActionName(), duration);
+        log.info("Finished worker {} in {} ms", actionModel.getActionId(), duration);
     }
 
     protected void fireWorkerListeners(Consumer<WorkerListener<M, T>> workerListenerCall) {
@@ -240,7 +240,7 @@ public abstract class Worker<M extends WorkerModel<T>, T, P extends ProgressMode
     }
 
     protected void logWorkerStatus(String status) {
-        log.debug("Work for action `{}` {}: {}", actionModel.getActionName(), status, id);
+        log.debug("Work for action `{}` {}: {}", actionModel.getActionId(), status, id);
     }
 
     protected abstract void doWork();
