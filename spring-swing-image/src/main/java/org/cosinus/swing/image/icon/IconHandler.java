@@ -32,6 +32,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageFilter;
 import java.io.File;
+import java.io.IOException;
 import java.util.Optional;
 
 import static java.awt.Color.WHITE;
@@ -51,6 +52,8 @@ public class IconHandler {
     private static final Logger LOG = LogManager.getLogger(IconHandler.class);
 
     private static final String SPRING_SWING_ICONS_CACHE_NAME = "spring.swing.icons";
+
+    public static final String SPRING_SWING_IMAGE_THUMBNAIL_CACHE_NAME = "spring.swing.image.thumbnails";
 
     private final ClasspathResourceResolver resourceResolver;
 
@@ -77,8 +80,8 @@ public class IconHandler {
      * with the name {@value #SPRING_SWING_ICONS_CACHE_NAME},
      * then the results are cached.
      *
-     * @param name the name to search for
-     * @param size the size of the icon to search for
+     * @param name    the name to search for
+     * @param size    the size of the icon to search for
      * @param rounded whether the icon must be rounded
      * @return the found icon, or {@link Optional#empty()}
      */
@@ -183,6 +186,19 @@ public class IconHandler {
         iconProvider.initialize();
     }
 
+
+    /**
+     * Get the preview icon of a file.
+     *
+     * @param file the file to preview
+     * @param size the size of the preview image
+     * @return the preview image
+     * @throws IOException if an IO error occurs
+     */
+    public Optional<Icon> getThumbnail(File file, int size) throws IOException {
+        return imageHandler.getThumbnail(file, size)
+            .map(ImageIcon::new);
+    }
 
     public Icon toCircularIcon(Icon icon, IconSize iconSize) {
         Image image = imageHandler.iconToImage(icon);

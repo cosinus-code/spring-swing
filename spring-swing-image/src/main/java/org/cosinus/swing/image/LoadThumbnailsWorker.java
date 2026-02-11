@@ -40,22 +40,30 @@ public class LoadThumbnailsWorker extends StreamWorker<WorkerModel<File>, File, 
 
     private final int thumbnailSize;
 
+    private final boolean quickThumbnail;
+
     public LoadThumbnailsWorker(final int thumbnailSize,
                                 final WorkerModel<File> model,
-                                final StreamSupplier<File> streamSupplier) {
+                                final StreamSupplier<File> streamSupplier,
+                                final boolean quickThumbnail) {
         super(UPDATE_THUMBNAILS_ACTION_ID,
             model,
             streamSupplier,
             new ProgressModel());
         injectContext(this);
         this.thumbnailSize = thumbnailSize;
+        this.quickThumbnail = quickThumbnail;
     }
 
     @Override
     protected StreamConsumer<File> streamConsumer() {
         return file -> {
             try {
-                imageHandler.createThumbnail(file, thumbnailSize);
+                if (quickThumbnail) {
+                    imageHandler.createQuickThumbnail(file, thumbnailSize);
+                } else {
+                    imageHandler.createThumbnail(file, thumbnailSize);
+                }
             } catch (IOException e) {
                 log.error("Cannot create preview icon for file: {}", file);
             }

@@ -24,11 +24,15 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReadParam;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.*;
 import java.io.*;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.Optional;
 
 import static java.awt.Image.SCALE_SMOOTH;
@@ -41,7 +45,7 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
-import static javax.imageio.ImageIO.read;
+import static javax.imageio.ImageIO.*;
 import static org.apache.commons.io.FilenameUtils.getExtension;
 import static org.apache.commons.io.IOUtils.toByteArray;
 import static org.cosinus.swing.image.ImageSettings.QUALITY;
@@ -72,7 +76,7 @@ public class ImageHandler {
      * @throws IOException if an IO error occurs
      */
     @Cacheable(SPRING_SWING_IMAGE_THUMBNAIL_CACHE_NAME)
-    public Optional<Icon> getThumbnail(File file, int size) throws IOException {
+    public Optional<Image> getThumbnail(File file, int size) throws IOException {
         return empty();
     }
 
@@ -85,16 +89,38 @@ public class ImageHandler {
      * @throws IOException if an IO error occurs
      */
     @CachePut(SPRING_SWING_IMAGE_THUMBNAIL_CACHE_NAME)
-    public Optional<Icon> createThumbnail(File file, int size) throws IOException {
+    public Optional<Image> createThumbnail(File file, int size) throws IOException {
         if (file.exists() && fileHandler.isImage(file.toPath())) {
             try (InputStream input = new FileInputStream(file)) {
                 final UpdatableImage image = new UpdatableImage(getExtension(file.getName()));
                 image.update(toByteArray(input));
-                return Optional.of(new ImageIcon(scaleImage(image.getImage(), size)));
+                return Optional.of(scaleImage(image.getImage(), size));
             }
         } else {
             return empty();
         }
+    }
+
+    @CachePut(SPRING_SWING_IMAGE_THUMBNAIL_CACHE_NAME)
+    public Optional<Image> createQuickThumbnail(File file, int size) throws IOException {
+        try (ImageInputStream input = createImageInputStream(file)) {
+            Iterator<ImageReader> readers = getImageReaders(input);
+            if (readers.hasNext()) {
+                ImageReader reader = readers.next();
+                reader.setInput(input, true, true);
+
+                int width = reader.getWidth(0);
+                int height = reader.getHeight(0);
+
+                int scale = max(max(width, height) / size, 1);
+
+                ImageReadParam param = reader.getDefaultReadParam();
+                param.setSourceSubsampling(scale, scale, 0, 0);
+
+                return Optional.of(reader.read(0, param));
+            }
+        }
+        return empty();
     }
 
     /**
@@ -129,7 +155,6 @@ public class ImageHandler {
      */
     public BufferedImage fitImageToCanvas(final Image image, Canvas canvas,
                                           final ImageSettings imageSettings) {
-
         boolean opaqueImage = Optional.of(image)
             .filter(img -> BufferedImage.class.isAssignableFrom(img.getClass()))
             .map(BufferedImage.class::cast)
