@@ -19,8 +19,8 @@ package org.cosinus.swing.menu;
 
 import lombok.Setter;
 import org.cosinus.swing.action.ActionController;
-import org.cosinus.swing.action.ActionInContext;
 import org.cosinus.swing.action.ActionProducer;
+import org.cosinus.swing.action.SwingAction;
 import org.cosinus.swing.form.FormComponent;
 import org.cosinus.swing.icon.IconHolder;
 import org.cosinus.swing.translate.Translator;
@@ -67,15 +67,15 @@ public class MenuItem extends JMenuItem implements FormComponent, ActionProducer
 
         if (duplicate) {
             altMenuItem = new MenuItem(actionListener,
-                                       key,
-                                       keyStroke,
-                                       false);
+                key,
+                keyStroke,
+                false);
             altMenuItem.addActionListener(actionListener);
             altMenuItem.setAccelerator(keyStroke);
         }
 
         this.iconName = actionController.findAction(key)
-            .map(ActionInContext::getIconName)
+            .map(SwingAction::getIconName)
             .orElse(null);
     }
 

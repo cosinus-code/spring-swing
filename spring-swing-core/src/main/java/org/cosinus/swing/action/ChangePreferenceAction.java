@@ -23,7 +23,7 @@ import org.cosinus.swing.preference.PreferencesProvider;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 
-public abstract class ChangePreferenceAction implements ActionInContext {
+public abstract class ChangePreferenceAction implements SwingAction {
 
     protected final Preferences preferences;
 
@@ -36,7 +36,7 @@ public abstract class ChangePreferenceAction implements ActionInContext {
     }
 
     @Override
-    public void run(ActionContext context) {
+    public void run() {
         preferences.updatePreference(getPreferenceName(), getPreferenceNewValue());
         try {
             preferencesProvider.savePreferences(preferences);

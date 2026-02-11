@@ -18,8 +18,8 @@
 package org.cosinus.swing.menu;
 
 import org.cosinus.swing.action.ActionController;
-import org.cosinus.swing.action.ActionInContext;
 import org.cosinus.swing.action.ActionProducer;
+import org.cosinus.swing.action.SwingAction;
 import org.cosinus.swing.form.FormComponent;
 import org.cosinus.swing.icon.IconHolder;
 import org.cosinus.swing.translate.Translator;
@@ -82,7 +82,7 @@ public class CheckBoxMenuItem extends JCheckBoxMenuItem implements FormComponent
         altMenuItem.setAccelerator(keyStroke);
 
         this.iconName = actionController.findAction(key)
-            .map(ActionInContext::getIconName)
+            .map(SwingAction::getIconName)
             .orElse(null);
     }
 

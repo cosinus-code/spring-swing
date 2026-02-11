@@ -54,20 +54,16 @@ public class ActionController implements ActionListener {
 
     private final KeyMapHandler keyMapHandler;
 
-    private final ActionContextProvider actionContextProvider;
-
-    private final Map<String, ActionInContext> actionMap;
+    private final Map<String, SwingAction> actionMap;
 
     public ActionController(final ErrorHandler errorHandler,
                             final KeyMapHandler keyMapHandler,
-                            final ActionContextProvider actionContextProvider,
-                            final Set<ActionInContext> actions) {
+                            final Set<SwingAction> actions) {
         this.errorHandler = errorHandler;
         this.keyMapHandler = keyMapHandler;
-        this.actionContextProvider = actionContextProvider;
         this.actionMap = actions
             .stream()
-            .collect(Collectors.toMap(ActionInContext::getId,
+            .collect(Collectors.toMap(SwingAction::getId,
                 Function.identity()));
 
     }
@@ -78,20 +74,10 @@ public class ActionController implements ActionListener {
      * @param actionId the id of the action to execute
      */
     public void runAction(String actionId) {
-        runAction(actionId, actionContextProvider.provideActionContext());
-    }
-
-    /**
-     * Run an action executor based on an action id on a specific action context.
-     *
-     * @param actionId the id of the action to execute
-     * @param context  the action execution context
-     */
-    public void runAction(String actionId, ActionContext context) {
         try {
             findAction(actionId)
                 .orElseThrow(() -> new ActionNotFoundException("Action not implemented (" + actionId + ")"))
-                .run(context);
+                .run();
         } catch (Throwable throwable) {
             errorHandler.handleError(throwable);
         }
@@ -111,7 +97,7 @@ public class ActionController implements ActionListener {
                 keyEvent.getModifiersEx());
             keyMapHandler.findActionByKeyStroke(keyStroke)
                 .ifPresent(action -> {
-                    action.run(actionContextProvider.provideActionContext());
+                    action.run();
                     keyEvent.consume();
                 });
         } catch (Throwable throwable) {
@@ -151,7 +137,7 @@ public class ActionController implements ActionListener {
             keyEvent.getKeyCode() <= KEY_CODE_F12;
     }
 
-    public Optional<ActionInContext> findAction(String actionId) {
+    public Optional<SwingAction> findAction(String actionId) {
         return ofNullable(actionMap.get(actionId));
     }
 }

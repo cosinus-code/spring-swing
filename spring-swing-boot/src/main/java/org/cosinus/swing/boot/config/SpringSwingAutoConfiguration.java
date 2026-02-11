@@ -17,17 +17,8 @@
 
 package org.cosinus.swing.boot.config;
 
-import static org.cosinus.swing.boot.SpringSwingApplication.applicationClass;
-import static org.cosinus.swing.ui.UIController.SWING_UI_INITIALIZER_PROPERTY;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Set;
-import org.cosinus.swing.action.ActionContextProvider;
-import org.cosinus.swing.action.ActionController;
-import org.cosinus.swing.action.ActionInContext;
-import org.cosinus.swing.action.DefaultActionContextProvider;
-import org.cosinus.swing.action.KeyMapHandler;
-import org.cosinus.swing.action.QuitAction;
+import org.cosinus.swing.action.*;
 import org.cosinus.swing.action.execute.ActionExecutor;
 import org.cosinus.swing.action.execute.ActionExecutors;
 import org.cosinus.swing.boot.ApplicationFrame;
@@ -61,6 +52,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+
+import java.util.Set;
+
+import static org.cosinus.swing.boot.SpringSwingApplication.applicationClass;
+import static org.cosinus.swing.ui.UIController.SWING_UI_INITIALIZER_PROPERTY;
 
 /**
  * Application main configuration.
@@ -148,25 +144,15 @@ public class SpringSwingAutoConfiguration {
     }
 
     @Bean
-    public KeyMapHandler keyMapHandler(final Set<ActionInContext> actions) {
+    public KeyMapHandler keyMapHandler(final Set<SwingAction> actions) {
         return new KeyMapHandler(actions);
     }
 
     @Bean
     public ActionController actionController(final ErrorHandler errorHandler,
                                              final KeyMapHandler keyMapHandler,
-                                             final ActionContextProvider actionContextProvider,
-                                             final Set<ActionInContext> actions) {
-        return new ActionController(errorHandler,
-            keyMapHandler,
-            actionContextProvider,
-            actions);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public ActionContextProvider ActionContextProvider() {
-        return new DefaultActionContextProvider();
+                                             final Set<SwingAction> actions) {
+        return new ActionController(errorHandler, keyMapHandler, actions);
     }
 
     @Bean
