@@ -19,7 +19,7 @@ package org.cosinus.swing.action;
 import static java.lang.System.exit;
 
 /**
- * The implementation of {@link SwingActionInContext} for a "Quit application"  meaning
+ * The implementation of {@link SwingAction} for a "Quit application"  meaning
  */
 public class QuitAction implements SwingAction {
 

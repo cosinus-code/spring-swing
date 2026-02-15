@@ -17,27 +17,28 @@
 
 package org.cosinus.swing.action;
 
+import org.cosinus.swing.action.execute.ActionModel;
+
 import static java.util.Optional.ofNullable;
 
 /**
  * Interface for a swing action in context
  */
-public interface SwingActionInContext<C extends ActionContext> extends SwingAction {
+public interface SwingActionWithModel<M extends ActionModel> extends SwingAction {
 
     /**
-     * Run the action in the given context.
+     * Run the action with the given model.
      *
-     * @param context the context to run the action
+     * @param actionModel the context to run the action
      */
-    void run(C context);
+    void run(M actionModel);
 
     /**
-     * Create the default context for this action.
-     * Used when running the action triggered ny the keystroke.
+     * Create the action model for this action.
      *
      * @return the default context
      */
-    default C getDefaultContext() {
+    default M createActionModel() {
         return null;
     }
 
@@ -46,7 +47,7 @@ public interface SwingActionInContext<C extends ActionContext> extends SwingActi
      */
     @Override
     default void run() {
-        ofNullable(getDefaultContext())
+        ofNullable(createActionModel())
             .ifPresent(this::run);
     }
 }
