@@ -21,6 +21,7 @@ import org.cosinus.stream.StreamSupplier;
 import org.cosinus.stream.consumer.StreamConsumer;
 import org.cosinus.stream.pipeline.PipelineStrategy;
 import org.cosinus.swing.action.execute.ActionModel;
+import org.cosinus.swing.action.execute.SimpleActionModel;
 import org.cosinus.swing.progress.ProgressModel;
 
 import java.util.stream.Stream;
@@ -34,7 +35,7 @@ public abstract class StreamWorker<M extends WorkerModel<T>, T, P extends Progre
                            final M workerModel,
                            final StreamSupplier<T> streamSupplier,
                            final P progressModel) {
-        this(new ActionModel(actionId, actionId), workerModel, streamSupplier, progressModel);
+        this(new SimpleActionModel(actionId), workerModel, streamSupplier, progressModel);
     }
 
     protected StreamWorker(final ActionModel actionModel,

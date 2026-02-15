@@ -17,12 +17,21 @@
 
 package org.cosinus.swing.action.execute;
 
-/**
- * Model for an action
- */
-public interface ActionModel {
+public class SimpleActionModel implements ActionModel {
 
-    String getExecutionId();
+    private final String actionId;
 
-    String getActionId();
+    public SimpleActionModel(final String actionId) {
+        this.actionId = actionId;
+    }
+
+    @Override
+    public String getExecutionId() {
+        return actionId;
+    }
+
+    @Override
+    public String getActionId() {
+        return actionId;
+    }
 }
