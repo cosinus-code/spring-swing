@@ -95,12 +95,14 @@ public abstract class Worker<M extends WorkerModel<T>, T, P extends ProgressMode
         this.progressListeners = new ConcurrentLinkedQueue<>();
     }
 
-    public void registerListener(final WorkerListener<M, T> workerListener) {
+    public Worker<M, T, P> registerListener(final WorkerListener<M, T> workerListener) {
         workerListeners.add(workerListener);
+        return this;
     }
 
-    public void registerListener(final ProgressListener<P> progressListener) {
+    public Worker<M, T, P> registerListener(final ProgressListener<P> progressListener) {
         progressListeners.add(progressListener);
+        return this;
     }
 
     public void start() {

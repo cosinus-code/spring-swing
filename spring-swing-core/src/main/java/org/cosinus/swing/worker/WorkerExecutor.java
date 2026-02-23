@@ -19,7 +19,6 @@ package org.cosinus.swing.worker;
 
 import org.cosinus.swing.action.execute.ActionExecutor;
 import org.cosinus.swing.action.execute.ActionModel;
-import org.cosinus.swing.progress.ProgressListener;
 import org.cosinus.swing.progress.ProgressModel;
 
 import java.util.Map;
@@ -43,25 +42,12 @@ public abstract class WorkerExecutor<A extends ActionModel, M extends WorkerMode
             .ifPresent(worker -> {
                 cancel(worker.getId());
                 workersMap.put(worker.getId(), worker);
-                registerWorkerListeners(actionModel, worker);
-                registerProgressListeners(actionModel, worker);
                 worker.start();
             });
     }
 
     protected boolean isValid(Worker<M, T, P> workerModel) {
         return true;
-    }
-
-    protected void registerWorkerListeners(A actionModel, Worker<M, T, P> worker) {
-        ofNullable(actionModel)
-            .map(this::getWorkerListener)
-            .ifPresent(worker::registerListener);
-    }
-
-    protected void registerProgressListeners(A actionModel, Worker<M, T, P> worker) {
-        ofNullable(getProgressListener(actionModel, worker))
-            .ifPresent(worker::registerListener);
     }
 
     @Override
@@ -87,10 +73,6 @@ public abstract class WorkerExecutor<A extends ActionModel, M extends WorkerMode
 //                    //TODO
 //                });
 //    }
-
-    protected abstract WorkerListener<M, T> getWorkerListener(A actionModel);
-
-    protected abstract ProgressListener<P> getProgressListener(A actionModel, Worker<M, T, P> worker);
 
     protected abstract Worker<M, T, P> createWorker(A actionModel);
 }
