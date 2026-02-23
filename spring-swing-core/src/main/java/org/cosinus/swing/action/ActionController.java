@@ -17,6 +17,7 @@
 
 package org.cosinus.swing.action;
 
+import org.cosinus.swing.action.execute.ActionModel;
 import org.cosinus.swing.error.ActionNotFoundException;
 import org.cosinus.swing.error.ErrorHandler;
 
@@ -69,7 +70,7 @@ public class ActionController implements ActionListener {
     }
 
     /**
-     * Run an action executor based on an action id.
+     * Run an action by id.
      *
      * @param actionId the id of the action to execute
      */
@@ -78,6 +79,25 @@ public class ActionController implements ActionListener {
             findAction(actionId)
                 .orElseThrow(() -> new ActionNotFoundException("Action not implemented (" + actionId + ")"))
                 .run();
+        } catch (Throwable throwable) {
+            errorHandler.handleError(throwable);
+        }
+    }
+
+    /**
+     * Run an action model based by id.
+     *
+     * @param actionId the id of the action to execute
+     * @param actionModel the action model to execute
+     */
+    public <M extends ActionModel> void runAction(String actionId, M actionModel) {
+        try {
+            SwingActionWithModel<M> actionWithModel = findAction(actionId)
+                .filter(action -> action instanceof SwingActionWithModel)
+                .map(action -> (SwingActionWithModel<M>) action)
+                .orElseThrow(() -> new ActionNotFoundException("Action not implemented (" + actionId + ")"));
+
+            actionWithModel.run(actionModel);
         } catch (Throwable throwable) {
             errorHandler.handleError(throwable);
         }
