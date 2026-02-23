@@ -39,13 +39,18 @@ public abstract class WorkerExecutor<A extends ActionModel, M extends WorkerMode
     public void execute(A actionModel) {
         ofNullable(actionModel)
             .map(this::createWorker)
+            .filter(this::isValid)
             .ifPresent(worker -> {
-                cancel(actionModel.getExecutionId());
-                workersMap.put(actionModel.getExecutionId(), worker);
+                cancel(worker.getId());
+                workersMap.put(worker.getId(), worker);
                 registerWorkerListeners(actionModel, worker);
                 registerProgressListeners(actionModel, worker);
                 worker.start();
             });
+    }
+
+    protected boolean isValid(Worker<M, T, P> workerModel) {
+        return true;
     }
 
     protected void registerWorkerListeners(A actionModel, Worker<M, T, P> worker) {
@@ -55,14 +60,13 @@ public abstract class WorkerExecutor<A extends ActionModel, M extends WorkerMode
     }
 
     protected void registerProgressListeners(A actionModel, Worker<M, T, P> worker) {
-        ofNullable(actionModel)
-            .map(this::getProgressListener)
+        ofNullable(getProgressListener(actionModel, worker))
             .ifPresent(worker::registerListener);
     }
 
     @Override
-    public void cancel(String executionId) {
-        ofNullable(workersMap.get(executionId))
+    public void cancel(String workerId) {
+        ofNullable(workersMap.get(workerId))
             .ifPresent(SwingWorker::cancel);
     }
 
@@ -86,7 +90,7 @@ public abstract class WorkerExecutor<A extends ActionModel, M extends WorkerMode
 
     protected abstract WorkerListener<M, T> getWorkerListener(A actionModel);
 
-    protected abstract ProgressListener<P> getProgressListener(A actionModel);
+    protected abstract ProgressListener<P> getProgressListener(A actionModel, Worker<M, T, P> worker);
 
     protected abstract Worker<M, T, P> createWorker(A actionModel);
 }
