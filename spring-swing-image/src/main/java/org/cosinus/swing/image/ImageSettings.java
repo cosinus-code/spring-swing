@@ -17,22 +17,16 @@
 
 package org.cosinus.swing.image;
 
-import static java.awt.RenderingHints.VALUE_ALPHA_INTERPOLATION_DEFAULT;
-import static java.awt.RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY;
-import static java.awt.RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED;
-import static java.awt.RenderingHints.VALUE_ANTIALIAS_DEFAULT;
-import static java.awt.RenderingHints.VALUE_ANTIALIAS_OFF;
-import static java.awt.RenderingHints.VALUE_ANTIALIAS_ON;
-import static java.awt.RenderingHints.VALUE_INTERPOLATION_BICUBIC;
-import static java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR;
-import static java.awt.RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR;
-import static java.awt.RenderingHints.VALUE_RENDER_DEFAULT;
-import static java.awt.RenderingHints.VALUE_RENDER_QUALITY;
-import static java.awt.RenderingHints.VALUE_RENDER_SPEED;
+import lombok.Getter;
+
+import java.awt.*;
+
+import static java.awt.RenderingHints.*;
 
 /**
  * Encapsulation for settings on drawing images
  */
+@Getter
 public class ImageSettings {
 
     public static final ImageSettings SPEED = new ImageSettings(
@@ -40,6 +34,7 @@ public class ImageSettings {
         VALUE_INTERPOLATION_NEAREST_NEIGHBOR,
         VALUE_ALPHA_INTERPOLATION_SPEED,
         VALUE_ANTIALIAS_OFF,
+        VALUE_STROKE_NORMALIZE,
         false);
 
     public static final ImageSettings QUALITY = new ImageSettings(
@@ -47,6 +42,7 @@ public class ImageSettings {
         VALUE_INTERPOLATION_BICUBIC,
         VALUE_ALPHA_INTERPOLATION_QUALITY,
         VALUE_ANTIALIAS_ON,
+        VALUE_STROKE_PURE,
         true);
 
     public static final ImageSettings SPEED_QUALITY_BALANCE = new ImageSettings(
@@ -54,6 +50,7 @@ public class ImageSettings {
         VALUE_INTERPOLATION_BILINEAR,
         VALUE_ALPHA_INTERPOLATION_DEFAULT,
         VALUE_ANTIALIAS_DEFAULT,
+        VALUE_STROKE_DEFAULT,
         false);
 
     private final Object renderingHint;
@@ -64,37 +61,29 @@ public class ImageSettings {
 
     private final Object antialiasingHint;
 
+    private final Object strokeControl;
+
     private final boolean highQualityOnScaling;
 
     ImageSettings(final Object renderingHint,
                   final Object interpolationHint,
                   final Object alphaInterpolationHint,
                   final Object antialiasingHint,
+                  final Object strokeControl,
                   boolean highQualityOnScaling) {
         this.renderingHint = renderingHint;
         this.interpolationHint = interpolationHint;
         this.alphaInterpolationHint = alphaInterpolationHint;
         this.antialiasingHint = antialiasingHint;
+        this.strokeControl = strokeControl;
         this.highQualityOnScaling = highQualityOnScaling;
     }
 
-    public Object getRenderingHint() {
-        return renderingHint;
-    }
-
-    public Object getAlphaInterpolationHint() {
-        return alphaInterpolationHint;
-    }
-
-    public Object getInterpolationHint() {
-        return interpolationHint;
-    }
-
-    public Object getAntialiasingHint() {
-        return antialiasingHint;
-    }
-
-    public boolean isHighQualityOnScaling() {
-        return highQualityOnScaling;
+    public void apply(Graphics2D graphics) {
+        graphics.setRenderingHint(KEY_RENDERING, renderingHint);
+        graphics.setRenderingHint(KEY_ALPHA_INTERPOLATION, alphaInterpolationHint);
+        graphics.setRenderingHint(KEY_INTERPOLATION, interpolationHint);
+        graphics.setRenderingHint(KEY_ANTIALIASING, antialiasingHint);
+        graphics.setRenderingHint(KEY_STROKE_CONTROL, strokeControl);
     }
 }

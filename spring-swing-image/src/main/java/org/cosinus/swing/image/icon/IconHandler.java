@@ -19,6 +19,7 @@ package org.cosinus.swing.image.icon;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.cosinus.swing.color.Colors;
 import org.cosinus.swing.icon.IconSize;
 import org.cosinus.swing.image.ImageHandler;
 import org.cosinus.swing.resource.ClasspathResourceResolver;
@@ -29,17 +30,25 @@ import org.springframework.cache.annotation.Cacheable;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageFilter;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
+import static java.awt.BasicStroke.CAP_ROUND;
+import static java.awt.BasicStroke.JOIN_MITER;
 import static java.awt.Color.WHITE;
-import static java.awt.RenderingHints.*;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
+import static java.util.function.Predicate.not;
+import static java.util.stream.IntStream.range;
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.cosinus.swing.image.ImageHandler.DISABLED_FILTER;
 import static org.cosinus.swing.image.ImageHandler.GRAY_FILTER;
 import static org.cosinus.swing.image.ImageSettings.QUALITY;
@@ -53,7 +62,9 @@ public class IconHandler {
 
     private static final String SPRING_SWING_ICONS_CACHE_NAME = "spring.swing.icons";
 
-    public static final String SPRING_SWING_IMAGE_THUMBNAIL_CACHE_NAME = "spring.swing.image.thumbnails";
+    public static final String SHAPE_ICON = "shape";
+
+    public static final String SHAPE_SEPARATOR = ";";
 
     private final ClasspathResourceResolver resourceResolver;
 
@@ -87,11 +98,15 @@ public class IconHandler {
      */
     @Cacheable(value = SPRING_SWING_ICONS_CACHE_NAME)
     public Optional<Icon> findIconByName(String name, IconSize size, boolean rounded) {
-        return getRemoteIcon(name)
-            .or(() -> iconProvider.findIconByName(name, size))
-            .or(() -> this.findIconByResource(name + ".png"))
-            .map(icon -> scaleIcon(icon, size))
-            .map(icon -> rounded ? toCircularIcon(icon, size) : icon);
+        return ofNullable(name)
+            .filter(s -> s.startsWith(SHAPE_ICON))
+            .map(this::decodeShape)
+            .map(shape -> getIconByShape(shape, size, rounded))
+            .or(() -> getRemoteIcon(name)
+                .or(() -> iconProvider.findIconByName(name, size))
+                .or(() -> this.findIconByResource(name + ".png"))
+                .map(icon -> scaleIcon(icon, size))
+                .map(icon -> rounded ? toCircularIcon(icon, size) : icon));
     }
 
     protected boolean isUrl(String text) {
@@ -207,10 +222,7 @@ public class IconHandler {
         BufferedImage output = new BufferedImage(size, size, TYPE_INT_ARGB);
         Graphics2D g2d = output.createGraphics();
 
-        g2d.setRenderingHint(KEY_RENDERING, QUALITY.getRenderingHint());
-        g2d.setRenderingHint(KEY_ANTIALIASING, QUALITY.getAntialiasingHint());
-        g2d.setRenderingHint(KEY_INTERPOLATION, QUALITY.getInterpolationHint());
-        g2d.setRenderingHint(KEY_ALPHA_INTERPOLATION, QUALITY.getAlphaInterpolationHint());
+        QUALITY.apply(g2d);
 
         g2d.setClip(new Ellipse2D.Float(1, 1, size - 2, size - 2));
         g2d.drawImage(image, 0, 0, size, size, null);
@@ -223,5 +235,80 @@ public class IconHandler {
         g2d.dispose();
 
         return new ImageIcon(output);
+    }
+
+    protected Shape decodeShape(String encodedShape) {
+        String[] shapePieces = encodedShape.split(SHAPE_SEPARATOR);
+        return Shape.builder()
+            .backgroundColor(Colors.toColor(shapePieces[1]).orElse(null))
+            .drawColor(Colors.toColor(shapePieces[2]).orElse(null))
+            .points(range(3, shapePieces.length)
+                .mapToObj(index -> shapePieces[index].split(","))
+                .map(values -> new Point2D.Double(
+                    Double.parseDouble(values[0]),
+                    Double.parseDouble(values[1])))
+                .toList())
+            .build();
+    }
+
+    public Icon getIconByShape(Shape shape, IconSize iconSize, boolean rounded) {
+        int size = iconSize.getSize();
+        BufferedImage image = new BufferedImage(size, size, TYPE_INT_ARGB);
+        Graphics2D g2d = image.createGraphics();
+
+        int pad = size / 8;
+        int drawable = size - pad * 2;
+
+        QUALITY.apply(g2d);
+
+        ofNullable(shape.getBackgroundColor())
+            .ifPresent(backgroundColor -> {
+                g2d.setColor(backgroundColor);
+                if (rounded) {
+                    g2d.fillRoundRect(0, 0, size, size, pad, pad);
+                } else {
+                    g2d.fillRect(0, 0, size, size);
+                }
+            });
+
+        if (!isEmpty(shape.getPoints())) {
+            g2d.setColor(shape.getDrawColor());
+            g2d.setStroke(new BasicStroke(1, CAP_ROUND, JOIN_MITER));
+
+            AtomicReference<Double> minX = new AtomicReference<>(Double.MAX_VALUE);
+            AtomicReference<Double> maxX = new AtomicReference<>(Double.MIN_VALUE);
+            AtomicReference<Double> minY = new AtomicReference<>(Double.MAX_VALUE);
+            AtomicReference<Double> maxY = new AtomicReference<>(Double.MIN_VALUE);
+            shape.getPoints()
+                .forEach(point -> {
+                    minX.set(min(minX.get(), point.x));
+                    maxX.set(max(maxX.get(), point.x));
+                    minY.set(min(minY.get(), point.y));
+                    maxY.set(max(maxY.get(), point.y));
+                });
+
+            double scale = drawable / max(maxX.get() - minX.get(), maxY.get() - minY.get());
+
+            double middleX = (drawable - (maxX.get() - minX.get()) * scale) / 2;
+            double middleY = (drawable - (maxY.get() - minY.get()) * scale) / 2;
+
+            AtomicReference<Point> storedPoint = new AtomicReference<>();
+            shape.getPoints()
+                .stream()
+                .map(point -> new Point(
+                    (int) ((point.x - minX.get()) * scale + middleX + pad),
+                    (int) ((point.y - minY.get()) * scale + middleY + pad)))
+                .forEach(point -> {
+                    ofNullable(storedPoint.get())
+                        .filter(not(point::equals))
+                        .ifPresent(lastPoint ->
+                            g2d.drawLine(lastPoint.x, lastPoint.y, point.x, point.y));
+                    storedPoint.set(point);
+                });
+        }
+
+        g2d.dispose();
+
+        return new ImageIcon(image);
     }
 }
