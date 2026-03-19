@@ -19,7 +19,6 @@ package org.cosinus.swing.worker;
 
 import org.cosinus.swing.action.execute.ActionExecutor;
 import org.cosinus.swing.action.execute.ActionModel;
-import org.cosinus.swing.progress.ProgressModel;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,10 +28,10 @@ import static java.util.Optional.ofNullable;
 /**
  * Implementation of {@link ActionExecutor} for deleting streamers based on {@link Worker}
  */
-public abstract class WorkerExecutor<A extends ActionModel, M extends WorkerModel<T>, T, P extends ProgressModel>
+public abstract class WorkerExecutor<A extends ActionModel, W extends Worker<?, ?, ?>>
     implements ActionExecutor<A> {
 
-    private final Map<String, Worker<M, T, P>> workersMap = new ConcurrentHashMap<>();
+    private final Map<String, W> workersMap = new ConcurrentHashMap<>();
 
     @Override
     public void execute(A actionModel) {
@@ -46,7 +45,7 @@ public abstract class WorkerExecutor<A extends ActionModel, M extends WorkerMode
             });
     }
 
-    protected boolean isValid(Worker<M, T, P> workerModel) {
+    protected boolean isValid(W worker) {
         return true;
     }
 
@@ -74,5 +73,5 @@ public abstract class WorkerExecutor<A extends ActionModel, M extends WorkerMode
 //                });
 //    }
 
-    protected abstract Worker<M, T, P> createWorker(A actionModel);
+    protected abstract W createWorker(A actionModel);
 }
