@@ -17,10 +17,14 @@
 
 package org.cosinus.swing.file;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,17 +37,17 @@ public class PathListTransferable implements Transferable {
 
     public static final DataFlavor PATH_FLAVOR = new DataFlavor(Path.class, "Path");
 
-
     public static final DataFlavor[] PATH_FLAVORS = new DataFlavor[]{
         javaFileListFlavor,
         stringFlavor,
         PATH_FLAVOR
     };
 
-    private final List<Path> paths;
+    @Getter
+    private final PathListTransferData paths;
 
     public PathListTransferable(final List<Path> paths) {
-        this.paths = paths;
+        this.paths = new PathListTransferData(paths);
     }
 
     @Override
@@ -76,5 +80,16 @@ public class PathListTransferable implements Transferable {
     @Override
     public boolean isDataFlavorSupported(DataFlavor flavor) {
         return stream(PATH_FLAVORS).anyMatch(flavor::equals);
+    }
+
+    public static class PathListTransferData extends ArrayList<Path> {
+
+        @Getter
+        @Setter
+        private boolean moveTransfer;
+
+        PathListTransferData(final List<Path> paths) {
+            super(paths);
+        }
     }
 }
