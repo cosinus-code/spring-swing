@@ -88,6 +88,10 @@ public class PathListTransferable implements Transferable {
         @Setter
         private boolean moveTransfer;
 
+        @Getter
+        @Setter
+        private String viewId;
+
         PathListTransferData(final List<Path> paths) {
             super(paths);
         }
