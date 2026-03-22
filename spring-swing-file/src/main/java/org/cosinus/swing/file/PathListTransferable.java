@@ -24,6 +24,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,7 +47,7 @@ public class PathListTransferable implements Transferable {
     @Getter
     private final PathListTransferData paths;
 
-    public PathListTransferable(final List<Path> paths) {
+    public PathListTransferable(final List<String> paths) {
         this.paths = new PathListTransferData(paths);
     }
 
@@ -58,6 +59,7 @@ public class PathListTransferable implements Transferable {
 
         if (flavor.equals(javaFileListFlavor)) {
             return paths.stream()
+                .map(Paths::get)
                 .map(Path::toFile)
                 .toList();
         }
@@ -82,7 +84,7 @@ public class PathListTransferable implements Transferable {
         return stream(PATH_FLAVORS).anyMatch(flavor::equals);
     }
 
-    public static class PathListTransferData extends ArrayList<Path> {
+    public static class PathListTransferData extends ArrayList<String> {
 
         @Getter
         @Setter
@@ -92,7 +94,7 @@ public class PathListTransferable implements Transferable {
         @Setter
         private String viewId;
 
-        PathListTransferData(final List<Path> paths) {
+        PathListTransferData(final List<String> paths) {
             super(paths);
         }
     }
