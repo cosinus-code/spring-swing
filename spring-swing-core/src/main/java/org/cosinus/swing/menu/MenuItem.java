@@ -76,7 +76,7 @@ public class MenuItem extends JMenuItem implements FormComponent, ActionProducer
 
         this.iconName = actionController.findAction(key)
             .map(SwingAction::getIconName)
-            .orElse(null);
+            .orElse(key);
     }
 
     public void setText(String text) {

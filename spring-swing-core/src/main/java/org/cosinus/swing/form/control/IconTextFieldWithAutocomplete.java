@@ -17,18 +17,18 @@
 
 package org.cosinus.swing.form.control;
 
+import lombok.Getter;
 import org.cosinus.swing.menu.MenuItem;
 import org.cosinus.swing.menu.PopupMenu;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.List;
 
-import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.util.Optional.ofNullable;
 
-public abstract class IconTextFieldWithAutocomplete<T extends AutocompleteItem> extends IconTextField implements ActionListener {
+public abstract class IconTextFieldWithAutocomplete<T extends AutocompleteItem>
+    extends IconTextField implements ActionListener {
 
     private final PopupMenu autocompleteMenu;
 
@@ -36,18 +36,11 @@ public abstract class IconTextFieldWithAutocomplete<T extends AutocompleteItem> 
         this.autocompleteMenu = new PopupMenu();
     }
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-        if (actionOnEnter() && e.getKeyChar() == VK_ENTER) {
-            performAction();
-        }
-    }
-
     protected void startAutocomplete() {
-            AutocompleteProvider<T> autocompleteProvider = getAutocompleteProvider();
-            if (autocompleteProvider != null) {
-                new Thread(new AutocompleteLoader(autocompleteProvider)).start();
-            }
+        AutocompleteProvider<T> autocompleteProvider = getAutocompleteProvider();
+        if (autocompleteProvider != null) {
+            new Thread(new AutocompleteLoader(autocompleteProvider)).start();
+        }
     }
 
     @Override
@@ -90,6 +83,8 @@ public abstract class IconTextFieldWithAutocomplete<T extends AutocompleteItem> 
             }
         }
     }
+
+    @Getter
     private class AutocompleteMenuItem extends MenuItem {
 
         private final T autocompleteItem;
@@ -100,8 +95,5 @@ public abstract class IconTextFieldWithAutocomplete<T extends AutocompleteItem> 
             setText(autocompleteItem.getDisplayName());
         }
 
-        public T getAutocompleteItem() {
-            return autocompleteItem;
-        }
     }
 }

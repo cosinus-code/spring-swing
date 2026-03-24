@@ -22,8 +22,10 @@ import org.cosinus.swing.error.ActionNotFoundException;
 import org.cosinus.swing.error.ErrorHandler;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.Map;
 import java.util.Optional;
@@ -31,7 +33,11 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static java.awt.EventQueue.getMostRecentEventTime;
+import static java.awt.event.ActionEvent.ACTION_PERFORMED;
 import static java.util.Optional.ofNullable;
+import static javax.swing.KeyStroke.getKeyStroke;
+import static javax.swing.TransferHandler.*;
 
 /**
  * Controller for the swing actions.
@@ -50,6 +56,10 @@ public class ActionController implements ActionListener {
     public static final int KEY_CODE_DOWN_ARROW = 40;
     public static final int KEY_CODE_F1 = 112;
     public static final int KEY_CODE_F12 = 123;
+
+    public static final String COPY_ACTION_ID = "copy";
+    public static final String PASTE_ACTION_ID = "paste";
+    public static final String CUT_ACTION_ID = "cut";
 
     private final ErrorHandler errorHandler;
 
@@ -84,10 +94,22 @@ public class ActionController implements ActionListener {
         }
     }
 
+    public void runAction(JComponent component, String actionId) {
+        try {
+            ofNullable(component.getActionMap())
+                .map(map -> map.get(actionId))
+                .ifPresentOrElse(
+                    action -> invokeAction(component, action),
+                    () -> runAction(actionId));
+        } catch (Throwable throwable) {
+            errorHandler.handleError(throwable);
+        }
+    }
+
     /**
      * Run an action model based by id.
      *
-     * @param actionId the id of the action to execute
+     * @param actionId    the id of the action to execute
      * @param actionModel the action model to execute
      */
     public <M extends ActionModel> void runAction(String actionId, M actionModel) {
@@ -159,5 +181,35 @@ public class ActionController implements ActionListener {
 
     public Optional<SwingAction> findAction(String actionId) {
         return ofNullable(actionMap.get(actionId));
+    }
+
+    private void invokeAction(JComponent component, Action action) {
+        action.actionPerformed(new ActionEvent(component,
+            ACTION_PERFORMED,
+            (String) action.getValue(Action.NAME),
+            getMostRecentEventTime(),
+            getCurrentEventModifiers()));
+    }
+
+    @SuppressWarnings("deprecation")
+    public int getCurrentEventModifiers() {
+        AWTEvent currentEvent = EventQueue.getCurrentEvent();
+        return currentEvent instanceof InputEvent inputEvent ?
+            inputEvent.getModifiers() :
+            currentEvent instanceof ActionEvent actionEvent ?
+                actionEvent.getModifiers() :
+                0;
+    }
+
+    public void addCutCopyPasteActions(JComponent component) {
+        InputMap inputMap = component.getInputMap();
+        inputMap.put(getKeyStroke("ctrl C"), COPY_ACTION_ID);
+        inputMap.put(getKeyStroke("ctrl V"), PASTE_ACTION_ID);
+        inputMap.put(getKeyStroke("ctrl X"), CUT_ACTION_ID);
+
+        ActionMap actionMap = component.getActionMap();
+        actionMap.put(COPY_ACTION_ID, getCopyAction());
+        actionMap.put(PASTE_ACTION_ID, getPasteAction());
+        actionMap.put(CUT_ACTION_ID, getCutAction());
     }
 }
