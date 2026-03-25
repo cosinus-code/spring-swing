@@ -103,6 +103,9 @@ public interface IconProvider {
     String ICON_VIEW_LIST = "view-list";
     String ICON_VIEW_DETAILS = "view-details";
     String ICON_VIEW_TREE = "view-tree";
+    String ICON_TEXT_EDITOR = "text-editor";
+    String ICON_IMAGE = "image";
+    String ICON_BINARY = "binary";
 
     String ICON_VIEW_HIDDEN = "view-hidden";
     String ICON_VIEW_LEFT_PANE = "view-left-pane";
