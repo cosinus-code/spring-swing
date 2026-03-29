@@ -39,6 +39,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static java.awt.Cursor.*;
+import static java.awt.Font.PLAIN;
 import static java.awt.Toolkit.getDefaultToolkit;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.META_DOWN_MASK;
@@ -333,6 +334,10 @@ public class ApplicationUIHandler {
      */
     public Font getFont(String key) {
         return UIManager.getFont(key);
+    }
+
+    public Font getDefaultMonospacedFont() {
+        return new Font(Font.MONOSPACED, PLAIN, 12);
     }
 
     /**

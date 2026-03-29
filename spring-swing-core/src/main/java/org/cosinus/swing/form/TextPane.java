@@ -14,15 +14,36 @@
  *  limitations under the License.
  *
  */
+
 package org.cosinus.swing.form;
 
-import javax.swing.*;
+import org.cosinus.swing.error.SpringSwingException;
+import org.cosinus.swing.ui.ApplicationUIHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.swing.*;
+import javax.swing.text.BadLocationException;
+
+import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
-public class TextArea extends JTextArea implements FormComponent, TextComponent {
+public class TextPane extends JTextPane implements FormComponent, TextComponent {
 
-    public TextArea() {
+    @Autowired
+    private ApplicationUIHandler uiHandler;
+
+    public TextPane() {
         injectContext(this);
+    }
+
+    public void append(String str) {
+        ofNullable(getDocument())
+            .ifPresent(doc -> {
+                try {
+                    doc.insertString(doc.getLength(), str, null);
+                } catch (BadLocationException ex) {
+                    throw new SpringSwingException(ex);
+                }
+            });
     }
 }

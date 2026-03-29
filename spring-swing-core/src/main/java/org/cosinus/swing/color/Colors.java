@@ -52,7 +52,7 @@ public final class Colors {
                 return Optional.of(new Color(red, green, blue));
             }
         } catch (NumberFormatException ex) {
-            LOG.error("Invalid color descriptor: " + descriptor, ex);
+            LOG.error("Invalid color descriptor: {}", descriptor, ex);
         }
         return Optional.empty();
     }
@@ -86,7 +86,8 @@ public final class Colors {
      * @return the created lighter color
      */
     public static Color getLighterColor(Color color, int amount) {
-        return new Color(min(color.getRed() + amount, 255),
+        return new Color(
+            min(color.getRed() + amount, 255),
             min(color.getGreen() + amount, 255),
             min(color.getBlue() + amount, 255));
     }
@@ -112,6 +113,14 @@ public final class Colors {
         return new Color(max(color.getRed() - amount, 0),
             max(color.getGreen() - amount, 0),
             max(color.getBlue() - amount, 0));
+    }
+
+    public static Color inverseColor(Color color) {
+        return new Color(
+            255 - color.getRed(),
+            255 - color.getGreen(),
+            255 - color.getBlue()
+        );
     }
 
     private Colors() {

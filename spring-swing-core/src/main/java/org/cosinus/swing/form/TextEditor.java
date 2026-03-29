@@ -30,21 +30,16 @@ import javax.swing.text.Element;
 import javax.swing.text.Highlighter.Highlight;
 import javax.swing.text.Highlighter.HighlightPainter;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
 
 import static java.awt.Color.BLUE;
 import static java.awt.Color.YELLOW;
-import static java.awt.event.KeyEvent.VK_BACK_SPACE;
-import static java.awt.event.KeyEvent.VK_DELETE;
-import static java.awt.event.KeyEvent.VK_ENTER;
-import static java.awt.event.KeyEvent.VK_TAB;
 import static java.util.Optional.ofNullable;
 import static javax.swing.text.PlainDocument.tabSizeAttribute;
-import static org.cosinus.swing.color.SystemColor.TEXT_PANE_SELECTION_BACKGROUND;
+import static org.cosinus.swing.color.SystemColor.*;
 
-public class TextEditor extends EditorPane implements DocumentListener, FormComponent {
+public class TextEditor extends EditorPane implements DocumentListener, FormComponent, TextComponent {
 
     public static final int DEFAULT_TAB_SIZE = 4;
 
@@ -75,12 +70,6 @@ public class TextEditor extends EditorPane implements DocumentListener, FormComp
         getDocument().addDocumentListener(this);
     }
 
-    public boolean isEditorKey(KeyEvent keyEvent) {
-        return keyEvent.getKeyCode() == VK_ENTER
-            || keyEvent.getKeyCode() == VK_TAB
-            || keyEvent.getKeyCode() == VK_DELETE
-            || keyEvent.getKeyCode() == VK_BACK_SPACE;
-    }
 
     public String getLineAtIndex(int index) {
         try {
