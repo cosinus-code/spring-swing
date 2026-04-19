@@ -141,6 +141,7 @@ public abstract class Worker<M extends WorkerModel<T>, T, P extends ProgressMode
 
     @Override
     protected void process(final List<T> items) {
+        checkWorkerStatus();
         try {
             if (workerModel != null) {
                 workerModel.update(items);

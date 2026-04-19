@@ -96,11 +96,15 @@ public interface TextComponent {
         return getFontMetrics(getFont());
     }
 
+    default Document getDocument() {
+        return null;
+    }
+
+    default Rectangle2D modelToView2D(int position) throws BadLocationException {
+        return null;
+    }
+
     FontMetrics getFontMetrics(Font font);
 
     Font getFont();
-
-    Rectangle2D modelToView2D(int position) throws BadLocationException;
-
-    Document getDocument();
 }

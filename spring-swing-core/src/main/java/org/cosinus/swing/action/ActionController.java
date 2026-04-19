@@ -57,6 +57,7 @@ public class ActionController implements ActionListener {
     public static final int KEY_CODE_F1 = 112;
     public static final int KEY_CODE_F12 = 123;
 
+    public static final String NO_ACTION_ID = "no-action";
     public static final String COPY_ACTION_ID = "copy";
     public static final String PASTE_ACTION_ID = "paste";
     public static final String CUT_ACTION_ID = "cut";

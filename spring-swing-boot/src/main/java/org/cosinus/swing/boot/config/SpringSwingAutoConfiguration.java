@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.cosinus.swing.action.*;
 import org.cosinus.swing.action.execute.ActionExecutor;
 import org.cosinus.swing.action.execute.ActionExecutors;
+import org.cosinus.swing.boot.cleanup.ApplicationShutDown;
 import org.cosinus.swing.boot.ApplicationFrame;
 import org.cosinus.swing.boot.ApplicationInitializationHandler;
 import org.cosinus.swing.boot.initialize.ApplicationFrameInitializer;
@@ -65,6 +66,12 @@ import static org.cosinus.swing.ui.UIController.SWING_UI_INITIALIZER_PROPERTY;
  */
 @AutoConfiguration
 public class SpringSwingAutoConfiguration {
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ApplicationShutDown applicationCleanup() {
+        return new ApplicationShutDown();
+    }
 
     @Bean
     @ConditionalOnMissingBean

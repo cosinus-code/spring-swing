@@ -17,18 +17,24 @@
 
 package org.cosinus.swing.math;
 
+import static java.lang.Math.*;
+
 public final class MoreMath {
 
     public static int fitInRange(int value, int min, int max) {
-        return Math.min(Math.max(value, min), max);
+        return min(max(value, min), max);
+    }
+
+    public static long fitInRange(long value, long min, long max) {
+        return min(max(value, min), max);
     }
 
     public static int divideAndCeil(int value1, int value2) {
-        return (int) Math.ceil((double) value1 / (double) value2);
+        return (int) ceil((double) value1 / (double) value2);
     }
 
     public static int divideAndFloor(int value1, int value2) {
-        return (int) Math.floor((double) value1 / (double) value2);
+        return (int) floor((double) value1 / (double) value2);
     }
 
     private MoreMath() {

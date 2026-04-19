@@ -15,26 +15,19 @@
  *
  */
 
-package org.cosinus.swing.test.model;
+package org.cosinus.swing.form;
 
-import org.cosinus.swing.form.Component;
-import org.cosinus.swing.store.ApplicationStorage;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.swing.*;
 
-public class TestComponent extends Component {
+import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
-    @Autowired
-    private ApplicationStorage applicationStorage;
+/**
+ * Extension of the {@link JComponent}
+ * which will automatically inject the application context.
+ */
+public abstract class SwingComponent extends JComponent implements FormComponent {
 
-    public ApplicationStorage getApplicationStorage() {
-        return applicationStorage;
-    }
-
-    @Override
-    public void initComponents() {
-    }
-
-    @Override
-    public void translate() {
+    public SwingComponent() {
+        injectContext(this);
     }
 }

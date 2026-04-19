@@ -89,7 +89,7 @@ public class SwingInjectTest {
 
     @Test
     public void testSwingInjectIntoComponent() {
-        TestComponent component = new TestComponent();
+        TestSwingComponent component = new TestSwingComponent();
 
         assertNotNull(component.getApplicationStorage());
     }
