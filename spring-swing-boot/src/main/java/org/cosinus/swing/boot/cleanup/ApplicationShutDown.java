@@ -35,6 +35,10 @@ public class ApplicationShutDown {
         this.resources = new HashMap<>();
     }
 
+    public void register(AutoCloseable resource) {
+        register(resource.getClass().getName(), resource);
+    }
+
     public void register(String id, AutoCloseable resource) {
         resources.put(id, resource);
     }

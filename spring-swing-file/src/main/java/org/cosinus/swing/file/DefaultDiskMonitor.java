@@ -17,16 +17,18 @@
 
 package org.cosinus.swing.file;
 
-import org.cosinus.swing.file.api.FileInfoProvider;
+import org.cosinus.swing.file.api.DiskEventListener;
+import org.cosinus.swing.file.api.DiskMonitor;
 
-import java.util.Optional;
-
-import static java.util.Optional.empty;
-
-public class DefaultFileInfoProvider implements FileInfoProvider {
+public class DefaultDiskMonitor implements DiskMonitor {
 
     @Override
-    public Optional<String> getFileTypeDescription(String fileType) {
-        return empty();
+    public void start(DiskMonitorController controller) {
+
+    }
+
+    @Override
+    public void close() throws Exception {
+
     }
 }

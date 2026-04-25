@@ -15,18 +15,12 @@
  *
  */
 
-package org.cosinus.swing.file;
+package org.cosinus.swing.file.api;
 
-import org.cosinus.swing.file.api.FileInfoProvider;
-
-import java.util.Optional;
-
-import static java.util.Optional.empty;
-
-public class DefaultFileInfoProvider implements FileInfoProvider {
-
-    @Override
-    public Optional<String> getFileTypeDescription(String fileType) {
-        return empty();
-    }
+public enum DiskEventType {
+    ADDED,
+    REMOVED,
+    CHANGED,
+    MOUNTED,
+    UNMOUNTED
 }

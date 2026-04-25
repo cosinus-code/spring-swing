@@ -15,18 +15,35 @@
  *
  */
 
-package org.cosinus.swing.file;
+package org.cosinus.swing.file.api;
 
-import org.cosinus.swing.file.api.FileInfoProvider;
+public interface FileSystemRoot {
 
-import java.util.Optional;
+    String getId();
 
-import static java.util.Optional.empty;
+    String getUuid();
 
-public class DefaultFileInfoProvider implements FileInfoProvider {
+    String getName();
 
-    @Override
-    public Optional<String> getFileTypeDescription(String fileType) {
-        return empty();
-    }
+    String getDescription();
+
+    String getType();
+
+    String getLabel();
+
+    String getVolume();
+
+    String getMountPoint();
+
+    void setMountPoint(String mountPoint);
+
+    long getTotalSpace();
+
+    long getFreeSpace();
+
+    FileSystemDevice getDevice();
+
+    boolean isHidden();
+
+    boolean isMounted();
 }

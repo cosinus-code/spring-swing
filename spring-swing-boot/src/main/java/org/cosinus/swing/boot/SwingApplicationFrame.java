@@ -64,7 +64,7 @@ public abstract class SwingApplicationFrame extends Frame implements Application
 
         applicationFrame = this;
         if (uiChangeController != null) {
-            uiChangeController.registerUIChangeListener(this);
+            uiChangeController.register(this);
         }
     }
 

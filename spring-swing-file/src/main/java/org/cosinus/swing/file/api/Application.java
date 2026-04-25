@@ -15,7 +15,7 @@
  *
  */
 
-package org.cosinus.swing.file;
+package org.cosinus.swing.file.api;
 
 import lombok.Getter;
 import lombok.Setter;

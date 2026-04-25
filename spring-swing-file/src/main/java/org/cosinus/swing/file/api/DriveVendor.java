@@ -15,7 +15,7 @@
  *
  */
 
-package org.cosinus.swing.file;
+package org.cosinus.swing.file.api;
 
 import lombok.Getter;
 
@@ -24,7 +24,7 @@ import java.util.Optional;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static java.util.function.Predicate.not;
-import static org.cosinus.swing.file.FileSystemDevice.*;
+import static org.cosinus.swing.file.api.FileSystemDevice.*;
 
 @Getter
 public enum DriveVendor {

@@ -51,11 +51,11 @@ public class UIChangeController {
         this.uiChangeListeners = new ArrayList<>();
     }
 
-    public void registerUIChangeListener(final UIChangeListener uiChangeListener) {
+    public void register(final UIChangeListener uiChangeListener) {
         this.uiChangeListeners.add(uiChangeListener);
     }
 
-    public void removeUIChangeListener(final UIChangeListener uiChangeListener) {
+    public void unregister(final UIChangeListener uiChangeListener) {
         this.uiChangeListeners.remove(uiChangeListener);
     }
 

@@ -15,18 +15,15 @@
  *
  */
 
-package org.cosinus.swing.file;
+package org.cosinus.swing.file.config;
 
-import org.cosinus.swing.file.api.FileInfoProvider;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
-import java.util.Optional;
+import java.lang.annotation.*;
 
-import static java.util.Optional.empty;
-
-public class DefaultFileInfoProvider implements FileInfoProvider {
-
-    @Override
-    public Optional<String> getFileTypeDescription(String fileType) {
-        return empty();
-    }
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@ConditionalOnProperty(name = "file.disk.event.listener.enabled")
+public @interface ConditionalOnListeningDiskEvents {
 }

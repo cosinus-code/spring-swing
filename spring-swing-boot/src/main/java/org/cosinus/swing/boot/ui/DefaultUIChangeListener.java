@@ -17,7 +17,7 @@ public class DefaultUIChangeListener implements UIChangeListener {
     public DefaultUIChangeListener(final UIChangeController uiChangeController,
                                    final LookAndFeelInitializer lookAndFeelInitializer) {
         this.lookAndFeelInitializer = lookAndFeelInitializer;
-        uiChangeController.registerUIChangeListener(this);
+        uiChangeController.register(this);
     }
 
     @Override

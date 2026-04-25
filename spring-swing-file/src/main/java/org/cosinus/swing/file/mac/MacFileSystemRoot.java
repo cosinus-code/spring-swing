@@ -17,15 +17,15 @@
 package org.cosinus.swing.file.mac;
 
 import org.apache.commons.lang3.StringUtils;
-import org.cosinus.swing.file.FileSystemDevice;
-import org.cosinus.swing.file.FileSystemRoot;
+import org.cosinus.swing.file.api.FileSystemDevice;
+import org.cosinus.swing.file.api.FileSystemRoot;
 import oshi.software.os.OSFileStore;
 
 import java.util.HashMap;
 
 import static java.util.Optional.ofNullable;
-import static org.cosinus.swing.file.FileSystemDevice.EXTERNAL_DRIVE;
-import static org.cosinus.swing.file.FileSystemDevice.HARD_DRIVE;
+import static org.cosinus.swing.file.api.FileSystemDevice.EXTERNAL_DRIVE;
+import static org.cosinus.swing.file.api.FileSystemDevice.HARD_DRIVE;
 
 /**
  * Implementation of {@link OSFileStore} built from the output of "diskutil info <id>" command line on Mac

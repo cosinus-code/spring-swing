@@ -16,17 +16,17 @@
  */
 package org.cosinus.swing.file.linux;
 
-import org.cosinus.swing.file.DriveVendor;
-import org.cosinus.swing.file.FileSystemDevice;
-import org.cosinus.swing.file.FileSystemRoot;
+import org.cosinus.swing.file.api.DriveVendor;
+import org.cosinus.swing.file.api.FileSystemDevice;
+import org.cosinus.swing.file.api.FileSystemRoot;
 import oshi.software.os.OSFileStore;
 
 import java.io.File;
 import java.nio.file.Paths;
 
-import static org.cosinus.swing.file.DriveVendor.findByName;
+import static org.cosinus.swing.file.api.DriveVendor.findByName;
 import static org.cosinus.swing.file.FileHandler.PROTOCOL_MARK;
-import static org.cosinus.swing.file.FileSystemDevice.REMOVABLE_FLASH;
+import static org.cosinus.swing.file.api.FileSystemDevice.REMOVABLE_FLASH;
 
 /**
  * Implementation of {@link OSFileStore} built from the output of "gio mount -li" command line on Linux

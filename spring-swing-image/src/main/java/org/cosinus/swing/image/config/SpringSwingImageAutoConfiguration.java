@@ -21,7 +21,7 @@ import org.apache.commons.imaging.formats.icns.IcnsImageParser;
 import org.cosinus.swing.boot.condition.*;
 import org.cosinus.swing.context.ApplicationProperties;
 import org.cosinus.swing.file.FileHandler;
-import org.cosinus.swing.file.FileSystem;
+import org.cosinus.swing.file.api.FileSystem;
 import org.cosinus.swing.file.mimetype.MimeTypeResolver;
 import org.cosinus.swing.image.ImageHandler;
 import org.cosinus.swing.image.icon.*;

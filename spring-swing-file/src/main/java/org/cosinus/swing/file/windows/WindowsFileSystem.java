@@ -18,7 +18,6 @@ package org.cosinus.swing.file.windows;
 
 import com.sun.jna.platform.FileUtils;
 
-import java.awt.datatransfer.Transferable;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -27,6 +26,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.cosinus.swing.file.*;
+import org.cosinus.swing.file.api.FileCompatibleApplications;
+import org.cosinus.swing.file.api.FilePermissions;
+import org.cosinus.swing.file.api.FileSystem;
+import org.cosinus.swing.file.api.FileSystemRoot;
 import org.springframework.cache.annotation.Cacheable;
 
 /**

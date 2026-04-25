@@ -8,7 +8,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.cosinus.swing.file.Application;
+import org.cosinus.swing.file.api.Application;
 
 @Getter
 @Setter

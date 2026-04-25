@@ -141,15 +141,16 @@ public abstract class Worker<M extends WorkerModel<T>, T, P extends ProgressMode
 
     @Override
     protected void process(final List<T> items) {
-        checkWorkerStatus();
-        try {
-            if (workerModel != null) {
-                workerModel.update(items);
+        if (!isCancelled()) {
+            try {
+                if (workerModel != null) {
+                    workerModel.update(items);
+                }
+                fireWorkerListeners(workerListener -> workerListener.workerUpdated(workerModel));
+                fireProgressListeners(progressListener -> progressListener.progressUpdated(progressModel));
+            } catch (Exception ex) {
+                setError(ex);
             }
-            fireWorkerListeners(workerListener -> workerListener.workerUpdated(workerModel));
-            fireProgressListeners(progressListener -> progressListener.progressUpdated(progressModel));
-        } catch (Exception ex) {
-            setError(ex);
         }
     }
 

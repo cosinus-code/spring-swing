@@ -17,15 +17,12 @@
 
 package org.cosinus.swing.exec;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.error.ProcessExecutionException;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -36,6 +33,7 @@ import static java.util.stream.IntStream.range;
 import static java.util.stream.Stream.concat;
 import static org.cosinus.swing.exec.Command.outputProcess;
 import static org.cosinus.swing.exec.Command.pipeProcess;
+import static org.cosinus.swing.exec.CommandProcess.startProcess;
 
 /**
  * Interface for a process executor
@@ -93,9 +91,9 @@ public interface ProcessExecutor {
     /**
      * Execute a command on user home working directory.
      *
-     * @param runInTerminal true if run in terminal
+     * @param runInTerminal  true if run in terminal
      * @param waitForProcess true if wait for process to finish
-     * @param command       the command to execute
+     * @param command        the command to execute
      */
     default void execute(boolean runInTerminal, boolean waitForProcess, String... command) {
         execute(runInTerminal, new File(System.getProperty("user.home")), waitForProcess, command);
@@ -142,11 +140,7 @@ public interface ProcessExecutor {
      */
     default Optional<String> executeAndGetOutput(String... command) {
         try {
-            Process process = new ProcessBuilder(command)
-                .redirectErrorStream(true)
-                .start();
-
-            return readOutput(process);
+            return startProcess(command).getOutput();
         } catch (IOException | InterruptedException ex) {
             throw new ProcessExecutionException("Failed to execute command: " + Arrays.toString(command), ex);
         }
@@ -163,20 +157,17 @@ public interface ProcessExecutor {
                 .reduce((first, second) -> second)
                 .orElseThrow(() -> new ProcessExecutionException("Failed to execute pipeline command"));
 
-            return readOutput(process);
+            return new CommandProcess(process).getOutput();
         } catch (IOException | InterruptedException e) {
             throw new ProcessExecutionException("Failed to execute pipeline command", e);
         }
     }
 
-    private Optional<String> readOutput(final Process process) throws IOException, InterruptedException {
-        try (Reader reader = new InputStreamReader(process.getInputStream())) {
-            String output = IOUtils.toString(reader);
-            process.waitFor();
-            if (process.exitValue() != 0) {
-                throw new ProcessExecutionException(process.exitValue(), output);
-            }
-            return Optional.of(output);
+    default CommandProcess startProcess(String... command) {
+        try {
+            return CommandProcess.startProcess(command);
+        } catch (IOException ex) {
+            throw new ProcessExecutionException("Failed to execute command: " + Arrays.toString(command), ex);
         }
     }
 }

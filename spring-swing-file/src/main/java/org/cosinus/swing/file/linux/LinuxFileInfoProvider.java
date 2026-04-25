@@ -17,7 +17,7 @@
 
 package org.cosinus.swing.file.linux;
 
-import org.cosinus.swing.file.FileInfoProvider;
+import org.cosinus.swing.file.api.FileInfoProvider;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.xml.Xml;
 import org.springframework.cache.annotation.Cacheable;

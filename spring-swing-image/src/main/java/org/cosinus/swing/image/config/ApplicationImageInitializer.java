@@ -56,7 +56,7 @@ public class ApplicationImageInitializer implements ApplicationInitializer {
     protected void initializeImages() {
         registerSvgImageReader();
         if (uiChangeController != null) {
-            uiChangeController.registerUIChangeListener(iconInitializer);
+            uiChangeController.register(iconInitializer);
         }
         iconInitializer.initializeIcons();
     }

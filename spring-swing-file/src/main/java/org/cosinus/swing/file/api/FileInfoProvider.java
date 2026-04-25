@@ -15,18 +15,11 @@
  *
  */
 
-package org.cosinus.swing.file;
-
-import org.cosinus.swing.file.api.FileInfoProvider;
+package org.cosinus.swing.file.api;
 
 import java.util.Optional;
 
-import static java.util.Optional.empty;
+public interface FileInfoProvider {
 
-public class DefaultFileInfoProvider implements FileInfoProvider {
-
-    @Override
-    public Optional<String> getFileTypeDescription(String fileType) {
-        return empty();
-    }
+    Optional<String> getFileTypeDescription(String mimeType);
 }

@@ -35,7 +35,7 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.exec.ProcessExecutor;
-import org.cosinus.swing.file.*;
+import org.cosinus.swing.file.api.*;
 
 /**
  * Implementation of {@link FileSystem} for Mac

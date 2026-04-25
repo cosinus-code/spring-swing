@@ -18,30 +18,19 @@
 package org.cosinus.swing.image.icon;
 
 import static java.util.Optional.ofNullable;
-import static org.cosinus.swing.image.icon.SpecialFileIcon.APPLICATIONS;
-import static org.cosinus.swing.image.icon.SpecialFileIcon.DESKTOP;
-import static org.cosinus.swing.image.icon.SpecialFileIcon.DOCUMENTS;
-import static org.cosinus.swing.image.icon.SpecialFileIcon.DOWNLOADS;
-import static org.cosinus.swing.image.icon.SpecialFileIcon.HOME;
-import static org.cosinus.swing.image.icon.SpecialFileIcon.MUSIC;
-import static org.cosinus.swing.image.icon.SpecialFileIcon.PICTURES;
-import static org.cosinus.swing.image.icon.SpecialFileIcon.PUBLIC;
-import static org.cosinus.swing.image.icon.SpecialFileIcon.VIDEOS;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import org.apache.commons.imaging.formats.icns.IcnsImageParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.cosinus.swing.file.Application;
-import org.cosinus.swing.file.FileCompatibleApplications;
-import org.cosinus.swing.file.FileSystem;
+import org.cosinus.swing.file.api.Application;
+import org.cosinus.swing.file.api.FileCompatibleApplications;
+import org.cosinus.swing.file.api.FileSystem;
 import org.cosinus.swing.icon.IconSize;
 import org.cosinus.swing.image.ImageHandler;
 

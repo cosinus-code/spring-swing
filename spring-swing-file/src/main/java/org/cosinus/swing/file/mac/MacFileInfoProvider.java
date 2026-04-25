@@ -23,8 +23,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.error.ProcessExecutionException;
 import org.cosinus.swing.exec.ProcessExecutor;
-import org.cosinus.swing.file.Application;
-import org.cosinus.swing.file.FileInfoProvider;
+import org.cosinus.swing.file.api.Application;
+import org.cosinus.swing.file.api.FileInfoProvider;
 import org.cosinus.swing.translate.Translator;
 import org.springframework.cache.annotation.Cacheable;
 

@@ -17,13 +17,16 @@
 
 package org.cosinus.swing.file;
 
+import org.cosinus.swing.file.api.DriveVendor;
+import org.cosinus.swing.file.api.FileSystemDevice;
+import org.cosinus.swing.file.api.FileSystemRoot;
 import oshi.software.os.OSFileStore;
 
 import static java.util.Optional.ofNullable;
 import static java.util.function.Predicate.not;
-import static org.cosinus.swing.file.DriveVendor.findByName;
-import static org.cosinus.swing.file.FileSystemDevice.HARD_DRIVE;
-import static org.cosinus.swing.file.FileSystemDevice.REMOVABLE_FLASH;
+import static org.cosinus.swing.file.api.DriveVendor.findByName;
+import static org.cosinus.swing.file.api.FileSystemDevice.HARD_DRIVE;
+import static org.cosinus.swing.file.api.FileSystemDevice.REMOVABLE_FLASH;
 
 public class DefaultFileSystemRoot implements FileSystemRoot {
 

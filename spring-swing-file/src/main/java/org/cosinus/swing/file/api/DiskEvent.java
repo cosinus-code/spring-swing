@@ -15,18 +15,23 @@
  *
  */
 
-package org.cosinus.swing.file;
+package org.cosinus.swing.file.api;
 
-import org.cosinus.swing.file.api.FileInfoProvider;
+import lombok.Getter;
 
-import java.util.Optional;
+@Getter
+public class DiskEvent {
 
-import static java.util.Optional.empty;
+    private final String key;
+    private final DiskEventType type;
+    private final String device;
+    private final long timestamp;
 
-public class DefaultFileInfoProvider implements FileInfoProvider {
-
-    @Override
-    public Optional<String> getFileTypeDescription(String fileType) {
-        return empty();
+    public DiskEvent(DiskEventType type, String device) {
+        this.key = type.name() + "|" + device;
+        this.type = type;
+        this.device = device;
+        this.timestamp = System.currentTimeMillis();
     }
+
 }

@@ -15,18 +15,10 @@
  *
  */
 
-package org.cosinus.swing.file;
+package org.cosinus.swing.exec;
 
-import org.cosinus.swing.file.api.FileInfoProvider;
+@FunctionalInterface
+public interface ProcessOutputListener {
 
-import java.util.Optional;
-
-import static java.util.Optional.empty;
-
-public class DefaultFileInfoProvider implements FileInfoProvider {
-
-    @Override
-    public Optional<String> getFileTypeDescription(String fileType) {
-        return empty();
-    }
+    void process(String outputLine);
 }

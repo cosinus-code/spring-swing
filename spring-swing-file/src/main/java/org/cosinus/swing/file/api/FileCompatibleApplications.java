@@ -15,20 +15,15 @@
  *
  */
 
-package org.cosinus.swing.file;
+package org.cosinus.swing.file.api;
 
+import java.util.LinkedHashMap;
 import lombok.Getter;
+import lombok.Setter;
 
-@Getter
-public enum FileSystemDevice {
-    HARD_DRIVE,
-    SSD,
-    EXTERNAL_DRIVE,
-    EXTERNAL_DRIVE_SEAGATE,
-    EXTERNAL_DRIVE_WESTERN_DIGITAL,
-    REMOVABLE_FLASH,
-    PHONE,
-    WATCH,
-    WATCH_GARMIN,
-    CDROM;
+public class FileCompatibleApplications extends LinkedHashMap<String, Application> {
+
+    @Getter
+    @Setter
+    private Application defaultApplication;
 }

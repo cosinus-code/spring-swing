@@ -18,12 +18,12 @@
 package org.cosinus.swing.file.linux;
 
 import org.cosinus.swing.file.mac.BlockDevice;
-import org.cosinus.swing.file.DriveVendor;
-import org.cosinus.swing.file.FileSystemDevice;
-import org.cosinus.swing.file.FileSystemRoot;
+import org.cosinus.swing.file.api.DriveVendor;
+import org.cosinus.swing.file.api.FileSystemDevice;
+import org.cosinus.swing.file.api.FileSystemRoot;
 
-import static org.cosinus.swing.file.DriveVendor.findByName;
-import static org.cosinus.swing.file.FileSystemDevice.*;
+import static org.cosinus.swing.file.api.DriveVendor.findByName;
+import static org.cosinus.swing.file.api.FileSystemDevice.*;
 
 public class LinuxFileSystemRoot implements FileSystemRoot {
 

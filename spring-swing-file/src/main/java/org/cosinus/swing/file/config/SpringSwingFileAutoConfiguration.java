@@ -23,16 +23,16 @@ import org.cosinus.swing.boot.condition.ConditionalOnMac;
 import org.cosinus.swing.boot.condition.ConditionalOnWindows;
 import org.cosinus.swing.error.ErrorHandler;
 import org.cosinus.swing.exec.ProcessExecutor;
+import org.cosinus.swing.file.DefaultFileInfoProvider;
 import org.cosinus.swing.file.FileHandler;
-import org.cosinus.swing.file.FileSystem;
+import org.cosinus.swing.file.api.FileInfoProvider;
+import org.cosinus.swing.file.api.FileSystem;
+import org.cosinus.swing.file.linux.LinuxFileInfoProvider;
 import org.cosinus.swing.file.linux.LinuxFileSystem;
 import org.cosinus.swing.file.mac.MacFileInfoProvider;
 import org.cosinus.swing.file.mac.MacFileSystem;
-import org.cosinus.swing.file.DefaultFileInfoProvider;
-import org.cosinus.swing.file.linux.LinuxFileInfoProvider;
-import org.cosinus.swing.file.windows.WindowsFileSystem;
-import org.cosinus.swing.file.FileInfoProvider;
 import org.cosinus.swing.file.mimetype.MimeTypeResolver;
+import org.cosinus.swing.file.windows.WindowsFileSystem;
 import org.cosinus.swing.translate.Translator;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -76,22 +76,23 @@ public class SpringSwingFileAutoConfiguration {
     public FileSystem windowsFileSystem() {
         return new WindowsFileSystem();
     }
+
     @Bean
     @ConditionalOnLinux
-    public FileInfoProvider linuxFileTypeInfoProvider(final Translator translator) {
+    public FileInfoProvider linuxFileInfoProvider(final Translator translator) {
         return new LinuxFileInfoProvider(translator);
     }
 
     @Bean
     @ConditionalOnMac
-    public FileInfoProvider macFileTypeInfoProvider(final ProcessExecutor processExecutor,
-                                                    final Translator translator) {
+    public FileInfoProvider macFileInfoProvider(final ProcessExecutor processExecutor,
+                                                final Translator translator) {
         return new MacFileInfoProvider(processExecutor, translator);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public FileInfoProvider mimeTypeInfoProvider() {
+    public FileInfoProvider defaultFileInfoProvider() {
         return new DefaultFileInfoProvider();
     }
 

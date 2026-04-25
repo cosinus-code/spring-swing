@@ -15,18 +15,14 @@
  *
  */
 
-package org.cosinus.swing.file;
+package org.cosinus.swing.file.api;
 
-import org.cosinus.swing.file.api.FileInfoProvider;
+import org.cosinus.swing.file.DiskMonitorController;
 
-import java.util.Optional;
+import java.io.IOException;
 
-import static java.util.Optional.empty;
+public interface DiskMonitor extends AutoCloseable {
 
-public class DefaultFileInfoProvider implements FileInfoProvider {
+    void start(DiskMonitorController controller) throws IOException;
 
-    @Override
-    public Optional<String> getFileTypeDescription(String fileType) {
-        return empty();
-    }
 }

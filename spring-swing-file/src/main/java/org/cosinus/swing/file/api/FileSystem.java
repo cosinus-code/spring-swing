@@ -14,10 +14,12 @@
  *  limitations under the License.
  *
  */
-package org.cosinus.swing.file;
+package org.cosinus.swing.file.api;
 
 import java.nio.file.Path;
 import java.util.Optional;
+
+import org.cosinus.swing.file.DefaultFileSystemRoot;
 import oshi.SystemInfo;
 
 import java.io.File;

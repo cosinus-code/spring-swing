@@ -15,35 +15,10 @@
  *
  */
 
-package org.cosinus.swing.file;
+package org.cosinus.swing.file.api;
 
-public interface FileSystemRoot {
+public interface DiskEventListener {
 
-    String getId();
+    void onEvent(DiskEvent diskEvent);
 
-    String getUuid();
-
-    String getName();
-
-    String getDescription();
-
-    String getType();
-
-    String getLabel();
-
-    String getVolume();
-
-    String getMountPoint();
-
-    void setMountPoint(String mountPoint);
-
-    long getTotalSpace();
-
-    long getFreeSpace();
-
-    FileSystemDevice getDevice();
-
-    boolean isHidden();
-
-    boolean isMounted();
 }

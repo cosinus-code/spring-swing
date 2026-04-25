@@ -15,11 +15,20 @@
  *
  */
 
-package org.cosinus.swing.file;
+package org.cosinus.swing.file.api;
 
-import java.util.Optional;
+import lombok.Getter;
 
-public interface FileInfoProvider {
-
-    Optional<String> getFileTypeDescription(String mimeType);
+@Getter
+public enum FileSystemDevice {
+    HARD_DRIVE,
+    SSD,
+    EXTERNAL_DRIVE,
+    EXTERNAL_DRIVE_SEAGATE,
+    EXTERNAL_DRIVE_WESTERN_DIGITAL,
+    REMOVABLE_FLASH,
+    PHONE,
+    WATCH,
+    WATCH_GARMIN,
+    CDROM;
 }

@@ -19,6 +19,10 @@ package org.cosinus.swing.file;
 
 import lombok.extern.slf4j.Slf4j;
 import org.cosinus.swing.exec.ProcessExecutor;
+import org.cosinus.swing.file.api.FileCompatibleApplications;
+import org.cosinus.swing.file.api.FilePermissions;
+import org.cosinus.swing.file.api.FileSystem;
+import org.cosinus.swing.file.api.FileSystemRoot;
 import org.cosinus.swing.file.mimetype.MimeTypeResolver;
 
 import java.awt.*;
