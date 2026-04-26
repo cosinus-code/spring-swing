@@ -104,20 +104,22 @@ public class ImageHandler {
     @CachePut(SPRING_SWING_IMAGE_THUMBNAIL_CACHE_NAME)
     public Optional<Image> createQuickThumbnail(File file, int size) throws IOException {
         try (ImageInputStream input = createImageInputStream(file)) {
-            Iterator<ImageReader> readers = getImageReaders(input);
-            if (readers.hasNext()) {
-                ImageReader reader = readers.next();
-                reader.setInput(input, true, true);
+            if (input != null) {
+                Iterator<ImageReader> readers = getImageReaders(input);
+                if (readers.hasNext()) {
+                    ImageReader reader = readers.next();
+                    reader.setInput(input, true, true);
 
-                int width = reader.getWidth(0);
-                int height = reader.getHeight(0);
+                    int width = reader.getWidth(0);
+                    int height = reader.getHeight(0);
 
-                int scale = max(max(width, height) / size, 1);
+                    int scale = max(max(width, height) / size, 1);
 
-                ImageReadParam param = reader.getDefaultReadParam();
-                param.setSourceSubsampling(scale, scale, 0, 0);
+                    ImageReadParam param = reader.getDefaultReadParam();
+                    param.setSourceSubsampling(scale, scale, 0, 0);
 
-                return Optional.of(reader.read(0, param));
+                    return Optional.of(reader.read(0, param));
+                }
             }
         }
         return empty();

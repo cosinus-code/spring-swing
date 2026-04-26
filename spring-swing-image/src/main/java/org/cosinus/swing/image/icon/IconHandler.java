@@ -42,11 +42,9 @@ import static java.awt.BasicStroke.CAP_ROUND;
 import static java.awt.BasicStroke.JOIN_MITER;
 import static java.awt.Color.WHITE;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
-import static java.lang.Math.max;
-import static java.lang.Math.min;
+import static java.lang.Math.*;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
-import static java.util.function.Predicate.not;
 import static java.util.stream.IntStream.range;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.cosinus.swing.image.ImageHandler.DISABLED_FILTER;
@@ -300,10 +298,15 @@ public class IconHandler {
                     (int) ((point.y - minY.get()) * scale + middleY + pad)))
                 .forEach(point -> {
                     ofNullable(storedPoint.get())
-                        .filter(not(point::equals))
-                        .ifPresent(lastPoint ->
-                            g2d.drawLine(lastPoint.x, lastPoint.y, point.x, point.y));
-                    storedPoint.set(point);
+                        .filter(lastPoint -> abs(lastPoint.x - point.x) > 1 ||
+                            abs(lastPoint.y - point.y) > 1)
+                        .ifPresent(lastPoint -> {
+                            g2d.drawLine(lastPoint.x, lastPoint.y, point.x, point.y);
+                            storedPoint.set(point);
+                        });
+                    if (storedPoint.get() == null) {
+                        storedPoint.set(point);
+                    }
                 });
         }
 
