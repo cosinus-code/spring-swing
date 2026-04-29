@@ -18,6 +18,8 @@
 package org.cosinus.swing.xml;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -29,9 +31,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static java.util.Optional.ofNullable;
+import static java.util.stream.IntStream.range;
 import static javax.xml.xpath.XPathConstants.STRING;
 
 public class Xml implements AutoCloseable {
@@ -82,6 +87,24 @@ public class Xml implements AutoCloseable {
         } catch (XPathExpressionException e) {
             throw new RuntimeException("Failed to compile xml path: " + path, e);
         }
+    }
+
+    public Stream<Element> elements(String... elementNames) {
+        return Arrays.stream(elementNames)
+            .map(xml::getElementsByTagName)
+            .flatMap(nodeList -> range(0, nodeList.getLength())
+                .mapToObj(nodeList::item)
+                .filter(node -> node instanceof Element)
+                .map(Element.class::cast));
+    }
+
+    public Optional<String> getTextSubElement(Element parent, String elementName) {
+        return ofNullable(parent)
+            .map(element -> element.getElementsByTagName(elementName))
+            .filter(elements -> elements.getLength() > 0)
+            .map(elements -> elements.item(0))
+            .map(Node::getTextContent)
+            .map(String::trim);
     }
 
     @Override

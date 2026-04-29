@@ -51,6 +51,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.util.InvalidMimeTypeException;
 import org.springframework.util.MimeType;
+import org.springframework.util.StringUtils;
 
 public class MimeTypeResolver {
 
@@ -146,7 +147,10 @@ public class MimeTypeResolver {
         if (isDirectory) {
             return singletonList(FOLDER);
         }
-        return ofNullable(getFilenameExtension(path.toString()))
+
+        return ofNullable(path)
+            .map(Object::toString)
+            .map(StringUtils::getFilenameExtension)
             .map(extension -> extension.toLowerCase(ENGLISH))
             .map(mimeTypesMap::get)
             .orElseGet(Collections::emptyList);
