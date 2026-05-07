@@ -244,48 +244,41 @@ public class LinuxFileSystem implements FileSystem {
 
     @Override
     public FileCompatibleApplications findCompatibleApplicationsToExecuteFile(File file) {
-        try {
-            String mimeType = probeContentType(file.toPath());
-            FileCompatibleApplications compatibleApplications =
-                Stream.of("/usr/share/applications",
-                        System.getProperty("user.home") + "/.local/share/applications")
-                    .map(File::new)
-                    .filter(File::exists)
-                    .filter(File::isDirectory)
-                    .map(applicationFolder -> applicationFolder
-                        .listFiles((d, name) -> name.endsWith(".desktop")))
-                    .filter(Objects::nonNull)
-                    .flatMap(Arrays::stream)
-                    .map(desktopFile -> getApplicationForDesktopFile(desktopFile, mimeType))
-                    .filter(Objects::nonNull)
-                    .collect(toMap(
-                        Application::getId,
-                        identity(),
-                        (u, v) -> u,
-                        FileCompatibleApplications::new));
-
-            processExecutor.executeAndGetOutput("xdg-mime", "query", "default", mimeType)
-                .flatMap(applicationId -> stream(applicationId.split("\\n")).findFirst())
-                .map(compatibleApplications::get)
-                .ifPresent(compatibleApplications::setDefaultApplication);
-
-            return compatibleApplications;
-        } catch (IOException e) {
-            throw new UncheckedIOException(format("Failed to find compatible applications for file: %s",
-                file), e);
+        String mimeType = mimeTypeResolver.mimeType(file.toPath()).orElse(null);
+        if (mimeType == null) {
+            return null;
         }
+
+        FileCompatibleApplications compatibleApplications =
+            Stream.of("/usr/share/applications",
+                    System.getProperty("user.home") + "/.local/share/applications")
+                .map(File::new)
+                .filter(File::exists)
+                .filter(File::isDirectory)
+                .map(applicationFolder -> applicationFolder
+                    .listFiles((d, name) -> name.endsWith(".desktop")))
+                .filter(Objects::nonNull)
+                .flatMap(Arrays::stream)
+                .map(desktopFile -> getApplicationForDesktopFile(desktopFile, mimeType))
+                .filter(Objects::nonNull)
+                .collect(toMap(
+                    Application::getId,
+                    identity(),
+                    (u, v) -> u,
+                    FileCompatibleApplications::new));
+
+        processExecutor.executeAndGetOutput("xdg-mime", "query", "default", mimeType)
+            .flatMap(applicationId -> stream(applicationId.split("\\n")).findFirst())
+            .map(compatibleApplications::get)
+            .ifPresent(compatibleApplications::setDefaultApplication);
+
+        return compatibleApplications;
     }
 
     @Override
     public void setDefaultApplicationToExecuteFile(String applicationId, File file) {
-        try {
-            String mimeType = probeContentType(file.toPath());
-            processExecutor.execute("xdg-mime", "default", applicationId, mimeType);
-        } catch (IOException e) {
-            throw new UncheckedIOException(
-                format("Failed to set the application %s as default to execute file: %s",
-                    applicationId, file), e);
-        }
+        mimeTypeResolver.mimeType(file.toPath())
+            .ifPresent(mimeType -> processExecutor.execute("xdg-mime", "default", applicationId, mimeType));
     }
 
     @Override

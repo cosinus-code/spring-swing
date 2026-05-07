@@ -22,6 +22,7 @@ import static java.util.Arrays.stream;
 import static java.util.Collections.singletonList;
 import static java.util.Locale.ENGLISH;
 import static java.util.Optional.ofNullable;
+import static java.util.function.Predicate.not;
 import static net.sf.jmimemagic.Magic.getMagicMatch;
 import static org.cosinus.swing.util.FileUtils.getExtension;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_OCTET_STREAM;
@@ -36,11 +37,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+
 import net.sf.jmimemagic.MagicException;
 import net.sf.jmimemagic.MagicMatch;
 import net.sf.jmimemagic.MagicMatchNotFoundException;
@@ -198,22 +198,23 @@ public class MimeTypeResolver {
         return getMimeTypes(path, false).isEmpty();
     }
 
-//    public Optional<String> mimeType(Path path) {
-//        return ofNullable(path)
-//            .map(Path::toFile)
-//            .filter(not(File::isDirectory))
-//            .map(file -> ofNullable(getFileContentType(file.toPath()))
-//                .orElseGet(() -> getMagicMimeType(file)));
-//    }
-//
-//    private String getFileContentType(Path path) {
-//        try {
-//            return Files.probeContentType(path);
-//        } catch (IOException ex) {
-//            LOG.error("Failed to probe the file content type for path: {}", path);
-//            return null;
-//        }
-//    }
+    public Optional<String> mimeType(Path path) {
+        return ofNullable(path)
+            .map(Path::toFile)
+            .filter(not(File::isDirectory))
+            .flatMap(file -> ofNullable(getFileContentType(file.toPath()))
+                .or(() -> getMagicMimeType(file)
+                    .map(Objects::toString)));
+    }
+
+    private String getFileContentType(Path path) {
+        try {
+            return Files.probeContentType(path);
+        } catch (IOException ex) {
+            LOG.error("Failed to probe the file content type for path: {}", path);
+            return null;
+        }
+    }
 
     public Optional<MimeType> getMagicMimeType(File file) {
         try {
