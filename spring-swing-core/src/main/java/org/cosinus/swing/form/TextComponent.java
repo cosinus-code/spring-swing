@@ -29,39 +29,6 @@ import static java.util.Optional.*;
 
 public interface TextComponent {
 
-    default boolean isHexaChar(int character) {
-        return character >= '0' && character <= '9'
-            || character >= 'A' && character <= 'F'
-            || character >= 'a' && character <= 'f';
-    }
-
-    default boolean isMovementKey(KeyEvent keyEvent) {
-        return keyEvent.getKeyCode() == KeyEvent.VK_LEFT
-            || keyEvent.getKeyCode() == KeyEvent.VK_RIGHT
-            || keyEvent.getKeyCode() == KeyEvent.VK_UP
-            || keyEvent.getKeyCode() == KeyEvent.VK_DOWN
-            || keyEvent.getKeyCode() == KeyEvent.VK_HOME
-            || keyEvent.getKeyCode() == KeyEvent.VK_END
-            || keyEvent.getKeyCode() == KeyEvent.VK_PAGE_UP
-            || keyEvent.getKeyCode() == KeyEvent.VK_PAGE_DOWN;
-    }
-
-    default boolean isDeleteKey(KeyEvent keyEvent) {
-        return keyEvent.getKeyCode() == KeyEvent.VK_DELETE
-            || keyEvent.getKeyCode() == KeyEvent.VK_BACK_SPACE;
-    }
-
-    default boolean isEditorKey(KeyEvent keyEvent) {
-        return keyEvent.getKeyCode() == VK_ENTER
-            || keyEvent.getKeyCode() == VK_TAB
-            || keyEvent.getKeyCode() == VK_DELETE
-            || keyEvent.getKeyCode() == VK_BACK_SPACE;
-    }
-
-    default boolean isLetter(char character) {
-        return character >= ' ' && character <= '~';
-    }
-
     default Optional<Character> getCharAtPosition(int position) {
         return ofNullable(getDocument())
             .filter(document -> position < document.getLength())

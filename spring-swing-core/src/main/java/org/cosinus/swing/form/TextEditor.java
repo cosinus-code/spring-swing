@@ -48,7 +48,7 @@ public class TextEditor extends EditorPane implements DocumentListener, FormComp
     public static final Color DEFAULT_CURRENT_FOUND_TEXT_HIGHLIGHT_COLOR = BLUE;
 
     @Autowired
-    private ApplicationUIHandler uiHandler;
+    protected ApplicationUIHandler uiHandler;
 
     private HighlightPainter foundTextHighlightPainter;
 

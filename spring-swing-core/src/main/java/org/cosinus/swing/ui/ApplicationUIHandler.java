@@ -29,6 +29,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.Border;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.security.MessageDigest;
@@ -43,6 +44,8 @@ import static java.awt.Font.PLAIN;
 import static java.awt.Toolkit.getDefaultToolkit;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.META_DOWN_MASK;
+import static java.awt.event.KeyEvent.*;
+import static java.awt.event.KeyEvent.VK_BACK_SPACE;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
@@ -535,6 +538,39 @@ public class ApplicationUIHandler {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public boolean isHexaChar(int character) {
+        return character >= '0' && character <= '9'
+            || character >= 'A' && character <= 'F'
+            || character >= 'a' && character <= 'f';
+    }
+
+    public boolean isMovementKey(KeyEvent keyEvent) {
+        return keyEvent.getKeyCode() == KeyEvent.VK_LEFT
+            || keyEvent.getKeyCode() == KeyEvent.VK_RIGHT
+            || keyEvent.getKeyCode() == KeyEvent.VK_UP
+            || keyEvent.getKeyCode() == KeyEvent.VK_DOWN
+            || keyEvent.getKeyCode() == KeyEvent.VK_HOME
+            || keyEvent.getKeyCode() == KeyEvent.VK_END
+            || keyEvent.getKeyCode() == KeyEvent.VK_PAGE_UP
+            || keyEvent.getKeyCode() == KeyEvent.VK_PAGE_DOWN;
+    }
+
+    public boolean isDeleteKey(KeyEvent keyEvent) {
+        return keyEvent.getKeyCode() == KeyEvent.VK_DELETE
+            || keyEvent.getKeyCode() == KeyEvent.VK_BACK_SPACE;
+    }
+
+    public boolean isEditorKey(KeyEvent keyEvent) {
+        return keyEvent.getKeyCode() == VK_ENTER
+            || keyEvent.getKeyCode() == VK_TAB
+            || keyEvent.getKeyCode() == VK_DELETE
+            || keyEvent.getKeyCode() == VK_BACK_SPACE;
+    }
+
+    public boolean isLetter(char character) {
+        return character >= ' ' && character <= '~';
     }
 
 }
