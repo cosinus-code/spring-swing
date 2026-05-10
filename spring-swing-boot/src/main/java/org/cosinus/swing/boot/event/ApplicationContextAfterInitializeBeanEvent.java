@@ -17,6 +17,7 @@
 
 package org.cosinus.swing.boot.event;
 
+import lombok.Getter;
 import org.springframework.context.ApplicationContext;
 
 import java.io.Serial;
@@ -24,6 +25,7 @@ import java.io.Serial;
 /**
  * {@link ApplicationContextCreationEvent} fired after a bean is initialized
  */
+@Getter
 public class ApplicationContextAfterInitializeBeanEvent extends ApplicationContextCreationEvent {
 
     @Serial
@@ -41,11 +43,4 @@ public class ApplicationContextAfterInitializeBeanEvent extends ApplicationConte
         this.beanName = beanName;
     }
 
-    public Object getBean() {
-        return bean;
-    }
-
-    public String getBeanName() {
-        return beanName;
-    }
 }

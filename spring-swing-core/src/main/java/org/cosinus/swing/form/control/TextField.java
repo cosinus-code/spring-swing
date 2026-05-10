@@ -21,7 +21,6 @@ import javax.swing.*;
 import javax.swing.text.Document;
 
 import java.awt.event.ActionListener;
-import java.util.function.Supplier;
 
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 

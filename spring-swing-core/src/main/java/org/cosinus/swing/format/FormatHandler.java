@@ -154,7 +154,7 @@ public class FormatHandler {
             return "";
         }
         if (distance >= KILOMETER) {
-            return get2DecimalsFormatted((double) distance / KILOMETER) + " Km";
+            return get2DecimalsFormatted(distance / KILOMETER) + " Km";
         }
         return get2DecimalsFormatted(distance) + " m";
     }

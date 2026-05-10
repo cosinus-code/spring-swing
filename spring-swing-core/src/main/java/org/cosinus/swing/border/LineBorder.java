@@ -72,6 +72,7 @@ public class LineBorder extends javax.swing.border.LineBorder {
 
         if (!rectangle) {
             if (top > 0) {
+                //noinspection SuspiciousNameCombination
                 g2d.setStroke(new BasicStroke(top));
                 g2d.drawLine(x, y, x + width - 1, y);
             }
@@ -82,6 +83,7 @@ public class LineBorder extends javax.swing.border.LineBorder {
             }
 
             if (bottom > 0) {
+                //noinspection SuspiciousNameCombination
                 g2d.setStroke(new BasicStroke(bottom));
                 g2d.drawLine(x, y + height - bottom, x + width, y + height - bottom);
             }

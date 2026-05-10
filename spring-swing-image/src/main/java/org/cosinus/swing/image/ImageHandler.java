@@ -29,14 +29,28 @@ import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.*;
-import java.io.*;
-import java.net.URL;
+import java.awt.image.BufferedImage;
+import java.awt.image.FilteredImageSource;
+import java.awt.image.ImageFilter;
+import java.awt.image.ImageObserver;
+import java.awt.image.ImageProducer;
+import java.awt.image.RGBImageFilter;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.Optional;
 
 import static java.awt.Image.SCALE_SMOOTH;
-import static java.awt.RenderingHints.*;
+import static java.awt.RenderingHints.KEY_ALPHA_INTERPOLATION;
+import static java.awt.RenderingHints.KEY_ANTIALIASING;
+import static java.awt.RenderingHints.KEY_INTERPOLATION;
+import static java.awt.RenderingHints.KEY_RENDERING;
 import static java.awt.Toolkit.getDefaultToolkit;
 import static java.awt.Transparency.OPAQUE;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
@@ -45,7 +59,9 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
-import static javax.imageio.ImageIO.*;
+import static javax.imageio.ImageIO.createImageInputStream;
+import static javax.imageio.ImageIO.getImageReaders;
+import static javax.imageio.ImageIO.read;
 import static org.apache.commons.io.FilenameUtils.getExtension;
 import static org.apache.commons.io.IOUtils.toByteArray;
 import static org.cosinus.swing.image.ImageSettings.QUALITY;
@@ -414,9 +430,9 @@ public class ImageHandler {
      */
     public Image createImage(String uri) {
         try {
-            return ImageIO.read(new URL(uri));
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
+            return ImageIO.read(new URI(uri).toURL());
+        } catch (IOException | URISyntaxException e) {
+            throw new RuntimeException("Failed to create image from URI: " + uri, e);
         }
     }
 

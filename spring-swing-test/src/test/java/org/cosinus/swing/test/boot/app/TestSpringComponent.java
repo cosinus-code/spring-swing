@@ -17,12 +17,14 @@
 
 package org.cosinus.swing.test.boot.app;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class TestSpringComponent {
 
     public void testMethod() {
-
+        log.info("testMethod");
     }
 }

@@ -17,8 +17,7 @@
 
 package org.cosinus.swing.form.control;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.cosinus.swing.error.ValidationException;
 import org.cosinus.swing.validation.ValidationError;
 
@@ -44,9 +43,8 @@ import static org.springframework.util.NumberUtils.convertNumberToTargetClass;
  *
  * @param <T> the type of the value
  */
+@Slf4j
 public class NumberFormattedTextField<T extends Number> extends JFormattedTextField implements Control<T> {
-
-    private static final Logger LOG = LogManager.getLogger(NumberFormattedTextField.class);
 
     private final Class<T> valueClass;
 
@@ -114,7 +112,7 @@ public class NumberFormattedTextField<T extends Number> extends JFormattedTextFi
             commitEdit();
             return emptyList();
         } catch (ValidationException e) {
-            LOG.error("Invalid formatted value", e);
+            log.error("Invalid formatted value", e);
             return singletonList(createValidationError("validation.invalidNumber"));
         }
     }

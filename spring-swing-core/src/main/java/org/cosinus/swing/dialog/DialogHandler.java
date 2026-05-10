@@ -17,13 +17,12 @@
 
 package org.cosinus.swing.dialog;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.cosinus.swing.ui.UIModel;
-import org.cosinus.swing.window.Dialog;
+import lombok.extern.slf4j.Slf4j;
 import org.cosinus.swing.preference.dialog.PreferencesDialogProvider;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
+import org.cosinus.swing.ui.UIModel;
+import org.cosinus.swing.window.Dialog;
 import org.cosinus.swing.window.SimpleDialog;
 
 import javax.swing.*;
@@ -49,9 +48,8 @@ import static org.cosinus.swing.ui.ApplicationUIHandler.OPTION_PANE_MESSAGE_DIAL
 /**
  * Handler for options panels
  */
+@Slf4j
 public class DialogHandler {
-
-    private static final Logger LOG = LogManager.getLogger(DialogHandler.class);
 
     private static final String ERROR = "error";
 
@@ -120,11 +118,6 @@ public class DialogHandler {
 
     public void showInfo(Component comp, String message) {
         JOptionPane.showMessageDialog(comp, message);
-//        showMessageDialog(
-//            comp,
-//            message,
-//            translator.translate("information"),
-//            INFORMATION_MESSAGE);
     }
 
     public int showConfirmation(String message) {
@@ -307,7 +300,7 @@ public class DialogHandler {
                     .findFirst())
                 .orElse(null);
         } catch (InterruptedException | ExecutionException ex) {
-            LOG.error("Error occurred during showing custom option dialog", ex);
+            log.error("Error occurred during showing custom option dialog", ex);
             return null;
         }
     }

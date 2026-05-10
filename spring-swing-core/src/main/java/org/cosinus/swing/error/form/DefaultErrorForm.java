@@ -17,8 +17,7 @@
 
 package org.cosinus.swing.error.form;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.cosinus.swing.action.EscapeAction;
 import org.cosinus.swing.error.SpringSwingException;
 import org.cosinus.swing.form.ScrollPane;
@@ -37,11 +36,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import static java.awt.BorderLayout.CENTER;
-import static java.awt.BorderLayout.EAST;
-import static java.awt.BorderLayout.NORTH;
-import static java.awt.BorderLayout.SOUTH;
-import static java.awt.BorderLayout.WEST;
+import static java.awt.BorderLayout.*;
 import static java.lang.String.format;
 import static javax.swing.JPanel.WHEN_IN_FOCUSED_WINDOW;
 import static javax.swing.KeyStroke.getKeyStroke;
@@ -52,9 +47,8 @@ import static org.cosinus.swing.border.Borders.emptyInsets;
 /**
  * Default implementation of {@link ErrorForm} as dialog
  */
+@Slf4j
 public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionListener {
-
-    private static final Logger LOG = LogManager.getLogger(DefaultErrorForm.class);
 
     private static final String ERROR_WINDOW_TITLE = "Error";
 
@@ -148,7 +142,7 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
             panData.getActionMap().put("escape", new EscapeAction(this));
             panData.setBorder(emptyBorder(5));
         } catch (Exception ex) {
-            LOG.error("Exception while initiating error form", ex);
+            log.error("Exception while initiating error form", ex);
         }
     }
 
@@ -164,7 +158,7 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
             txaDetails.setText(writer.toString());
             txaDetails.setCaretPosition(0);
         } catch (IOException ex) {
-            LOG.error("", ex);
+            log.error("", ex);
         }
 
         continueButton.setVisible(!severe);
@@ -210,7 +204,7 @@ public class DefaultErrorForm extends Dialog<Void> implements ErrorForm, ActionL
                 showDetails();
             }
         } catch (Exception ex) {
-            LOG.error(ex.getMessage());
+            log.error(ex.getMessage());
         }
     }
 

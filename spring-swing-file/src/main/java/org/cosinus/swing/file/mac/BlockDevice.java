@@ -56,6 +56,7 @@ public class BlockDevice {
     @JsonProperty("fstype")
     private String fileSystemType;
 
+    @SuppressWarnings("SpellCheckingInspection")
     @JsonProperty("mountpoint")
     private String mountPoint;
 

@@ -17,11 +17,13 @@
 
 package org.cosinus.swing.test.model;
 
+import lombok.Getter;
 import org.cosinus.swing.store.ApplicationStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
+@Getter
 public class TestSwingInjectObject {
 
     @Autowired
@@ -29,10 +31,6 @@ public class TestSwingInjectObject {
 
     public TestSwingInjectObject() {
         injectContext(this);
-    }
-
-    public ApplicationStorage getApplicationStorage() {
-        return applicationStorage;
     }
 
 }

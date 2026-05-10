@@ -57,6 +57,7 @@ public class XfceUIThemeProvider implements UIThemeProvider {
         return uiHandler.findLookAndFeelByName("GTK");
     }
 
+    @SuppressWarnings("SpellCheckingInspection")
     public Optional<String> getUiSetting(String name) {
         return processExecutor.executeAndGetOutput("xfconf-query", "-c", "xsettings", "-p", name);
     }

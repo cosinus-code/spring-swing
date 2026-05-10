@@ -30,6 +30,7 @@ import static org.cosinus.swing.file.api.FileSystemDevice.HARD_DRIVE;
 /**
  * Implementation of {@link OSFileStore} built from the output of "diskutil info <id>" command line on Mac
  */
+@SuppressWarnings("SpellCheckingInspection")
 public class MacFileSystemRoot extends HashMap<String, String> implements FileSystemRoot {
     private static final String DISK_ROOT_NAME = "Volume Name";
     private static final String DISK_ROOT_MOUNT = "Mount Point";

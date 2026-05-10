@@ -17,14 +17,13 @@
 package org.cosinus.swing.file.linux;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.error.ErrorHandler;
 import org.cosinus.swing.error.JsonConvertException;
 import org.cosinus.swing.error.ProcessExecutionException;
 import org.cosinus.swing.exec.ProcessExecutor;
-import org.cosinus.swing.file.*;
+import org.cosinus.swing.file.DefaultFileSystemRoot;
 import org.cosinus.swing.file.api.*;
 import org.cosinus.swing.file.mac.BlockDevice;
 import org.cosinus.swing.file.mac.BlockDevices;
@@ -34,14 +33,12 @@ import org.springframework.util.MimeType;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.nio.file.Files.probeContentType;
 import static java.nio.file.Files.readAllLines;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
@@ -60,14 +57,14 @@ import static org.cosinus.swing.icon.IconSize.X32;
 /**
  * Implementation of {@link FileSystem} for Linux
  */
+@Slf4j
 public class LinuxFileSystem implements FileSystem {
 
     private final Translator translator;
 
-    Logger LOG = LogManager.getLogger(LinuxFileSystem.class);
-
     private static final Set<String> IGNORED_FILESYSTEMS = Set.of("swap", "vfat");
 
+    @SuppressWarnings("SpellCheckingInspection")
     private static final Set<String> POSIX_COMPLIANT_FILESYSTEMS = Set.of(
         "ext4", "ext3", "ext2", "xfs", "btrfs", "jfs", "reiserfs", "zfs", "f2fs", "ufs", "ffs");
 
@@ -160,6 +157,7 @@ public class LinuxFileSystem implements FileSystem {
     }
 
     private List<? extends FileSystemRoot> listPartitions() {
+        //noinspection SpellCheckingInspection
         return processExecutor.executeAndGetOutput("lsblk", "-J", "-b", "-o",
                 "UUID,NAME,LABEL,PATH,TYPE,SIZE,FSTYPE,RM,ROTA,HOTPLUG,VENDOR,MOUNTPOINT")
             .map(this::getBlockDevices)
@@ -184,6 +182,7 @@ public class LinuxFileSystem implements FileSystem {
         try {
             return objectMapper.readValue(input.getBytes(UTF_8), BlockDevices.class);
         } catch (IOException e) {
+            //noinspection SpellCheckingInspection
             throw new JsonConvertException(format("Failed to map the lsblk output: %s", input), e);
         }
     }
@@ -230,6 +229,7 @@ public class LinuxFileSystem implements FileSystem {
 
     private Optional<String> getMtpMountFolder() {
         try {
+            //noinspection SpellCheckingInspection
             return processExecutor.executePipelineAndGetOutput(
                     of("df", "-a"),
                     of("grep", "gvfsd-fuse"))
@@ -338,6 +338,7 @@ public class LinuxFileSystem implements FileSystem {
     }
 
     @Override
+    @SuppressWarnings("SpellCheckingInspection")
     public void setOwnerForFile(final File file, final String ownerName, final String groupName) {
         if (groupName != null) {
             if (ownerName != null) {
@@ -349,12 +350,6 @@ public class LinuxFileSystem implements FileSystem {
             processExecutor.execute("chown", ownerName, file.getAbsolutePath());
         }
     }
-
-//    private String[] getAvailableUserNames() {
-//        return processExecutor.executeAndGetOutput("cut", "-d:", "-f1", "/etc/passwd")
-//            .map(output -> output.split("\\n"))
-//            .orElse(new String[0]);
-//    }
 
     private String[] getAvailableGroupNames(final String ownerName) {
         return ofNullable(ownerName)
@@ -416,7 +411,7 @@ public class LinuxFileSystem implements FileSystem {
                 executable, X32, iconName, runInterminal);
 
         } catch (IOException ex) {
-            LOG.error("Failed to read desktop file: {}", desktopFile.getAbsolutePath(), ex);
+            log.error("Failed to read desktop file: {}", desktopFile.getAbsolutePath(), ex);
             return null;
         }
     }

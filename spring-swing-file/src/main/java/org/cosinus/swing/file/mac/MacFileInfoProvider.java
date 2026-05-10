@@ -1,26 +1,8 @@
 package org.cosinus.swing.file.mac;
 
-import static java.util.Arrays.stream;
-import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.toMap;
-import static java.util.stream.Collectors.toSet;
-import static org.cosinus.swing.icon.IconSize.X32;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.error.ProcessExecutionException;
 import org.cosinus.swing.exec.ProcessExecutor;
 import org.cosinus.swing.file.api.Application;
@@ -28,23 +10,33 @@ import org.cosinus.swing.file.api.FileInfoProvider;
 import org.cosinus.swing.translate.Translator;
 import org.springframework.cache.annotation.Cacheable;
 
-public class MacFileInfoProvider implements FileInfoProvider {
+import java.io.File;
+import java.util.*;
 
-    private static final Logger LOG = LogManager.getLogger(MacFileInfoProvider.class);
+import static java.util.Arrays.stream;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.*;
+import static org.cosinus.swing.icon.IconSize.X32;
+
+@Slf4j
+public class MacFileInfoProvider implements FileInfoProvider {
 
     protected static final String NAME = "name";
     protected static final String PATH = "path";
     protected static final String EXECUTABLE = "executable";
     protected static final String ICONS = "icons";
+    @SuppressWarnings("SpellCheckingInspection")
     protected static final String LOCALIZED_NAMES = "localizednames";
+    @SuppressWarnings("SpellCheckingInspection")
     protected static final String LOCALIZED_DESCRIPTION = "localizeddescription";
     protected static final String BUNDLE_ID = "bundle id";
     protected static final String CLAIM_ID = "claim id";
+    @SuppressWarnings("SpellCheckingInspection")
     protected static final String CLAIMED_UTI = "claimed utis";
     protected static final String FLAGS = "flags";
     protected static final String BUNDLE = "bundle";
     protected static final String BINDINGS = "bindings";
-    protected  static final String APPLE_DEFAULT_FLAG = "apple-default";
+    protected static final String APPLE_DEFAULT_FLAG = "apple-default";
 
     public static final String FOLDER_MIME_TYPE = "public.folder";
 
@@ -77,6 +69,7 @@ public class MacFileInfoProvider implements FileInfoProvider {
                 .flatMap(uniformType::getTranslatedName));
     }
 
+    @SuppressWarnings("SpellCheckingInspection")
     @Cacheable(value = "spring.swing.uniform.type.identifier",
         keyGenerator = "fileExtensionKeyGenerator")
     public Optional<String> findUniformTypeIdentifier(final File file) {
@@ -85,8 +78,7 @@ public class MacFileInfoProvider implements FileInfoProvider {
                     "mdls", "-name", "kMDItemContentType", "-raw", file.getAbsolutePath())
                 .map(uti -> uti.endsWith("%") ? uti.substring(0, uti.length() - 1) : uti);
         } catch (ProcessExecutionException executionException) {
-            LOG.warn("Failed to detect the uniform type identifier of the file '%s'"
-                .formatted(file.getAbsolutePath()));
+            log.warn("Failed to detect the uniform type identifier of the file '{}'", file.getAbsolutePath());
             return Optional.empty();
         }
     }

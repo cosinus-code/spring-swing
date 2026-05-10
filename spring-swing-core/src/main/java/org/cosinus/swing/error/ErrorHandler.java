@@ -17,8 +17,7 @@
 
 package org.cosinus.swing.error;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.cosinus.swing.error.form.DefaultErrorFormProvider;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.validation.ValidationError;
@@ -35,9 +34,8 @@ import static org.cosinus.swing.dialog.OptionsDialog.showMessageDialog;
 /**
  * Generic error handler
  */
+@Slf4j
 public class ErrorHandler {
-
-    private static final Logger LOG = LogManager.getLogger(ErrorHandler.class);
 
     public static final String HTML_ERROR_MESSAGE = "<html><body>%s</html>";
     public static final String HTML_ERROR_MESSAGE_300 = "<html><body style='width: 300px'>%s</html>";
@@ -59,9 +57,9 @@ public class ErrorHandler {
      * @param throwable the error to handle
      */
     public void handleError(Component component, Throwable throwable) {
-        LOG.error(throwable.getMessage(), throwable);
+        log.error(throwable.getMessage(), throwable);
         handleError(component,
-                    throwable.getLocalizedMessage());
+            throwable.getLocalizedMessage());
     }
 
     public void handleError(String errorMessage) {
@@ -75,11 +73,11 @@ public class ErrorHandler {
      * @param errorMessage the error message to handle
      */
     public void handleError(Component component, String errorMessage) {
-        LOG.error(errorMessage);
+        log.error(errorMessage);
         showMessageDialog(component,
-                          format(HTML_ERROR_MESSAGE, errorMessage),
-                          translator.translate("error"),
-                          JOptionPane.ERROR_MESSAGE);
+            format(HTML_ERROR_MESSAGE, errorMessage),
+            translator.translate("error"),
+            JOptionPane.ERROR_MESSAGE);
     }
 
     /**
@@ -91,10 +89,10 @@ public class ErrorHandler {
     public void handleValidationErrors(Component component,
                                        List<ValidationError> validationErrors) {
         String errorMessage = format(HTML_ERROR_MESSAGE_300,
-                                     validationErrors.subList(0, min(10, validationErrors.size()))
-                                         .stream()
-                                         .map(error -> translator.translate(error.code(), error.arguments()))
-                                         .collect(joining("<br/>")));
+            validationErrors.subList(0, min(10, validationErrors.size()))
+                .stream()
+                .map(error -> translator.translate(error.code(), error.arguments()))
+                .collect(joining("<br/>")));
         handleError(component, errorMessage);
     }
 
@@ -105,7 +103,7 @@ public class ErrorHandler {
      * @param throwable the error to handle
      */
     public void handleError(Window parent, Throwable throwable) {
-        LOG.error(throwable.getMessage(), throwable);
+        log.error(throwable.getMessage(), throwable);
         errorFormProvider
             .getErrorForm(parent)
             .showError(throwable);

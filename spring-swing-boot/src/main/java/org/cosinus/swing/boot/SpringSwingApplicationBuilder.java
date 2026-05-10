@@ -17,14 +17,12 @@
 
 package org.cosinus.swing.boot;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.SpringFactoriesLoader.ArgumentResolver;
-import org.springframework.core.log.LogMessage;
 
 import static org.springframework.core.io.support.SpringFactoriesLoader.FailureHandler.handleMessage;
 import static org.springframework.core.io.support.SpringFactoriesLoader.forDefaultResourceLocation;
@@ -32,9 +30,8 @@ import static org.springframework.core.io.support.SpringFactoriesLoader.forDefau
 /**
  * Builder for {@link SpringSwingApplication}
  */
+@Slf4j
 public class SpringSwingApplicationBuilder extends SpringApplicationBuilder {
-
-    private static final Logger LOG = LogManager.getLogger(SpringSwingApplicationBuilder.class);
 
     private final ApplicationStartupListeners startupListeners = new ApplicationStartupListeners();
 
@@ -110,7 +107,8 @@ public class SpringSwingApplicationBuilder extends SpringApplicationBuilder {
                 ArgumentResolver
                     .of(SpringApplication.class, application())
                     .and(String[].class, args),
-                handleMessage((messageSupplier, failure) -> LOG.error(LogMessage.of(messageSupplier), failure)))
+                handleMessage((messageSupplier, failure) ->
+                    log.error(messageSupplier.get(), failure)))
             .forEach(startupListeners::register);
     }
 }

@@ -38,8 +38,4 @@ public class ToolBar extends JToolBar implements FormComponent {
         setFloatable(false);
         setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
     }
-
-    @Override
-    public void translate() {
-    }
 }

@@ -33,7 +33,6 @@ import static java.util.stream.IntStream.range;
 import static java.util.stream.Stream.concat;
 import static org.cosinus.swing.exec.Command.outputProcess;
 import static org.cosinus.swing.exec.Command.pipeProcess;
-import static org.cosinus.swing.exec.CommandProcess.startProcess;
 
 /**
  * Interface for a process executor

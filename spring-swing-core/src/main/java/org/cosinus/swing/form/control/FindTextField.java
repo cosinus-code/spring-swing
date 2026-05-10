@@ -17,6 +17,7 @@
 
 package org.cosinus.swing.form.control;
 
+import lombok.Setter;
 import org.cosinus.swing.find.FindText;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +62,7 @@ public class FindTextField extends JTextField
 
     private final Runnable action;
 
+    @Setter
     private boolean actionOnSettingChange;
 
     public FindTextField() {
@@ -83,10 +85,6 @@ public class FindTextField extends JTextField
         addMouseListener(this);
         addMouseMotionListener(this);
         addActionListener(this);
-    }
-
-    public void setActionOnSettingChange(boolean actionOnSettingChange) {
-        this.actionOnSettingChange = actionOnSettingChange;
     }
 
     @Override

@@ -48,6 +48,8 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
@@ -281,9 +283,9 @@ public class SvgImageReader extends ImageReaderBase {
 
                 if (uri != null) {
                     try {
-                        URL url = new URL(uri);
+                        URL url = new URI(uri).toURL();
                         ((SVGOMDocument) document).setURLObject(url);
-                    } catch (MalformedURLException ignore) {
+                    } catch (MalformedURLException | URISyntaxException ignore) {
                     }
                 }
             }
@@ -356,8 +358,10 @@ public class SvgImageReader extends ImageReaderBase {
                 } else {
                     // No viewBox, just assume square size
                     if (hasHeight) {
+                        //noinspection SuspiciousNameCombination
                         width = height;
                     } else if (hasWidth) {
+                        //noinspection SuspiciousNameCombination
                         height = width;
                     } else {
                         // ...or finally fall back to Batik default sizes
@@ -380,7 +384,7 @@ public class SvgImageReader extends ImageReaderBase {
             this.document = svgDoc;
             this.uri = uri;
 
-            // Hack to avoid the transcode method wacking my context...
+            // Hack to avoid the transcode method hacking my context...
             this.context = ctx;
             ctx = null;
         }
@@ -401,9 +405,9 @@ public class SvgImageReader extends ImageReaderBase {
                 if (!Objects.equals(uri, transcoderInput.getURI())) {
                     try {
                         context.dispose();
-                        document.setURLObject(new URL(transcoderInput.getURI()));
+                        document.setURLObject(new URI(transcoderInput.getURI()).toURL());
                         transcode(document, transcoderInput.getURI(), null);
-                    } catch (MalformedURLException ignore) {
+                    } catch (MalformedURLException | URISyntaxException ignore) {
                         // Ignored
                     }
                 }
@@ -444,10 +448,10 @@ public class SvgImageReader extends ImageReaderBase {
             if (Px.isIdentity() && (width != defaultSize.width || height != defaultSize.height)) {
                 // The document has no viewBox, we need to resize it by hand.
                 // we want to keep the document size ratio
-                float xscale, yscale;
-                xscale = width / defaultSize.width;
-                yscale = height / defaultSize.height;
-                float scale = Math.min(xscale, yscale);
+                float xScale, yScale;
+                xScale = width / defaultSize.width;
+                yScale = height / defaultSize.height;
+                float scale = Math.min(xScale, yScale);
                 Px = AffineTransform.getScaleInstance(scale, scale);
             }
             // take the AOI into account if any
@@ -527,7 +531,7 @@ public class SvgImageReader extends ImageReaderBase {
                 Shape shape = new Rectangle2D.Float(0, 0, width, height);
                 // Warning: the renderer's AOI must be in user space
                 renderer.repaint(curTxf.createInverse().createTransformedShape(shape));
-                // NOTE: repaint above cause nullpointer exception with fonts
+                // NOTE: repaint above cause null pointer exception with fonts
 
                 BufferedImage rend = renderer.getOffScreen();
 
@@ -536,9 +540,9 @@ public class SvgImageReader extends ImageReaderBase {
                 Graphics2D g2d = GraphicsUtil.createGraphics(dest);
                 try {
                     if (hints.containsKey(KEY_BACKGROUND_COLOR)) {
-                        Paint bgcolor = (Paint) hints.get(KEY_BACKGROUND_COLOR);
+                        Paint bgColor = (Paint) hints.get(KEY_BACKGROUND_COLOR);
                         g2d.setComposite(AlphaComposite.SrcOver);
-                        g2d.setPaint(bgcolor);
+                        g2d.setPaint(bgColor);
                         g2d.fillRect(0, 0, w, h);
                     }
 
@@ -613,8 +617,8 @@ public class SvgImageReader extends ImageReaderBase {
         }
 
         @Override
-        protected DocumentFactory createDocumentFactory(DOMImplementation domImpl, String parserClassname) {
-            return new SvgSaxSvgDocumentFactory(parserClassname);
+        protected DocumentFactory createDocumentFactory(DOMImplementation domImpl, String parserClassName) {
+            return new SvgSaxSvgDocumentFactory(parserClassName);
         }
 
         @Override

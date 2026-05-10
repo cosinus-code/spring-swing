@@ -17,6 +17,7 @@
 
 package org.cosinus.swing.boot.event;
 
+import lombok.Getter;
 import org.cosinus.swing.boot.ApplicationFrame;
 import org.springframework.context.ApplicationEvent;
 
@@ -25,6 +26,7 @@ import java.io.Serial;
 /**
  * Application frame related event
  */
+@Getter
 public class ApplicationFrameEvent extends ApplicationEvent {
 
     @Serial
@@ -35,9 +37,5 @@ public class ApplicationFrameEvent extends ApplicationEvent {
     public ApplicationFrameEvent(ApplicationFrame applicationFrame) {
         super(applicationFrame);
         this.applicationFrame = applicationFrame;
-    }
-
-    public ApplicationFrame getApplicationFrame() {
-        return applicationFrame;
     }
 }

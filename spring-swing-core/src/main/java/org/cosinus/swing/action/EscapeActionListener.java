@@ -23,7 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Implementation of an {@link ActionListener} for "Escape" action on an window
+ * Implementation of an {@link ActionListener} for "Escape" action on a window
  */
 public class EscapeActionListener implements ActionListener {
 

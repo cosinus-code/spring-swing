@@ -44,7 +44,8 @@ public class LanguagePreference extends ObjectPreference<Locale> {
     @Override
     public Locale toRealValue(String value) {
         return ofNullable(value)
-            .map(Locale::new)
+            .map(text -> text.replace('_', '-'))
+            .map(Locale::forLanguageTag)
             .orElse(null);
     }
 }

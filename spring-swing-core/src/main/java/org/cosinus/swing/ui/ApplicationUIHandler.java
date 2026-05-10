@@ -17,10 +17,9 @@
 
 package org.cosinus.swing.ui;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.color.SystemColor;
 import org.cosinus.swing.translate.Translator;
 
@@ -34,18 +33,26 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static java.awt.Cursor.*;
+import static java.awt.Cursor.DEFAULT_CURSOR;
+import static java.awt.Cursor.HAND_CURSOR;
+import static java.awt.Cursor.getPredefinedCursor;
 import static java.awt.Font.PLAIN;
 import static java.awt.Toolkit.getDefaultToolkit;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.META_DOWN_MASK;
-import static java.awt.event.KeyEvent.*;
 import static java.awt.event.KeyEvent.VK_BACK_SPACE;
+import static java.awt.event.KeyEvent.VK_DELETE;
+import static java.awt.event.KeyEvent.VK_ENTER;
+import static java.awt.event.KeyEvent.VK_TAB;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
@@ -53,7 +60,14 @@ import static java.util.stream.Stream.concat;
 import static javax.swing.KeyStroke.getKeyStroke;
 import static org.apache.commons.lang3.SystemUtils.IS_OS_MAC;
 import static org.cosinus.swing.border.Borders.emptyBorder;
-import static org.cosinus.swing.color.SystemColor.*;
+import static org.cosinus.swing.color.SystemColor.CONTROL;
+import static org.cosinus.swing.color.SystemColor.CONTROL_DK_SHADOW;
+import static org.cosinus.swing.color.SystemColor.CONTROL_HIGHLIGHT;
+import static org.cosinus.swing.color.SystemColor.INACTIVE_CAPTION;
+import static org.cosinus.swing.color.SystemColor.INACTIVE_CAPTION_TEXT;
+import static org.cosinus.swing.color.SystemColor.INTERNAL_FRAME_INACTIVE_TITLE_BACKGROUND;
+import static org.cosinus.swing.color.SystemColor.TEXTAREA_INACTIVE_FOREGROUND;
+import static org.cosinus.swing.color.SystemColor.TEXT_PANE_SELECTION_BACKGROUND;
 import static org.cosinus.swing.util.FontUtils.getFontDescription;
 
 /**
@@ -62,9 +76,8 @@ import static org.cosinus.swing.util.FontUtils.getFontDescription;
  * The intention is to use this handler methods instead UIManager static methods,
  * to isolate UIManager for easier reimplementation.
  */
+@Slf4j
 public class ApplicationUIHandler {
-
-    private static final Logger LOG = LogManager.getLogger(ApplicationUIHandler.class);
 
     public static final String OPTION_PANE_MESSAGE_DIALOG_TITLE = "OptionPane.messageDialogTitle";
 
@@ -115,13 +128,12 @@ public class ApplicationUIHandler {
                 UIManager.getDefaults().remove(key);
             }
         } catch (Exception ex) {
-            LOG.error("Failed to translate ui key: " + key,
-                ex);
+            log.error("Failed to translate ui key: {}", key, ex);
         }
     }
 
     /**
-     * Get an UI text.
+     * Get a UI text.
      *
      * @param key the key of the text
      * @return the text
@@ -214,7 +226,7 @@ public class ApplicationUIHandler {
         try {
             UIManager.setLookAndFeel(lookAndFeel);
         } catch (Exception e) {
-            LOG.error("Failed to load lookAndFeel: " + lookAndFeel, e);
+            log.error("Failed to load lookAndFeel: {}", lookAndFeel, e);
         }
     }
 
@@ -291,20 +303,20 @@ public class ApplicationUIHandler {
     }
 
     /**
-     * Get the current control down key stroke for key code
+     * Get the current control down keystroke for key code
      *
      * @param keyCode the key code
-     * @return the current control down key stroke
+     * @return the current control down keystroke
      */
     public KeyStroke getControlDownKeyStroke(int keyCode) {
         return getKeyStroke(keyCode, getControlDownKeyMask());
     }
 
     /**
-     * Get the alt down key stroke for key code
+     * Get the alt down keystroke for key code
      *
      * @param keyCode the key code
-     * @return the alt down key stroke
+     * @return the alt down keystroke
      */
     public KeyStroke getAltDownKeyStroke(int keyCode) {
         return getKeyStroke(keyCode, ALT_DOWN_MASK);
@@ -431,7 +443,7 @@ public class ApplicationUIHandler {
      */
     public void initializeDefaultUIFonts() {
         if (isLookAndFeelGTK() && getDefaultToolkit().getScreenResolution() == 96) {
-            //this is an workaround for https://bugzilla.redhat.com/show_bug.cgi?id=508185
+            //this is a workaround for https://bugzilla.redhat.com/show_bug.cgi?id=508185
             //still reproducible in Ubuntu
             getDefaultFontsMap().forEach(
                 (key, font) -> setDefaultFont(key, new FontUIResource(font.deriveFont(13f))));

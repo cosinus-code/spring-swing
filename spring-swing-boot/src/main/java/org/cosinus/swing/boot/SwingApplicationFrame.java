@@ -17,8 +17,7 @@
 
 package org.cosinus.swing.boot;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.cosinus.swing.boot.event.ApplicationFrameAfterInitializeEvent;
 import org.cosinus.swing.boot.event.ApplicationFrameBeforeInitializeEvent;
 import org.cosinus.swing.context.ApplicationProperties;
@@ -34,9 +33,8 @@ import org.springframework.context.ApplicationEventPublisher;
  * Keeping this application frame instance as static field is a compromise
  * to avoid circular dependencies when the main frame is needed as parent for other windows.
  */
+@Slf4j
 public abstract class SwingApplicationFrame extends Frame implements ApplicationFrame, UIChangeListener {
-
-    private static final Logger LOG = LogManager.getLogger(SwingApplicationFrame.class);
 
     public static Frame applicationFrame;
 
@@ -52,12 +50,12 @@ public abstract class SwingApplicationFrame extends Frame implements Application
     /**
      * Initialize the application frame.
      * <p>
-     * It also publish the {@link ApplicationFrameBeforeInitializeEvent} and
+     * It also publishes the {@link ApplicationFrameBeforeInitializeEvent} and
      * {@link ApplicationFrameAfterInitializeEvent} before and after initialization.
      */
     @Override
     public void initApplicationFrame() {
-        LOG.info("Initializing application frame...");
+        log.info("Initializing application frame...");
         applicationEventPublisher.publishEvent(new ApplicationFrameBeforeInitializeEvent(this));
         initialize();
         applicationEventPublisher.publishEvent(new ApplicationFrameAfterInitializeEvent(this));
@@ -76,7 +74,7 @@ public abstract class SwingApplicationFrame extends Frame implements Application
         initComponents();
         triggerFormUpdate();
 
-        LOG.info("Showing application frame...");
+        log.info("Showing application frame...");
         setVisible(true);
     }
 
@@ -85,7 +83,7 @@ public abstract class SwingApplicationFrame extends Frame implements Application
      */
     @Override
     public void loadApplicationFrame() {
-        LOG.info("Loading application frame...");
+        log.info("Loading application frame...");
         loadContent();
         translate();
     }
@@ -93,7 +91,7 @@ public abstract class SwingApplicationFrame extends Frame implements Application
     @Override
     public void uiThemeChanged() {
         triggerFormUpdate();
-        LOG.info("Form updated due to UI theme change");
+        log.info("Form updated due to UI theme change");
     }
 
     protected abstract void loadContent();

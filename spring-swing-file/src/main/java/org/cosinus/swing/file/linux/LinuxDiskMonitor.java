@@ -43,6 +43,7 @@ public class LinuxDiskMonitor implements DiskMonitor {
     @Override
     @Async
     public void start(final DiskMonitorController controller) throws IOException {
+        //noinspection SpellCheckingInspection
         process = processExecutor.startProcess(
             "udevadm", "monitor", "--udev", "--subsystem-match=block");
         process.monitorOutput(

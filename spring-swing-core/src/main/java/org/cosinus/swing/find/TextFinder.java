@@ -16,12 +16,15 @@
  */
 package org.cosinus.swing.find;
 
+import lombok.Getter;
+
 import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
  * Abstract class for a text finder
  */
+@Getter
 public abstract class TextFinder {
 
     protected final String inputText;
@@ -36,14 +39,6 @@ public abstract class TextFinder {
     protected TextFinder(String inputText, FindText textToFind) {
         this.inputText = inputText;
         this.textToFind = textToFind;
-    }
-
-    public String getInputText() {
-        return inputText;
-    }
-
-    public FindText getTextToFind() {
-        return textToFind;
     }
 
     /**

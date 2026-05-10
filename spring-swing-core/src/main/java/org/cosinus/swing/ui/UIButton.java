@@ -16,6 +16,11 @@
  */
 package org.cosinus.swing.ui;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class UIButton {
 
     private String id;
@@ -24,27 +29,4 @@ public class UIButton {
 
     private String action;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public String getAction() {
-        return action;
-    }
-
-    public void setAction(String action) {
-        this.action = action;
-    }
 }

@@ -38,14 +38,14 @@ import static org.cosinus.swing.resource.ResourceSource.FILESYSTEM;
 import static org.cosinus.swing.resource.ResourceSource.FILESYSTEM_BEFORE_CLASSPATH;
 
 /**
- * Abstract class for converting json conf file into model.
+ * Abstract class for converting JSON conf file into model.
  * <p>
  * It provides handy tools for converting json files to models
  * and for saving models into json files.
  * <p>
- * The json files are identified by names adn are search using different strategies:
+ * The JSON files are identified by names adn are search using different strategies:
  * <ul>
- * <li>FILESYSTEM: search in filesystem looking in the locations dedicated to the this application</li>
+ * <li>FILESYSTEM: search in filesystem looking in the locations dedicated to the application</li>
  * <li>CLASSPATH: search in the application classpath</li>
  * <li>FILESYSTEM_BEFORE_CLASSPATH: search first in filesystem and next, if not found, in the classpath</li>
  * </ul>
@@ -72,11 +72,11 @@ public abstract class JsonFileConverter<T> {
     }
 
     /**
-     * Convert a json file into a model.
+     * Convert a JSON file into a model.
      * <p>
      * It uses the default resource resolver defined by FILESYSTEM_BEFORE_CLASSPATH to search for the file.
      *
-     * @param name the name to identify the json file
+     * @param name the name to identify the JSON file
      * @return the converted model, or {@link Optional#empty()}
      */
     public Optional<T> convert(String name) {
@@ -84,11 +84,11 @@ public abstract class JsonFileConverter<T> {
     }
 
     /**
-     * Convert a json file into a list of models.
+     * Convert a JSON file into a list of models.
      * <p>
      * It uses the default resource resolver defined by FILESYSTEM_BEFORE_CLASSPATH to search for the file.
      *
-     * @param name the name to identify the json file
+     * @param name the name to identify the JSON file
      * @return the list of models, or {@link Optional#empty()}
      */
     public Optional<List<T>> convertToListOfModels(String name) {
@@ -96,11 +96,11 @@ public abstract class JsonFileConverter<T> {
     }
 
     /**
-     * Convert a json file into a map of models.
+     * Convert a JSON file into a map of models.
      * <p>
      * It uses the default resource resolver defined by FILESYSTEM_BEFORE_CLASSPATH to search for the file.
      *
-     * @param name the name to identify the json file
+     * @param name the name to identify the JSON file
      * @return the map of models, or {@link Optional#empty()}
      */
     public Optional<Map<String, T>> convertToMapOfModels(String name) {
@@ -108,12 +108,12 @@ public abstract class JsonFileConverter<T> {
     }
 
     /**
-     * Convert a json file into a model.
+     * Convert a JSON file into a model.
      * <p>
      * It uses the given resource source to search for the file.
      *
      * @param resourceSource the resource source to search for the file
-     * @param name           the name to identify the json file
+     * @param name           the name to identify the JSON file
      * @return the converted model, or {@link Optional#empty()}
      */
     public Optional<T> convert(ResourceSource resourceSource, String name) {
@@ -121,12 +121,12 @@ public abstract class JsonFileConverter<T> {
     }
 
     /**
-     * Convert a json file into a list of model.
+     * Convert a JSON file into a list of model.
      * <p>
      * It uses the given resource source to search for the file.
      *
      * @param resourceSource the resource source to search for the file
-     * @param name           the name to identify the json file
+     * @param name           the name to identify the JSON file
      * @return the converted list of models, or {@link Optional#empty()}
      */
     public Optional<List<T>> convertToListOfModels(ResourceSource resourceSource, String name) {
@@ -134,12 +134,12 @@ public abstract class JsonFileConverter<T> {
     }
 
     /**
-     * Convert a json file into a map of model.
+     * Convert a JSON file into a map of model.
      * <p>
      * It uses the given resource source to search for the file.
      *
      * @param resourceSource the resource source to search for the file
-     * @param name           the name to identify the json file
+     * @param name           the name to identify the JSON file
      * @return the converted map of models, or {@link Optional#empty()}
      */
     public Optional<Map<String, T>> convertToMapOfModels(ResourceSource resourceSource, String name) {
@@ -147,12 +147,12 @@ public abstract class JsonFileConverter<T> {
     }
 
     /**
-     * Convert a json file into a model.
+     * Convert a JSON file into a model.
      * <p>
      * It uses the given resource source to search for the file.
      *
      * @param resourceSource the resource source to search for the file
-     * @param name           the name to identify the json file
+     * @param name           the name to identify the JSON file
      * @param mapper         the mapper used to convert the bytes array read from to file to the model
      * @param <P>            the type of the model
      * @return the converted model, or {@link Optional#empty()}
@@ -175,7 +175,7 @@ public abstract class JsonFileConverter<T> {
     }
 
     /**
-     * Converts a json bytes array to a model.
+     * Converts a JSON bytes array to a model.
      *
      * @param bytes the bytes to convert
      * @return the converted model
@@ -191,7 +191,7 @@ public abstract class JsonFileConverter<T> {
     }
 
     /**
-     * Converts a json bytes array to a list of models.
+     * Converts a JSON bytes array to a list of models.
      *
      * @param bytes the bytes to convert
      * @return the converted list of models
@@ -209,7 +209,7 @@ public abstract class JsonFileConverter<T> {
     }
 
     /**
-     * Converts a json bytes array to a map of models.
+     * Converts a JSON bytes array to a map of models.
      *
      * @param bytes the bytes to convert
      * @return the converted map of models
@@ -227,9 +227,9 @@ public abstract class JsonFileConverter<T> {
     }
 
     /**
-     * Saves a model to json file.
+     * Saves a model to JSON file.
      *
-     * @param name  the name to identify the json file
+     * @param name  the name to identify the JSON file
      * @param model the model to save
      * @throws IOException if an IO error occurs
      */
@@ -240,9 +240,9 @@ public abstract class JsonFileConverter<T> {
     }
 
     /**
-     * Saves a list of models to json file.
+     * Saves a list of models to JSON file.
      *
-     * @param name   the name to identify the json file
+     * @param name   the name to identify the JSON file
      * @param models the list of models to save
      * @throws IOException if an IO error occurs
      */
@@ -253,9 +253,9 @@ public abstract class JsonFileConverter<T> {
     }
 
     /**
-     * Saves a map of models to json file.
+     * Saves a map of models to JSON file.
      *
-     * @param name      the name to identify the json file
+     * @param name      the name to identify the JSON file
      * @param modelsMap the map of models to save
      * @throws IOException if an IO error occurs
      */
@@ -266,9 +266,9 @@ public abstract class JsonFileConverter<T> {
     }
 
     /**
-     * Delete the corresponding json file identified by a name.
+     * Delete the corresponding JSON file identified by a name.
      *
-     * @param name the name to identify the json file
+     * @param name the name to identify the JSON file
      * @return true if the file was deleted, false otherwise
      * @throws IOException if an IO error occurs
      */
@@ -303,7 +303,7 @@ public abstract class JsonFileConverter<T> {
     }
 
     /**
-     * Write a model an output stream as json.
+     * Write a model an output stream as JSON.
      *
      * @param output the output stream to write to
      * @param model  the model to write

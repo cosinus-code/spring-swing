@@ -17,8 +17,7 @@
 
 package org.cosinus.swing.image.icon;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.cosinus.swing.color.Colors;
 import org.cosinus.swing.icon.IconSize;
 import org.cosinus.swing.image.ImageHandler;
@@ -54,9 +53,8 @@ import static org.cosinus.swing.image.ImageSettings.QUALITY;
 /**
  * Icons handler
  */
+@Slf4j
 public class IconHandler {
-
-    private static final Logger LOG = LogManager.getLogger(IconHandler.class);
 
     private static final String SPRING_SWING_ICONS_CACHE_NAME = "spring.swing.icons";
 
@@ -107,6 +105,7 @@ public class IconHandler {
                 .map(icon -> rounded ? toCircularIcon(icon, size) : icon));
     }
 
+    @SuppressWarnings("HttpUrlsUsage")
     protected boolean isUrl(String text) {
         return ofNullable(text)
             .map(url -> url.startsWith("http://")
@@ -195,7 +194,7 @@ public class IconHandler {
 
     @CacheEvict(value = SPRING_SWING_ICONS_CACHE_NAME, allEntries = true, beforeInvocation = true)
     public void resetIcons() {
-        LOG.info("'{}' cache evicted due to icon theme changed.", SPRING_SWING_ICONS_CACHE_NAME);
+        log.info("'{}' cache evicted due to icon theme changed.", SPRING_SWING_ICONS_CACHE_NAME);
         iconProvider.initialize();
     }
 

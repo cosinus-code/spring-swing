@@ -17,13 +17,12 @@
 
 package org.cosinus.swing.boot.initialize;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.cosinus.swing.ui.UIProperties;
+import lombok.extern.slf4j.Slf4j;
 import org.cosinus.swing.preference.Preference;
 import org.cosinus.swing.preference.Preferences;
 import org.cosinus.swing.resource.ClasspathResourceResolver;
 import org.cosinus.swing.ui.ApplicationUIHandler;
+import org.cosinus.swing.ui.UIProperties;
 import org.cosinus.swing.ui.dark.DarkLookAndFeel;
 import org.cosinus.swing.ui.listener.UIThemeProvider;
 
@@ -40,9 +39,8 @@ import static org.cosinus.swing.preference.Preferences.LOOK_AND_FEEL;
 /**
  * Implementation of {@link ApplicationInitializer} for initializing the application theme.
  */
+@Slf4j
 public class LookAndFeelInitializer implements ApplicationInitializer {
-
-    private static final Logger LOG = LogManager.getLogger(LookAndFeelInitializer.class);
 
     private final UIProperties uiProperties;
 
@@ -95,7 +93,7 @@ public class LookAndFeelInitializer implements ApplicationInitializer {
 
     private void setLookAndFeel(String lookAndFeelClassName) {
         if (!uiHandler.getLookAndFeel().equals(lookAndFeelClassName)) {
-            LOG.info("Initializing application look-and-feel to {}...", lookAndFeelClassName);
+            log.info("Initializing application look-and-feel to {}...", lookAndFeelClassName);
             uiHandler.setLookAndFeel(lookAndFeelClassName);
             customizeLookAndFeel(lookAndFeelClassName);
 

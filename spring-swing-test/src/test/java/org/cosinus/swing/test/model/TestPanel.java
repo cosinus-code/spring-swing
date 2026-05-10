@@ -17,16 +17,15 @@
 
 package org.cosinus.swing.test.model;
 
+import lombok.Getter;
 import org.cosinus.swing.form.Panel;
 import org.cosinus.swing.store.ApplicationStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@Getter
 public class TestPanel extends Panel {
 
     @Autowired
     private ApplicationStorage applicationStorage;
 
-    public ApplicationStorage getApplicationStorage() {
-        return applicationStorage;
-    }
 }

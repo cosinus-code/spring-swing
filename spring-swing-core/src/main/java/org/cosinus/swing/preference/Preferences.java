@@ -17,8 +17,8 @@
 
 package org.cosinus.swing.preference;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.cosinus.swing.preference.impl.BooleanPreference;
 import org.cosinus.swing.preference.impl.ColorPreference;
 import org.cosinus.swing.preference.impl.FilePreference;
@@ -45,9 +45,9 @@ import static java.util.stream.Collectors.toMap;
 /**
  * Application preferences handler.
  */
+@Getter
+@Slf4j
 public class Preferences {
-
-    private static final Logger LOG = LogManager.getLogger(Preferences.class);
 
     public static final String LOOK_AND_FEEL = "look-and-feel";
     public static final String LANGUAGE = "language";
@@ -57,7 +57,7 @@ public class Preferences {
     private final Map<String, Preference> preferencesMap;
 
     public Preferences() {
-        LOG.info("No preferences for this application.");
+        log.info("No preferences for this application.");
         preferenceSetsMap = new HashMap<>();
         preferencesMap = new HashMap<>();
     }
@@ -127,14 +127,6 @@ public class Preferences {
 
     public boolean booleanPreference(String key) {
         return findBooleanPreference(key).orElse(false);
-    }
-
-    public Map<String, Preference> getPreferencesMap() {
-        return preferencesMap;
-    }
-
-    public Map<String, PreferencesSet> getPreferenceSetsMap() {
-        return preferenceSetsMap;
     }
 
     public void setAvailableLanguages(Collection<Locale> locales) {

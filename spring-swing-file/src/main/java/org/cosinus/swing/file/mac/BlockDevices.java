@@ -27,6 +27,7 @@ import java.util.List;
 @Setter
 public class BlockDevices {
 
+    @SuppressWarnings("SpellCheckingInspection")
     @JsonProperty("blockdevices")
     private List<BlockDevice> blockDevices;
 

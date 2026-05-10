@@ -61,6 +61,7 @@ public class LocalOAuth2AuthenticationReceiver implements OAuth2AuthenticationRe
     @Getter
     private String state;
 
+    @Getter
     private String scope;
 
     final Semaphore waitUnlessSignaled = new Semaphore(0);

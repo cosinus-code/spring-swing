@@ -25,12 +25,4 @@ public class TestTable extends Table {
 
     @Autowired
     public ApplicationStorage applicationStorage;
-
-    @Override
-    public void initComponents() {
-    }
-
-    @Override
-    public void translate() {
-    }
 }

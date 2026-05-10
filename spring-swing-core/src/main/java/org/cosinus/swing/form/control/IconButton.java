@@ -17,8 +17,9 @@
 
 package org.cosinus.swing.form.control;
 
-import lombok.Getter;import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;import org.cosinus.swing.dialog.DialogHandler;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.cosinus.swing.dialog.DialogHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;

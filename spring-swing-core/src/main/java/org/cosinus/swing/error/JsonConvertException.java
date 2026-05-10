@@ -20,7 +20,7 @@ package org.cosinus.swing.error;
 import java.io.Serial;
 
 /**
- * Json convert dedicated exception
+ * JSON convert dedicated exception
  */
 public class JsonConvertException extends RuntimeException {
 

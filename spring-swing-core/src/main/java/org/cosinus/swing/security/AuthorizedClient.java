@@ -19,6 +19,8 @@ package org.cosinus.swing.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
@@ -32,6 +34,8 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static java.time.Instant.ofEpochMilli;
 import static java.util.Optional.ofNullable;
 
+@Setter
+@Getter
 @JsonInclude(NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AuthorizedClient implements Serializable {
@@ -110,83 +114,4 @@ public class AuthorizedClient implements Serializable {
             getDetails());
     }
 
-    public String getRegistrationId() {
-        return registrationId;
-    }
-
-    public void setRegistrationId(String registrationId) {
-        this.registrationId = registrationId;
-    }
-
-    public String getPrincipalName() {
-        return principalName;
-    }
-
-    public void setPrincipalName(String principalName) {
-        this.principalName = principalName;
-    }
-
-    public String getAccessTokenType() {
-        return accessTokenType;
-    }
-
-    public void setAccessTokenType(String accessTokenType) {
-        this.accessTokenType = accessTokenType;
-    }
-
-    public String getAccessTokenValue() {
-        return accessTokenValue;
-    }
-
-    public void setAccessTokenValue(String accessTokenValue) {
-        this.accessTokenValue = accessTokenValue;
-    }
-
-    public long getAccessTokenIssuedIn() {
-        return accessTokenIssuedIn;
-    }
-
-    public void setAccessTokenIssuedIn(long accessTokenIssuedIn) {
-        this.accessTokenIssuedIn = accessTokenIssuedIn;
-    }
-
-    public long getAccessTokenExpiresIn() {
-        return accessTokenExpiresIn;
-    }
-
-    public void setAccessTokenExpiresIn(long accessTokenExpiresIn) {
-        this.accessTokenExpiresIn = accessTokenExpiresIn;
-    }
-
-    public String getRefreshTokenValue() {
-        return refreshTokenValue;
-    }
-
-    public void setRefreshTokenValue(String refreshToken) {
-        this.refreshTokenValue = refreshToken;
-    }
-
-    public long getRefreshTokenIssuedIn() {
-        return refreshTokenIssuedIn;
-    }
-
-    public void setRefreshTokenIssuedIn(long refreshTokenIssuedIn) {
-        this.refreshTokenIssuedIn = refreshTokenIssuedIn;
-    }
-
-    public long getRefreshTokenExpiresIn() {
-        return refreshTokenExpiresIn;
-    }
-
-    public void setRefreshTokenExpiresIn(long refreshTokenExpiresIn) {
-        this.refreshTokenExpiresIn = refreshTokenExpiresIn;
-    }
-
-    public Map<String, Object> getDetails() {
-        return details;
-    }
-
-    public void setDetails(Map<String, Object> details) {
-        this.details = details;
-    }
 }

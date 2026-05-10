@@ -17,8 +17,7 @@
 
 package org.cosinus.swing.image.icon;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.cosinus.swing.context.ApplicationProperties;
 import org.cosinus.swing.file.mimetype.MimeTypeResolver;
 import org.cosinus.swing.icon.IconSize;
@@ -31,7 +30,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.util.Collections.singletonList;
@@ -43,9 +44,8 @@ import static org.cosinus.swing.icon.IconSize.*;
 /**
  * Implementation of {@link IconProvider} for Linux
  */
+@Slf4j
 public class LinuxIconProvider implements IconProvider {
-
-    private static final Logger LOG = LogManager.getLogger(LinuxIconProvider.class);
 
     private final ApplicationProperties applicationProperties;
 
@@ -209,11 +209,11 @@ public class LinuxIconProvider implements IconProvider {
 
     protected Optional<Icon> createIcon(File file) {
         try {
-            LOG.debug("Create icon from file: {}", file.getAbsolutePath());
+            log.debug("Create icon from file: {}", file.getAbsolutePath());
             return ofNullable(read(file))
                 .map(ImageIcon::new);
         } catch (IOException e) {
-            LOG.error("Failed to create icon from file: {}", file.getAbsolutePath(), e);
+            log.error("Failed to create icon from file: {}", file.getAbsolutePath(), e);
             return Optional.empty();
         }
     }
@@ -249,8 +249,8 @@ public class LinuxIconProvider implements IconProvider {
         iconsThemeFolder
             .map(File::getAbsolutePath)
             .ifPresentOrElse(
-                path -> LOG.info("Path to icons resolved: {}", path),
-                () -> LOG.warn("Path to icons unresolved"));
+                path -> log.info("Path to icons resolved: {}", path),
+                () -> log.warn("Path to icons unresolved"));
 
         return iconsThemeFolder;
     }

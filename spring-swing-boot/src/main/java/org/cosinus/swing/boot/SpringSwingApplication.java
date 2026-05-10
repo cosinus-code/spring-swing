@@ -17,6 +17,7 @@
 
 package org.cosinus.swing.boot;
 
+import lombok.Setter;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -36,12 +37,19 @@ import static org.springframework.boot.WebApplicationType.NONE;
  * To cut as much the load at startup, also the banner mode if off.
  * <p>
  * Keeping the application class as static field is a compromise
- * for rare cases when you need an unique class which identify the application
+ * for rare cases when you need a unique class which identify the application
  */
+@Setter
 public class SpringSwingApplication extends SpringApplication {
 
     public static Class<?> applicationClass;
 
+    /**
+     * -- SETTER --
+     *  Set if the application should log the startup progress.
+     *
+     * @param logStartupProgress true if the application should log the startup progress
+     */
     private boolean logStartupProgress;
 
     public SpringSwingApplication(Class<?>... sources) {
@@ -100,7 +108,7 @@ public class SpringSwingApplication extends SpringApplication {
      * Log the application startup progress.
      * <p>
      * If the application is started with -log-startup-progress argument,
-     * the the whole startup progress will be logged by this method.
+     * the whole startup progress will be logged by this method.
      *
      * @param percent the current percent
      * @param status the current status
@@ -111,12 +119,4 @@ public class SpringSwingApplication extends SpringApplication {
         }
     }
 
-    /**
-     * Set if the application should log the startup progress.
-     *
-     * @param logStartupProgress true if the application should log the startup progress
-     */
-    public void setLogStartupProgress(boolean logStartupProgress) {
-        this.logStartupProgress = logStartupProgress;
-    }
 }

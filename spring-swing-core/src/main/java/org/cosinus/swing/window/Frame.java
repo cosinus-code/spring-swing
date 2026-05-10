@@ -87,14 +87,17 @@ public class Frame extends JFrame implements Window, FormComponent {
         injectContext(this);
         if (windowSettings == null) {
             windowSettings = new WindowSettings(
-                ofNullable(applicationProperties.getFrame().getName())
+                ofNullable(applicationProperties.getFrame())
+                    .map(ApplicationProperties.Frame::getName)
                     .orElseGet(this::getWindowName),
                 applicationProperties.getName(),
                 applicationProperties.getIcon(),
                 applicationProperties.getMenu());
         }
 
-        windowSettingsHandler.loadWindowSettings(windowSettings);
+        if (windowSettingsHandler != null) {
+            windowSettingsHandler.loadWindowSettings(windowSettings);
+        }
 
         initFrameNameAndIcon();
         initPositionAndSize();

@@ -30,6 +30,7 @@ public interface OAuth2AuthenticationReceiver extends AutoCloseable {
 
     String CALLBACK_PATH = "/Callback";
 
+    @SuppressWarnings("HttpUrlsUsage")
     String REDIRECT_URI_PATTERN = "http://%s:%d%s";
 
     /**

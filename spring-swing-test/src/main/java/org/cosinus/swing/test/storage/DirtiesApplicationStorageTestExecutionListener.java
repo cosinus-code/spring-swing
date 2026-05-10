@@ -17,8 +17,7 @@
 
 package org.cosinus.swing.test.storage;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.cosinus.swing.store.ApplicationStorage;
 import org.springframework.beans.BeansException;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -37,9 +36,8 @@ import static java.util.Optional.ofNullable;
  * The cleanup is done even if {@link DirtiesApplicationStorage} is not present.
  * Only the value <code>false</code> for {@link DirtiesApplicationStorage} don't trigger the cleanup.
  */
+@Slf4j
 public class DirtiesApplicationStorageTestExecutionListener extends AbstractTestExecutionListener {
-
-    private static final Logger LOG = LogManager.getLogger(DirtiesApplicationStorageTestExecutionListener.class);
 
     /**
      * Perform application storage cleanup.
@@ -48,10 +46,13 @@ public class DirtiesApplicationStorageTestExecutionListener extends AbstractTest
      */
     protected void cleanupApplicationStorage(TestContext testContext) {
         try {
-            ApplicationStorage applicationStorage = testContext.getApplicationContext().getBean(ApplicationStorage.class);
-            applicationStorage.clear();
+            testContext
+                .getApplicationContext()
+                .getBean(ApplicationStorage.class)
+                .clear();
         } catch (BeansException ex) {
-            LOG.error("Cannot find ApplicationStorage bean in context for cleaning test annotated with @DirtiesApplicationStorage", ex);
+            log.error("Cannot find ApplicationStorage bean in context for cleaning test annotated with " +
+                "@DirtiesApplicationStorage", ex);
         }
     }
 
@@ -70,13 +71,16 @@ public class DirtiesApplicationStorageTestExecutionListener extends AbstractTest
                 .orElse(true);
 
         if (dirtiesApplicationStorage) {
-            if (LOG.isDebugEnabled()) {
+            if (log.isDebugEnabled()) {
                 if (methodAnnotation != null) {
-                    LOG.debug(String.format("After test method: context %s, method annotated with @DirtiesApplicationStorage.", testContext));
+                    log.debug("After test method: context {}, method annotated with @DirtiesApplicationStorage.",
+                        testContext);
                 } else if (classAnnotation != null) {
-                    LOG.debug(String.format("After test method: context %s, class annotated with @DirtiesApplicationStorage.", testContext));
+                    log.debug("After test method: context {}, class annotated with @DirtiesApplicationStorage.",
+                        testContext);
                 } else {
-                    LOG.debug(String.format("After test method: context %s, no @DirtiesApplicationStorage annotation.", testContext));
+                    log.debug("After test method: context {}, no @DirtiesApplicationStorage annotation.",
+                        testContext);
                 }
             }
             cleanupApplicationStorage(testContext);
@@ -94,11 +98,13 @@ public class DirtiesApplicationStorageTestExecutionListener extends AbstractTest
                 .orElse(true);
 
         if (dirtiesApplicationStorage) {
-            if (LOG.isDebugEnabled()) {
+            if (log.isDebugEnabled()) {
                 if (classAnnotation != null) {
-                    LOG.debug(String.format("After test class: context %s, class annotated with @DirtiesApplicationStorage.", testContext));
+                    log.debug("After test class: context {}, class annotated with @DirtiesApplicationStorage.",
+                        testContext);
                 } else {
-                    LOG.debug(String.format("After test class: context %s, no @DirtiesApplicationStorage annotation.", testContext));
+                    log.debug("After test class: context {}, no @DirtiesApplicationStorage annotation.",
+                        testContext);
                 }
             }
             cleanupApplicationStorage(testContext);

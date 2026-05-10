@@ -94,7 +94,7 @@ public class SpringSwingBootTestContextBootstrapper extends SpringBootTestContex
             mergedContextConfiguration.getClasses(),
             mergedContextConfiguration.getContextInitializerClasses(),
             mergedContextConfiguration.getActiveProfiles(),
-            mergedContextConfiguration.getPropertySourceLocations(),
+            mergedContextConfiguration.getPropertySourceDescriptors(),
             mergedContextConfiguration.getPropertySourceProperties(),
             contextCustomizers,
             mergedContextConfiguration.getContextLoader(),

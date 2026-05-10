@@ -17,8 +17,7 @@
 
 package org.cosinus.swing.util;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,8 +31,8 @@ import static java.util.stream.Collectors.joining;
 /**
  * Windows native utils
  */
+@Slf4j
 public class WindowsUtils {
-    private static final Logger LOG = LogManager.getLogger(WindowsUtils.class);
 
     private static final String REG_QUERY = "reg query ";
     private static final String REG_STR_TOKEN = "REG_SZ";
@@ -55,10 +54,12 @@ public class WindowsUtils {
      *
      * @param register the register
      * @param key      the key
-     * @return the value from registry, or Optional.empty
+     * @return the value from registry, or empty
      */
     public static Optional<String> getRegistryValue(String register, String key) {
-        String exec = REG_QUERY + "\"" + register + "\" " + (key == null ? "/ve" : "/v " + key);
+        String[] exec = key == null ?
+            new String[] {REG_QUERY , register, "/ve"} :
+            new String[] {REG_QUERY , register, "/v ", key};
         try (BufferedReader buff = new BufferedReader(new InputStreamReader(Runtime.getRuntime()
             .exec(exec)
             .getInputStream()))) {
@@ -71,7 +72,7 @@ public class WindowsUtils {
                 }
             }
         } catch (IOException ex) {
-            LOG.error("Failed to execute command: " + exec, ex);
+            log.error("Failed to execute command: {}", exec, ex);
         }
         return Optional.empty();
     }

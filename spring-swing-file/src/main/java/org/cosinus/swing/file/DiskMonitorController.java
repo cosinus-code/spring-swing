@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
 
 public class DiskMonitorController {
 
@@ -61,6 +60,7 @@ public class DiskMonitorController {
             throw new UncheckedIOException(ex);
         }
     }
+
     public void register(final DiskEventListener listener) {
         this.listeners.add(listener);
     }

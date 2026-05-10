@@ -42,8 +42,9 @@ public class MacDiskMonitor implements DiskMonitor {
         this.processExecutor = processExecutor;
     }
 
-    @Override
     @Async
+    @Override
+    @SuppressWarnings("SpellCheckingInspection")
     public void start(final DiskMonitorController controller) throws IOException {
         process = processExecutor.startProcess("diskutil", "activity");
         process.monitorOutput(

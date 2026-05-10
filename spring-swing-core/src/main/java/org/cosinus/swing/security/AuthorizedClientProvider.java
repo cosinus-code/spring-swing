@@ -76,7 +76,6 @@ public class AuthorizedClientProvider extends JsonFileConverter<AuthorizedClient
             }
 
             // create new file (if necessary)
-            Map<String, AuthorizedClient> authorizedClientsMap;
             if (!storeFile.exists()) {
                 ofNullable(storeFile.getParentFile())
                     .ifPresent(File::mkdirs);

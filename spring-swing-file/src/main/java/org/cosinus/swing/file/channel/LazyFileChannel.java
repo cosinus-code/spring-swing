@@ -32,7 +32,7 @@ public class LazyFileChannel extends FileChannelDelegate {
 
     public static final int DEFAULT_PAGE_CONT = 3;
 
-    protected ByteBuffer buffer;
+    protected final ByteBuffer buffer;
 
     private long bufferStart = -1;
 

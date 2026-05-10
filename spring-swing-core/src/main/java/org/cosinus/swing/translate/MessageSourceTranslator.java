@@ -16,10 +16,9 @@
  */
 package org.cosinus.swing.translate;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.LocaleUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.resource.DefaultResourceResolver;
 import org.springframework.context.MessageSource;
 
@@ -36,9 +35,8 @@ import static org.cosinus.swing.resource.ResourceType.I18N;
 /**
  * Implementation of {@link Translator}  based on Spring {@link MessageSource}.
  */
+@Slf4j
 public class MessageSourceTranslator implements Translator {
-
-    private static final Logger LOG = LogManager.getLogger(MessageSourceTranslator.class);
 
     private final MessageSource messageSource;
 
@@ -65,7 +63,7 @@ public class MessageSourceTranslator implements Translator {
      */
     @Override
     public void init(Locale locale) {
-        LOG.debug("Setting translation to locale " + locale);
+        log.debug("Setting translation to locale {}", locale);
         this.locale = locale;
     }
 

@@ -17,6 +17,7 @@
 
 package org.cosinus.swing.dialog;
 
+import lombok.Setter;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.swing.*;
@@ -32,6 +33,7 @@ import static javax.swing.BorderFactory.createEmptyBorder;
 /**
  * Custom Dialog with options to choose
  */
+@Setter
 public class OptionsDialog extends JOptionPane {
 
     private int rows = 1;
@@ -72,10 +74,6 @@ public class OptionsDialog extends JOptionPane {
               icon,
               options,
               initialValue);
-    }
-
-    public void setRows(int rows) {
-        this.rows = rows;
     }
 
     public Object showDialog(Component parentComponent,

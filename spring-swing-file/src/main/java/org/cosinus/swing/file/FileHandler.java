@@ -165,8 +165,8 @@ public class FileHandler {
         return fileSystem.getFileTypeDescription(file.toPath(), file.isDirectory());
     }
 
-    public Optional<String> getTypeDescription(final Path path, boolean isDrectory) {
-        return fileSystem.getFileTypeDescription(path, isDrectory);
+    public Optional<String> getTypeDescription(final Path path, boolean isDirectory) {
+        return fileSystem.getFileTypeDescription(path, isDirectory);
     }
 
     public boolean isLink(final File file) {

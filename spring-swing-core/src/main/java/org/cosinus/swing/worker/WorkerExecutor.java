@@ -65,13 +65,5 @@ public abstract class WorkerExecutor<A extends ActionModel, W extends Worker<?, 
             .isPresent();
     }
 
-//    @Override
-//    public void runInBackground(String copyId) {
-//        Optional.ofNullable(workersMap.get(copyId))
-//                .ifPresent(worker -> {
-//                    //TODO
-//                });
-//    }
-
     protected abstract W createWorker(A actionModel);
 }

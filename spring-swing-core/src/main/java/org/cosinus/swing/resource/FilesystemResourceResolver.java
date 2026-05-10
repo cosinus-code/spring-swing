@@ -17,8 +17,7 @@
 
 package org.cosinus.swing.resource;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.cosinus.swing.context.ApplicationProperties;
 
 import java.io.File;
@@ -39,9 +38,8 @@ import static org.cosinus.swing.resource.ResourceSource.FILESYSTEM;
  * which try to resolve the resources in the filesystem looking the application dedicated locations,
  * usually in "[user.home]/.[application.name]" folder
  */
+@Slf4j
 public class FilesystemResourceResolver implements ResourceResolver {
-
-    private static final Logger LOG = LogManager.getLogger(FilesystemResourceResolver.class);
 
     private final ApplicationProperties applicationProperties;
 
@@ -135,7 +133,7 @@ public class FilesystemResourceResolver implements ResourceResolver {
             .flatMap(this::getFilePath)
             .flatMap(this::fileToBytes);
         if (bytes.isEmpty()) {
-            LOG.debug("Resource not found: " + resourcePath);
+            log.debug("Resource not found: {}", resourcePath);
         }
         return bytes;
     }

@@ -17,6 +17,8 @@
 
 package org.cosinus.swing.icon;
 
+import lombok.Getter;
+
 import java.util.Optional;
 
 import static java.util.Arrays.stream;
@@ -24,6 +26,7 @@ import static java.util.Arrays.stream;
 /**
  * Enum for icon sizes
  */
+@Getter
 public enum IconSize {
     X16(16, "small"),
     X22(22, ""),
@@ -39,14 +42,6 @@ public enum IconSize {
     IconSize(int size, String text) {
         this.size = size;
         this.text = text;
-    }
-
-    public int getSize() {
-        return size;
-    }
-
-    public String getText() {
-        return text;
     }
 
     public static Optional<IconSize> forSize(int size) {

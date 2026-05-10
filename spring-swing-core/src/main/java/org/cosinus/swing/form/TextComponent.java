@@ -20,11 +20,9 @@ package org.cosinus.swing.form;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
 import java.util.Optional;
 
-import static java.awt.event.KeyEvent.*;
 import static java.util.Optional.*;
 
 public interface TextComponent {

@@ -17,6 +17,22 @@
 
 package org.cosinus.swing.file.mimetype;
 
+import lombok.extern.slf4j.Slf4j;
+import net.sf.jmimemagic.MagicException;
+import net.sf.jmimemagic.MagicMatch;
+import net.sf.jmimemagic.MagicMatchNotFoundException;
+import net.sf.jmimemagic.MagicParseException;
+import org.apache.commons.collections4.ListValuedMap;
+import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
+import org.springframework.util.InvalidMimeTypeException;
+import org.springframework.util.MimeType;
+import org.springframework.util.StringUtils;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
+
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.util.Arrays.stream;
 import static java.util.Collections.singletonList;
@@ -25,40 +41,15 @@ import static java.util.Optional.ofNullable;
 import static java.util.function.Predicate.not;
 import static net.sf.jmimemagic.Magic.getMagicMatch;
 import static org.cosinus.swing.util.FileUtils.getExtension;
-import static org.springframework.util.MimeTypeUtils.APPLICATION_OCTET_STREAM;
-import static org.springframework.util.MimeTypeUtils.IMAGE_JPEG;
-import static org.springframework.util.MimeTypeUtils.TEXT_PLAIN;
-import static org.springframework.util.MimeTypeUtils.parseMimeType;
-import static org.springframework.util.StringUtils.getFilenameExtension;
+import static org.springframework.util.MimeTypeUtils.*;
 import static org.springframework.util.StringUtils.tokenizeToStringArray;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.*;
-
-import net.sf.jmimemagic.MagicException;
-import net.sf.jmimemagic.MagicMatch;
-import net.sf.jmimemagic.MagicMatchNotFoundException;
-import net.sf.jmimemagic.MagicParseException;
-import org.apache.commons.collections4.ListValuedMap;
-import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.util.InvalidMimeTypeException;
-import org.springframework.util.MimeType;
-import org.springframework.util.StringUtils;
-
+@Slf4j
 public class MimeTypeResolver {
-
-    private static final Logger LOG = LogManager.getLogger(MimeTypeResolver.class);
 
     private static final String MIME_TYPES_FILE_NAME = "/mime.types";
 
+    @SuppressWarnings("SpellCheckingInspection")
     private static final String SHELL_SCRIPT = "x-shellscript";
 
     private static final MimeType FOLDER = new MimeType("inode", "directory");
@@ -70,6 +61,7 @@ public class MimeTypeResolver {
 
     public static final String AR = "ar";
     public static final String ARJ = "arj";
+    @SuppressWarnings("SpellCheckingInspection")
     public static final String CPIO = "cpio";
     public static final String DUMP = "dump";
     public static final String JAR = "jar";
@@ -85,10 +77,10 @@ public class MimeTypeResolver {
     public static final String SH = "sh";
     public static final String BAT = "bat";
 
-    public static Set<String> ARCHIVE_TYPES =
+    public static final Set<String> ARCHIVE_TYPES =
         Set.of(AR, ARJ, CPIO, DUMP, JAR, RAR, TAR, ZIP, SEVEN_Z, GZ, GZIP, BZ2, BZIP2);
 
-    public static Set<String> SHELL_SCRIPT_TYPES =
+    public static final Set<String> SHELL_SCRIPT_TYPES =
         Set.of(SH, BAT);
 
     private final ListValuedMap<String, MimeType> mimeTypesMap;
@@ -113,18 +105,16 @@ public class MimeTypeResolver {
                         String[] tokens = tokenizeToStringArray(line, " \t\n\r\f");
                         if (tokens.length > 1) {
                             getMimeType(tokens[0])
-                                .ifPresent(mimeType -> {
-                                    stream(tokens, 1, tokens.length)
-                                        .map(extension -> extension.toLowerCase(ENGLISH))
-                                        .forEach(extension -> mimeTypesMap.put(extension,
-                                            mimeType));
-                                });
+                                .ifPresent(mimeType -> stream(tokens, 1, tokens.length)
+                                    .map(extension -> extension.toLowerCase(ENGLISH))
+                                    .forEach(extension -> mimeTypesMap.put(extension,
+                                        mimeType)));
                         }
                     }
                 }
             }
         } catch (IOException e) {
-            LOG.warn("Failed to parse mime types", e);
+            log.warn("Failed to parse mime types", e);
         }
 
         return mimeTypesMap;
@@ -134,7 +124,7 @@ public class MimeTypeResolver {
         try {
             return Optional.of(parseMimeType(text));
         } catch (InvalidMimeTypeException ex) {
-            LOG.warn("Invalid mime type: {}", ex.getMessage());
+            log.warn("Invalid mime type: {}", ex.getMessage());
         }
         return Optional.empty();
     }
@@ -211,7 +201,7 @@ public class MimeTypeResolver {
         try {
             return Files.probeContentType(path);
         } catch (IOException ex) {
-            LOG.error("Failed to probe the file content type for path: {}", path);
+            log.error("Failed to probe the file content type for path: {}", path);
             return null;
         }
     }
@@ -222,7 +212,7 @@ public class MimeTypeResolver {
                 .map(MagicMatch::getMimeType)
                 .flatMap(this::getMimeType);
         } catch (MagicMatchNotFoundException | MagicException | MagicParseException e) {
-            LOG.error("Failed to match a mime type for path: {}", file);
+            log.error("Failed to match a mime type for path: {}", file);
             return Optional.empty();
         }
     }

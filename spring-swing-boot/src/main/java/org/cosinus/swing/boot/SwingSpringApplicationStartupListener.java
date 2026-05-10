@@ -24,7 +24,7 @@ import org.springframework.context.ApplicationContext;
 
 /**
  * Listener for swing spring application startup.
- * It listen for basic spring application startup events from {@link SpringApplicationRunListener}
+ * It listens for basic spring application startup events from {@link SpringApplicationRunListener}
  * along with custom {@link ApplicationContextCreationEvent} and {@link ApplicationFrameEvent}
  */
 public interface SwingSpringApplicationStartupListener extends SpringApplicationRunListener {

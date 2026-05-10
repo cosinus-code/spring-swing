@@ -17,29 +17,28 @@
 
 package org.cosinus.swing.image.icon;
 
-import static java.util.Optional.ofNullable;
-
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.Optional;
-import javax.imageio.ImageIO;
-import javax.swing.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.imaging.formats.icns.IcnsImageParser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.cosinus.swing.file.api.Application;
 import org.cosinus.swing.file.api.FileCompatibleApplications;
 import org.cosinus.swing.file.api.FileSystem;
 import org.cosinus.swing.icon.IconSize;
 import org.cosinus.swing.image.ImageHandler;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.Optional;
+
+import static java.util.Optional.ofNullable;
+
 /**
  * Implementation of {@link IconProvider} for Mac
  */
+@Slf4j
 public class MacIconProvider implements IconProvider {
-
-    private static final Logger LOG = LogManager.getLogger(MacIconProvider.class);
 
     private final FileSystem fileSystem;
 
@@ -104,7 +103,7 @@ public class MacIconProvider implements IconProvider {
                         image :
                         imageHandler.scaleImage(image, size.getSize()));
         } catch (IOException e) {
-            LOG.warn("Cannot read image of size {} from icns file {}",
+            log.warn("Cannot read image of size {} from icns file {}",
                 size.getSize(), imageFile.getPath());
             return Optional.empty();
         }
@@ -115,8 +114,7 @@ public class MacIconProvider implements IconProvider {
             return Optional.of(ImageIO.read(imageFile))
                 .map(image -> imageHandler.scaleImage(image, size.getSize()));
         } catch (IOException e) {
-            LOG.warn(String.format("Cannot read image of size %s from file %s",
-                size.getSize(), imageFile.getPath()));
+            log.warn("Cannot read image of size {} from file {}", size.getSize(), imageFile.getPath());
             return Optional.empty();
         }
     }

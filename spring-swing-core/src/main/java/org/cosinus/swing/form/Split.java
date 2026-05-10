@@ -17,8 +17,8 @@
 
 package org.cosinus.swing.form;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.cosinus.swing.store.ApplicationStorage;
 import org.cosinus.swing.translate.Translator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +35,8 @@ import static org.cosinus.swing.context.ApplicationContextInjector.injectContext
  * Extension of the {@link JSplitPane}
  * which will automatically inject the application context.
  */
+@Slf4j
 public class Split extends JSplitPane implements FormComponent {
-
-    private static final Logger LOG = LogManager.getLogger(Split.class);
 
     private static final String SPLIT = "split";
 
@@ -53,6 +52,7 @@ public class Split extends JSplitPane implements FormComponent {
 
     protected BasicSplitPaneDivider divider;
 
+    @Setter
     protected boolean keepRelativeLocationOnResize;
 
     private final int defaultDividerLocation;
@@ -61,10 +61,6 @@ public class Split extends JSplitPane implements FormComponent {
         injectContext(this);
         this.splitName = splitName;
         this.defaultDividerLocation = defaultDividerLocation;
-    }
-
-    public void setKeepRelativeLocationOnResize(boolean keepRelativeLocationOnResize) {
-        this.keepRelativeLocationOnResize = keepRelativeLocationOnResize;
     }
 
     public void initComponent() {
@@ -83,7 +79,7 @@ public class Split extends JSplitPane implements FormComponent {
                     saveDividerLocation(Integer.parseInt(event.getNewValue().toString()));
                 }
             } catch (Exception ex) {
-                LOG.error("Cannot save divider location", ex);
+                log.error("Cannot save divider location", ex);
             }
         });
     }
@@ -123,17 +119,8 @@ public class Split extends JSplitPane implements FormComponent {
         if (visible) {
             loadDividerLocation();
         }
-        if (divider != null)
-        {
+        if (divider != null) {
             divider.setVisible(visible);
         }
-    }
-
-    @Override
-    public void initComponents() {
-    }
-
-    @Override
-    public void translate() {
     }
 }

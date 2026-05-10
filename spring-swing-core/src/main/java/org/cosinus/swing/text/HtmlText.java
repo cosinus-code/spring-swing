@@ -34,7 +34,7 @@ public interface HtmlText {
     String getHtml();
 
     /**
-     * Get the text as html.
+     * Get the text as HTML.
      *
      * @return the text as HTML
      */

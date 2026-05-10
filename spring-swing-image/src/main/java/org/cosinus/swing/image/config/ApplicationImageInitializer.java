@@ -18,8 +18,7 @@
 package org.cosinus.swing.image.config;
 
 import com.twelvemonkeys.imageio.plugins.svg.SVGImageReaderSpi;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.cosinus.swing.boot.initialize.ApplicationInitializer;
 import org.cosinus.swing.image.icon.IconInitializer;
 import org.cosinus.swing.image.svg.SvgImageReaderSpi;
@@ -33,9 +32,8 @@ import static org.cosinus.stream.Streams.stream;
 /**
  * Swing UI initializer
  */
+@Slf4j
 public class ApplicationImageInitializer implements ApplicationInitializer {
-
-    private static final Logger LOG = LogManager.getLogger(ApplicationImageInitializer.class);
 
     private final IconInitializer iconInitializer;
 
@@ -49,7 +47,7 @@ public class ApplicationImageInitializer implements ApplicationInitializer {
 
     @Override
     public void initialize() {
-        LOG.info("Initializing application image handlers...");
+        log.info("Initializing application image handlers...");
         initializeImages();
     }
 
@@ -69,7 +67,7 @@ public class ApplicationImageInitializer implements ApplicationInitializer {
                 .forEach(registry::deregisterServiceProvider);
             registry.registerServiceProvider(new SvgImageReaderSpi());
         } catch (Exception e) {
-            LOG.warn("Error deregistering svg image reader", e);
+            log.warn("Error deregistering svg image reader", e);
         }
     }
 

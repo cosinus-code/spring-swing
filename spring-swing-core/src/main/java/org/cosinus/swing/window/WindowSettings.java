@@ -17,6 +17,8 @@
 
 package org.cosinus.swing.window;
 
+import lombok.Getter;
+
 /**
  * Encapsulates the info about window
  */
@@ -26,20 +28,28 @@ public class WindowSettings {
 
     public static final int DEFAULT_HEIGHT = 600;
 
+    @Getter
     private final String name;
 
+    @Getter
     private final String title;
 
+    @Getter
     private String icon;
 
+    @Getter
     private String menu;
 
+    @Getter
     private int x;
 
+    @Getter
     private int y;
 
+    @Getter
     private int width = DEFAULT_WIDTH;
 
+    @Getter
     private int height = DEFAULT_HEIGHT;
 
     private Integer oldX;
@@ -50,10 +60,13 @@ public class WindowSettings {
 
     private Integer oldHeight;
 
+    @Getter
     private boolean maximized;
 
+    @Getter
     private boolean centered = true;
 
+    @Getter
     private boolean exitOnEscape;
 
     public WindowSettings(String name,
@@ -72,38 +85,6 @@ public class WindowSettings {
         this.menu = menu;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public String getMenu() {
-        return menu;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
     public WindowSettings setPosition(int x, int y) {
         this.oldX = this.x;
         this.oldY = this.y;
@@ -120,26 +101,14 @@ public class WindowSettings {
         return this;
     }
 
-    public boolean isMaximized() {
-        return maximized;
-    }
-
     public WindowSettings setMaximized(boolean maximized) {
         this.maximized = maximized;
         return this;
     }
 
-    public boolean isCentered() {
-        return centered;
-    }
-
     public WindowSettings setCentered(boolean centered) {
         this.centered = centered;
         return this;
-    }
-
-    public boolean isExitOnEscape() {
-        return exitOnEscape;
     }
 
     public WindowSettings setExitOnEscape(boolean exitOnEscape) {

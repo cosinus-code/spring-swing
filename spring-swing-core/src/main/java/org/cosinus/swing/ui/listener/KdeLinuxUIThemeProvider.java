@@ -29,12 +29,16 @@ import java.util.stream.Stream;
 @Slf4j
 public class KdeLinuxUIThemeProvider implements UIThemeProvider {
 
+    @SuppressWarnings("SpellCheckingInspection")
     private static final String KDE_GLOBALS = "kdeglobals";
 
+    @SuppressWarnings("SpellCheckingInspection")
     private static final String KDE_INPUT = "kcminputrc";
 
+    @SuppressWarnings("SpellCheckingInspection")
     private static final String KDE_PLASMA = "plasmarc";
 
+    @SuppressWarnings("SpellCheckingInspection")
     private static final String KDE_READ_CONFIG = "kreadconfig";
 
     private static final String KDE_READ_CONFIG_FILE = "--file";
@@ -120,6 +124,7 @@ public class KdeLinuxUIThemeProvider implements UIThemeProvider {
     protected String kdeReadConfig() {
         if (kdeReadConfig == null) {
             try {
+                //noinspection SpellCheckingInspection
                 kdeReadConfig = processExecutor.executePipelineAndGetOutput(
                         Command.of("plasmashell", "--version"),
                         Command.of("grep", "-oE", "[0-9]+"))

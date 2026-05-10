@@ -23,18 +23,6 @@ import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.image.icon.IconProvider.*;
-import static org.cosinus.swing.image.icon.IconProvider.ICON_DATABASE;
-import static org.cosinus.swing.image.icon.IconProvider.ICON_NETWORK;
-import static org.cosinus.swing.image.icon.IconProvider.ICON_STORAGE_COMPACT_DISK;
-import static org.cosinus.swing.image.icon.IconProvider.ICON_STORAGE_MEDIA_FLASH;
-import static org.cosinus.swing.image.icon.IconProvider.ICON_STORAGE_MEMORY_STICK;
-import static org.cosinus.swing.image.icon.IconProvider.ICON_STORAGE_PHONE;
-import static org.cosinus.swing.image.icon.IconProvider.ICON_STORAGE_WATCH;
-import static org.cosinus.swing.image.icon.IconProvider.ICON_VIEW_DETAILS;
-import static org.cosinus.swing.image.icon.IconProvider.ICON_VIEW_GRID;
-import static org.cosinus.swing.image.icon.IconProvider.ICON_VIEW_ICON;
-import static org.cosinus.swing.image.icon.IconProvider.ICON_VIEW_LEFT_PANE;
-import static org.cosinus.swing.image.icon.IconProvider.ICON_VIEW_TREE;
 
 public class KdeIconNameProvider implements IconNameProvider {
 

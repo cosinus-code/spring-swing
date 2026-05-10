@@ -21,8 +21,9 @@ import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.MetadataException;
 import com.drew.metadata.exif.ExifIFD0Directory;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
@@ -39,36 +40,26 @@ import static org.cosinus.swing.image.ImageRotation.findImageRotation;
 /**
  * Encapsulation for a streamed image
  */
+@Slf4j
 public class UpdatableImage {
-
-    private static final Logger LOG = LogManager.getLogger(UpdatableImage.class);
 
     private final String imageType;
 
     private BufferedImage originalImage;
 
+    @Getter
     private BufferedImage image;
 
     private Metadata imageMetadata;
 
+    @Setter
     private ImageRotation imageRotation = NO_ROTATION;
 
+    @Getter
     private long size = -1;
 
     public UpdatableImage(String imageType) {
         this.imageType = imageType;
-    }
-
-    public BufferedImage getImage() {
-        return image;
-    }
-
-    public long getSize() {
-        return size;
-    }
-
-    public void setImageRotation(ImageRotation imageRotation) {
-        this.imageRotation = imageRotation;
     }
 
     /**
@@ -88,9 +79,9 @@ public class UpdatableImage {
                         .ifPresent(this::setImageRotation);
                 }
             } catch (ImageProcessingException ex) {
-                LOG.error("Failed to read image metadata", ex);
+                log.error("Failed to read image metadata", ex);
             } catch (MetadataException ex) {
-                LOG.debug("No 'Orientation' metadata", ex);
+                log.debug("No 'Orientation' metadata", ex);
             }
         }
 

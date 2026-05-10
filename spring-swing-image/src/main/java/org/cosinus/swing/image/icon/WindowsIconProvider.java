@@ -17,8 +17,7 @@
 
 package org.cosinus.swing.image.icon;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.cosinus.swing.icon.IconSize;
 import org.cosinus.swing.image.ImageHandler;
 import org.cosinus.swing.util.AutoRemovableTemporaryFile;
@@ -43,14 +42,14 @@ import static org.cosinus.swing.util.WindowsUtils.getRegistryValue;
 /**
  * Implementation of {@link IconProvider} for Windows
  */
+@Slf4j
 public class WindowsIconProvider implements IconProvider {
-
-    private static final Logger LOG = LogManager.getLogger(WindowsIconProvider.class);
 
     public static final String REGISTRY_HKCR = "HKCR\\";
 
     public static final String REGISTRY_HKCU_EXPLORER = "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\";
 
+    @SuppressWarnings("SpellCheckingInspection")
     public static final String REGISTRY_FILE_EXTENSIONS = REGISTRY_HKCU_EXPLORER + "FileExts\\.";
 
     public static final String REGISTRY_HKCR_SYSTEM_FILE_ASSOCIATIONS = REGISTRY_HKCR + "SystemFileAssociations\\";
@@ -129,7 +128,7 @@ public class WindowsIconProvider implements IconProvider {
         try (AutoRemovableTemporaryFile tmpFile = autoRemovableTemporaryFileWithExtension(fileExtension)) {
             return getSystemIcon(tmpFile.getFile());
         } catch (IOException ex) {
-            LOG.error("Cannot create temporary file", ex);
+            log.error("Cannot create temporary file", ex);
             return null;
         }
     }

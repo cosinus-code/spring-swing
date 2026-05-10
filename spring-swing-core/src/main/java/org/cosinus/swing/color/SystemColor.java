@@ -15,9 +15,13 @@
  *
  */package org.cosinus.swing.color;
 
+import lombok.Getter;
+
 /**
  * System colors enum
  */
+@SuppressWarnings("SpellCheckingInspection")
+@Getter
 public enum SystemColor {
     BUTTON_BACKGROUND("Button.background"),
     BUTTON_DARK_SHADOW("Button.darkShadow"),
@@ -274,13 +278,10 @@ public enum SystemColor {
     WINDOW_TEXT("windowText");
 
 
-    private String key;
+    private final String key;
 
     SystemColor(String key) {
         this.key = key;
     }
 
-    public String getKey() {
-        return key;
-    }
 }

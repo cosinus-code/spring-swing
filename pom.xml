@@ -46,6 +46,7 @@
         <oshi.version>6.6.0</oshi.version>
         <commons-exec.version>1.5.0</commons-exec.version>
         <commons-configuration2.version>2.13.0</commons-configuration2.version>
+        <commons-lang3.version>3.20.0</commons-lang3.version>
         <jmimemagic.version>0.1.5</jmimemagic.version>
         <feign.version>13.6</feign.version>
 
@@ -179,6 +180,11 @@
                 <artifactId>jmimemagic</artifactId>
                 <version>${jmimemagic.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -277,7 +283,7 @@
     <licenses>
         <license>
             <name>The Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
 

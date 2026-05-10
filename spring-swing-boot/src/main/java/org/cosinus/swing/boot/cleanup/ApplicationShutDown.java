@@ -17,17 +17,15 @@
 
 package org.cosinus.swing.boot.cleanup;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Optional.ofNullable;
 
+@Slf4j
 public class ApplicationShutDown {
-
-    private static final Logger LOG = LogManager.getLogger(ApplicationShutDown.class);
 
     private final Map<String, AutoCloseable> resources;
 
@@ -61,7 +59,7 @@ public class ApplicationShutDown {
                 }
                 resources.remove(id);
             } catch (Exception e) {
-                LOG.error("Error while closing resource", e);
+                log.error("Error while closing resource", e);
             }
         }
     }

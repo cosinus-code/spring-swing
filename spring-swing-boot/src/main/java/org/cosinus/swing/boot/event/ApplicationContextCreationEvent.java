@@ -17,6 +17,7 @@
 
 package org.cosinus.swing.boot.event;
 
+import lombok.Getter;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 
@@ -25,6 +26,7 @@ import java.io.Serial;
 /**
  * Event fired during creation of the application context
  */
+@Getter
 public class ApplicationContextCreationEvent extends ApplicationEvent {
 
     @Serial
@@ -37,7 +39,4 @@ public class ApplicationContextCreationEvent extends ApplicationEvent {
         this.applicationContext = applicationContext;
     }
 
-    public ApplicationContext getApplicationContext() {
-        return applicationContext;
-    }
 }

@@ -20,7 +20,6 @@ package org.cosinus.swing.util;
 import java.time.LocalDateTime;
 import java.time.Year;
 import java.time.ZoneId;
-import java.util.TimeZone;
 
 import static java.time.ZoneId.systemDefault;
 
@@ -42,12 +41,13 @@ public final class DateUtils {
     }
 
     public static long toEpochSecond(final LocalDateTime localDateTime,
-                                             final ZoneId timeZone) {
+                                     final ZoneId timeZone) {
         return localDateTime
             .atZone(timeZone)
             .toInstant()
             .getEpochSecond();
     }
 
-    private DateUtils() {}
+    private DateUtils() {
+    }
 }

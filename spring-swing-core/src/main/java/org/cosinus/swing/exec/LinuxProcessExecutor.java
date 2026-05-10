@@ -30,6 +30,7 @@ public class LinuxProcessExecutor implements ProcessExecutor {
     private static final String SUDO = "sudo";
     private static final String PASSWORD_IS_REQUIRED = "sudo: a password is required";
 
+    @SuppressWarnings("SpellCheckingInspection")
     private static final String PK_EXEC = "pkexec";
 
     @Override

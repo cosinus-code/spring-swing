@@ -16,6 +16,8 @@
  */
 package org.cosinus.swing.form;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.cosinus.swing.error.SpringSwingException;
 import org.cosinus.swing.find.FindResult;
 import org.cosinus.swing.ui.ApplicationUIHandler;
@@ -58,8 +60,12 @@ public class TextEditor extends EditorPane implements DocumentListener, FormComp
 
     private final Map<Integer, Highlight> foundTextHighlightsMap;
 
+    @Setter
+    @Getter
     private boolean dirty;
 
+    @Setter
+    @Getter
     private boolean loading;
 
     public TextEditor() {
@@ -99,22 +105,6 @@ public class TextEditor extends EditorPane implements DocumentListener, FormComp
             .map(Document::getDefaultRootElement)
             .map(Element::getElementCount)
             .orElse(0);
-    }
-
-    public boolean isDirty() {
-        return dirty;
-    }
-
-    public void setDirty(boolean dirty) {
-        this.dirty = dirty;
-    }
-
-    public boolean isLoading() {
-        return loading;
-    }
-
-    public void setLoading(boolean loading) {
-        this.loading = loading;
     }
 
     public void append(String str) {

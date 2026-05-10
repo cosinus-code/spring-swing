@@ -17,10 +17,13 @@
 
 package org.cosinus.swing.error;
 
+import lombok.Getter;
+
 import java.io.Serial;
 
 import static java.lang.String.format;
 
+@Getter
 public class ProcessExecutionException extends RuntimeException {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -63,11 +66,4 @@ public class ProcessExecutionException extends RuntimeException {
         super(cause);
     }
 
-    public int getProcessExitCode() {
-        return processExitCode;
-    }
-
-    public String getOutput() {
-        return output;
-    }
 }

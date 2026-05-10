@@ -96,7 +96,7 @@ public final class ReflectionUtils {
                     .collect(joining(", "))));
         }
 
-        return beans.get(0);
+        return beans.getFirst();
     }
 
     public static Stream<Field> getFields(Class<?> targetClass,

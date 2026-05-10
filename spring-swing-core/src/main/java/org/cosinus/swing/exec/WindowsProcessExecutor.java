@@ -26,6 +26,7 @@ import java.util.Optional;
 public class WindowsProcessExecutor implements ProcessExecutor {
 
     @Override
+    @SuppressWarnings("SpellCheckingInspection")
     public void executeFile(File file) {
         execute(false, file.getParentFile(), false,
             "rundll32", "url.dll,FileProtocolHandler", file.getName());

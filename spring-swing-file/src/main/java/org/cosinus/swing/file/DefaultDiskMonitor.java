@@ -17,7 +17,6 @@
 
 package org.cosinus.swing.file;
 
-import org.cosinus.swing.file.api.DiskEventListener;
 import org.cosinus.swing.file.api.DiskMonitor;
 
 public class DefaultDiskMonitor implements DiskMonitor {

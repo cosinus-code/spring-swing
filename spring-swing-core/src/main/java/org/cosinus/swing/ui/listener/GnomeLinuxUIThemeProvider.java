@@ -37,7 +37,7 @@ public class GnomeLinuxUIThemeProvider implements UIThemeProvider {
 
     private static final String GNOME_DESKTOP_INTERFACE_SCHEMA = "org.gnome.desktop.interface";
 
-    private static final String CINAMON_THEME_SCHEMA = "org.cinnamon.theme";
+    private static final String CINNAMON_THEME_SCHEMA = "org.cinnamon.theme";
 
     public static final IconTheme ICON_THEME_PAPIRUS = new IconTheme("Papirus", "Papirus-Dark");
 
@@ -58,11 +58,11 @@ public class GnomeLinuxUIThemeProvider implements UIThemeProvider {
         Optional<String> gnomeTheme = getUITheme();
         Optional<String> gnomeIconTheme = getGnomeIconTheme();
         Optional<String> gnomeCursorTheme = getGnomeCursorTheme();
-        Optional<String> cinamonTheme = getCinamonSetting("name");
+        Optional<String> cinnamonTheme = getCinnamonSetting("name");
         Optional<String> iconTheme = getIconTheme();
 
-        uiTheme.setUIThemeChecksum(gnomeTheme, cinamonTheme);
-        uiTheme.setIconThemeChecksum(iconTheme, gnomeIconTheme, gnomeTheme, cinamonTheme);
+        uiTheme.setUIThemeChecksum(gnomeTheme, cinnamonTheme);
+        uiTheme.setIconThemeChecksum(iconTheme, gnomeIconTheme, gnomeTheme, cinnamonTheme);
         uiTheme.setCursorThemeChecksum(gnomeCursorTheme);
 
         return uiTheme;
@@ -85,12 +85,13 @@ public class GnomeLinuxUIThemeProvider implements UIThemeProvider {
         return getSetting(GNOME_DESKTOP_INTERFACE_SCHEMA, name);
     }
 
-    protected Optional<String> getCinamonSetting(String name) {
-        return getSetting(CINAMON_THEME_SCHEMA, name);
+    protected Optional<String> getCinnamonSetting(String name) {
+        return getSetting(CINNAMON_THEME_SCHEMA, name);
     }
 
     protected Optional<String> getSetting(String schema, String name) {
         try {
+            //noinspection SpellCheckingInspection
             return processExecutor.executeAndGetOutput("gsettings", "get", schema, name)
                 .map(UIThemeChecksum::cleanup);
         } catch (ProcessExecutionException ex) {

@@ -17,8 +17,7 @@
 
 package org.cosinus.swing.resource;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
@@ -40,9 +39,8 @@ import static org.cosinus.swing.resource.ResourceSource.CLASSPATH;
  * Implementation of {@link ResourceResolver}
  * which try to resolve the resources in the application classpath
  */
+@Slf4j
 public class ClasspathResourceResolver implements ResourceResolver {
-
-    private static final Logger LOG = LogManager.getLogger(ClasspathResourceResolver.class);
 
     private final ResourcePatternResolver resourceLoader;
 
@@ -94,7 +92,7 @@ public class ClasspathResourceResolver implements ResourceResolver {
                 }
             });
         if (bytes.isEmpty()) {
-            LOG.debug("Resource not found: {}", resourcePath);
+            log.debug("Resource not found: {}", resourcePath);
         }
         return bytes;
     }
@@ -113,7 +111,7 @@ public class ClasspathResourceResolver implements ResourceResolver {
             return Arrays.stream(resources)
                 .map(Resource::getFilename);
         } catch (IOException e) {
-            LOG.error("Failed to resolve resources of extension: {}", fileExtension);
+            log.error("Failed to resolve resources of extension: {}", fileExtension);
             return Stream.empty();
         }
     }

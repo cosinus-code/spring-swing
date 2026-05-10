@@ -17,11 +17,16 @@
 
 package org.cosinus.swing.layout;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.swing.*;
 
 /**
  * Encapsulation for start and size Spring dimensions.
  */
+@Setter
+@Getter
 public class SpringDimension {
 
     private Spring start;
@@ -33,19 +38,4 @@ public class SpringDimension {
         this.size = size;
     }
 
-    public Spring getStart() {
-        return start;
-    }
-
-    public void setStart(Spring start) {
-        this.start = start;
-    }
-
-    public Spring getSize() {
-        return size;
-    }
-
-    public void setSize(Spring size) {
-        this.size = size;
-    }
 }

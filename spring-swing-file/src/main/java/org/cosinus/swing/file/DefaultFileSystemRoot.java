@@ -17,6 +17,7 @@
 
 package org.cosinus.swing.file;
 
+import lombok.Setter;
 import org.cosinus.swing.file.api.DriveVendor;
 import org.cosinus.swing.file.api.FileSystemDevice;
 import org.cosinus.swing.file.api.FileSystemRoot;
@@ -32,8 +33,10 @@ public class DefaultFileSystemRoot implements FileSystemRoot {
 
     private final OSFileStore fileStore;
 
+    @Setter
     private FileSystemDevice fileSystemDevice;
 
+    @Setter
     private String type;
 
     public DefaultFileSystemRoot(final OSFileStore fileStore) {
@@ -116,13 +119,5 @@ public class DefaultFileSystemRoot implements FileSystemRoot {
     @Override
     public boolean isMounted() {
         return true;
-    }
-
-    public void setFileSystemDevice(final FileSystemDevice fileSystemDevice) {
-        this.fileSystemDevice = fileSystemDevice;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 }

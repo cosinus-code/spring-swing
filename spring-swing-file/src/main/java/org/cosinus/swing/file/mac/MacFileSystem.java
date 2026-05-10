@@ -72,6 +72,7 @@ public class MacFileSystem implements FileSystem {
      *
      * @return A list of file system roots.
      */
+    @SuppressWarnings("SpellCheckingInspection")
     private List<MacFileSystemRoot> getFileSystemRootsFromCommandLine() {
         return processExecutor.executeAndGetOutput("diskutil", "list")
             .map(output -> output.split("\\n\\n"))
@@ -84,10 +85,11 @@ public class MacFileSystem implements FileSystem {
                 .orElse(null))
             .filter(Objects::nonNull)
             .map(this::buildFileSystemRoot)
-            .filter(root -> ((MacFileSystemRoot) root).isValid())
+            .filter(MacFileSystemRoot::isValid)
             .toList();
     }
 
+    @SuppressWarnings("SpellCheckingInspection")
     private MacFileSystemRoot buildFileSystemRoot(String volumeId) {
         return processExecutor.executeAndGetOutput("diskutil", "info", volumeId)
             .map(output -> output.split("\\n"))

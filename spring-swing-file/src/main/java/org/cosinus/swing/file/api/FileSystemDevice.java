@@ -30,5 +30,5 @@ public enum FileSystemDevice {
     PHONE,
     WATCH,
     WATCH_GARMIN,
-    CDROM;
+    CDROM
 }

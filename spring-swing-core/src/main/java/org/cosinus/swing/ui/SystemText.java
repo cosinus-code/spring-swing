@@ -17,6 +17,9 @@
 
 package org.cosinus.swing.ui;
 
+import lombok.Getter;
+
+@Getter
 public enum SystemText {
     OPTION_PANE_YES_BUTTON_TEXT("OptionPane.yesButtonText"),
     OPTION_PANE_NO_BUTTON_TEXT("OptionPane.noButtonText"),
@@ -85,7 +88,4 @@ public enum SystemText {
         this.key = key;
     }
 
-    public String getKey() {
-        return key;
-    }
 }

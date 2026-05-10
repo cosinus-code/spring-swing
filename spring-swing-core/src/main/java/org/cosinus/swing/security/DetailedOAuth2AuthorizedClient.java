@@ -17,6 +17,7 @@
 
 package org.cosinus.swing.security;
 
+import lombok.Getter;
 import org.springframework.lang.Nullable;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
@@ -25,6 +26,7 @@ import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 
 import java.util.Map;
 
+@Getter
 public class DetailedOAuth2AuthorizedClient extends OAuth2AuthorizedClient {
 
     private final Map<String, Object> details;
@@ -38,7 +40,4 @@ public class DetailedOAuth2AuthorizedClient extends OAuth2AuthorizedClient {
         this.details = details;
     }
 
-    public Map<String, Object> getDetails() {
-        return details;
-    }
 }

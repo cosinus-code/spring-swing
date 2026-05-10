@@ -40,8 +40,9 @@ public class WindowsDiskMonitor implements DiskMonitor {
         this.processExecutor = processExecutor;
     }
 
-    @Override
     @Async
+    @Override
+    @SuppressWarnings("SpellCheckingInspection")
     public void start(final DiskMonitorController controller) throws IOException {
         String script = "Register-WmiEvent -Query \"SELECT * FROM Win32_VolumeChangeEvent\"";
 

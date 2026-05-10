@@ -17,11 +17,14 @@
 
 package org.cosinus.swing.preference;
 
+import lombok.Getter;
+
 import java.io.Serial;
 
 /**
  * Preferences related exception
  */
+@Getter
 public class PreferenceException extends RuntimeException {
 
     @Serial
@@ -43,11 +46,4 @@ public class PreferenceException extends RuntimeException {
         this.preferenceValue = preferenceValue;
     }
 
-    public String getPreferenceName() {
-        return preferenceName;
-    }
-
-    public String getPreferenceValue() {
-        return preferenceValue;
-    }
 }

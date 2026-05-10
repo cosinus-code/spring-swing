@@ -22,6 +22,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import lombok.Getter;
+import lombok.Setter;
 import org.cosinus.swing.form.control.ControlType;
 import org.cosinus.swing.form.control.provider.ControlDescriptor;
 import org.cosinus.swing.preference.impl.BooleanPreference;
@@ -45,11 +47,12 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 /**
  * Abstract class for the application preferences.
  * <p>
- * The type property is discriminating for sub-type preferences.
+ * The type property is discriminating for subtype preferences.
  *
- * @param <T> the type of preference value to be saved as json value
+ * @param <T> the type of preference value to be saved as JSON value
  * @param <R> the type of the real preference value to be handled
  */
+@Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(NON_NULL)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
@@ -74,6 +77,7 @@ public abstract class Preference<T, R> implements ControlDescriptor<T, R> {
 
     protected String name;
 
+    @Getter
     protected T value;
 
     protected List<T> values;
@@ -83,34 +87,14 @@ public abstract class Preference<T, R> implements ControlDescriptor<T, R> {
         return type;
     }
 
-    public void setType(ControlType type) {
-        this.type = type;
-    }
-
     @JsonIgnore
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public T getValue() {
-        return value;
-    }
-
-    public void setValue(T value) {
-        this.value = value;
-    }
-
     @Override
     public List<T> getValues() {
         return values;
-    }
-
-    public void setValues(List<T> values) {
-        this.values = values;
     }
 
     @JsonIgnore

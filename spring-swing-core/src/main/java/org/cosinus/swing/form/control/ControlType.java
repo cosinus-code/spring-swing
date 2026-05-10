@@ -19,6 +19,7 @@ package org.cosinus.swing.form.control;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.Getter;
 import org.cosinus.swing.form.control.provider.*;
 
 import static java.util.Arrays.stream;
@@ -27,6 +28,7 @@ import static java.util.Arrays.stream;
  * Control type that will be reflected on the real managed value of the control
  * and function as discriminating for the control implementation to be instantiated.
  */
+@Getter
 public enum ControlType {
     TEXT(new TextControlProvider()),
     BOOLEAN(new BooleanControlProvider()),
@@ -71,7 +73,4 @@ public enum ControlType {
         return name().toLowerCase();
     }
 
-    public ControlProvider getControlProvider() {
-        return controlProvider;
-    }
 }

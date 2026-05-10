@@ -17,6 +17,8 @@
 
 package org.cosinus.swing.image.icon;
 
+import lombok.Getter;
+
 import java.io.File;
 import java.util.Optional;
 
@@ -32,12 +34,14 @@ public enum SpecialFileIcon {
     DOWNLOADS("folder-download", "~/Downloads"),
     MUSIC("folder-music", "~/Music"),
     PICTURES("folder-pictures", "~/Pictures"),
+    @SuppressWarnings("SpellCheckingInspection")
     PUBLIC("folder-publicshare", "~/Public"),
     TEMPLATES("folder-templates", "~/Templates"),
     VIDEOS("folder-videos", "~/Videos");
 
     private final String filePath;
 
+    @Getter
     private final String name;
 
     SpecialFileIcon(String name, String filePath) {
@@ -49,9 +53,5 @@ public enum SpecialFileIcon {
         return stream(values())
             .filter(specialFileIcon -> new File(setHomeFolder(specialFileIcon.filePath)).equals(file))
             .findFirst();
-    }
-
-    public String getName() {
-        return name;
     }
 }

@@ -17,6 +17,8 @@
 
 package org.cosinus.swing.text;
 
+import lombok.Getter;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -39,6 +41,7 @@ public class TextWrapper extends ArrayList<String> implements HtmlText {
 
     private final int margin = 20;
 
+    @Getter
     private String originalText;
 
 
@@ -226,15 +229,6 @@ public class TextWrapper extends ArrayList<String> implements HtmlText {
      */
     public WrappedText toWrappedHtmlCenteredText() {
         return getWrappedText(htmlText(getHtmlCenteredWrappedTextBody()));
-    }
-
-    /**
-     * Get the original text.
-     *
-     * @return the original text
-     */
-    public String getOriginalText() {
-        return originalText;
     }
 
     private WrappedText getWrappedText(String text) {

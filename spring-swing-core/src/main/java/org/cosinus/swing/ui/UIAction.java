@@ -17,6 +17,9 @@
 
 package org.cosinus.swing.ui;
 
+import lombok.Getter;
+
+@Getter
 public enum UIAction {
 
     OK("ok"),
@@ -29,7 +32,4 @@ public enum UIAction {
         this.name = name;
     }
 
-    public String getName() {
-        return name;
-    }
 }
