@@ -23,8 +23,11 @@ public interface DragAndDropListener {
     }
 
     default void drag(DragAndDrop dragAndDrop) {
+        repaint();
     }
 
     default void drop(DragAndDrop dragAndDrop) {
     }
+
+    void repaint();
 }

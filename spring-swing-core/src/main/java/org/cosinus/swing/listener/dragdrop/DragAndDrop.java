@@ -17,22 +17,22 @@
 
 package org.cosinus.swing.listener.dragdrop;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.awt.*;
 
 import static java.util.Optional.ofNullable;
 
 public class DragAndDrop {
 
+    @Getter
+    @Setter
     private Point dragStartPoint;
+
+    @Getter
+    @Setter
     private Point draggingPoint;
-
-    public void start(Point point) {
-        dragStartPoint = point;
-    }
-
-    public void drag(Point point) {
-        draggingPoint = point;
-    }
 
     public double getX() {
         return ofNullable(dragStartPoint)

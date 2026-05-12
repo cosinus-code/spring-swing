@@ -35,7 +35,7 @@ public interface DragAndDropAware {
         component.addMouseListener(new SimpleMouseListener() {
             @Override
             public void mousePressed(MouseEvent e) {
-                dragAndDrop.start(e.getPoint());
+                dragAndDrop.setDragStartPoint(e.getPoint());
                 listener.start(dragAndDrop);
             }
 
@@ -43,7 +43,7 @@ public interface DragAndDropAware {
             public void mouseReleased(MouseEvent e) {
                 if (isLeftMouseButton(e)) {
                     if (dragAndDrop.isDragging()) {
-                        dragAndDrop.drag(e.getPoint());
+                        dragAndDrop.setDraggingPoint(e.getPoint());
                         listener.drop(dragAndDrop);
                         dragAndDrop.drop();
                     }
@@ -55,7 +55,7 @@ public interface DragAndDropAware {
             @Override
             public void mouseDragged(MouseEvent e) {
                 if (isLeftMouseButton(e)) {
-                    dragAndDrop.drag(e.getPoint());
+                    dragAndDrop.setDraggingPoint(e.getPoint());
                     listener.drag(dragAndDrop);
                 }
             }
