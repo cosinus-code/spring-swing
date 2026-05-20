@@ -76,7 +76,7 @@ public class DiskMonitorController {
         Long lastEventTime = recentEvents.get(key);
         if (lastEventTime == null || (now - lastEventTime) > getExpirationLimitInMillis()) {
             recentEvents.put(key, now);
-            listeners.forEach(listener -> listener.onEvent(event));
+            listeners.forEach(listener -> listener.onDiskEvent(event));
             cleanup(now);
         }
     }

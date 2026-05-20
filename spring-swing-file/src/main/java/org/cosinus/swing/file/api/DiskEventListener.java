@@ -19,6 +19,6 @@ package org.cosinus.swing.file.api;
 
 public interface DiskEventListener {
 
-    void onEvent(DiskEvent diskEvent);
+    void onDiskEvent(DiskEvent diskEvent);
 
 }
