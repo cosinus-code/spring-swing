@@ -45,7 +45,7 @@
         <commons-imaging.version>1.0.0-alpha6</commons-imaging.version>
         <oshi.version>6.6.0</oshi.version>
         <commons-exec.version>1.5.0</commons-exec.version>
-        <commons-configuration2.version>2.13.0</commons-configuration2.version>
+        <commons-configuration2.version>2.15.0</commons-configuration2.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <jmimemagic.version>0.1.5</jmimemagic.version>
         <feign.version>13.6</feign.version>
