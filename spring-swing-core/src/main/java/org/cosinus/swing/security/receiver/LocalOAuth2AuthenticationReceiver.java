@@ -44,7 +44,10 @@ import static java.util.Optional.ofNullable;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.MediaType.TEXT_HTML_VALUE;
-import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.*;
+import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.CODE;
+import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.ERROR;
+import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.SCOPE;
+import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.STATE;
 
 public class LocalOAuth2AuthenticationReceiver implements OAuth2AuthenticationReceiver, AutoCloseable {
 
@@ -163,7 +166,7 @@ public class LocalOAuth2AuthenticationReceiver implements OAuth2AuthenticationRe
     }
 
     @Override
-    public void stop() throws IOException {
+    public void stop() {
         waitUnlessSignaled.release();
         if (server != null) {
             server.stop(0);

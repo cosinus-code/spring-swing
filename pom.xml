@@ -35,27 +35,26 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
 
-        <stream-pipeline.version>1.0-SNAPSHOT</stream-pipeline.version>
-        <commons-io.version>2.20.0</commons-io.version>
+        <stream-pipeline.version>1.0.0</stream-pipeline.version>
+        <commons-io.version>2.22.0</commons-io.version>
         <org.apache.common.version>4.5.0</org.apache.common.version>
         <log4j.version>2.26.0</log4j.version>
-        <twelvemonkeys.imageio.version>3.12.0</twelvemonkeys.imageio.version>
-        <flatlaf.version>3.6.2</flatlaf.version>
+        <twelvemonkeys.imageio.version>3.13.1</twelvemonkeys.imageio.version>
+        <flatlaf.version>3.7.1</flatlaf.version>
         <jdatepicker.version>1.3.4</jdatepicker.version>
         <commons-imaging.version>1.0.0-alpha6</commons-imaging.version>
-        <oshi.version>6.6.0</oshi.version>
-        <commons-exec.version>1.5.0</commons-exec.version>
+        <oshi.version>7.1.0</oshi.version>
+        <commons-exec.version>1.6.0</commons-exec.version>
         <commons-configuration2.version>2.15.0</commons-configuration2.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <jmimemagic.version>0.1.5</jmimemagic.version>
-        <feign.version>13.6</feign.version>
+        <feign.version>13.12</feign.version>
 
-        <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
-<!--        <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>-->
-        <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
-<!--        <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>-->
-<!--        <maven-release-plugin.version>2.5.3</maven-release-plugin.version>-->
-        <nexus-staging-maven-plugin.version>1.7.0</nexus-staging-maven-plugin.version>
+        <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
+        <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
+        <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
+        <central-publishing-maven-plugin.version>0.10.0</central-publishing-maven-plugin.version>
+        <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -211,28 +210,31 @@
                     </execution>
                 </executions>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-javadoc-plugin</artifactId>-->
-<!--                <version>${maven-javadoc-plugin.version}</version>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>attach-javadocs</id>-->
-<!--                        <goals>-->
-<!--                            <goal>jar</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
             <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>${nexus-staging-maven-plugin.version}</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc-plugin.version}</version>
+                <configuration>
+                    <doclint>none</doclint>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>${central-publishing-maven-plugin.version}</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                    <publishingServerId>central</publishingServerId>
+                    <autoPublish>true</autoPublish>
+                    <waitUntil>published</waitUntil>
                 </configuration>
             </plugin>
             <plugin>
@@ -240,20 +242,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-gpg-plugin</artifactId>-->
-<!--                <version>${maven-gpg-plugin.version}</version>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>sign-artifacts</id>-->
-<!--                        <phase>verify</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>sign</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
         </plugins>
     </build>
 
@@ -271,13 +259,9 @@
 
     <distributionManagement>
         <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+            <id>central</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
         </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
     </distributionManagement>
 
     <licenses>

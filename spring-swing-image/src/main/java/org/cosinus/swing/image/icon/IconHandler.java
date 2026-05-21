@@ -41,7 +41,9 @@ import static java.awt.BasicStroke.CAP_ROUND;
 import static java.awt.BasicStroke.JOIN_MITER;
 import static java.awt.Color.WHITE;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
-import static java.lang.Math.*;
+import static java.lang.Math.abs;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.IntStream.range;
@@ -154,15 +156,6 @@ public class IconHandler {
         return iconProvider.findIconByFile(file, size)
             .or(() -> uiHandler.getDefaultFileIcon(file.isDirectory()))
             .map(icon -> scaleIcon(icon, size));
-        //TODO
-        //.map(icon -> file.isHidden() ? getGrayFilteredIcon(icon) : icon);
-    }
-
-    protected boolean isIconFile(File file) {
-        //TODO
-        //String extension = getExtension(file);
-        //return extension.equals("exe") || extension.equals("ico") || extension.equals("icns");
-        return false;
     }
 
     public Icon getGrayFilteredIcon(Icon icon) {

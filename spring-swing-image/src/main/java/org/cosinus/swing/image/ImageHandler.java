@@ -92,7 +92,7 @@ public class ImageHandler {
      * @throws IOException if an IO error occurs
      */
     @Cacheable(SPRING_SWING_IMAGE_THUMBNAIL_CACHE_NAME)
-    public Optional<Image> getThumbnail(File file, int size) throws IOException {
+    public Optional<Image> getThumbnail(File file, int size) {
         return empty();
     }
 

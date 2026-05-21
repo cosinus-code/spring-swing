@@ -44,12 +44,6 @@ public class SpringSwingApplication extends SpringApplication {
 
     public static Class<?> applicationClass;
 
-    /**
-     * -- SETTER --
-     *  Set if the application should log the startup progress.
-     *
-     * @param logStartupProgress true if the application should log the startup progress
-     */
     private boolean logStartupProgress;
 
     public SpringSwingApplication(Class<?>... sources) {
