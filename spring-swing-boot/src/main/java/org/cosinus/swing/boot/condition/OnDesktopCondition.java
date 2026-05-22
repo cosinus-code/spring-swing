@@ -59,8 +59,9 @@ public class OnDesktopCondition extends SpringBootCondition {
     }
 
     public boolean isCurrentDesktopOneOf(String... desktops) {
-        String desktop = getenv(XDG_CURRENT_DESKTOP);
-        return stream(desktops)
-            .anyMatch(desktop::contains);
+        return ofNullable(getenv(XDG_CURRENT_DESKTOP))
+            .map(desktop -> stream(desktops)
+                .anyMatch(desktop::contains))
+            .orElse(false);
     }
 }
