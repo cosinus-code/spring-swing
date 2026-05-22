@@ -1,10 +1,11 @@
 # Spring Swing
-Spring Swing is a framework designed for building Spring-powered Swing applications.
+Spring Swing is a framework for building Spring Boot–powered Swing desktop applications.
 
 # Description
 
-It allows you to start a Swing application in full Spring context. 
-It also allows injection of Spring beans into Swing objects created during application run:
+It starts a Swing application inside a full Spring context and injects Spring beans into Swing objects created at runtime.
+
+For objects not managed by Spring (instantiated via `new`), call `injectContext(this)` in the constructor:
 
 ```java
 import org.cosinus.swing.store.ApplicationStorage;
@@ -16,44 +17,54 @@ public class SwingObject {
     @Autowired
     public ApplicationStorage applicationStorage;
 
-	public SwingApplicationContextAware() {
+    public SwingObject() {
         injectContext(this);
-	}
+    }
 }
 ```
 
-There are already Swing object rewritten to auto-inject the Spring context:
+All framework base classes (`Panel`, `Frame`, `Dialog`, `Table`, etc.) do this automatically — extend them instead of the raw Swing types:
 
 ```java
 import org.cosinus.swing.form.Panel;
 import org.cosinus.swing.store.ApplicationStorage;
 
-public class MyPanel implements Panel {
+public class MyPanel extends Panel {
 
     @Autowired
     public ApplicationStorage applicationStorage;
 
 }
 ```
-# Getting Started Using Spring Swing
 
-Here is the Java code for starting a Spring Swing application:
+## Modules
+
+| Module | Purpose |
+|---|---|
+| `spring-swing-core` | Swing wrappers, context injection, actions, dialogs, menus, forms, storage, translate, preferences |
+| `spring-swing-boot` | Spring Boot auto-configuration, application lifecycle, OS-specific conditions, OAuth2 |
+| `spring-swing-image` | Image loading — SVG (Batik), ICNS, TIFF, JPEG (TwelveMonkeys), scaling, metadata |
+| `spring-swing-file` | File utilities — commons-io, MIME detection, OSHI hardware info, process execution |
+| `spring-swing-test` | `@SpringSwingBootTest`, in-memory storage, integration test support |
+| `spring-swing-boot-starter` | Aggregator starter — pulls in all modules |
+
+# Getting Started
 
 ```java
 package org.cosinus.swing.example;
 
-import org.cosinus.swing.boot.ApplicationFrame;
 import org.cosinus.swing.boot.SpringSwingApplication;
 import org.cosinus.swing.boot.SpringSwingBootApplication;
+import org.cosinus.swing.boot.application.SwingApplicationFrame;
 
 import javax.swing.*;
 import java.awt.*;
 
 @SpringSwingBootApplication
-public class HelloWorld extends ApplicationFrame {
+public class HelloWorld extends SwingApplicationFrame {
 
     @Override
-    public void initComponents() {
+    public void initApplicationFrame() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(new JLabel("Hello World", SwingConstants.CENTER));
         add(panel);
@@ -66,13 +77,10 @@ public class HelloWorld extends ApplicationFrame {
 ```
 
 ## Dependencies
-```xml
-  <parent>
-    <groupId>org.cosinuscode.swing</groupId>
-    <artifactId>spring-swing-boot-starter-parent</artifactId>
-    <version>1.0.0</version>
-  </parent>
 
+Add `spring-swing-boot-starter` to your project. Spring Swing requires **Java 21** and is built on **Spring Boot 3.x**.
+
+```xml
   <dependencies>
     <dependency>
       <groupId>org.cosinuscode.swing</groupId>
@@ -80,22 +88,19 @@ public class HelloWorld extends ApplicationFrame {
     </dependency>
   </dependencies>
 ```
-Spring Swing runs with java 11, so the compiler should be configured for java 11.
 
 ## Package the Application
-The spring-boot maven plugin can be used for packaging:  
+
+Use `spring-boot-maven-plugin` for packaging:
 
 ```xml
   <properties>
-    ...
     <project.output>${project.basedir}/output</project.output>
     <application.name>spring-swing-example</application.name>
-    ...
   </properties>
 
   <build>
     <plugins>
-      ...
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
@@ -115,33 +120,33 @@ The spring-boot maven plugin can be used for packaging:
   </build>
 ```
 
-Package command:
-
 ```shell_session
 $ mvn package
 ```
 
 ## Run the Application
-The jar can be executed from the `${project.output}` folder:
 
 ```shell_session
 $ ./spring-swing-example.jar
 ```
 
 ## Application Name and Icon
-The application name (which is the main window title) and the application icon 
-can be specified in the application properties file `application.yml`:
+
+Set the application name (used as the main window title) and icon in `application.yml`:
 
 ```yaml
 swing:
   application:
-    name: Sping Swing Example
+    name: Spring Swing Example
     icon: spring.png
 ```
-The icon file default location is in the `image` resources folder.
- 
+
+The icon file default location is the `image` resources folder.
+
 ## Logging
-To add Apache Log4j 2 to the application exclude the `spring-boot-starter-logging` and add `spring-boot-starter-log4j2`:
+
+To use Apache Log4j 2, exclude the default logging and add `spring-boot-starter-log4j2`:
+
 ```xml
     <dependency>
       <groupId>org.cosinuscode.swing</groupId>
@@ -158,19 +163,17 @@ To add Apache Log4j 2 to the application exclude the `spring-boot-starter-loggin
       <artifactId>spring-boot-starter-log4j2</artifactId>
     </dependency>
 ```
-Then add log4j2 file to configure the logging. 
 
 ## Internationalization
-To translate the message, replace `"Hello World"` with `translate("hello.world")` 
-and add in the `i18n` resources folder the standard translations properties file 
-`messages_en_us.properties`:
 
+Replace literal strings with `translate("hello.world")` and add translation properties files to the `i18n` resources folder:
+
+`messages_en_us.properties`:
 ```properties
 hello.world=Hello World
 ```
 
-To change the language of the application, add the `preferences.json` file in the `conf` folder 
-and specify the preferred language:
+To set the default language, add `preferences.json` in the `conf` folder:
 
 ```json
 {
@@ -181,15 +184,17 @@ and specify the preferred language:
     }
   }
 }
-``` 
-along with the translations file `messages_fr_fr.properties`:
+```
+
+`messages_fr_fr.properties`:
 ```properties
 hello.world=Salut monde
 ```
 
 ## Application Menu
-To attach a menu to the application, add in the `conf` folder a `menu.json` file with the menu structure 
-like the following:
+
+Add `menu.json` to the `conf` folder:
+
 ```json
 {
     "menu": {
@@ -201,29 +206,26 @@ like the following:
     }
 }
 ```
-To translate the specific keys (e.g. "start.application", "quit.application", "about.application"), 
-add those in the translation files:
+
+Add the corresponding translation keys:
 
 ```properties
-hello.world=Hello World
 start.application=Start
 quit.application=Quit
 about.application=About
 ```
 
 ## Add Splash Screen
-To add a slash screen to the application, just provide the image in `image` resources folder and 
-add it in `SplashScreen-Image` entry of jar manifest using the `maven-jar-plugin`:
+
+Provide the image in the `image` resources folder and register it via `maven-jar-plugin`:
 
 ```xml
   <properties>
-    ...
     <splash.file.name>spring-splash.png</splash.file.name>
   </properties>
 
   <build>
     <plugins>
-      ...
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -240,24 +242,27 @@ add it in `SplashScreen-Image` entry of jar manifest using the `maven-jar-plugin
 ```
 
 ## Add Startup Progress Bar
-To add progress bar to the splash screen, 
-we need to pass the `-splash-progress` argument when running the application:
+
+Pass `-splash-progress` when running the application:
 
 ```shell_session
 $ ./spring-swing-example.jar -splash-progress
 ```
-The progress bar can be customized using dedicated arguments:
+
+Customise the progress bar position and color:
+
 ```shell_session
-$ ./spring-swing-example.jar \ 
--splash-progress \ 
--splash-progress-color=56,123,44 \ 
--splash-progress-y=245 \ 
+$ ./spring-swing-example.jar \
+-splash-progress \
+-splash-progress-color=56,123,44 \
+-splash-progress-y=245 \
 -splash-progress-x=5
 ```
 
-## Distribute the Application 
-To simplify the run of the application, 
-we can add the `spring-swing-example.sh` bash file with start command:
+## Distribute the Application
+
+Add a `spring-swing-example.sh` launcher script:
+
 ```bash
 #! /bin/bash
 SOURCE="${BASH_SOURCE[0]}"
@@ -273,11 +278,12 @@ APPLICATION_DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
 -splash-progress-y=245 \
 -splash-progress-x=5
 ```
-and use `maven-resources-plugin` to copy all resources to the output folder:
+
+Use `maven-resources-plugin` to copy resources to the output folder:
+
 ```xml
   <build>
     <plugins>
-      ...
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
@@ -302,15 +308,54 @@ and use `maven-resources-plugin` to copy all resources to the output folder:
     </plugins>
   </build>
 ```
-Now simply start the application by running the bash file from the output folder:
+
+Start the application from the output folder:
+
 ```shell_session
 $ ./spring-swing-example.sh
 ```
-The application properties, preferences, translations and menu structure 
-can now be updated directly from the output folder.
+
+Application properties, preferences, translations, and menu structure can be updated directly from the output folder.
+
+## OS-Specific Conditions
+
+Spring Swing provides Spring-style conditional annotations for platform-specific beans:
+
+- `@ConditionalOnMac`, `@ConditionalOnWindows`, `@ConditionalOnLinux`
+- `@ConditionalOnDesktop`, `@ConditionalOnGnome`, `@ConditionalOnKDE`, `@ConditionalOnXFCE`
+
+## Testing
+
+Use `@SpringSwingBootTest` in place of `@SpringBootTest`. It configures an in-memory `ApplicationStorage` (no file I/O) and forces `useMainMethod = NEVER`.
+
+Each test needs a minimal `@SpringSwingBootApplication`-annotated class:
+
+```java
+@SpringSwingBootApplication
+public class TestApplication extends SpringSwingApplication {
+    public static void main(String[] args) {
+        SpringSwingApplication.run(TestApplication.class, args);
+    }
+}
+
+@SpringSwingBootTest(classes = TestApplication.class)
+@RunWith(SpringRunner.class)
+public class MyTest {
+    @Autowired
+    private MyService myService;
+
+    @Test
+    public void testSomething() {
+        assertNotNull(myService);
+    }
+}
+```
+
+Tests use **JUnit 4** (`@RunWith(SpringRunner.class)`) — not JUnit 5.
 
 ## Examples
+
 https://github.com/cosinus-code/spring-swing-example
 
 # License
-The Spring Swing is Open Source software released under version 2.0 of the [Apache License](https://www.apache.org/licenses/LICENSE-2.0).
+Spring Swing is Open Source software released under version 2.0 of the [Apache License](https://www.apache.org/licenses/LICENSE-2.0).

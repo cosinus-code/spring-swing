@@ -37,3 +37,5 @@ hs_err_pid*
 .updatebot-repos/**
 
 *.versionsBackup
+
+AGENTS.md
