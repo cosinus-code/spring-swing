@@ -30,7 +30,10 @@ import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static java.util.Optional.ofNullable;
 
@@ -91,8 +94,9 @@ public class MacIconProvider implements IconProvider {
 
     private Optional<BufferedImage> readFromIcnsFile(File imageFile, IconSize size) {
         try {
-            return icnsImageParser.getAllBufferedImages(imageFile)
+            return ofNullable(icnsImageParser.getAllBufferedImages(imageFile))
                 .stream()
+                .flatMap(Collection::stream)
                 .filter(image ->
                     image.getWidth() >= size.getSize() &&
                         image.getHeight() >= size.getSize())
