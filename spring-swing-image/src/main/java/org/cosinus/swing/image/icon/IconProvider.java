@@ -36,37 +36,30 @@ public interface IconProvider {
     String ICON_NEXT = "go-next";
     String ICON_UP = "go-up";
     String ICON_REFRESH = "refresh";
+    String ICON_EDIT = "edit";
     String ICON_STOP = "stop";
     String ICON_HOME = "home";
     String ICON_NEW_FOLDER = "folder-new";
-    String ICON_DELETE = "edit-delete";
+    String ICON_DELETE = "delete";
     String ICON_FIND = "find";
-    String ICON_HIDDEN = "hidden";
-    String ICON_PREVIEW = "preview";
-    String ICON_VIEW = "view";
-    String ICON_NEW_FILE = "new-file";
+    String ICON_NEW_FILE = "file-new";
     String ICON_OPEN = "open";
     String ICON_SAVE = "save";
-    String ICON_SAVE_AS = "save-as";
     String ICON_PRINT = "print";
-    String ICON_PRINT_PREVIEW = "print-preview";
     String ICON_UNDO = "undo";
     String ICON_REDO = "redo";
     String ICON_CUT = "cut";
     String ICON_COPY = "copy";
     String ICON_PASTE = "paste";
-    String ICON_FIND_TEXT = "find-text";
     String ICON_REPLACE = "replace";
-    String ICON_SIDEBAR = "sidebar";
     String ICON_PACKAGE = "package";
-    @SuppressWarnings("SpellCheckingInspection")
-    String ICON_SHELL_SCRIPT = "shellscript";
+    String ICON_SHELL = "shell";
     String ICON_TEXT = "text";
     String ICON_UNKNOWN = "unknown";
 
     String ICON_FONT = "font";
-    String ICON_WRAP = "wrap";
-    String ICON_EXECUTE = "system-run";
+    String ICON_EXECUTE = "execute";
+    String ICON_EXECUTE_WITH = "execute-with";
     String ICON_ARCHIVE = "archive";
     String ICON_CONSOLE = "console";
     String ICON_CONNECT = "connect";
@@ -111,14 +104,14 @@ public interface IconProvider {
 
     String ICON_VIEW_HIDDEN = "view-hidden";
     String ICON_VIEW_LEFT_PANE = "view-left-pane";
+    String ICON_PERMISSIONS = "permissions";
     String ICON_SETTINGS = "settings";
     String ICON_HELP = "help";
 
-    String ICON_FORWARD = "insert-link";
-    String ICON_MOVE_TO_TRASH = "user-trash";
+    String ICON_LINK = "link";
+    String ICON_MOVE_TO_TRASH = "trash";
     String ICON_GOOGLE = "google";
     String ICON_GOOGLE_DRIVE = "google-drive";
-    String ICON_PERMISSIONS = "permissions";
 
     /**
      * Initialize this provider.

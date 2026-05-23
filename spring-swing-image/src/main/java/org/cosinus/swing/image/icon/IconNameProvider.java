@@ -24,4 +24,6 @@ public interface IconNameProvider {
     Optional<String> getIconName(String iconId);
 
     void initialize();
+
+    String getIconPath();
 }

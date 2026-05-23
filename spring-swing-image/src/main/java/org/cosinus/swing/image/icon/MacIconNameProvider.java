@@ -27,6 +27,8 @@ import static org.cosinus.swing.image.icon.SpecialFileIcon.*;
 
 public class MacIconNameProvider implements IconNameProvider {
 
+    public static final String MAC_ICONS_PATH = "mac";
+
     public static final String ICON_STORAGE_PATH = "/System/Library/Extensions/IOStorageFamily" +
         ".kext/Contents/Resources/";
     public static final String ICON_SCSI_PATH = "/System/Library/Extensions" +
@@ -82,11 +84,16 @@ public class MacIconNameProvider implements IconNameProvider {
         iconNameToFilePathMap.put(ICON_DATABASE, ICON_CORE_PATH + "GenericFileServerIcon.icns");
         iconNameToFilePathMap.put(ICON_NETWORK, ICON_CORE_PATH + "GenericNetworkIcon.icns");
 
-        iconNameToFilePathMap.put(ICON_NEW_FOLDER, ICON_CORE_PATH + "UtilitiesFolder.icns");
-        iconNameToFilePathMap.put(ICON_EXECUTE, ICON_CORE_PATH + "ToolbarAdvanced.icns");
-        iconNameToFilePathMap.put(ICON_REFRESH, ICON_CORE_PATH + "Sync.icns");
-        iconNameToFilePathMap.put(ICON_FORWARD, ICON_CORE_PATH + "ForwardArrowIcon.icns");
-        iconNameToFilePathMap.put(ICON_DELETE, ICON_CORE_PATH + "ToolbarDeleteIcon.icns");
-        iconNameToFilePathMap.put(ICON_MOVE_TO_TRASH, ICON_CORE_PATH + "FullTrashIcon.icns");
+//        iconNameToFilePathMap.put(ICON_NEW_FOLDER, ICON_CORE_PATH + "UtilitiesFolder.icns");
+//        iconNameToFilePathMap.put(ICON_EXECUTE, ICON_CORE_PATH + "ToolbarAdvanced.icns");
+//        iconNameToFilePathMap.put(ICON_REFRESH, ICON_CORE_PATH + "Sync.icns");
+//        iconNameToFilePathMap.put(ICON_FORWARD, ICON_CORE_PATH + "ForwardArrowIcon.icns");
+//        iconNameToFilePathMap.put(ICON_DELETE, ICON_CORE_PATH + "ToolbarDeleteIcon.icns");
+//        iconNameToFilePathMap.put(ICON_MOVE_TO_TRASH, ICON_CORE_PATH + "FullTrashIcon.icns");
+    }
+
+    @Override
+    public String getIconPath() {
+        return MAC_ICONS_PATH;
     }
 }

@@ -35,11 +35,13 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static java.util.Arrays.stream;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static java.util.function.Predicate.not;
 import static javax.imageio.ImageIO.read;
 import static org.cosinus.swing.icon.IconSize.*;
+import static org.cosinus.swing.image.icon.IconHandler.IMAGE_EXTENSIONS;
 
 /**
  * Implementation of {@link IconProvider} for Linux
@@ -133,7 +135,7 @@ public class LinuxIconProvider implements IconProvider {
         }
 
         if (mimeTypeResolver.isShellScript(file)) {
-            return Optional.of(ICON_SHELL_SCRIPT);
+            return Optional.of(ICON_SHELL);
         }
 
         if (mimeTypeResolver.isTextCompatible(file.toPath())) {
@@ -202,7 +204,7 @@ public class LinuxIconProvider implements IconProvider {
     }
 
     private Stream<File> getIconFile(Path path, String name) {
-        return Stream.of(".svg", ".png", ".jpg")
+        return stream(IMAGE_EXTENSIONS)
             .map(extension -> path.resolve(name + extension))
             .map(Path::toFile);
     }

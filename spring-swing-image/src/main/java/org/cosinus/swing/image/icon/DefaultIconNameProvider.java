@@ -20,6 +20,7 @@ package org.cosinus.swing.image.icon;
 import java.util.Optional;
 
 public class DefaultIconNameProvider implements IconNameProvider {
+
     @Override
     public Optional<String> getIconName(String iconId) {
         return Optional.of(iconId);
@@ -28,5 +29,10 @@ public class DefaultIconNameProvider implements IconNameProvider {
     @Override
     public void initialize() {
 
+    }
+
+    @Override
+    public String getIconPath() {
+        return "";
     }
 }

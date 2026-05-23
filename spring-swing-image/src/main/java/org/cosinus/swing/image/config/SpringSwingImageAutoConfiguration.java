@@ -54,11 +54,13 @@ public class SpringSwingImageAutoConfiguration {
     public IconHandler iconHandler(final ClasspathResourceResolver resourceResolver,
                                    final IconProvider fileIcons,
                                    final ApplicationUIHandler uiHandler,
-                                   final ImageHandler imageHandler) {
+                                   final ImageHandler imageHandler,
+                                   final IconNameProvider iconNameProvider) {
         return new IconHandler(resourceResolver,
             fileIcons,
             uiHandler,
-            imageHandler);
+            imageHandler,
+            iconNameProvider);
     }
 
     @Bean

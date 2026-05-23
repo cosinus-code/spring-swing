@@ -18,6 +18,7 @@
 package org.cosinus.swing.image.icon;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.cosinus.swing.color.Colors;
 import org.cosinus.swing.icon.IconSize;
 import org.cosinus.swing.image.ImageHandler;
@@ -26,24 +27,27 @@ import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageFilter;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Stream;
 
 import static java.awt.BasicStroke.CAP_ROUND;
 import static java.awt.BasicStroke.JOIN_MITER;
 import static java.awt.Color.WHITE;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
-import static java.lang.Math.abs;
-import static java.lang.Math.max;
-import static java.lang.Math.min;
+import static java.lang.Math.*;
+import static java.util.Arrays.stream;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.IntStream.range;
@@ -56,9 +60,12 @@ import static org.cosinus.swing.image.ImageSettings.QUALITY;
  * Icons handler
  */
 @Slf4j
-public class IconHandler {
+public class IconHandler
+{
 
     private static final String SPRING_SWING_ICONS_CACHE_NAME = "spring.swing.icons";
+
+    public static final String[] IMAGE_EXTENSIONS = {".svg", ".png", ".jpg"};
 
     public static final String SHAPE_ICON = "shape";
 
@@ -72,21 +79,25 @@ public class IconHandler {
 
     private final ImageHandler imageHandler;
 
+    private final IconNameProvider iconNameProvider;
+
     public IconHandler(final ClasspathResourceResolver resourceResolver,
-                       final IconProvider iconProvider,
-                       final ApplicationUIHandler uiHandler,
-                       final ImageHandler imageHandler) {
+        final IconProvider iconProvider,
+        final ApplicationUIHandler uiHandler,
+        final ImageHandler imageHandler,
+        final IconNameProvider iconNameProvider)
+    {
         this.resourceResolver = resourceResolver;
         this.iconProvider = iconProvider;
         this.uiHandler = uiHandler;
         this.imageHandler = imageHandler;
+        this.iconNameProvider = iconNameProvider;
     }
 
     /**
      * Find an icon by name.
      * <p>
-     * If a cache configuration is defined in the application
-     * with the name {@value #SPRING_SWING_ICONS_CACHE_NAME},
+     * If a cache configuration is defined in the application with the name {@value #SPRING_SWING_ICONS_CACHE_NAME},
      * then the results are cached.
      *
      * @param name    the name to search for
@@ -95,27 +106,44 @@ public class IconHandler {
      * @return the found icon, or {@link Optional#empty()}
      */
     @Cacheable(value = SPRING_SWING_ICONS_CACHE_NAME)
-    public Optional<Icon> findIconByName(String name, IconSize size, boolean rounded) {
+    public Optional<Icon> findIconByName(String name, IconSize size, boolean rounded)
+    {
         return ofNullable(name)
             .filter(s -> s.startsWith(SHAPE_ICON))
             .map(this::decodeShape)
             .map(shape -> getIconByShape(shape, size, rounded))
             .or(() -> getRemoteIcon(name)
                 .or(() -> iconProvider.findIconByName(name, size))
-                .or(() -> this.findIconByResource(name + ".png"))
+                .or(() -> this.findIconByResourceName(name))
                 .map(icon -> scaleIcon(icon, size))
                 .map(icon -> rounded ? toCircularIcon(icon, size) : icon));
     }
 
+    private Optional<Icon> findIconByResourceName(String name) {
+        String iconPath = iconNameProvider.getIconPath();
+        return ofNullable(iconPath)
+            .map(path -> !path.endsWith("/") ? iconPath + "/" : iconPath)
+            .map(path -> Stream.of(path + name, name))
+            .orElseGet(() -> Stream.of(name))
+            .flatMap(resourcePath -> stream(IMAGE_EXTENSIONS)
+                .map(extension -> resourcePath + extension))
+            .map(this::findIconByResource)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .findFirst();
+    }
+
     @SuppressWarnings("HttpUrlsUsage")
-    protected boolean isUrl(String text) {
+    protected boolean isUrl(String text)
+    {
         return ofNullable(text)
             .map(url -> url.startsWith("http://")
                 || url.startsWith("https://"))
             .orElse(false);
     }
 
-    protected Optional<Icon> getRemoteIcon(String url) {
+    protected Optional<Icon> getRemoteIcon(String url)
+    {
         return isUrl(url) ?
             ofNullable(imageHandler.createImage(url))
                 .map(ImageIcon::new) :
@@ -125,24 +153,35 @@ public class IconHandler {
     /**
      * Find an icon by resource name.
      * <p>
-     * If a cache configuration is defined in the application
-     * with the name {@value #SPRING_SWING_ICONS_CACHE_NAME},
+     * If a cache configuration is defined in the application with the name {@value #SPRING_SWING_ICONS_CACHE_NAME},
      * then the results are cached.
      *
      * @param resourceName the resource name
      * @return the found icon, or {@link Optional#empty()}
      */
     @Cacheable(value = SPRING_SWING_ICONS_CACHE_NAME, key = "{':resource:', #resourceName}")
-    public Optional<Icon> findIconByResource(String resourceName) {
+    public Optional<Icon> findIconByResource(String resourceName)
+    {
         return resourceResolver.resolveImageAsBytes(resourceName)
+            .map(bytes ->
+            {
+                try (ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes))
+                {
+                    return ImageIO.read(inputStream);
+                }
+                catch (IOException e)
+                {
+                    log.error("Failed to read icon from resource: {}", resourceName, e);
+                    return null;
+                }
+            })
             .map(ImageIcon::new);
     }
 
     /**
      * Find an icon by file.
      * <p>
-     * If a cache configuration is defined in the application
-     * with the name {@value #SPRING_SWING_ICONS_CACHE_NAME},
+     * If a cache configuration is defined in the application with the name {@value #SPRING_SWING_ICONS_CACHE_NAME},
      * then the results are cached.
      *
      * @param file the file
@@ -152,21 +191,25 @@ public class IconHandler {
     @Cacheable(value = SPRING_SWING_ICONS_CACHE_NAME,
         condition = "#file.parent != null",
         keyGenerator = "fileExtensionKeyGenerator")
-    public Optional<Icon> findIconByFile(File file, IconSize size) {
+    public Optional<Icon> findIconByFile(File file, IconSize size)
+    {
         return iconProvider.findIconByFile(file, size)
             .or(() -> uiHandler.getDefaultFileIcon(file.isDirectory()))
             .map(icon -> scaleIcon(icon, size));
     }
 
-    public Icon getGrayFilteredIcon(Icon icon) {
+    public Icon getGrayFilteredIcon(Icon icon)
+    {
         return applyFilter(icon, GRAY_FILTER);
     }
 
-    public Icon getDisabledIcon(Icon icon) {
+    public Icon getDisabledIcon(Icon icon)
+    {
         return applyFilter(icon, DISABLED_FILTER);
     }
 
-    public Icon applyFilter(Icon iconToFilter, ImageFilter filter) {
+    public Icon applyFilter(Icon iconToFilter, ImageFilter filter)
+    {
         return ofNullable(iconToFilter)
             .map(imageHandler::iconToImage)
             .map(image -> imageHandler.applyFilter(image, filter))
@@ -175,22 +218,23 @@ public class IconHandler {
             .orElse(iconToFilter);
     }
 
-    public Icon scaleIcon(Icon iconToResize, IconSize size) {
+    public Icon scaleIcon(Icon iconToResize, IconSize size)
+    {
         return ofNullable(iconToResize)
             .filter(icon -> icon.getIconWidth() != size.getSize() ||
                 icon.getIconHeight() != size.getSize())
             .map(imageHandler::iconToImage)
             .map(image -> imageHandler.scaleUpImage(image, size.getSize(), size.getSize()))
-            .<Icon>map(ImageIcon::new)
+            .<Icon> map(ImageIcon::new)
             .orElse(iconToResize);
     }
 
     @CacheEvict(value = SPRING_SWING_ICONS_CACHE_NAME, allEntries = true, beforeInvocation = true)
-    public void resetIcons() {
+    public void resetIcons()
+    {
         log.info("'{}' cache evicted due to icon theme changed.", SPRING_SWING_ICONS_CACHE_NAME);
         iconProvider.initialize();
     }
-
 
     /**
      * Get the preview icon of a file.
@@ -200,12 +244,14 @@ public class IconHandler {
      * @return the preview image
      * @throws IOException if an IO error occurs
      */
-    public Optional<Icon> getThumbnail(File file, int size) throws IOException {
+    public Optional<Icon> getThumbnail(File file, int size) throws IOException
+    {
         return imageHandler.getThumbnail(file, size)
             .map(ImageIcon::new);
     }
 
-    public Icon toCircularIcon(Icon icon, IconSize iconSize) {
+    public Icon toCircularIcon(Icon icon, IconSize iconSize)
+    {
         Image image = imageHandler.iconToImage(icon);
         int size = iconSize.getSize();
 
@@ -227,7 +273,8 @@ public class IconHandler {
         return new ImageIcon(output);
     }
 
-    protected Shape decodeShape(String encodedShape) {
+    protected Shape decodeShape(String encodedShape)
+    {
         String[] shapePieces = encodedShape.split(SHAPE_SEPARATOR);
         return Shape.builder()
             .backgroundColor(Colors.toColor(shapePieces[1]).orElse(null))
@@ -241,7 +288,8 @@ public class IconHandler {
             .build();
     }
 
-    public Icon getIconByShape(Shape shape, IconSize iconSize, boolean rounded) {
+    public Icon getIconByShape(Shape shape, IconSize iconSize, boolean rounded)
+    {
         int size = iconSize.getSize();
         BufferedImage image = new BufferedImage(size, size, TYPE_INT_ARGB);
         Graphics2D g2d = image.createGraphics();
@@ -252,16 +300,21 @@ public class IconHandler {
         QUALITY.apply(g2d);
 
         ofNullable(shape.getBackgroundColor())
-            .ifPresent(backgroundColor -> {
+            .ifPresent(backgroundColor ->
+            {
                 g2d.setColor(backgroundColor);
-                if (rounded) {
+                if (rounded)
+                {
                     g2d.fillRoundRect(0, 0, size, size, pad, pad);
-                } else {
+                }
+                else
+                {
                     g2d.fillRect(0, 0, size, size);
                 }
             });
 
-        if (!isEmpty(shape.getPoints())) {
+        if (!isEmpty(shape.getPoints()))
+        {
             g2d.setColor(shape.getDrawColor());
             g2d.setStroke(new BasicStroke(1, CAP_ROUND, JOIN_MITER));
 
@@ -270,7 +323,8 @@ public class IconHandler {
             AtomicReference<Double> minY = new AtomicReference<>(Double.MAX_VALUE);
             AtomicReference<Double> maxY = new AtomicReference<>(Double.MIN_VALUE);
             shape.getPoints()
-                .forEach(point -> {
+                .forEach(point ->
+                {
                     minX.set(min(minX.get(), point.x));
                     maxX.set(max(maxX.get(), point.x));
                     minY.set(min(minY.get(), point.y));
@@ -288,15 +342,18 @@ public class IconHandler {
                 .map(point -> new Point(
                     (int) ((point.x - minX.get()) * scale + middleX + pad),
                     (int) ((point.y - minY.get()) * scale + middleY + pad)))
-                .forEach(point -> {
+                .forEach(point ->
+                {
                     ofNullable(storedPoint.get())
                         .filter(lastPoint -> abs(lastPoint.x - point.x) > 1 ||
                             abs(lastPoint.y - point.y) > 1)
-                        .ifPresent(lastPoint -> {
+                        .ifPresent(lastPoint ->
+                        {
                             g2d.drawLine(lastPoint.x, lastPoint.y, point.x, point.y);
                             storedPoint.set(point);
                         });
-                    if (storedPoint.get() == null) {
+                    if (storedPoint.get() == null)
+                    {
                         storedPoint.set(point);
                     }
                 });

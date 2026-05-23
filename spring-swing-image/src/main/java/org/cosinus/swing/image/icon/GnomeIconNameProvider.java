@@ -26,6 +26,8 @@ import static org.cosinus.swing.image.icon.IconProvider.*;
 
 public class GnomeIconNameProvider implements IconNameProvider {
 
+    public static final String GNOME_ICONS_PATH = "linux/gnome";
+
     protected final Map<String, String> iconNamesMap;
 
     public GnomeIconNameProvider() {
@@ -57,5 +59,16 @@ public class GnomeIconNameProvider implements IconNameProvider {
 
         iconNamesMap.put(ICON_VIEW_LEFT_PANE, "sidebar-show-symbolic");
         iconNamesMap.put(ICON_PERMISSIONS, "changes-allow");
+        iconNamesMap.put(ICON_DELETE, "edit-delete");
+        iconNamesMap.put(ICON_EXECUTE, "system-run");
+        iconNamesMap.put(ICON_LINK, "insert-link");
+        iconNamesMap.put(ICON_MOVE_TO_TRASH, "user-trash");
+        iconNamesMap.put(ICON_SHELL, "shellscript");
+    }
+
+    @Override
+    public String getIconPath()
+    {
+        return GNOME_ICONS_PATH;
     }
 }

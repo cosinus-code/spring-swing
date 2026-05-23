@@ -27,6 +27,8 @@ import static org.cosinus.swing.image.icon.WindowsIconProvider.ICON_COMPUTER_PAT
 
 public class WindowsIconNameProvider implements IconNameProvider {
 
+    public static final String WINDOWS_ICONS_PATH = "windows";
+
     private final Map<String, String> iconNameToRegistryPathMap;
 
     public WindowsIconNameProvider() {
@@ -41,5 +43,10 @@ public class WindowsIconNameProvider implements IconNameProvider {
     @Override
     public void initialize() {
         iconNameToRegistryPathMap.put(ICON_COMPUTER, ICON_COMPUTER_PATH);
+    }
+
+    @Override
+    public String getIconPath() {
+        return WINDOWS_ICONS_PATH;
     }
 }

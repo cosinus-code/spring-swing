@@ -26,6 +26,8 @@ import static org.cosinus.swing.image.icon.IconProvider.*;
 
 public class KdeIconNameProvider implements IconNameProvider {
 
+    public static final String KDE_ICONS_PATH = "linux/kde";
+
     private final Map<String, String> iconNamesMap;
 
     public KdeIconNameProvider() {
@@ -61,5 +63,10 @@ public class KdeIconNameProvider implements IconNameProvider {
         iconNamesMap.put(ICON_SETTINGS, "configure");
         iconNamesMap.put(ICON_PERMISSIONS, "unlock");
         iconNamesMap.put(ICON_HELP, "help-about");
+    }
+
+    @Override
+    public String getIconPath() {
+        return KDE_ICONS_PATH;
     }
 }
