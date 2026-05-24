@@ -108,6 +108,10 @@ public interface IconProvider {
     String ICON_SETTINGS = "settings";
     String ICON_HELP = "help";
 
+    String ICON_COPY_ACTION = "copy-action";
+    String ICON_MOVE_ACTION = "move-action";
+    String ICON_LINK_ACTION = "link-action";
+
     String ICON_LINK = "link";
     String ICON_MOVE_TO_TRASH = "trash";
     String ICON_GOOGLE = "google";

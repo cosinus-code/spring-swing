@@ -64,6 +64,10 @@ public class GnomeIconNameProvider implements IconNameProvider {
         iconNamesMap.put(ICON_LINK, "insert-link");
         iconNamesMap.put(ICON_MOVE_TO_TRASH, "user-trash");
         iconNamesMap.put(ICON_SHELL, "shellscript");
+
+        iconNamesMap.put(ICON_COPY_ACTION, "edit-copy");
+        iconNamesMap.put(ICON_MOVE_ACTION, "edit-move");
+        iconNamesMap.put(ICON_LINK_ACTION, "edit-link");
     }
 
     @Override
