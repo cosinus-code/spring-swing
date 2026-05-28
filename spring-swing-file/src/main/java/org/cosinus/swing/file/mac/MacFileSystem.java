@@ -42,8 +42,6 @@ import org.cosinus.swing.file.api.*;
  */
 public class MacFileSystem implements FileSystem {
 
-    private static final Logger LOG = LogManager.getLogger(MacFileSystem.class);
-
     private final ProcessExecutor processExecutor;
 
     private final MacFileInfoProvider fileTypeInfoProvider;

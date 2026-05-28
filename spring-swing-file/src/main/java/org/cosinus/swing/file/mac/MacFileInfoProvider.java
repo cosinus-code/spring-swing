@@ -3,6 +3,7 @@ package org.cosinus.swing.file.mac;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.cosinus.swing.boot.initialize.ApplicationInitializer;
 import org.cosinus.swing.error.ProcessExecutionException;
 import org.cosinus.swing.exec.ProcessExecutor;
 import org.cosinus.swing.file.api.Application;
@@ -19,7 +20,7 @@ import static java.util.stream.Collectors.*;
 import static org.cosinus.swing.icon.IconSize.X32;
 
 @Slf4j
-public class MacFileInfoProvider implements FileInfoProvider {
+public class MacFileInfoProvider implements FileInfoProvider, ApplicationInitializer {
 
     protected static final String NAME = "name";
     protected static final String PATH = "path";
@@ -44,17 +45,20 @@ public class MacFileInfoProvider implements FileInfoProvider {
 
     private final Translator translator;
 
-    private final Map<String, Application> applicationsMap;
+    private Map<String, Application> applicationsMap;
 
-    private final Map<String, Set<Application>> compatibleApplicationsMap;
+    private Map<String, Set<Application>> compatibleApplicationsMap;
 
-    private final Map<String, UniformType> uniformTypesMap;
+    private Map<String, UniformType> uniformTypesMap;
 
     public MacFileInfoProvider(final ProcessExecutor processExecutor,
                                final Translator translator) {
         this.processExecutor = processExecutor;
         this.translator = translator;
+    }
 
+    @Override
+    public void initialize() {
         List<Map<String, String>> entries = buildRegisteredEntries();
         this.applicationsMap = buildApplicationsMap(entries);
         this.compatibleApplicationsMap = buildCompatibleApplicationsMap(entries);
