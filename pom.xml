@@ -62,32 +62,32 @@
             <dependency>
                 <groupId>org.cosinuscode.swing</groupId>
                 <artifactId>spring-swing-core</artifactId>
-                <version>${parent.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.cosinuscode.swing</groupId>
                 <artifactId>spring-swing-boot</artifactId>
-                <version>${parent.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.cosinuscode.swing</groupId>
                 <artifactId>spring-swing-image</artifactId>
-                <version>${parent.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.cosinuscode.swing</groupId>
                 <artifactId>spring-swing-file</artifactId>
-                <version>${parent.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.cosinuscode.swing</groupId>
                 <artifactId>spring-swing-boot-starter</artifactId>
-                <version>${parent.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.cosinuscode.swing</groupId>
                 <artifactId>spring-swing-test</artifactId>
-                <version>${parent.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.cosinuscode.stream</groupId>
