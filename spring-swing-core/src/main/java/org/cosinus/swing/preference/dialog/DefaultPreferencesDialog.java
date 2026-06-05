@@ -228,7 +228,9 @@ public class DefaultPreferencesDialog extends Dialog<Void> implements ListSelect
             applyPreferences();
             if (languageChanged) {
                 translate();
-                preferenceSetList.repaint();
+                if (preferenceSetList != null) {
+                    preferenceSetList.repaint();
+                }
             }
             if (lookAndFeelChanged) {
                 updateLookAndFeel();
