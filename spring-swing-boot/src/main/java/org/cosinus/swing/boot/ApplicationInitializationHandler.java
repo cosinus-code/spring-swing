@@ -73,6 +73,6 @@ public class ApplicationInitializationHandler implements ApplicationRunner, Appl
      */
     @Override
     public void reloadApplication() {
-        run(null);
+        initApplication();
     }
 }
