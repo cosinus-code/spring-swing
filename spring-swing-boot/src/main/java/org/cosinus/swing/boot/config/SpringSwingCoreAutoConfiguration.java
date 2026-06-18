@@ -81,11 +81,6 @@ public class SpringSwingCoreAutoConfiguration {
     }
 
     @Bean
-    public ApplicationProperties applicationProperties() {
-        return new ApplicationProperties();
-    }
-
-    @Bean
     public FilesystemResourceResolver filesystemResourceResolver(final ApplicationProperties applicationProperties) {
         return new FilesystemResourceResolver(applicationProperties);
     }
