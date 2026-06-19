@@ -371,6 +371,7 @@ $ ./spring-swing-example.jar \
     <application.version>${project.version}</application.version>
     <application.category>Other</application.category>
     <application.icon.name>spring-swing-example.png</application.icon.name>
+    <application.ico.name>spring-swing-example.ico</application.ico.name>
     <application.icns.name>spring.icns</application.icns.name>
     <application.class>org.cosinus.swing.example.HelloWorld</application.class>
     <application.home.env.name>SPRING_SWING_EXAMPLE_HOME</application.home.env.name>
@@ -479,7 +480,6 @@ $ ./spring-swing-example.jar \
                                 <name>${application.name}</name>
                                 <organizationName>${organization.name}</organizationName>
                                 <displayName>${application.display.name}</displayName>
-                                <bundleJre>false</bundleJre>
                                 <runnableJar>${project.basedir}/target/${application.name}.jar</runnableJar>
                                 <generateInstaller>true</generateInstaller>
                                 <administratorRequired>false</administratorRequired>
@@ -490,6 +490,9 @@ $ ./spring-swing-example.jar \
                                     <additionalResource>src/main/resources/image/${application.icon.name}
                                     </additionalResource>
                                 </additionalResources>
+                                <bundleJre>true</bundleJre>
+                                <customizedJre>false</customizedJre>
+                                <jdkPath>${java.home}</jdkPath>
                                 <extra>
                                     <macArguments>${application.splash.progress.arguments}</macArguments>
                                 </extra>
@@ -522,11 +525,10 @@ $ ./spring-swing-example.jar \
                                 </macConfig>
 
                                 <winConfig>
-                                    <icoFile>src/main/resources/image/${application.icon.name}</icoFile>
+                                    <icoFile>src/main/resources/image/${application.ico.name}</icoFile>
                                     <generateSetup>true</generateSetup>
                                     <generateMsi>true</generateMsi>
                                     <generateMsm>false</generateMsm>
-
                                     <headerType>gui</headerType>
                                     <wrapJar>true</wrapJar>
                                     <companyName>${organization.name}</companyName>
@@ -615,6 +617,10 @@ if [ "$(uname -s)" = "Linux" ]; then
   run_or_die cp ${application_desktop_file} ${target_desktop_file}
   run_or_die chmod +x ${target_desktop_file}
   run_or_die sudo update-desktop-database
+
+elif [ "$OS" = "Windows_NT" ]; then
+  application_msi_file="target/${application_name}_${application_version}.msi"
+  run_or_die start "" "${application_msi_file}"
 fi
 
 show-info "${application_display_name} was installed"
