@@ -27,14 +27,31 @@
         <module>spring-swing-file</module>
         <module>spring-swing-test</module>
         <module>spring-swing-boot-starter</module>
+        <module>spring-swing-boot-starter-parent</module>
     </modules>
 
     <properties>
+        <application.display.name/>
+        <application.name/>
+        <application.version/>
+        <application.category/>
+        <application.class/>
+        <application.home.env.name/>
+        <application.description>${application.display.name}</application.description>
+        <application.icon.name>${application.name}.png</application.icon.name>
+        <application.ico.name>${application.name}.ico</application.ico.name>
+        <application.icns.name>${application.name}.icns</application.icns.name>
+        <application.splash.file.name>${application.name}-splash.png</application.splash.file.name>
+        <application.splash.progress.arguments>-splash-progress</application.splash.progress.arguments>
+        <application.mac.startup>X86_64</application.mac.startup>
+        <application.windows.version>${application.version}.0</application.windows.version>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>21</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
 
+        <spring-swing.version>3.0.2-SNAPSHOT</spring-swing.version>
         <stream-pipeline.version>1.0.0</stream-pipeline.version>
         <commons-io.version>2.22.0</commons-io.version>
         <org.apache.common.version>4.5.0</org.apache.common.version>
@@ -50,11 +67,14 @@
         <jmimemagic.version>0.1.5</jmimemagic.version>
         <feign.version>13.12</feign.version>
 
+        <java.packager.version>1.7.6</java.packager.version>
         <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
         <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
         <central-publishing-maven-plugin.version>0.10.0</central-publishing-maven-plugin.version>
         <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
+        <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
+        <maven-dependency-plugin.version>3.11.0</maven-dependency-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -194,75 +214,246 @@
     </dependencyManagement>
 
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>${maven-source-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>${maven-javadoc-plugin.version}</version>
-                <configuration>
-                    <doclint>none</doclint>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.sonatype.central</groupId>
-                <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>${central-publishing-maven-plugin.version}</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <publishingServerId>central</publishingServerId>
-                    <autoPublish>true</autoPublish>
-                    <waitUntil>published</waitUntil>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${maven-surefire-plugin.version}</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>${maven-gpg-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>application.*</include>
+                </includes>
+            </resource>
+        </resources>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>${maven.compiler.source}</source>
+                        <target>${maven.compiler.target}</target>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>${maven-source-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <goals>
+                                <goal>jar-no-fork</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${maven-javadoc-plugin.version}</version>
+                    <configuration>
+                        <doclint>none</doclint>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>attach-javadocs</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.sonatype.central</groupId>
+                    <artifactId>central-publishing-maven-plugin</artifactId>
+                    <version>${central-publishing-maven-plugin.version}</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <publishingServerId>central</publishingServerId>
+                        <autoPublish>true</autoPublish>
+                        <waitUntil>published</waitUntil>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>repackage</id>
+                            <goals>
+                                <goal>repackage</goal>
+                            </goals>
+                            <configuration>
+                                <finalName>${application.name}</finalName>
+                                <mainClass>${application.class}</mainClass>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>${maven-gpg-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>sign-artifacts</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>sign</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>io.github.fvarrui</groupId>
+                    <artifactId>javapackager</artifactId>
+                    <version>${java.packager.version}</version>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>package</goal>
+                            </goals>
+                            <configuration>
+                                <mainClass>org.springframework.boot.loader.launch.JarLauncher</mainClass>
+                                <name>${application.name}</name>
+                                <organizationName>${organization.name}</organizationName>
+                                <displayName>${application.display.name}</displayName>
+                                <runnableJar>${project.basedir}/target/${application.name}.jar</runnableJar>
+                                <generateInstaller>true</generateInstaller>
+                                <administratorRequired>false</administratorRequired>
+                                <platform>auto</platform>
+                                <additionalResources>
+                                    <additionalResource>src/main/resources/image/${application.splash.file.name}
+                                    </additionalResource>
+                                    <additionalResource>src/main/resources/image/${application.icon.name}
+                                    </additionalResource>
+                                </additionalResources>
+                                <bundleJre>true</bundleJre>
+                                <customizedJre>false</customizedJre>
+                                <jdkPath>${java.home}</jdkPath>
+                                <extra>
+                                    <macArguments>${application.splash.progress.arguments}</macArguments>
+                                </extra>
+                                <vmArgs>
+                                    <vmArg>-Dapp.name=${application.name}</vmArg>
+                                    <vmArg>-Dvisualvm.display.name=${application.name}</vmArg>
+                                    <vmArg>-Dswing.aatext=true</vmArg>
+                                    <vmArg>-splash:${application.splash.file.name}</vmArg>
+                                    <vmArg>-Dapple.laf.useScreenMenuBar=true</vmArg>
+                                </vmArgs>
+                                <linuxConfig>
+                                    <pngFile>${application.icon.name}</pngFile>
+                                    <categories>
+                                        <category>${application.category}</category>
+                                    </categories>
+                                    <generateAppImage>false</generateAppImage>
+                                    <generateDeb>true</generateDeb>
+                                    <generateRpm>true</generateRpm>
+                                    <wrapJar>false</wrapJar>
+                                </linuxConfig>
+                                <macConfig>
+                                    <appId>${application.name}</appId>
+                                    <icnsFile>src/main/resources/image/${application.icns.name}</icnsFile>
+                                    <generateDmg>true</generateDmg>
+                                    <generatePkg>true</generatePkg>
+                                    <relocateJar>false</relocateJar>
+                                    <volumeIcon>src/main/resources/image/${application.icns.name}</volumeIcon>
+                                    <volumeName>${application.display.name}</volumeName>
+                                    <macStartup>${application.mac.startup}</macStartup>
+                                </macConfig>
+
+                                <winConfig>
+                                    <icoFile>src/main/resources/image/${application.ico.name}</icoFile>
+                                    <generateSetup>true</generateSetup>
+                                    <generateMsi>true</generateMsi>
+                                    <generateMsm>false</generateMsm>
+                                    <headerType>gui</headerType>
+                                    <wrapJar>true</wrapJar>
+                                    <companyName>${organization.name}</companyName>
+                                    <fileVersion>${application.windows.version}</fileVersion>
+                                    <txtFileVersion>${application.windows.version}</txtFileVersion>
+                                    <productVersion>${application.windows.version}</productVersion>
+                                    <txtProductVersion>${application.windows.version}
+                                    </txtProductVersion>
+                                    <fileDescription>${description}</fileDescription>
+                                    <copyright>${organization.name}</copyright>
+                                    <productName>${application.display.name}</productName>
+                                    <internalName>${application.display.name}</internalName>
+                                    <shortcutName>${application.display.name}</shortcutName>
+                                    <originalFilename>${application.name}.exe</originalFilename>
+
+                                    <exeCreationTool>launch4j</exeCreationTool>
+
+                                    <setupMode>installForAllUsers</setupMode>
+                                    <disableDirPage>true</disableDirPage>
+                                    <disableProgramGroupPage>true</disableProgramGroupPage>
+                                    <disableFinishedPage>true</disableFinishedPage>
+                                    <disableRunAfterInstall>true</disableRunAfterInstall>
+                                    <disableWelcomePage>true</disableWelcomePage>
+                                    <createDesktopIconTask>true</createDesktopIconTask>
+                                    <removeOldLibs>false</removeOldLibs>
+                                </winConfig>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>${maven-dependency-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>unpack-install-script</id>
+                            <phase>process-resources</phase>
+                            <goals>
+                                <goal>unpack</goal>
+                            </goals>
+                            <configuration>
+                                <artifactItems>
+                                    <artifactItem>
+                                        <groupId>org.cosinuscode.swing</groupId>
+                                        <artifactId>spring-swing-boot</artifactId>
+                                        <type>jar</type>
+                                        <includes>*.sh</includes>
+                                        <outputDirectory>${project.build.directory}</outputDirectory>
+                                    </artifactItem>
+                                </artifactItems>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>${exec-maven-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>run-install-script</id>
+                            <phase>install</phase>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                            <configuration>
+                                <executable>bash</executable>
+                                <workingDirectory>${project.basedir}</workingDirectory>
+                                <arguments>
+                                    <argument>${project.build.directory}/install.sh</argument>
+                                </arguments>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
     <repositories>

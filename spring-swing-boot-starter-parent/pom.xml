@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.cosinuscode.swing</groupId>
+        <artifactId>spring-swing-parent</artifactId>
+        <version>3.0.2-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>spring-swing-boot-starter-parent</artifactId>
+    <name>Spring Swing Boot Parent Starter</name>
+    <description>Spring Swing Boot Parent Starter</description>
+    <packaging>pom</packaging>
+
+    <properties>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.cosinuscode.swing</groupId>
+            <artifactId>spring-swing-boot</artifactId>
+            <version>${spring-swing.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.cosinuscode.swing</groupId>
+            <artifactId>spring-swing-core</artifactId>
+            <version>${spring-swing.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.cosinuscode.swing</groupId>
+            <artifactId>spring-swing-image</artifactId>
+            <version>${spring-swing.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.cosinuscode.swing</groupId>
+            <artifactId>spring-swing-file</artifactId>
+            <version>${spring-swing.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.cosinuscode.swing</groupId>
+            <artifactId>spring-swing-test</artifactId>
+            <version>${spring-swing.version}</version>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>mac-arm</id>
+            <properties>
+                <application.mac.startup>ARM64</application.mac.startup>
+            </properties>
+            <activation>
+                <os>
+                    <family>mac</family>
+                    <arch>arm64</arch>
+                </os>
+            </activation>
+        </profile>
+        <profile>
+            <id>installer</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>io.github.fvarrui</groupId>
+                        <artifactId>javapackager</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>io.github.fvarrui</groupId>
+                        <artifactId>javapackager</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>installApp</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

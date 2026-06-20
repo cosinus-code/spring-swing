@@ -39,14 +39,15 @@ public class MyPanel extends Panel {
 
 ## Modules
 
-| Module | Purpose |
-|---|---|
-| `spring-swing-core` | Swing wrappers, context injection, actions, dialogs, menus, forms, storage, translate, preferences |
-| `spring-swing-boot` | Spring Boot auto-configuration, application lifecycle, OS-specific conditions, OAuth2 |
-| `spring-swing-image` | Image loading — SVG (Batik), ICNS, TIFF, JPEG (TwelveMonkeys), scaling, metadata |
-| `spring-swing-file` | File utilities — commons-io, MIME detection, OSHI hardware info, process execution |
-| `spring-swing-test` | `@SpringSwingBootTest`, in-memory storage, integration test support |
-| `spring-swing-boot-starter` | Aggregator starter — pulls in all modules |
+| Module                             | Purpose                                                                                            |
+|------------------------------------|----------------------------------------------------------------------------------------------------|
+| `spring-swing-core`                | Swing wrappers, context injection, actions, dialogs, menus, forms, storage, translate, preferences |
+| `spring-swing-boot`                | Spring Boot auto-configuration, application lifecycle, OS-specific conditions, OAuth2              |
+| `spring-swing-image`               | Image loading — SVG (Batik), ICNS, TIFF, JPEG (TwelveMonkeys), scaling, metadata                   |
+| `spring-swing-file`                | File utilities — commons-io, MIME detection, OSHI hardware info, process execution                 |
+| `spring-swing-test`                | `@SpringSwingBootTest`, in-memory storage, integration test support                                |
+| `spring-swing-boot-starter`        | Aggregator starter — pulls in all modules                                                          |
+| `spring-swing-boot-starter-parent` | Aggregator starter to be used as parent                                                            |
 
 # Getting Started
 
@@ -83,7 +84,7 @@ Add `spring-swing-boot-starter` to your project. Spring Swing requires **Java 21
 ```xml
 
 <properties>
-    <spring-swing.version>3.0.1</spring-swing.version>
+    <spring-swing.version>3.0.2</spring-swing.version>
 </properties>
 <dependencies>
 <dependency>
@@ -151,13 +152,13 @@ swing:
 
 The icon file default location is the `image` resources folder.
 
-To set the application name and icon only once, use the values from pom.xml:
+Alternatively, use the values from pom.xml:
 
 ```xml
 <properties>
     <application.display.name>Spring Swing Example</application.display.name>
     <application.name>spring-swing-example</application.name>
-    <application.class>org.cosinus.swing.example.HelloWorld</application.class>
+    <application.icon.name>spring-swing-example.png</application.icon.name>
 </properties>
 ```
 ```yaml
@@ -364,269 +365,32 @@ $ ./spring-swing-example.jar \
 ## Install the Application
 
 ```xml
+<parent>
+    <groupId>org.cosinuscode.swing</groupId>
+    <artifactId>spring-swing-boot-starter-parent</artifactId>
+    <version>3.0.2</version>
+</parent>
+
 <properties>
     <application.display.name>Spring Swing Example</application.display.name>
     <application.name>spring-swing-example</application.name>
-    <application.description>Spring Swing Exemple</application.description>
+    <application.description>Spring Swing Example</application.description>
     <application.version>${project.version}</application.version>
     <application.category>Other</application.category>
     <application.icon.name>spring-swing-example.png</application.icon.name>
     <application.ico.name>spring-swing-example.ico</application.ico.name>
-    <application.icns.name>spring.icns</application.icns.name>
+    <application.icns.name>spring-swing-example.icns</application.icns.name>
     <application.class>org.cosinus.swing.example.HelloWorld</application.class>
     <application.home.env.name>SPRING_SWING_EXAMPLE_HOME</application.home.env.name>
     <application.splash.file.name>spring-splash.png</application.splash.file.name>
     <application.splash.progress.arguments>
         -splash-progress -splash-progress-color=56,123,44 -splash-progress-y=245 -splash-progress-x=5
     </application.splash.progress.arguments>
-
-    <java.packager.version>1.7.6</java.packager.version>
-    <java.packager.mac.startup>X86_64</java.packager.mac.startup>
-    <java.packager.windows.application.version>2.0.0.0</java.packager.windows.application.version>
 </properties>
-
-<profiles>
-    <profile>
-        <id>mac-arm</id>
-        <properties>
-            <java.packager.mac.startup>ARM64</java.packager.mac.startup>
-        </properties>
-        <activation>
-            <os>
-                <family>mac</family>
-                <arch>arm64</arch>
-            </os>
-        </activation>
-    </profile>
-    <profile>
-        <id>java-package</id>
-        <activation>
-            <property>
-                <name>!skipJavaInstall</name>
-            </property>
-        </activation>
-        <build>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <configuration>
-                        <source>${maven.compiler.source}</source>
-                        <target>${maven.compiler.target}</target>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-maven-plugin</artifactId>
-                    <executions>
-                        <execution>
-                            <id>repackage</id>
-                            <goals>
-                                <goal>repackage</goal>
-                            </goals>
-                            <configuration>
-                                <executable>true</executable>
-                                <finalName>${application.name}</finalName>
-                                <mainClass>${application.class}</mainClass>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <configuration>
-                        <archive>
-                            <manifestEntries>
-                                <SplashScreen-Image>BOOT-INF/classes/image/${application.splash.file.name}
-                                </SplashScreen-Image>
-                            </manifestEntries>
-                        </archive>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <executions>
-                        <execution>
-                            <id>copy-run-resources</id>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>copy-resources</goal>
-                            </goals>
-                            <configuration>
-                                <outputDirectory>${project.output}</outputDirectory>
-                                <resources>
-                                    <resource>
-                                        <directory>src/main/resources</directory>
-                                    </resource>
-                                </resources>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>io.github.fvarrui</groupId>
-                    <artifactId>javapackager</artifactId>
-                    <version>${java.packager.version}</version>
-                    <executions>
-                        <execution>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>package</goal>
-                            </goals>
-                            <configuration>
-                                <mainClass>org.springframework.boot.loader.launch.JarLauncher</mainClass>
-                                <name>${application.name}</name>
-                                <organizationName>${organization.name}</organizationName>
-                                <displayName>${application.display.name}</displayName>
-                                <runnableJar>${project.basedir}/target/${application.name}.jar</runnableJar>
-                                <generateInstaller>true</generateInstaller>
-                                <administratorRequired>false</administratorRequired>
-                                <platform>auto</platform>
-                                <additionalResources>
-                                    <additionalResource>src/main/resources/image/${application.splash.file.name}
-                                    </additionalResource>
-                                    <additionalResource>src/main/resources/image/${application.icon.name}
-                                    </additionalResource>
-                                </additionalResources>
-                                <bundleJre>true</bundleJre>
-                                <customizedJre>false</customizedJre>
-                                <jdkPath>${java.home}</jdkPath>
-                                <extra>
-                                    <macArguments>${application.splash.progress.arguments}</macArguments>
-                                </extra>
-                                <vmArgs>
-                                    <vmArg>-Dapp.name=${application.name}</vmArg>
-                                    <vmArg>-Dvisualvm.display.name=${application.name}</vmArg>
-                                    <vmArg>-Dswing.aatext=true</vmArg>
-                                    <vmArg>-splash:${application.splash.file.name}</vmArg>
-                                    <vmArg>-Dapple.laf.useScreenMenuBar=true</vmArg>
-                                </vmArgs>
-                                <linuxConfig>
-                                    <pngFile>${application.icon.name}</pngFile>
-                                    <categories>
-                                        <category>${application.category}</category>
-                                    </categories>
-                                    <generateAppImage>false</generateAppImage>
-                                    <generateDeb>true</generateDeb>
-                                    <generateRpm>true</generateRpm>
-                                    <wrapJar>false</wrapJar>
-                                </linuxConfig>
-                                <macConfig>
-                                    <appId>${application.name}</appId>
-                                    <icnsFile>src/main/resources/image/${application.icns.name}</icnsFile>
-                                    <generateDmg>true</generateDmg>
-                                    <generatePkg>true</generatePkg>
-                                    <relocateJar>false</relocateJar>
-                                    <volumeIcon>src/main/resources/image/${application.icns.name}</volumeIcon>
-                                    <volumeName>${application.display.name}</volumeName>
-                                    <macStartup>${java.packager.mac.startup}</macStartup>
-                                </macConfig>
-
-                                <winConfig>
-                                    <icoFile>src/main/resources/image/${application.ico.name}</icoFile>
-                                    <generateSetup>true</generateSetup>
-                                    <generateMsi>true</generateMsi>
-                                    <generateMsm>false</generateMsm>
-                                    <headerType>gui</headerType>
-                                    <wrapJar>true</wrapJar>
-                                    <companyName>${organization.name}</companyName>
-                                    <fileVersion>${java.packager.windows.application.version}</fileVersion>
-                                    <txtFileVersion>${java.packager.windows.application.version}</txtFileVersion>
-                                    <productVersion>${java.packager.windows.application.version}</productVersion>
-                                    <txtProductVersion>${java.packager.windows.application.version}
-                                    </txtProductVersion>
-                                    <fileDescription>${description}</fileDescription>
-                                    <copyright>${organization.name}</copyright>
-                                    <productName>${application.display.name}</productName>
-                                    <internalName>${application.display.name}</internalName>
-                                    <shortcutName>${application.display.name}</shortcutName>
-                                    <originalFilename>${application.name}.exe</originalFilename>
-
-                                    <exeCreationTool>launch4j</exeCreationTool>
-
-                                    <setupMode>installForAllUsers</setupMode>
-                                    <disableDirPage>true</disableDirPage>
-                                    <disableProgramGroupPage>true</disableProgramGroupPage>
-                                    <disableFinishedPage>true</disableFinishedPage>
-                                    <disableRunAfterInstall>true</disableRunAfterInstall>
-                                    <disableWelcomePage>true</disableWelcomePage>
-                                    <createDesktopIconTask>true</createDesktopIconTask>
-                                    <removeOldLibs>false</removeOldLibs>
-                                </winConfig>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-            </plugins>
-        </build>
-    </profile>
-</profiles>
 ```
-Run `./install.sh`:
+Run `mvn clean install -PinstallApp`:
 
-```shell_session
-#! /bin/bash
-basedir=$(dirname "$0")
-source "$basedir/echo-it.sh"
-cd "$basedir" || exit
-
-run_or_continue_if_fail() {
-    if ! "$@"; then
-        echo "❌ Failed to run $*" >&2
-    fi
-}
-
-run_or_die() {
-    if ! "$@"; then
-        echo "❌ Failed to install ${application_display_name} while running: $*" >&2
-        exit 1
-    fi
-}
-
-maven_property() {
-  mvn help:evaluate -Dexpression="$1" -q -DforceStdout
-}
-
-application_name=$(maven_property application.name)
-application_display_name=$(maven_property application.display.name)
-application_icon_name=$(maven_property application.icon.name)
-application_version=$(maven_property project.version)
-application_arguments=$(maven_property application.splash.progress.arguments)
-
-show-info "Building ${application_display_name}..."
-run_or_die mvn clean install -Pjava-package
-
-show-info "Installing ${application_display_name}..."
-if [ "$(uname -s)" = "Linux" ]; then
-  application_deb_file="target/${application_name}_${application_version}.deb"
-  application_rpm_file="target/${application_name}_${application_version}.rpm"
-  application_desktop_file="target/assets/${application_name}.desktop"
-  target_desktop_file="$HOME/.local/share/applications/${application_name}.desktop"
-
-  if [ "$(grep -Ei 'debian|ubuntu|mint' /etc/os-release)" ]; then
-    run_or_die sudo dpkg -i ${application_deb_file}
-  fi
-
-  if [ "$(grep -Ei 'fedora|redhat' /etc/os-release)" ]; then
-    run_or_die sudo dnf install ${application_rpm_file}
-  fi
-
-  run_or_die sed -i "s/%U/${application_arguments}/" ${application_desktop_file}
-  run_or_die cp ${application_desktop_file} ${target_desktop_file}
-  run_or_die chmod +x ${target_desktop_file}
-  run_or_die sudo update-desktop-database
-
-elif [ "$OS" = "Windows_NT" ]; then
-  application_msi_file="target/${application_name}_${application_version}.msi"
-  run_or_die start "" "${application_msi_file}"
-fi
-
-show-info "${application_display_name} was installed"
-```
-
-Known issue: progress bar doesn't show on Windows.
+Known issue: splash progress bar doesn't show on Windows.
 
 ## JSON descriptors for dialogs
 
