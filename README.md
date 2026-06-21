@@ -383,9 +383,7 @@ $ ./spring-swing-example.jar \
     <application.class>org.cosinus.swing.example.HelloWorld</application.class>
     <application.home.env.name>SPRING_SWING_EXAMPLE_HOME</application.home.env.name>
     <application.splash.file.name>spring-splash.png</application.splash.file.name>
-    <application.splash.progress.arguments>
-        -splash-progress -splash-progress-color=56,123,44 -splash-progress-y=245 -splash-progress-x=5
-    </application.splash.progress.arguments>
+    <application.splash.progress>-Dsplash-progress=color=56,123,44;y=245;x=5</application.splash.progress>
 </properties>
 ```
 Run `mvn clean install -PinstallApp`:

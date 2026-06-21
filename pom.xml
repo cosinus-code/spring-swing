@@ -42,7 +42,7 @@
         <application.ico.name>${application.name}.ico</application.ico.name>
         <application.icns.name>${application.name}.icns</application.icns.name>
         <application.splash.file.name>${application.name}-splash.png</application.splash.file.name>
-        <application.splash.progress.arguments>-splash-progress</application.splash.progress.arguments>
+        <application.splash.progress>-splash-progress</application.splash.progress>
         <application.mac.startup>X86_64</application.mac.startup>
         <application.windows.version>${application.version}.0</application.windows.version>
 
@@ -346,7 +346,7 @@
                                     <vmArg>-Dswing.aatext=true</vmArg>
                                     <vmArg>-Dapple.laf.useScreenMenuBar=true</vmArg>
                                     <vmArg>-splash:${application.splash.file.name}</vmArg>
-                                    <vmArg>${application.splash.progress.arguments}</vmArg>
+                                    <vmArg>${application.splash.progress}</vmArg>
                                 </vmArgs>
                                 <linuxConfig>
                                     <pngFile>${application.icon.name}</pngFile>

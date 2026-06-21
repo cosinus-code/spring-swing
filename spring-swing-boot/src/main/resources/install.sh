@@ -24,7 +24,6 @@ application_name=$(maven_property application.name)
 application_display_name=$(maven_property application.display.name)
 application_icon_name=$(maven_property application.icon.name)
 application_version=$(maven_property project.version)
-application_arguments=$(maven_property application.splash.progress.arguments)
 
 show-info "Building ${application_display_name}..."
 run_or_die mvn clean install -Pinstaller
@@ -44,7 +43,6 @@ if [ "$(uname -s)" = "Linux" ]; then
     run_or_die sudo dnf install ${application_rpm_file}
   fi
 
-  run_or_die sed -i "s/%U/${application_arguments}/" ${application_desktop_file}
   run_or_die cp ${application_desktop_file} ${target_desktop_file}
   run_or_die chmod +x ${target_desktop_file}
   run_or_die sudo update-desktop-database
