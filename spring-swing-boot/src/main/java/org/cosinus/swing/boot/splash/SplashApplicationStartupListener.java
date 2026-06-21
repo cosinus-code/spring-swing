@@ -28,16 +28,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static java.lang.System.getProperty;
 import static java.util.Arrays.stream;
-import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toMap;
 
 /**
  * Implementation of {@link SwingSpringApplicationStartupListener}
@@ -49,13 +45,13 @@ import static java.util.stream.Collectors.toMap;
  */
 public class SplashApplicationStartupListener implements SwingSpringApplicationStartupListener {
 
-    private static final String LOG_STARTUP_PROGRESS = "-log-startup-progress";
-    private static final String SPLASH_PROGRESS = "-splash-progress";
-    private static final String SPLASH_PROGRESS_COLOR = "-splash-progress-color";
-    private static final String SPLASH_PROGRESS_X = "-splash-progress-x";
-    private static final String SPLASH_PROGRESS_Y = "-splash-progress-y";
-    private static final String SPLASH_PROGRESS_WIDTH = "-splash-progress-width";
-    private static final String SPLASH_PROGRESS_HEIGHT = "-splash-progress-height";
+    private static final String LOG_STARTUP_PROGRESS = "log-startup-progress";
+    private static final String SPLASH_PROGRESS = "splash-progress";
+    private static final String SPLASH_PROGRESS_COLOR = "splash-progress-color";
+    private static final String SPLASH_PROGRESS_X = "splash-progress-x";
+    private static final String SPLASH_PROGRESS_Y = "splash-progress-y";
+    private static final String SPLASH_PROGRESS_WIDTH = "splash-progress-width";
+    private static final String SPLASH_PROGRESS_HEIGHT = "splash-progress-height";
 
     private static final String APPLICATION_STATUS_STARTING = "Starting application...";
     private static final String APPLICATION_STATUS_PREPARED = "Application prepared";
@@ -76,23 +72,14 @@ public class SplashApplicationStartupListener implements SwingSpringApplicationS
     private Set<String> beanNames = new HashSet<>();
 
     public SplashApplicationStartupListener(SpringApplication application, String[] arguments) {
-        Map<String, String> argumentsMap = ofNullable(arguments)
-            .stream()
-            .flatMap(Arrays::stream)
-            .map(argument -> argument.split("="))
-            .collect(toMap(
-                argument -> argument[0],
-                argument -> argument.length > 1 ? argument[1] : "",
-                (k1, k2) -> k2,
-                HashMap::new));
 
-        boolean logStartupProgress = argumentsMap.containsKey(LOG_STARTUP_PROGRESS);
-        boolean splashProgress = argumentsMap.containsKey(SPLASH_PROGRESS);
-        String splashProgressColor = argumentsMap.get(SPLASH_PROGRESS_COLOR);
-        String splashProgressX = argumentsMap.get(SPLASH_PROGRESS_X);
-        String splashProgressY = argumentsMap.get(SPLASH_PROGRESS_Y);
-        String splashProgressWidth = argumentsMap.get(SPLASH_PROGRESS_WIDTH);
-        String splashProgressHeight = argumentsMap.get(SPLASH_PROGRESS_HEIGHT);
+        boolean logStartupProgress = getProperty(LOG_STARTUP_PROGRESS) != null;
+        boolean splashProgress = getProperty(SPLASH_PROGRESS) != null;
+        String splashProgressColor = getProperty(SPLASH_PROGRESS_COLOR);
+        String splashProgressX = getProperty(SPLASH_PROGRESS_X);
+        String splashProgressY = getProperty(SPLASH_PROGRESS_Y);
+        String splashProgressWidth = getProperty(SPLASH_PROGRESS_WIDTH);
+        String splashProgressHeight = getProperty(SPLASH_PROGRESS_HEIGHT);
 
         this.splash = new ApplicationSplash(splashProgress, splashProgressColor, splashProgressX, splashProgressY,
             splashProgressWidth, splashProgressHeight);

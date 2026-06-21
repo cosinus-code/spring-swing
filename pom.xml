@@ -340,15 +340,13 @@
                                 <bundleJre>true</bundleJre>
                                 <customizedJre>false</customizedJre>
                                 <jdkPath>${java.home}</jdkPath>
-                                <extra>
-                                    <macArguments>${application.splash.progress.arguments}</macArguments>
-                                </extra>
                                 <vmArgs>
                                     <vmArg>-Dapp.name=${application.name}</vmArg>
                                     <vmArg>-Dvisualvm.display.name=${application.name}</vmArg>
                                     <vmArg>-Dswing.aatext=true</vmArg>
-                                    <vmArg>-splash:${application.splash.file.name}</vmArg>
                                     <vmArg>-Dapple.laf.useScreenMenuBar=true</vmArg>
+                                    <vmArg>-splash:${application.splash.file.name}</vmArg>
+                                    <vmArg>${application.splash.progress.arguments}</vmArg>
                                 </vmArgs>
                                 <linuxConfig>
                                     <pngFile>${application.icon.name}</pngFile>
