@@ -42,7 +42,7 @@
         <application.ico.name>${application.name}.ico</application.ico.name>
         <application.icns.name>${application.name}.icns</application.icns.name>
         <application.splash.file.name>${application.name}-splash.png</application.splash.file.name>
-        <application.splash.progress>-splash-progress</application.splash.progress>
+        <application.splash.progress>-Dsplash-progress</application.splash.progress>
         <application.mac.startup>X86_64</application.mac.startup>
         <application.windows.version>${application.version}.0</application.windows.version>
 

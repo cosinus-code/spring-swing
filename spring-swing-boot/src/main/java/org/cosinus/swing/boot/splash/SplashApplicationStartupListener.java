@@ -79,7 +79,7 @@ public class SplashApplicationStartupListener implements SwingSpringApplicationS
 
         Map<String, String> argumentsMap = ofNullable(getProperty(SPLASH_PROGRESS))
             .stream()
-            .flatMap(splashProgress -> stream(splashProgress.split(";")))
+            .flatMap(splashProgress -> stream(splashProgress.split(":")))
             .map(argument -> argument.split("="))
             .collect(toMap(
                 argument -> argument[0],
