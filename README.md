@@ -136,7 +136,7 @@ $ mvn package
 ## Run the Application
 
 ```shell_session
-$ ./spring-swing-example.jar
+$ java -jar spring-swing-example-1.0-SNAPSHOT.jar 
 ```
 
 ## Application Name and Icon
@@ -321,46 +321,34 @@ settings=Settings
 Provide the image in the `image` resources folder and register it via `maven-jar-plugin`:
 
 ```xml
-
 <properties>
     <application.splash.file.name>spring-splash.png</application.splash.file.name>
 </properties>
-
-<build>
-<plugins>
-    <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-            <archive>
-                <manifestEntries>
-                    <SplashScreen-Image>BOOT-INF/classes/image/${application.splash.file.name}
-                    </SplashScreen-Image>
-                </manifestEntries>
-            </archive>
-        </configuration>
-    </plugin>
-</plugins>
-</build>
 ```
 
-## Startup Progress Bar
-
-Pass `-splash-progress` when running the application:
+## Startup Splash Progress Bar
 
 ```shell_session
-$ ./spring-swing-example.jar -splash-progress
+$ java -Dsplash-progress -jar spring-swing-example-1.0-SNAPSHOT.jar
 ```
 
-Customise the progress bar position and color:
+Customize the progress bar position and color:
 
 ```shell_session
-$ ./spring-swing-example.jar \
--splash-progress \
--splash-progress-color=56,123,44 \
--splash-progress-y=245 \
--splash-progress-x=5
+$ java -Dsplash-progress="color=56,123,44:y=245:x=5" -jar spring-swing-example-1.0-SNAPSHOT.jar
 ```
+
+
+| Module  | Purpose                                           | Type                               | Default                        |
+|---------|---------------------------------------------------|------------------------------------|--------------------------------|
+| `color` | The color of the progress bar                     | String -> "red,green,blue" (0-255) | `TextArea.selectionBackground` |
+| `x`     | The horizontal start position of the progress bar | Integer                            | 0                              |
+| `y`     | The vertical start position of the progress bar   | Integer                            | splash height                  |
+| `width` | The width of the progress bar                     | Integer                            | splash width                   |
+| `height`| The height of the progress bar                    | Integer                            | 3                              |
+| `log`   | If true, the progress will be logged              | Boolean                            | false                          |
+
+
 
 ## Install the Application
 
@@ -425,34 +413,6 @@ Simple dialogs can be described in JSON format, like the following permissionsDi
       "type": "boolean-list",
       "label": "others-permissions",
       "action": "refresh"
-    },
-    {
-      "id": "set-user-id",
-      "type": "boolean",
-      "label": "set-user-id",
-      "action": "refresh"
-    },
-    {
-      "id": "set-group-id",
-      "type": "boolean",
-      "label": "set-group-id",
-      "action": "refresh"
-    },
-    {
-      "id": "sticky",
-      "type": "boolean",
-      "label": "sticky",
-      "action": "refresh"
-    },
-    {
-      "id": "permissions-text-view",
-      "type": "label",
-      "label": "permissions-text-view"
-    },
-    {
-      "id": "permissions-number-view",
-      "type": "label",
-      "label": "permissions-number-view"
     }
   ],
   "buttons": [

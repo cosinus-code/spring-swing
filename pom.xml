@@ -292,11 +292,26 @@
                                 <goal>repackage</goal>
                             </goals>
                             <configuration>
-                                <finalName>${application.name}</finalName>
                                 <mainClass>${application.class}</mainClass>
                             </configuration>
                         </execution>
                     </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <configuration>
+                        <archive>
+                            <manifest>
+                                <addClasspath>true</addClasspath>
+                                <classpathPrefix>lib/</classpathPrefix>
+                                <mainClass>${application.class}</mainClass>
+                            </manifest>
+                            <manifestEntries>
+                                <SplashScreen-Image>BOOT-INF/classes/image/${application.splash.file.name}</SplashScreen-Image>
+                            </manifestEntries>
+                        </archive>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -327,7 +342,7 @@
                                 <name>${application.name}</name>
                                 <organizationName>${organization.name}</organizationName>
                                 <displayName>${application.display.name}</displayName>
-                                <runnableJar>${project.basedir}/target/${application.name}.jar</runnableJar>
+                                <runnableJar>${project.basedir}/target/${project.build.finalName}.jar</runnableJar>
                                 <generateInstaller>true</generateInstaller>
                                 <administratorRequired>false</administratorRequired>
                                 <platform>auto</platform>
