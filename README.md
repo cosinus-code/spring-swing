@@ -79,8 +79,19 @@ public class HelloWorld extends SwingApplicationFrame {
 
 ## Dependencies
 
-Add `spring-swing-boot-starter` to your project. Spring Swing requires **Java 21** and is built on **Spring Boot 3.x**.
+There are two ways to add Spring Swing to your project:
 
+1. Use `spring-swing-boot-starter-parent` as parent of your project.
+```xml
+    <parent>
+        <groupId>org.cosinuscode.swing</groupId>
+        <artifactId>spring-swing-boot-starter-parent</artifactId>
+        <version>3.0.2</version>
+    </parent>
+```
+This allows you to use the full Spring Swing features.
+
+2. Use `spring-swing-boot-starter` as a dependency in your project.
 ```xml
 
 <properties>
@@ -93,50 +104,6 @@ Add `spring-swing-boot-starter` to your project. Spring Swing requires **Java 21
     <version>${spring-swing.version}</version>
 </dependency>
 </dependencies>
-```
-
-## Package the Application
-
-Use `spring-boot-maven-plugin` for packaging:
-
-```xml
-
-<properties>
-    <application.name>spring-swing-example</application.name>
-    <application.class>org.cosinus.swing.example.HelloWorld</application.class>
-</properties>
-
-<build>
-    <plugins>
-        <plugin>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-maven-plugin</artifactId>
-            <executions>
-                <execution>
-                    <id>repackage</id>
-                    <goals>
-                        <goal>repackage</goal>
-                    </goals>
-                    <configuration>
-                        <executable>true</executable>
-                        <finalName>${application.name}</finalName>
-                        <mainClass>${application.class}</mainClass>
-                    </configuration>
-                </execution>
-            </executions>
-        </plugin>
-    </plugins>
-</build>
-```
-
-```shell_session
-$ mvn package
-```
-
-## Run the Application
-
-```shell_session
-$ java -jar spring-swing-example-1.0-SNAPSHOT.jar 
 ```
 
 ## Application Name and Icon
@@ -168,29 +135,9 @@ swing:
     icon: @application.icon.name@
 ```
 
-
 ## Logging
 
-To use Apache Log4j 2, exclude the default logging and add `spring-boot-starter-log4j2`:
-
-```xml
-
-<dependency>
-    <groupId>org.cosinuscode.swing</groupId>
-    <artifactId>spring-swing-boot-starter</artifactId>
-    <version>${spring-swing.version}</version>
-    <exclusions>
-        <exclusion>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-logging</artifactId>
-        </exclusion>
-    </exclusions>
-</dependency>
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-log4j2</artifactId>
-</dependency>
-```
+The log file will created by default at `~/.<application.name>/logs/<application.name>.log`.
 
 ## Internationalization
 
@@ -316,6 +263,13 @@ quit=Quit
 settings=Settings
 ```
 
+## Run the Application
+
+```shell_session
+$ mvn clean package spring-boot:repackage
+$ java -jar target/spring-swing-example-1.0-SNAPSHOT.jar 
+```
+
 ## Splash Screen
 
 Provide the image in the `image` resources folder and register it via `maven-jar-plugin`:
@@ -329,13 +283,13 @@ Provide the image in the `image` resources folder and register it via `maven-jar
 ## Startup Splash Progress Bar
 
 ```shell_session
-$ java -Dsplash-progress -jar spring-swing-example-1.0-SNAPSHOT.jar
+$ java -Dsplash-progress -jar target/spring-swing-example-1.0-SNAPSHOT.jar
 ```
 
 Customize the progress bar position and color:
 
 ```shell_session
-$ java -Dsplash-progress="color=56,123,44:y=245:x=5" -jar spring-swing-example-1.0-SNAPSHOT.jar
+$ java -Dsplash-progress="color=56,123,44:y=245:x=5" -jar target/spring-swing-example-1.0-SNAPSHOT.jar
 ```
 
 
@@ -347,8 +301,6 @@ $ java -Dsplash-progress="color=56,123,44:y=245:x=5" -jar spring-swing-example-1
 | `width` | The width of the progress bar                     | Integer                            | splash width                   |
 | `height`| The height of the progress bar                    | Integer                            | 3                              |
 | `log`   | If true, the progress will be logged              | Boolean                            | false                          |
-
-
 
 ## Install the Application
 
@@ -363,20 +315,17 @@ $ java -Dsplash-progress="color=56,123,44:y=245:x=5" -jar spring-swing-example-1
     <application.display.name>Spring Swing Example</application.display.name>
     <application.name>spring-swing-example</application.name>
     <application.description>Spring Swing Example</application.description>
-    <application.version>${project.version}</application.version>
+    <application.version>1.0.0</application.version>
     <application.category>Other</application.category>
-    <application.icon.name>spring-swing-example.png</application.icon.name>
-    <application.ico.name>spring-swing-example.ico</application.ico.name>
-    <application.icns.name>spring-swing-example.icns</application.icns.name>
     <application.class>org.cosinus.swing.example.HelloWorld</application.class>
     <application.home.env.name>SPRING_SWING_EXAMPLE_HOME</application.home.env.name>
     <application.splash.file.name>spring-splash.png</application.splash.file.name>
-    <application.splash.progress>-Dsplash-progress=color=56,123,44;y=245;x=5</application.splash.progress>
+    <application.splash.progress>-Dsplash-progress=color=56,123,44:y=245:x=5</application.splash.progress>
 </properties>
 ```
-Run `mvn clean install -PinstallApp`:
+Run `mvn clean install -Pinstaller` to create the installer in `target` folder. 
 
-Known issue: splash progress bar doesn't show on Windows.
+Run `mvn clean install -PinstallApp` to directly install the application.
 
 ## JSON descriptors for dialogs
 
