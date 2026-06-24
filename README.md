@@ -86,7 +86,7 @@ There are two ways to add Spring Swing to your project:
     <parent>
         <groupId>org.cosinuscode.swing</groupId>
         <artifactId>spring-swing-boot-starter-parent</artifactId>
-        <version>3.0.2</version>
+        <version>3.0.3</version>
     </parent>
 ```
 This allows you to use the full Spring Swing features.
@@ -95,7 +95,7 @@ This allows you to use the full Spring Swing features.
 ```xml
 
 <properties>
-    <spring-swing.version>3.0.2</spring-swing.version>
+    <spring-swing.version>3.0.3</spring-swing.version>
 </properties>
 <dependencies>
 <dependency>
@@ -308,7 +308,7 @@ $ java -Dsplash-progress="color=56,123,44:y=245:x=5" -jar target/spring-swing-ex
 <parent>
     <groupId>org.cosinuscode.swing</groupId>
     <artifactId>spring-swing-boot-starter-parent</artifactId>
-    <version>3.0.2</version>
+    <version>3.0.3</version>
 </parent>
 
 <properties>
