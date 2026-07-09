@@ -18,23 +18,20 @@
 package org.cosinus.swing.form.control;
 
 import org.jdatepicker.DateModel;
-import org.jdatepicker.impl.DateComponentFormatter;
-import org.jdatepicker.impl.JDatePanelImpl;
-import org.jdatepicker.impl.JDatePickerImpl;
-import org.jdatepicker.impl.UtilDateModel;
+import org.jdatepicker.JDatePicker;
+import org.jdatepicker.UtilDateModel;
 
 import java.awt.event.ActionListener;
 import java.util.Date;
-import java.util.Properties;
 
 /**
- * Extension of the {@link JDatePickerImpl}
+ * Extension of the {@link JDatePicker}
  * which will automatically inject the application context.
  */
-public class DatePicker extends JDatePickerImpl implements Control<Date> {
+public class DatePicker extends JDatePicker implements Control<Date> {
 
     public DatePicker(Date date) {
-        super(new JDatePanelImpl(new UtilDateModel(date), new Properties()), new DateComponentFormatter());
+        super(new UtilDateModel(date));
     }
 
     @Override

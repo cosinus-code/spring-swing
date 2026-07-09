@@ -19,7 +19,7 @@ package org.cosinus.swing.security.properties;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
+import org.springframework.boot.security.oauth2.client.autoconfigure.OAuth2ClientProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.HashMap;
