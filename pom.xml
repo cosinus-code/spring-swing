@@ -55,7 +55,7 @@
         <stream-pipeline.version>1.0.0</stream-pipeline.version>
         <commons-io.version>2.22.0</commons-io.version>
         <org.apache.common.version>4.5.0</org.apache.common.version>
-        <log4j.version>2.26.0</log4j.version>
+        <log4j.version>2.26.1</log4j.version>
         <twelvemonkeys.imageio.version>3.13.1</twelvemonkeys.imageio.version>
         <flatlaf.version>3.7.1</flatlaf.version>
         <jdatepicker.version>2.0.1</jdatepicker.version>
