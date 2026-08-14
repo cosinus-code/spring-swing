@@ -59,8 +59,6 @@ public class SpringSwingBootTestAnnotation implements ContextCustomizer {
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(useMainMethod);
-        result = 31 * result + Arrays.hashCode(args);
-        return result;
+        return 31 * Objects.hash(useMainMethod) + Arrays.hashCode(args);
     }
 }

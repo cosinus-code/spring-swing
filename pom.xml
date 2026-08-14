@@ -53,6 +53,7 @@
 
         <spring-swing.version>4.0.0-SNAPSHOT</spring-swing.version>
         <stream-pipeline.version>1.0.0</stream-pipeline.version>
+        <assertj-swing.version>3.17.1</assertj-swing.version>
         <commons-io.version>2.22.0</commons-io.version>
         <org.apache.common.version>4.5.0</org.apache.common.version>
         <log4j.version>2.26.1</log4j.version>
@@ -200,6 +201,11 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons-lang3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-swing</artifactId>
+                <version>${assertj-swing.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

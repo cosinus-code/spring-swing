@@ -18,10 +18,12 @@
 package org.cosinus.swing.test.boot;
 
 import org.cosinus.swing.test.storage.TestApplicationStorageConfiguration;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest.UseMainMethod;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.test.context.BootstrapWith;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -39,6 +41,7 @@ import static org.springframework.boot.test.context.SpringBootTest.UseMainMethod
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
+@ExtendWith(SpringExtension.class)
 @BootstrapWith(SpringSwingBootTestContextBootstrapper.class)
 @Import(TestApplicationStorageConfiguration.class)
 public @interface SpringSwingBootTest {

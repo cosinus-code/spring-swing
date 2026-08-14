@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Arrays.stream;
+import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 import static org.cosinus.swing.os.OperatingSystem.isMac;
 
@@ -104,6 +105,13 @@ public class MenuBar extends JMenuBar implements FormComponent {
 
     public AbstractButton getMenuComponent(String menuKey) {
         return menuComponentsMap.get(menuKey);
+    }
+
+    public MenuItem getMenuItem(String menuKey) {
+        return ofNullable(menuComponentsMap.get(menuKey))
+            .filter(MenuItem.class::isInstance)
+            .map(MenuItem.class::cast)
+            .orElse(null);
     }
 
     @Override
