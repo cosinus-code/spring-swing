@@ -28,6 +28,7 @@ import org.cosinus.swing.error.ErrorHandler;
 import org.cosinus.swing.error.TranslatableRuntimeException;
 import org.cosinus.swing.progress.ProgressListener;
 import org.cosinus.swing.progress.ProgressModel;
+import org.cosinus.swing.translate.Translator;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -53,6 +54,9 @@ public abstract class Worker<M extends WorkerModel<T>, T, P extends ProgressMode
 
     @Autowired
     protected WorkerProperties workerProperties;
+
+    @Autowired
+    protected Translator translator;
 
     @Getter
     protected final String id;

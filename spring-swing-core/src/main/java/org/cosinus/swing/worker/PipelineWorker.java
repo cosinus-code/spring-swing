@@ -48,7 +48,8 @@ public abstract class PipelineWorker<M extends WorkerModel<T>, T, P extends Prog
         } catch (AbortPipelineConsumeException ex) {
             throw new AbortActionException("Pipeline worker aborted", ex);
         } catch (IOException | UncheckedIOException ex) {
-            throw new ActionException(ex, actionModel.getActionId());
+            throw new ActionException(ex,
+                "action-error", translator.translate(actionModel.getActionId()), ex.getMessage());
         }
     }
 
