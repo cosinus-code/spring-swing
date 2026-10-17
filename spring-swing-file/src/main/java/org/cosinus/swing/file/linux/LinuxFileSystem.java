@@ -141,9 +141,17 @@ public class LinuxFileSystem implements FileSystem {
             return;
         }
 
+        String userId = processExecutor.executeAndGetOutput("id", "-u")
+            .map(String::trim)
+            .filter(uid -> !uid.equals("0"))
+            .orElse(null);
+
         String mountPoint = "/media/" + userName + "/" + fileSystemRoot.getUuid();
         String[] mkdirCommand = of("mkdir", mountPoint);
-        String[] mountCommand = of("mount", fileSystemRoot.getVolume(), mountPoint);
+        String[] mountCommand = userId != null ?
+            of("mount", "-o", "uid=%s,gid=%s,umask=022".formatted(userId, userId),
+                fileSystemRoot.getVolume(), mountPoint) :
+            of("mount", fileSystemRoot.getVolume(), mountPoint);
         try {
             processExecutor.executePipelineWithPrivileges(new File(mountPoint).exists() ?
                 commands(mountCommand) :

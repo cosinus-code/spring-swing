@@ -387,6 +387,37 @@ Permissions permissions = dialogHandler
     .map(PermissionsModel::getPermissions);
 ```
 
+### Field types
+
+The `type` of a field selects the control created for it (see `ControlType`).
+The value exchanged with the model through `UIModel.getValue` / `UIModel.putValue` has the type below.
+
+| Type           | Control                          | Value type            |
+|----------------|----------------------------------|-----------------------|
+| `text`         | `TextField`                      | `String`              |
+| `password`     | `PasswordField` (masked input)   | `String`              |
+| `label`        | `Label` (read-only text)         | `Object` (as text)    |
+| `boolean`      | `CheckBox`                       | `Boolean`             |
+| `checkbox`     | `CheckBox`                       | `Boolean`             |
+| `boolean-list` | `CheckBoxList`                   | `List<CheckBoxValue>` |
+| `integer`      | `Spinner`                        | `Integer`             |
+| `long`         | `NumberFormattedTextField`       | `Long`                |
+| `float`        | `NumberFormattedTextField`       | `Float`               |
+| `double`       | `NumberFormattedTextField`       | `Double`              |
+| `date`         | `DatePicker`                     | `Date`                |
+| `file`         | `FileTextField` (file chooser)   | `File`                |
+| `folder`       | `FileTextField` (folder chooser) | `File`                |
+| `color`        | `ColorLabel` (color chooser)     | `Color`               |
+| `font`         | `FontLabel` (font chooser)       | `Font`                |
+| `combobox`     | `ComboBox`                       | `String`              |
+| `list`         | `List`                           | `String`              |
+| `language`     | `LanguageControl`                | `Locale`              |
+| `laf`          | `LookAndFeelControl`             | `String`              |
+
+For `combobox` and `list`, the available values are provided by `UIModel.getValues(key)`
+and the selected value by `UIModel.getValue(key)`.
+For `boolean-list`, `UIModel.getValue(key)` provides the whole list of checkboxes with their states.
+
 ## OS-Specific Conditions
 
 Spring Swing provides Spring-style conditional annotations for platform-specific beans:

@@ -31,6 +31,7 @@ import static java.util.Arrays.stream;
 @Getter
 public enum ControlType {
     TEXT(new TextControlProvider()),
+    PASSWORD(new PasswordControlProvider()),
     BOOLEAN(new BooleanControlProvider()),
     BOOLEAN_LIST(new BooleanListControlProvider()),
     INTEGER(new IntegerControlProvider()),
