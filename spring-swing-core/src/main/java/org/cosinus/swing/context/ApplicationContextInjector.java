@@ -17,6 +17,7 @@
 
 package org.cosinus.swing.context;
 
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -37,12 +38,26 @@ import static org.springframework.beans.BeanUtils.instantiateClass;
  * <p>
  * This is a helper class and cannot be instantiated.
  */
-public class ApplicationContextInjector {
+public class ApplicationContextInjector implements DisposableBean {
 
     public static ApplicationContext applicationContext;
 
+    private final ApplicationContext injectedContext;
+
     public ApplicationContextInjector(ApplicationContext applicationContext) {
+        this.injectedContext = applicationContext;
         ApplicationContextInjector.applicationContext = applicationContext;
+    }
+
+    /**
+     * Clear the static application context when its context is closed,
+     * so the objects created afterward (e.g. by a new context, as in tests) don't use the closed context.
+     */
+    @Override
+    public void destroy() {
+        if (applicationContext == injectedContext) {
+            applicationContext = null;
+        }
     }
 
     /**
