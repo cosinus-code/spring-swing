@@ -49,7 +49,8 @@ public class GnomeIconNameProvider implements IconNameProvider {
         iconNamesMap.put(ICON_STORAGE_PHONE, "phone");
         iconNamesMap.put(ICON_STORAGE_WATCH, "watch");
         iconNamesMap.put(ICON_STORAGE_COMPACT_DISK, "media-optical");
-        iconNamesMap.put(ICON_NETWORK, "network-server");
+        iconNamesMap.put(ICON_NETWORK, "package_network");
+        iconNamesMap.put(ICON_NETWORK_FOLDER, "gtk-network");
         iconNamesMap.put(ICON_DATABASE, "sqlitebrowser");
 
         iconNamesMap.put(ICON_VIEW_ICON, "view-grid-symbolic");

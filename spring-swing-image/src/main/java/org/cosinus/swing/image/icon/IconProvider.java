@@ -72,6 +72,8 @@ public interface IconProvider {
     String ICON_FILE_SERVER = "file-server";
     String ICON_COMPUTER = "computer";
     String ICON_NETWORK = "network";
+    String ICON_NETWORK_SERVER = "network-server";
+    String ICON_NETWORK_FOLDER = "network-folder";
     String ICON_STORAGE_INTERNAL = "storage-internal";
     String ICON_STORAGE_INTERNAL_SSD = "storage-internal-ssd";
     String ICON_STORAGE_EXTERNAL = "storage-external";
