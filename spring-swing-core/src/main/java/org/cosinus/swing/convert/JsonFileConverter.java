@@ -54,11 +54,11 @@ public abstract class JsonFileConverter<T> {
 
     public static final String JSON_EXTENSION = ".json";
 
-    private final ObjectMapper objectMapper;
+    protected final ObjectMapper objectMapper;
 
-    private final Class<T> modelClass;
+    protected final Class<T> modelClass;
 
-    private final Map<ResourceSource, ResourceResolver> resourceResolversMap;
+    protected final Map<ResourceSource, ResourceResolver> resourceResolversMap;
 
     protected JsonFileConverter(ObjectMapper objectMapper,
                                 Class<T> modelClass,

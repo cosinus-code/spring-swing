@@ -29,17 +29,30 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.RunnableFuture;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
 import static java.util.Optional.ofNullable;
 import static java.util.stream.IntStream.range;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
 import static javax.swing.JFileChooser.DIRECTORIES_ONLY;
-import static javax.swing.JOptionPane.*;
+import static javax.swing.JOptionPane.CLOSED_OPTION;
+import static javax.swing.JOptionPane.DEFAULT_OPTION;
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
+import static javax.swing.JOptionPane.OK_CANCEL_OPTION;
+import static javax.swing.JOptionPane.QUESTION_MESSAGE;
+import static javax.swing.JOptionPane.UNINITIALIZED_VALUE;
+import static javax.swing.JOptionPane.YES_NO_CANCEL_OPTION;
+import static javax.swing.JOptionPane.YES_OPTION;
+import static javax.swing.JOptionPane.showConfirmDialog;
+import static javax.swing.SwingUtilities.isEventDispatchThread;
 import static org.cosinus.swing.dialog.DialogOption.retryWithIgnore;
 import static org.cosinus.swing.dialog.DialogOption.retryWithSkip;
 import static org.cosinus.swing.ui.ApplicationUIHandler.OPTION_PANE_INPUT_DIALOG_TITLE;
@@ -61,6 +74,11 @@ public class DialogHandler {
 
     private final PreferencesDialogProvider preferencesDialogProvider;
 
+    /**
+     * The locks of the dialogs shown and waited for, by descriptor name.
+     */
+    private final Map<String, ReentrantLock> dialogLocks = new ConcurrentHashMap<>();
+
     public DialogHandler(Translator translator,
                          ApplicationUIHandler uiHandler,
                          PreferencesDialogProvider preferencesDialogProvider) {
@@ -76,6 +94,89 @@ public class DialogHandler {
         return dialog;
     }
 
+    /**
+     * Show a dialog on the event dispatch thread and wait for the user response, from any thread.
+     * <p>
+     * The dialogs with the same descriptor are shown one at a time: the model is created holding a lock
+     * for that descriptor, so it can check if the dialog is still needed, after the dialogs shown meanwhile
+     * by other threads (e.g. the same credentials were already entered). The lock is released,
+     * and removed when no other thread uses it, after the dialog is closed.
+     * <p>
+     * On the event dispatch thread, the lock is not waited for, as a dialog opened by another thread
+     * needs the event dispatch thread to be shown: if the lock is held by another thread,
+     * the dialog is shown without it.
+     *
+     * @param parent         the parent frame
+     * @param descriptorName the dialog descriptor name, also the key of the lock
+     * @param modelSupplier  the dialog model creator, called holding the lock,
+     *                       which returns empty if the dialog is no longer needed
+     * @param <M>            the dialog model type
+     * @return the dialog response, or empty if the dialog was not needed, the user cancelled,
+     * the waiting thread was interrupted or the dialog failed to show
+     */
+    public <M extends UIModel> Optional<M> lockAndShowDialog(Frame parent,
+                                                             String descriptorName,
+                                                             Supplier<Optional<M>> modelSupplier) {
+        ReentrantLock lock = lockDialog(descriptorName, !isEventDispatchThread());
+        try {
+            Callable<Optional<M>> show = () -> modelSupplier.get()
+                .flatMap(model -> showDialog(() -> createDialog(parent, descriptorName, model)).response());
+            if (isEventDispatchThread()) {
+                return show.call();
+            }
+
+            RunnableFuture<Optional<M>> showOnEventDispatchThread = new FutureTask<>(show);
+            SwingUtilities.invokeLater(showOnEventDispatchThread);
+            return showOnEventDispatchThread.get();
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            return Optional.empty();
+        } catch (Exception ex) {
+            log.error("Failed to show the dialog {}", descriptorName, ex);
+            return Optional.empty();
+        } finally {
+            if (lock != null) {
+                unlockDialog(descriptorName, lock);
+            }
+        }
+    }
+
+    /**
+     * Acquire the lock of a dialog descriptor.
+     * <p>
+     * A lock removed from the map by another thread, between getting and acquiring it, is released and got again.
+     *
+     * @param descriptorName the dialog descriptor name
+     * @param wait           true to wait for the lock, false to give up if it is held by another thread
+     * @return the acquired lock, or null if it is held by another thread and not waited for
+     */
+    private ReentrantLock lockDialog(String descriptorName, boolean wait) {
+        while (true) {
+            ReentrantLock lock = dialogLocks.computeIfAbsent(descriptorName, name -> new ReentrantLock());
+            if (wait) {
+                lock.lock();
+            } else if (!lock.tryLock()) {
+                return null;
+            }
+            if (dialogLocks.get(descriptorName) == lock) {
+                return lock;
+            }
+            lock.unlock();
+        }
+    }
+
+    /**
+     * Release the lock of a dialog descriptor, removing it from the map if no other thread waits for it.
+     *
+     * @param descriptorName the dialog descriptor name
+     * @param lock           the acquired lock
+     */
+    private void unlockDialog(String descriptorName, ReentrantLock lock) {
+        dialogLocks.computeIfPresent(descriptorName, (name, current) ->
+            current == lock && lock.getHoldCount() == 1 && !lock.hasQueuedThreads() ? null : current);
+        lock.unlock();
+    }
+
     public boolean confirm(String message) {
         return confirm(null, message);
     }
@@ -83,9 +184,9 @@ public class DialogHandler {
     public boolean confirm(Component comp,
                            String message) {
         return confirm(comp,
-                       message,
-                       translator.translate("question"),
-                       YES_NO_CANCEL_OPTION);
+            message,
+            translator.translate("question"),
+            YES_NO_CANCEL_OPTION);
     }
 
     public boolean confirm(Component comp, String message, String title, int options) {
@@ -102,14 +203,14 @@ public class DialogHandler {
 
     public DialogOption retryDialog(Window parentWindow, String message, DialogOption[] options) {
         return showCustomOptionDialog(parentWindow,
-                                      translator.translate(ERROR),
-                                      message,
-                                      DEFAULT_OPTION,
-                                      INFORMATION_MESSAGE,
-                                      uiHandler.getIcon("OptionPane.errorIcon"),
-                                      1,
-                                      0,
-                                      options);
+            translator.translate(ERROR),
+            message,
+            DEFAULT_OPTION,
+            INFORMATION_MESSAGE,
+            uiHandler.getIcon("OptionPane.errorIcon"),
+            1,
+            0,
+            options);
     }
 
     public void showInfo(String message) {
@@ -146,19 +247,19 @@ public class DialogHandler {
 
     public Optional<String> showInputDialog(Component parentComponent, Object message) {
         return showInputDialog(parentComponent,
-                               message,
-                               uiHandler.getString(OPTION_PANE_INPUT_DIALOG_TITLE),
-                               QUESTION_MESSAGE);
+            message,
+            uiHandler.getString(OPTION_PANE_INPUT_DIALOG_TITLE),
+            QUESTION_MESSAGE);
     }
 
     public Optional<String> showInputDialog(Component parentComponent, Object message, String title, int messageType) {
         return ofNullable(showInputDialog(parentComponent,
-                                          message,
-                                          title,
-                                          messageType,
-                                          null,
-                                          null,
-                                          null))
+            message,
+            title,
+            messageType,
+            null,
+            null,
+            null))
             .map(Object::toString);
     }
 
@@ -170,8 +271,8 @@ public class DialogHandler {
                                   Object[] selectionValues,
                                   Object initialSelectionValue) {
         OptionsDialog pane = new OptionsDialog(message,
-                                               messageType,
-                                               OK_CANCEL_OPTION);
+            messageType,
+            OK_CANCEL_OPTION);
 
         pane.setWantsInput(true);
         pane.setSelectionValues(selectionValues);
@@ -179,16 +280,16 @@ public class DialogHandler {
         pane.setComponentOrientation(parentComponent);
 
         pane.showDialog(parentComponent,
-                        title);
+            title);
         Object value = pane.getInputValue();
         return value == UNINITIALIZED_VALUE ? null : value;
     }
 
     public void showMessageDialog(Component parentComponent, Object message) {
         showMessageDialog(parentComponent,
-                          message,
-                          uiHandler.getString(OPTION_PANE_MESSAGE_DIALOG_TITLE),
-                          INFORMATION_MESSAGE);
+            message,
+            uiHandler.getString(OPTION_PANE_MESSAGE_DIALOG_TITLE),
+            INFORMATION_MESSAGE);
     }
 
     public void showMessageDialog(Component parentComponent, Object message, String title, int messageType) {
@@ -201,12 +302,12 @@ public class DialogHandler {
                                   int messageType,
                                   Icon icon) {
         showOptionDialog(parentComponent,
-                         title,
-                         message,
-                         DEFAULT_OPTION,
-                         messageType,
-                         icon,
-                         null);
+            title,
+            message,
+            DEFAULT_OPTION,
+            messageType,
+            icon,
+            null);
     }
 
     public int showOptionDialog(Component parentComponent,
@@ -217,14 +318,14 @@ public class DialogHandler {
                                 Icon icon,
                                 Object[] options) {
         return showOptionDialog(parentComponent,
-                                title,
-                                message,
-                                optionType,
-                                messageType,
-                                icon,
-                                1,
-                                0,
-                                options);
+            title,
+            message,
+            optionType,
+            messageType,
+            icon,
+            1,
+            0,
+            options);
     }
 
     public int showOptionDialog(Component parentComponent,
@@ -237,14 +338,14 @@ public class DialogHandler {
                                 int width,
                                 Object[] options) {
         Object selectedValue = showCustomOptionDialog(parentComponent,
-                                                      title,
-                                                      message,
-                                                      messageType,
-                                                      optionType,
-                                                      icon,
-                                                      rows,
-                                                      width,
-                                                      options);
+            title,
+            message,
+            messageType,
+            optionType,
+            icon,
+            rows,
+            width,
+            options);
 
         if (selectedValue == null) {
             return CLOSED_OPTION;
@@ -277,18 +378,18 @@ public class DialogHandler {
             .map(translator::translate)
             .toArray(String[]::new);
         OptionsDialog dialog = new OptionsDialog(message,
-                                                 messageType,
-                                                 optionType,
-                                                 icon,
-                                                 translatedOptions);
+            messageType,
+            optionType,
+            icon,
+            translatedOptions);
 
         dialog.setComponentOrientation(parentComponent);
         dialog.setRows(rows);
 
         RunnableFuture<Object> show = new FutureTask<>(
             () -> dialog.showDialog(parentComponent,
-                                    title,
-                                    width));
+                title,
+                width));
         SwingUtilities.invokeLater(show);
 
         try {
