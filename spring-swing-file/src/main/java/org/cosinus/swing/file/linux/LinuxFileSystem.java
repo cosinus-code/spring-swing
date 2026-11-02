@@ -104,12 +104,26 @@ public class LinuxFileSystem implements FileSystem {
                         !IGNORED_FILESYSTEMS.contains(root.getType())),
                 getMtpFilesystemRoots().stream()))
             .collect(toMap(
-                FileSystemRoot::getId,
+                this::getDistinctionKey,
                 identity(),
                 this::fileSystemRootMerger,
                 LinkedHashMap::new));
 
         return new ArrayList<>(rootsMap.values());
+    }
+
+    /**
+     * Get the key used to distinguish file system roots: the mount path.
+     * Roots that are not mounted (no mount path) are kept distinct by their id,
+     * so that they don't collapse into a single entry.
+     *
+     * @param root the file system root
+     * @return the distinction key
+     */
+    private String getDistinctionKey(final FileSystemRoot root) {
+        return isBlank(root.getMountPoint()) ?
+            root.getId() :
+            root.getMountPoint();
     }
 
     private FileSystemRoot fileSystemRootMerger(FileSystemRoot u, FileSystemRoot v) {

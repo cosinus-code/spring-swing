@@ -19,6 +19,8 @@ package org.cosinus.swing.file.api;
 
 import lombok.Getter;
 
+import java.util.Objects;
+
 @Getter
 public class DiskEvent {
 
@@ -34,4 +36,16 @@ public class DiskEvent {
         this.timestamp = System.currentTimeMillis();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof DiskEvent diskEvent)) {
+            return false;
+        }
+        return Objects.equals(key, diskEvent.key);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(key);
+    }
 }
