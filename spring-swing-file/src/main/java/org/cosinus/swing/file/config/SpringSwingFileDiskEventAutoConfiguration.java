@@ -69,9 +69,7 @@ public class SpringSwingFileDiskEventAutoConfiguration {
         final ApplicationShutDown applicationShutDown,
         final DiskMonitor diskMonitor,
         @Value("${file.disk.event.listener.expirationLimit:2000}") long expirationLimit) {
-        DiskMonitorController controller = new DiskMonitorController(applicationShutDown, diskMonitor, expirationLimit);
-        controller.start();
-        return controller;
+        return new DiskMonitorController(applicationShutDown, diskMonitor, expirationLimit);
     }
 
     @Bean
