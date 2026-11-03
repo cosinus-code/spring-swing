@@ -522,4 +522,24 @@ public class ImageHandler {
         int scaleHeight = height - max + image.getHeight(null);
         return image.getScaledInstance(scaleWidth, scaleHeight, SCALE_SMOOTH);
     }
+
+    /**
+     * Draw the image on an opaque white background, removing its transparency.
+     *
+     * @param image the image to flatten
+     * @return the opaque RGB image
+     */
+    public BufferedImage flatten(BufferedImage image) {
+        BufferedImage rgbImage = new BufferedImage(image.getWidth(), image.getHeight(), TYPE_INT_RGB);
+        Graphics2D graphics = rgbImage.createGraphics();
+        try {
+            graphics.setColor(Color.WHITE);
+            graphics.fillRect(0, 0, image.getWidth(), image.getHeight());
+            graphics.drawImage(image, 0, 0, null);
+        } finally {
+            graphics.dispose();
+        }
+        return rgbImage;
+    }
+
 }
