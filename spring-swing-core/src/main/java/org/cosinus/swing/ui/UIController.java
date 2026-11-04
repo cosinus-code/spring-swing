@@ -67,6 +67,9 @@ public class UIController {
                     if (field.isDisabled()) {
                         control.setControlEnabled(false);
                     }
+                    if (field.isEditable() && control instanceof ComboBox<?> comboBox) {
+                        comboBox.setEditable(true);
+                    }
                     ofNullable(field.getAction())
                         .ifPresent(action -> uiStructure.addActionComponent(action, control));
                     if (field.isDoubleClickAction()) {

@@ -51,9 +51,12 @@ public class ComboBox<T> extends JComboBox<T> implements Control<T>, MultipleVal
         injectContext(this);
     }
 
+    /**
+     * @return the selected value, or the value typed in the editor of an editable combobox, even if not yet committed
+     */
     @Override
     public T getControlValue() {
-        return (T) getSelectedItem();
+        return isEditable() ? (T) getEditor().getItem() : (T) getSelectedItem();
     }
 
     @Override

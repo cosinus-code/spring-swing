@@ -38,6 +38,11 @@ public class UIField {
 
     private boolean disabled;
 
+    /**
+     * True to allow a custom value to be typed, besides choosing one of the values (e.g. for a combobox).
+     */
+    private boolean editable;
+
     private String action;
 
     private boolean focus;
