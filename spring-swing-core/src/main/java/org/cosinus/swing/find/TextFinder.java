@@ -18,6 +18,7 @@ package org.cosinus.swing.find;
 
 import lombok.Getter;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -27,7 +28,11 @@ import java.util.stream.Stream;
 @Getter
 public abstract class TextFinder {
 
-    protected final String inputText;
+    /**
+     * The searched text, kept up to date with the changes reported by
+     * {@link #textInserted(int, String)} and {@link #textRemoved(int, int)}.
+     */
+    protected String inputText;
 
     protected final FindText textToFind;
 
@@ -106,6 +111,41 @@ public abstract class TextFinder {
      * @return the current find
      */
     public abstract FindResult getCurrentFind();
+
+    /**
+     * Insert a text in the searched text,
+     * and move the found results after it (see {@link FindResult#textInserted(int, int)}).
+     * <p>
+     * The new occurrences of the text to find are not searched: see {@link #refresh()}.
+     *
+     * @param offset the offset of the inserted text
+     * @param text   the inserted text
+     * @return the found results which can be changed by the insertion, with their new positions and texts
+     */
+    public abstract List<FindResult> textInserted(int offset, String text);
+
+    /**
+     * Remove a text from the searched text,
+     * and move the found results after it (see {@link FindResult#textRemoved(int, int)}).
+     * <p>
+     * The new occurrences of the text to find are not searched: see {@link #refresh()}.
+     *
+     * @param offset the offset of the removed text
+     * @param length the length of the removed text
+     * @return the found results which can be changed by the removal, with their new positions and texts
+     */
+    public abstract List<FindResult> textRemoved(int offset, int length);
+
+    /**
+     * Search again all occurrences of the text to find in the searched text, after it was changed.
+     * <p>
+     * The current result becomes the first result found at the position of the previous current result or after
+     * (or the last result, if none), so that finding the next result continues from the same place.
+     * Without a previous current result, there is no current result.
+     *
+     * @return all found results
+     */
+    public abstract List<FindResult> refresh();
 
     public boolean containsText() {
         return findAll()

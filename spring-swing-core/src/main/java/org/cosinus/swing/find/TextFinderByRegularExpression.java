@@ -17,11 +17,13 @@
 package org.cosinus.swing.find;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Spliterators.AbstractSpliterator;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -37,7 +39,7 @@ import static java.util.stream.StreamSupport.stream;
  */
 public class TextFinderByRegularExpression extends TextFinder {
 
-    private final Matcher matcher;
+    private Matcher matcher;
 
     private final Map<Integer, FindResult> findResultsMap;
 
@@ -120,8 +122,70 @@ public class TextFinderByRegularExpression extends TextFinder {
         return findResultsMap.get(index.get());
     }
 
+    @Override
+    public List<FindResult> textInserted(int offset, String text) {
+        inputText = inputText.substring(0, offset) + text + inputText.substring(offset);
+        return moveFindResults(offset, findResult -> findResult.textInserted(offset, text.length()));
+    }
+
+    @Override
+    public List<FindResult> textRemoved(int offset, int length) {
+        inputText = inputText.substring(0, offset) + inputText.substring(offset + length);
+        return moveFindResults(offset, findResult -> findResult.textRemoved(offset, length));
+    }
+
+    @Override
+    public List<FindResult> refresh() {
+        FindResult currentFind = getCurrentFind();
+        matcher = initPattern();
+        findResultsMap.clear();
+        count.set(0);
+        index.set(0);
+        List<FindResult> findResults;
+        try (Stream<FindResult> found = findAll()) {
+            findResults = found.toList();
+        }
+        if (currentFind != null) {
+            index.set(findResults.stream()
+                .filter(findResult -> findResult.startPosition() >= currentFind.startPosition())
+                .findFirst()
+                .map(FindResult::index)
+                .orElse(findResults.size()));
+        }
+        return findResults;
+    }
+
+    /**
+     * Move the found results ending at the offset of a change or after,
+     * the others not being changed.
+     */
+    private List<FindResult> moveFindResults(int offset, UnaryOperator<FindResult> move) {
+        List<FindResult> movedFindResults = findResultsMap.values()
+            .stream()
+            .filter(findResult -> findResult.endPosition() >= offset)
+            .map(move)
+            .map(findResult -> new FindResult(
+                foundText(findResult.startPosition(), findResult.endPosition()),
+                findResult.index(),
+                findResult.startPosition(),
+                findResult.endPosition()))
+            .toList();
+        movedFindResults.forEach(findResult -> findResultsMap.put(findResult.index(), findResult));
+        return movedFindResults;
+    }
+
+    /**
+     * Get the found text from the searched text, as the matcher runs on the lower case text when not case-sensitive.
+     * The positions are limited to the searched text, in case its lower case has a different length.
+     */
+    private String foundText(int start, int end) {
+        int length = inputText.length();
+        return inputText.substring(Math.min(start, length), Math.min(end, length));
+    }
+
     private FindResult createFindResult() {
-        FindResult findResult = new FindResult(matcher.group(), index.get(), matcher.start(), matcher.end());
+        FindResult findResult = new FindResult(
+            foundText(matcher.start(), matcher.end()), index.get(), matcher.start(), matcher.end());
         findResultsMap.put(index.get(), findResult);
         return findResult;
     }

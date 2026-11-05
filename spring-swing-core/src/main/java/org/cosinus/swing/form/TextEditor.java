@@ -58,6 +58,12 @@ public class TextEditor extends EditorPane implements DocumentListener, FormComp
 
     private Highlight currentFoundTextHighlight;
 
+    private int currentFoundTextIndex;
+
+    /**
+     * The highlights of the found texts, by index of the found result (see {@link FindResult#index()}),
+     * without the current found text.
+     */
     private final Map<Integer, Highlight> foundTextHighlightsMap;
 
     @Setter
@@ -183,30 +189,67 @@ public class TextEditor extends EditorPane implements DocumentListener, FormComp
 
     public void highlightFoundText(FindResult findResult) {
         if (findResult != null) {
-            highlightFoundText(findResult.startPosition(), findResult.endPosition());
+            highlightFoundText(findResult.index(), findResult.startPosition(), findResult.endPosition());
         }
     }
 
-    private void highlightFoundText(int startPosition, int endPosition) {
+    private void highlightFoundText(int index, int startPosition, int endPosition) {
         Highlight highLight = highlightText(startPosition, endPosition, getFoundTextHighlightPainter());
-        foundTextHighlightsMap.put(startPosition, highLight);
+        foundTextHighlightsMap.put(index, highLight);
     }
 
     public void highlightCurrentFoundText(FindResult findResult) {
-        ofNullable(foundTextHighlightsMap.get(findResult.startPosition()))
-            .ifPresent(getHighlighter()::removeHighlight);
+        highlightCurrentFoundText(findResult, true);
+    }
 
+    /**
+     * Highlight the current found text.
+     *
+     * @param findResult the current found result
+     * @param moveCaret  true to move the caret at the end of the found text,
+     *                   false to keep it (e.g. when the text is being edited)
+     */
+    public void highlightCurrentFoundText(FindResult findResult, boolean moveCaret) {
         if (currentFoundTextHighlight != null) {
             getHighlighter().removeHighlight(currentFoundTextHighlight);
-            if (foundTextHighlightsMap.get(currentFoundTextHighlight.getStartOffset()) != null) {
-                highlightFoundText(
-                    currentFoundTextHighlight.getStartOffset(),
-                    currentFoundTextHighlight.getEndOffset());
-            }
+            highlightFoundText(
+                currentFoundTextIndex,
+                currentFoundTextHighlight.getStartOffset(),
+                currentFoundTextHighlight.getEndOffset());
         }
+        ofNullable(foundTextHighlightsMap.remove(findResult.index()))
+            .ifPresent(getHighlighter()::removeHighlight);
+
         currentFoundTextHighlight = highlightText(
             findResult.startPosition(), findResult.endPosition(), getCurrentFoundTextHighlightPainter());
-        setCaretPosition(findResult.endPosition());
+        currentFoundTextIndex = findResult.index();
+        if (moveCaret) {
+            setCaretPosition(findResult.endPosition());
+        }
+    }
+
+    /**
+     * Move the highlight of a found text to the positions of the found result,
+     * after the found result was moved by a change of the text (see {@link FindResult#textInserted(int, int)}).
+     * <p>
+     * The highlights follow the changes of the text by themselves,
+     * but they would include a text inserted at their end, which is not part of the found result.
+     *
+     * @param findResult the moved found result
+     */
+    public void moveFoundTextHighlight(FindResult findResult) {
+        Highlight highlight = currentFoundTextHighlight != null && currentFoundTextIndex == findResult.index() ?
+            currentFoundTextHighlight :
+            foundTextHighlightsMap.get(findResult.index());
+        if (highlight != null &&
+            (highlight.getStartOffset() != findResult.startPosition() ||
+                highlight.getEndOffset() != findResult.endPosition())) {
+            try {
+                getHighlighter().changeHighlight(highlight, findResult.startPosition(), findResult.endPosition());
+            } catch (BadLocationException ex) {
+                throw new SpringSwingException(ex);
+            }
+        }
     }
 
     public Highlight highlightText(int start, int end, HighlightPainter highlighter) {
@@ -220,6 +263,7 @@ public class TextEditor extends EditorPane implements DocumentListener, FormComp
     public void removeAllHighlights() {
         getHighlighter().removeAllHighlights();
         foundTextHighlightsMap.clear();
+        currentFoundTextHighlight = null;
     }
 
     public void preventCancelAction() {
