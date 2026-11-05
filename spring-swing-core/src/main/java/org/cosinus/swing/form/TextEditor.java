@@ -27,6 +27,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.UndoableEditListener;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.Document;
 import javax.swing.text.Element;
 import javax.swing.text.Highlighter.Highlight;
@@ -47,6 +48,7 @@ import static java.awt.event.KeyEvent.VK_Z;
 import static javax.swing.KeyStroke.getKeyStroke;
 import static java.lang.Math.clamp;
 import static java.util.Optional.ofNullable;
+import static javax.swing.text.DefaultEditorKit.insertBreakAction;
 import static javax.swing.text.PlainDocument.tabSizeAttribute;
 import static org.cosinus.swing.color.SystemColor.TEXT_PANE_SELECTION_BACKGROUND;
 
@@ -119,6 +121,7 @@ public class TextEditor extends EditorPane implements DocumentListener, FormComp
     public void initComponents() {
         initFontSizeKeys();
         initUndoKeys();
+        initNewLineIndentation();
         initialFontSize = getFontSize();
 
         ofNullable(getDocument()).ifPresent(document -> document.addUndoableEditListener(undoableEditListener));
@@ -131,6 +134,45 @@ public class TextEditor extends EditorPane implements DocumentListener, FormComp
             }
             undoManager.discardAllEdits();
         });
+    }
+
+    /**
+     * Replace the action adding a new line (bound to Enter) with one keeping the indentation of the line.
+     */
+    private void initNewLineIndentation() {
+        getActionMap().put(insertBreakAction, action(this::insertNewLine));
+    }
+
+    /**
+     * Add a new line instead of the selection, indented as the line where it is added:
+     * the new line starts with the spaces and tabs which start that line, up to the new line.
+     */
+    public void insertNewLine() {
+        if (isEditable() && isEnabled()) {
+            replaceSelection("\n" + getIndentation(getSelectionStart()));
+        }
+    }
+
+    /**
+     * Get the indentation of the line at a position: the spaces and tabs which start the line, up to the position.
+     *
+     * @param position the position in the text
+     * @return the indentation
+     */
+    public String getIndentation(int position) {
+        Document document = getDocument();
+        Element line = document.getDefaultRootElement()
+            .getElement(document.getDefaultRootElement().getElementIndex(position));
+        try {
+            String start = document.getText(line.getStartOffset(), position - line.getStartOffset());
+            int length = 0;
+            while (length < start.length() && (start.charAt(length) == ' ' || start.charAt(length) == '\t')) {
+                length++;
+            }
+            return start.substring(0, length);
+        } catch (BadLocationException ex) {
+            throw new SpringSwingException(ex);
+        }
     }
 
     /**

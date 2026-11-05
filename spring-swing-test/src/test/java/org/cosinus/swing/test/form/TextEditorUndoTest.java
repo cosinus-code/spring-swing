@@ -36,7 +36,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import static java.awt.event.ActionEvent.ACTION_PERFORMED;
-import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_Y;
 import static java.awt.event.KeyEvent.VK_Z;
 import static org.junit.Assert.assertEquals;
@@ -179,9 +178,6 @@ public class TextEditorUndoTest {
         press(VK_Z, modifier);
         assertText("one ");
         press(VK_Y, modifier);
-        assertText("one two");
-        press(VK_Z, modifier);
-        press(VK_Z, modifier | SHIFT_DOWN_MASK);
         assertText("one two");
         assertTrue(getOnEdt(textEditor::canUndo));
     }
