@@ -28,7 +28,7 @@ public class FindText {
     @Setter
     private String text;
 
-    private boolean caseSensitive = true;
+    private boolean caseSensitive;
 
     private boolean wholeWord;
 
