@@ -26,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultHighlighter.DefaultHighlightPainter;
 import javax.swing.text.Document;
 import javax.swing.text.Element;
 import javax.swing.text.Highlighter.Highlight;
@@ -166,7 +165,7 @@ public class TextEditor extends EditorPane implements DocumentListener, FormComp
 
     public HighlightPainter getFoundTextHighlightPainter() {
         if (foundTextHighlightPainter == null) {
-            foundTextHighlightPainter = new DefaultHighlightPainter(DEFAULT_FOUND_TEXT_HIGHLIGHT_COLOR);
+            foundTextHighlightPainter = new SelectionAwareHighlightPainter(DEFAULT_FOUND_TEXT_HIGHLIGHT_COLOR);
         }
         return foundTextHighlightPainter;
     }
@@ -175,7 +174,7 @@ public class TextEditor extends EditorPane implements DocumentListener, FormComp
         if (currentFoundTextHighlightPainter == null) {
             Color highlightColor = ofNullable(uiHandler.getColor(TEXT_PANE_SELECTION_BACKGROUND))
                 .orElse(DEFAULT_CURRENT_FOUND_TEXT_HIGHLIGHT_COLOR);
-            currentFoundTextHighlightPainter = new DefaultHighlightPainter(highlightColor);
+            currentFoundTextHighlightPainter = new SelectionAwareHighlightPainter(highlightColor);
         }
         return currentFoundTextHighlightPainter;
     }
