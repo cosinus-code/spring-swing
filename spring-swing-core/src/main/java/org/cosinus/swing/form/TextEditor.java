@@ -23,6 +23,7 @@ import org.cosinus.swing.find.FindResult;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
@@ -31,14 +32,19 @@ import javax.swing.text.Element;
 import javax.swing.text.Highlighter.Highlight;
 import javax.swing.text.Highlighter.HighlightPainter;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.Map;
 
 import static java.awt.Color.BLUE;
 import static java.awt.Color.YELLOW;
+import static java.awt.event.KeyEvent.VK_0;
+import static java.awt.event.KeyEvent.VK_EQUALS;
+import static java.awt.event.KeyEvent.VK_MINUS;
+import static java.lang.Math.clamp;
 import static java.util.Optional.ofNullable;
 import static javax.swing.text.PlainDocument.tabSizeAttribute;
-import static org.cosinus.swing.color.SystemColor.*;
+import static org.cosinus.swing.color.SystemColor.TEXT_PANE_SELECTION_BACKGROUND;
 
 public class TextEditor extends EditorPane implements DocumentListener, FormComponent, TextComponent {
 
@@ -47,6 +53,18 @@ public class TextEditor extends EditorPane implements DocumentListener, FormComp
     public static final Color DEFAULT_FOUND_TEXT_HIGHLIGHT_COLOR = YELLOW;
 
     public static final Color DEFAULT_CURRENT_FOUND_TEXT_HIGHLIGHT_COLOR = BLUE;
+
+    public static final float MIN_FONT_SIZE = 8;
+
+    public static final float MAX_FONT_SIZE = 30;
+
+    public static final float FONT_SIZE_STEP = 1;
+
+    private static final String INCREASE_FONT_SIZE_ACTION = "increase-font-size";
+
+    private static final String DECREASE_FONT_SIZE_ACTION = "decrease-font-size";
+
+    private static final String RESET_FONT_SIZE_ACTION = "reset-font-size";
 
     @Autowired
     protected ApplicationUIHandler uiHandler;
@@ -59,10 +77,6 @@ public class TextEditor extends EditorPane implements DocumentListener, FormComp
 
     private int currentFoundTextIndex;
 
-    /**
-     * The highlights of the found texts, by index of the found result (see {@link FindResult#index()}),
-     * without the current found text.
-     */
     private final Map<Integer, Highlight> foundTextHighlightsMap;
 
     @Setter
@@ -73,8 +87,72 @@ public class TextEditor extends EditorPane implements DocumentListener, FormComp
     @Getter
     private boolean loading;
 
+    /**
+     * The font size before it was first changed, restored by {@link #resetFontSize()}.
+     */
+    private float initialFontSize;
+
     public TextEditor() {
         foundTextHighlightsMap = new HashMap<>();
+    }
+
+    @Override
+    public void initComponents() {
+        initFontSizeKeys();
+        initialFontSize = getFontSize();
+    }
+
+    /**
+     * Bind the keys changing the font size, with the menu shortcut key (Ctrl, or Cmd on mac):
+     * plus (also as shift equals, and on the numeric keypad) to increase it,
+     * minus (also on the numeric keypad) to decrease it, and 0 to restore it.
+     */
+    private void initFontSizeKeys() {
+        InputMap inputMap = getInputMap(WHEN_FOCUSED);
+        inputMap.put(uiHandler.getControlDownKeyStroke(VK_EQUALS), INCREASE_FONT_SIZE_ACTION);
+        inputMap.put(uiHandler.getControlDownKeyStroke(VK_MINUS), DECREASE_FONT_SIZE_ACTION);
+        inputMap.put(uiHandler.getControlDownKeyStroke(VK_0), RESET_FONT_SIZE_ACTION);
+
+        getActionMap().put(INCREASE_FONT_SIZE_ACTION, action(this::increaseFontSize));
+        getActionMap().put(DECREASE_FONT_SIZE_ACTION, action(this::decreaseFontSize));
+        getActionMap().put(RESET_FONT_SIZE_ACTION, action(this::resetFontSize));
+    }
+
+    private static AbstractAction action(Runnable runnable) {
+        return new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                runnable.run();
+            }
+        };
+    }
+
+    public float getFontSize() {
+        return getFont().getSize2D();
+    }
+
+    /**
+     * Set the font size, limited to {@value #MIN_FONT_SIZE} - {@value #MAX_FONT_SIZE}.
+     *
+     * @param size the font size
+     */
+    public void setFontSize(float size) {
+        setFont(getFont().deriveFont(clamp(size, MIN_FONT_SIZE, MAX_FONT_SIZE)));
+    }
+
+    public void increaseFontSize() {
+        setFontSize(getFontSize() + FONT_SIZE_STEP);
+    }
+
+    public void decreaseFontSize() {
+        setFontSize(getFontSize() - FONT_SIZE_STEP);
+    }
+
+    /**
+     * Restore the font size from before it was first changed.
+     */
+    public void resetFontSize() {
+        setFontSize(initialFontSize);
     }
 
     public void initComponent() {

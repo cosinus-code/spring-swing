@@ -19,13 +19,11 @@ package org.cosinus.swing.test.find;
 
 import org.cosinus.swing.form.TextEditor;
 import org.cosinus.swing.form.SelectionAwareHighlightPainter;
+import org.cosinus.swing.test.EventDispatchThreadRule;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestRule;
-import org.junit.runners.model.Statement;
 
-import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Highlighter.HighlightPainter;
 import java.awt.*;
@@ -50,26 +48,8 @@ public class SelectionAwareHighlightPainterTest {
 
     private static final HighlightPainter CURRENT_PAINTER = new SelectionAwareHighlightPainter(CURRENT_HIGHLIGHT);
 
-    /**
-     * The text editor is created, changed and painted on the event dispatch thread, as swing requires.
-     */
     @Rule
-    public TestRule onEventDispatchThread = (base, description) -> new Statement() {
-        @Override
-        public void evaluate() throws Throwable {
-            Throwable[] failure = new Throwable[1];
-            SwingUtilities.invokeAndWait(() -> {
-                try {
-                    base.evaluate();
-                } catch (Throwable throwable) {
-                    failure[0] = throwable;
-                }
-            });
-            if (failure[0] != null) {
-                throw failure[0];
-            }
-        }
-    };
+    public EventDispatchThreadRule onEventDispatchThread = new EventDispatchThreadRule();
 
     private TextEditor textEditor;
 
