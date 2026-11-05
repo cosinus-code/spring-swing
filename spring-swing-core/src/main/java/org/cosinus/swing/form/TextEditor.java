@@ -17,7 +17,6 @@
 package org.cosinus.swing.form;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.cosinus.swing.error.SpringSwingException;
 import org.cosinus.swing.find.FindResult;
 import org.cosinus.swing.ui.ApplicationUIHandler;
@@ -26,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.UndoableEditListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.Element;
@@ -38,9 +38,13 @@ import java.util.Map;
 
 import static java.awt.Color.BLUE;
 import static java.awt.Color.YELLOW;
+import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_0;
 import static java.awt.event.KeyEvent.VK_EQUALS;
 import static java.awt.event.KeyEvent.VK_MINUS;
+import static java.awt.event.KeyEvent.VK_Y;
+import static java.awt.event.KeyEvent.VK_Z;
+import static javax.swing.KeyStroke.getKeyStroke;
 import static java.lang.Math.clamp;
 import static java.util.Optional.ofNullable;
 import static javax.swing.text.PlainDocument.tabSizeAttribute;
@@ -66,6 +70,10 @@ public class TextEditor extends EditorPane implements DocumentListener, FormComp
 
     private static final String RESET_FONT_SIZE_ACTION = "reset-font-size";
 
+    private static final String UNDO_ACTION = "undo";
+
+    private static final String REDO_ACTION = "redo";
+
     @Autowired
     protected ApplicationUIHandler uiHandler;
 
@@ -79,13 +87,18 @@ public class TextEditor extends EditorPane implements DocumentListener, FormComp
 
     private final Map<Integer, Highlight> foundTextHighlightsMap;
 
-    @Setter
     @Getter
     private boolean dirty;
 
-    @Setter
     @Getter
     private boolean loading;
+
+    private final TextUndoManager undoManager;
+
+    /**
+     * Records the changes of the text in the undo manager, except the text loaded.
+     */
+    private final UndoableEditListener undoableEditListener;
 
     /**
      * The font size before it was first changed, restored by {@link #resetFontSize()}.
@@ -94,12 +107,105 @@ public class TextEditor extends EditorPane implements DocumentListener, FormComp
 
     public TextEditor() {
         foundTextHighlightsMap = new HashMap<>();
+        undoManager = new TextUndoManager();
+        undoableEditListener = event -> {
+            if (!isLoading()) {
+                undoManager.undoableEditHappened(event);
+            }
+        };
     }
 
     @Override
     public void initComponents() {
         initFontSizeKeys();
+        initUndoKeys();
         initialFontSize = getFontSize();
+
+        ofNullable(getDocument()).ifPresent(document -> document.addUndoableEditListener(undoableEditListener));
+        addPropertyChangeListener("document", event -> {
+            if (event.getOldValue() instanceof Document oldDocument) {
+                oldDocument.removeUndoableEditListener(undoableEditListener);
+            }
+            if (event.getNewValue() instanceof Document newDocument) {
+                newDocument.addUndoableEditListener(undoableEditListener);
+            }
+            undoManager.discardAllEdits();
+        });
+    }
+
+    /**
+     * Bind the keys undoing and redoing the changes of the text, with the control key of the platform (Cmd on mac):
+     * Z to undo, Y or shift Z to redo.
+     */
+    private void initUndoKeys() {
+        InputMap inputMap = getInputMap(WHEN_FOCUSED);
+        inputMap.put(uiHandler.getControlDownKeyStroke(VK_Z), UNDO_ACTION);
+        inputMap.put(uiHandler.getControlDownKeyStroke(VK_Y), REDO_ACTION);
+
+        getActionMap().put(UNDO_ACTION, action(this::undo));
+        getActionMap().put(REDO_ACTION, action(this::redo));
+    }
+
+    /**
+     * Mark the text as changed, or as saved (when it is saved or loaded):
+     * undoing or redoing the changes makes it dirty again, until they return to the saved text.
+     *
+     * @param dirty true if the text is changed, false if it is saved
+     */
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+        if (!dirty) {
+            undoManager.markSaved();
+        }
+    }
+
+    /**
+     * Start or finish loading a text, which cannot be undone.
+     * When the loading is finished, the loaded text is the saved text (not dirty).
+     *
+     * @param loading true when the loading starts, false when it is finished
+     */
+    public void setLoading(boolean loading) {
+        this.loading = loading;
+        undoManager.discardAllEdits();
+        if (!loading) {
+            setDirty(false);
+        }
+    }
+
+    public boolean canUndo() {
+        return isEditable() && undoManager.canUndo();
+    }
+
+    public boolean canRedo() {
+        return isEditable() && undoManager.canRedo();
+    }
+
+    /**
+     * Undo the last change of the text (see {@link TextUndoManager} for what a change is), if any.
+     */
+    public void undo() {
+        if (canUndo()) {
+            undoManager.undo();
+            setDirty(!undoManager.isAtSavedState());
+        }
+    }
+
+    /**
+     * Redo the last undone change of the text, if any.
+     */
+    public void redo() {
+        if (canRedo()) {
+            undoManager.redo();
+            setDirty(!undoManager.isAtSavedState());
+        }
+    }
+
+    /**
+     * Forget the changes of the text, which can no longer be undone.
+     */
+    public void discardUndoableEdits() {
+        undoManager.discardAllEdits();
     }
 
     /**
@@ -203,6 +309,7 @@ public class TextEditor extends EditorPane implements DocumentListener, FormComp
 
     public void reset() {
         setText("");
+        undoManager.discardAllEdits();
     }
 
     @Override
