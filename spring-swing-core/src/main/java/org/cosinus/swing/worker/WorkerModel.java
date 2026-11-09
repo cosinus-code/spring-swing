@@ -25,4 +25,12 @@ import java.util.List;
 public interface WorkerModel<V> {
 
     void update(List<V> items);
+
+    default long getTotalProgressSize() {
+        return -1;
+    }
+
+    default long getProgressDone() {
+        return -1;
+    }
 }

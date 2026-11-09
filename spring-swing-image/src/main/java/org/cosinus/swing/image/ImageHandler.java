@@ -43,6 +43,7 @@ import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Optional;
 
@@ -72,6 +73,8 @@ import static org.cosinus.swing.image.ImageSettings.QUALITY;
 public class ImageHandler {
 
     public static final String SPRING_SWING_IMAGE_THUMBNAIL_CACHE_NAME = "spring.swing.image.thumbnails";
+
+    private static final byte[] JPEG_SIGNATURE = {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF};
 
     public static final ImageFilter GRAY_FILTER = new GrayFilter();
 
@@ -542,4 +545,16 @@ public class ImageHandler {
         return rgbImage;
     }
 
+    /**
+     * Check if the image bytes represent a JPEG image.
+     *
+     * @param imageBytes the image bytes
+     * @return true if the image is a JPEG, false otherwise
+     */
+    public boolean isJpeg(byte[] imageBytes) {
+        return imageBytes.length >= JPEG_SIGNATURE.length &&
+            Arrays.equals(
+                imageBytes, 0, JPEG_SIGNATURE.length,
+                JPEG_SIGNATURE, 0, JPEG_SIGNATURE.length);
+    }
 }

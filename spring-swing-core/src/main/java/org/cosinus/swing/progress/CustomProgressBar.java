@@ -90,15 +90,12 @@ public class CustomProgressBar extends ProgressBar implements ProgressListener<P
 
         setValue(progressPercent);
         setIndeterminate(progressPercent <= 0);
-
-        if (progressPercent == 100) {
-            invokeLater(() -> setValue(0));
-        }
     }
 
     @Override
     public void progressFinished(ProgressModel progressModel) {
         finishLoading();
         progressUpdated(progressModel);
+        invokeLater(() -> setValue(0));
     }
 }

@@ -56,6 +56,7 @@ public class UpdatableImage {
     private ImageRotation imageRotation = NO_ROTATION;
 
     @Getter
+    @Setter
     private long size = -1;
 
     public UpdatableImage(String imageType) {

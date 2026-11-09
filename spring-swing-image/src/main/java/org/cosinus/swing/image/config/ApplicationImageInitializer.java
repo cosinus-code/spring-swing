@@ -24,6 +24,7 @@ import org.cosinus.swing.image.icon.IconInitializer;
 import org.cosinus.swing.image.svg.SvgImageReaderSpi;
 import org.cosinus.swing.ui.listener.UIChangeController;
 
+import javax.imageio.ImageIO;
 import javax.imageio.spi.IIORegistry;
 import javax.imageio.spi.ImageReaderSpi;
 
@@ -52,11 +53,20 @@ public class ApplicationImageInitializer implements ApplicationInitializer {
     }
 
     protected void initializeImages() {
+        disableImageCache();
         registerSvgImageReader();
         if (uiChangeController != null) {
             uiChangeController.register(iconInitializer);
         }
         iconInitializer.initializeIcons();
+    }
+
+    /**
+     * The images are read from memory, without the ImageIO cache,
+     * which otherwise copies each image read from an input stream to a temporary file.
+     */
+    protected void disableImageCache() {
+        ImageIO.setUseCache(false);
     }
 
     protected void registerSvgImageReader() {

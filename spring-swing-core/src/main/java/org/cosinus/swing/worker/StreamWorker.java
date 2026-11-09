@@ -55,4 +55,19 @@ public abstract class StreamWorker<M extends WorkerModel<T>, T, P extends Progre
     protected StreamConsumer<T> streamConsumer() {
         return null;
     }
+
+    @Override
+    public void afterPipelineOpen() {
+        progressModel.startProgress(workerModel.getTotalProgressSize());
+    }
+
+    @Override
+    public void afterPipelineDataConsume(T data) {
+        progressModel.updateProgress(workerModel.getProgressDone(), workerModel.getTotalProgressSize());
+    }
+
+    @Override
+    public void afterPipelineClose(boolean pipelineFailed) {
+        progressModel.finishProgress();
+    }
 }
