@@ -119,7 +119,6 @@ public class TextEditor extends EditorPane implements DocumentListener, FormComp
 
     @Override
     public void initComponents() {
-        initFontSizeKeys();
         initUndoKeys();
         initNewLineIndentation();
         initialFontSize = getFontSize();
@@ -255,7 +254,7 @@ public class TextEditor extends EditorPane implements DocumentListener, FormComp
      * plus (also as shift equals, and on the numeric keypad) to increase it,
      * minus (also on the numeric keypad) to decrease it, and 0 to restore it.
      */
-    private void initFontSizeKeys() {
+    public void initFontSizeKeys() {
         InputMap inputMap = getInputMap(WHEN_FOCUSED);
         inputMap.put(uiHandler.getControlDownKeyStroke(VK_EQUALS), INCREASE_FONT_SIZE_ACTION);
         inputMap.put(uiHandler.getControlDownKeyStroke(VK_MINUS), DECREASE_FONT_SIZE_ACTION);
