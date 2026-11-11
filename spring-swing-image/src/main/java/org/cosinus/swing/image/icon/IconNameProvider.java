@@ -17,7 +17,10 @@
 
 package org.cosinus.swing.image.icon;
 
+import java.util.List;
 import java.util.Optional;
+
+import static java.util.Collections.emptyList;
 
 public interface IconNameProvider {
 
@@ -26,4 +29,8 @@ public interface IconNameProvider {
     void initialize();
 
     String getIconPath();
+
+    default List<String> getIconNamePrefixes() {
+        return emptyList();
+    }
 }

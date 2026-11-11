@@ -18,8 +18,10 @@
 package org.cosinus.swing.image.icon;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.image.icon.IconProvider.*;
@@ -75,5 +77,10 @@ public class GnomeIconNameProvider implements IconNameProvider {
     public String getIconPath()
     {
         return GNOME_ICONS_PATH;
+    }
+
+    @Override
+    public List<String> getIconNamePrefixes() {
+        return List.of("gnome-", "gnome-mime-");
     }
 }

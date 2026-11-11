@@ -192,13 +192,11 @@ public class LinuxIconProvider implements IconProvider {
     }
 
     protected Stream<File> getIconFromPath(Path path, String name) {
-        return Stream.of(
-                name,
-                name + "-symbolic",
-                "gnome-" + name,
-                "gnome-mime-" + name,
-                "gtk-" + name,
-                "stock-" + name)
+        return Stream.concat(
+            Stream.of(name, name + "-symbolic"),
+            iconNameProvider.getIconNamePrefixes()
+                .stream()
+                .map(prefix -> prefix + name))
             .flatMap(fileName -> getIconFile(path, fileName))
             .filter(File::exists);
     }
