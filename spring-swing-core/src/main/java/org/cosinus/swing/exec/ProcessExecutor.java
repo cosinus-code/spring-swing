@@ -138,8 +138,8 @@ public interface ProcessExecutor {
      * @return the output of execution, or {@link Optional#empty}, if execution failed
      */
     default Optional<String> executeAndGetOutput(String... command) {
-        try {
-            return startProcess(command).getOutput();
+        try (CommandProcess commandProcess = startProcess(command)) {
+            return commandProcess.getOutput();
         } catch (IOException | InterruptedException ex) {
             throw new ProcessExecutionException("Failed to execute command: " + Arrays.toString(command), ex);
         }
@@ -156,7 +156,9 @@ public interface ProcessExecutor {
                 .reduce((first, second) -> second)
                 .orElseThrow(() -> new ProcessExecutionException("Failed to execute pipeline command"));
 
-            return new CommandProcess(process).getOutput();
+            try (CommandProcess commandProcess = new CommandProcess(process)) {
+                return commandProcess.getOutput();
+            }
         } catch (IOException | InterruptedException e) {
             throw new ProcessExecutionException("Failed to execute pipeline command", e);
         }

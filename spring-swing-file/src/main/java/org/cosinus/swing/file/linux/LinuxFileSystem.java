@@ -253,7 +253,7 @@ public class LinuxFileSystem implements FileSystem {
         try {
             //noinspection SpellCheckingInspection
             return processExecutor.executePipelineAndGetOutput(
-                    of("df", "-a"),
+                    of("df", "-a", "-t", "fuse.gvfsd-fuse"),
                     of("grep", "gvfsd-fuse"))
                 .map(output -> output.split("\\s+"))
                 .stream()
