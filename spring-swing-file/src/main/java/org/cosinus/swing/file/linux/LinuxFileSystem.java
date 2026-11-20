@@ -76,6 +76,10 @@ public class LinuxFileSystem implements FileSystem {
 
     private static final Set<String> IGNORED_FILESYSTEMS = Set.of("swap", "vfat");
 
+    private static final String XDG_MIME_COMMAND = "xdg-mime";
+    private static final String XDG_MIME_QUERY = "query";
+    private static final String XDG_MIME_DEFAULT = "default";
+
     /**
      * Splits the "net usershare info" output right before every "[name]" header line.
      */
@@ -314,7 +318,7 @@ public class LinuxFileSystem implements FileSystem {
                     (u, v) -> u,
                     FileCompatibleApplications::new));
 
-        processExecutor.executeAndGetOutput("xdg-mime", "query", "default", mimeType)
+        processExecutor.executeAndGetOutput(XDG_MIME_COMMAND, XDG_MIME_QUERY, XDG_MIME_DEFAULT, mimeType)
             .flatMap(applicationId -> stream(applicationId.split("\\n")).findFirst())
             .map(compatibleApplications::get)
             .ifPresent(compatibleApplications::setDefaultApplication);
@@ -322,10 +326,31 @@ public class LinuxFileSystem implements FileSystem {
         return compatibleApplications;
     }
 
+    /**
+     * Set the default application of the mime type of a file, for the current user, with "xdg-mime default".
+     * <p>
+     * Nothing is done for a blank application id; an unknown mime type or a failure of "xdg-mime" is only logged.
+     *
+     * @param applicationId the desktop file name of the application, e.g. "org.gnome.TextEditor.desktop",
+     *                      as found by {@link #findCompatibleApplicationsToExecuteFile(File)}
+     * @param file          the file
+     */
     @Override
-    public void setDefaultApplicationToExecuteFile(String applicationId, File file) {
+    public void setDefaultApplicationToExecuteFile(final String applicationId, final File file) {
+        if (isBlank(applicationId)) {
+            return;
+        }
         mimeTypeResolver.mimeType(file.toPath())
-            .ifPresent(mimeType -> processExecutor.execute("xdg-mime", "default", applicationId, mimeType));
+            .filter(StringUtils::isNotBlank)
+            .ifPresentOrElse(
+                mimeType -> {
+                    try {
+                        processExecutor.executeAndGetOutput(XDG_MIME_COMMAND, XDG_MIME_DEFAULT, applicationId, mimeType);
+                    } catch (ProcessExecutionException ex) {
+                        log.warn("Cannot set {} as default application of {}", applicationId, mimeType, ex);
+                    }
+                },
+                () -> log.warn("Cannot set the default application of {}: unknown mime type", file));
     }
 
     @Override

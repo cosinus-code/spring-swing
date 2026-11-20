@@ -71,8 +71,9 @@ public class SpringSwingFileAutoConfiguration {
     @Bean
     @ConditionalOnMac
     public FileSystem macFileSystem(final ProcessExecutor processExecutor,
-                                    final FileInfoProvider fileTypeInfoProvider) {
-        return new MacFileSystem(processExecutor, fileTypeInfoProvider);
+                                    final FileInfoProvider fileTypeInfoProvider,
+                                    final ObjectMapper objectMapper) {
+        return new MacFileSystem(processExecutor, fileTypeInfoProvider, objectMapper);
     }
 
     @Bean

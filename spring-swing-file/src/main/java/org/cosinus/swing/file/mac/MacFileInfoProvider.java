@@ -91,6 +91,17 @@ public class MacFileInfoProvider implements FileInfoProvider, ApplicationInitial
         return compatibleApplicationsMap.get(uniformTypeIdentifier);
     }
 
+    /**
+     * Find a registered application.
+     *
+     * @param bundleId the bundle id of the application
+     * @return the application, or {@link Optional#empty()} if not registered
+     */
+    public Optional<Application> findApplication(final String bundleId) {
+        return ofNullable(applicationsMap)
+            .map(applications -> applications.get(bundleId));
+    }
+
     public UniformType getUniformType(String uniformTypeIdentifier) {
         return uniformTypesMap.get(uniformTypeIdentifier);
     }
