@@ -106,7 +106,7 @@ public class MacIconProvider implements IconProvider {
                         image.getHeight() == size.getSize() ?
                         image :
                         imageHandler.scaleImage(image, size.getSize()));
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.warn("Cannot read image of size {} from icns file {}",
                 size.getSize(), imageFile.getPath());
             return Optional.empty();
