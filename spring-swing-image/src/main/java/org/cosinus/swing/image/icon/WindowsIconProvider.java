@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.cosinus.swing.icon.IconSize;
 import org.cosinus.swing.image.ImageHandler;
 import org.cosinus.swing.util.AutoRemovableTemporaryFile;
-import org.cosinus.swing.util.WindowsUtils;
+import org.cosinus.swing.window.registry.Registry;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
@@ -37,7 +37,6 @@ import static org.apache.commons.lang3.SystemUtils.IS_OS_WINDOWS_XP;
 import static org.cosinus.swing.icon.IconSize.X16;
 import static org.cosinus.swing.util.AutoRemovableTemporaryFile.autoRemovableTemporaryFileWithExtension;
 import static org.cosinus.swing.util.FileUtils.getExtension;
-import static org.cosinus.swing.util.WindowsUtils.getRegistryValue;
 
 /**
  * Implementation of {@link IconProvider} for Windows
@@ -64,12 +63,16 @@ public class WindowsIconProvider implements IconProvider {
 
     private final IconNameProvider iconNameProvider;
 
+    private final Registry registry;
+
     private final Map<String, Integer> extensionsToIconIndexMap;
 
     public WindowsIconProvider(final ImageHandler imageHandler,
-                               final IconNameProvider iconNameProvider) {
+                               final IconNameProvider iconNameProvider,
+                               final Registry registry) {
         this.imageHandler = imageHandler;
         this.iconNameProvider = iconNameProvider;
+        this.registry = registry;
         this.extensionsToIconIndexMap = new HashMap<>();
     }
 
@@ -106,7 +109,7 @@ public class WindowsIconProvider implements IconProvider {
     @Override
     public Optional<Icon> findIconByName(String name, IconSize size) {
         return iconNameProvider.getIconName(name)
-            .flatMap(WindowsUtils::getRegistryValue)
+            .flatMap(registry::getStringValue)
             .flatMap(iconFilePath -> createIconFromSystemFile(iconFilePath, size.getSize()))
             .map(bytes -> createIconFromBytes(bytes, size.getSize()));
     }
@@ -169,12 +172,12 @@ public class WindowsIconProvider implements IconProvider {
             if (ext.equals("exe")) {
                 bytes = getNativeSystemIcon(WINDOWS_SHELL_PATH, 2, size);
             } else {
-                bytes = getRegistryValue(REGISTRY_FILE_EXTENSIONS + ext, "ProgID")
-                    .map(value -> getRegistryValue(REGISTRY_HKCR + value + "\\DefaultIcon"))
-                    .orElseGet(() -> getRegistryValue(REGISTRY_HKCR + "." + ext)
-                        .map(value -> getRegistryValue(REGISTRY_HKCR + value + "\\DefaultIcon"))
-                        .orElseGet(() -> getRegistryValue(REGISTRY_HKCR + "." + ext, "PerceivedType")
-                            .flatMap(value -> getRegistryValue(REGISTRY_HKCR_SYSTEM_FILE_ASSOCIATIONS + value + "\\DefaultIcon"))
+                bytes = registry.getStringValue(REGISTRY_FILE_EXTENSIONS + ext, "ProgID")
+                    .map(value -> registry.getStringValue(REGISTRY_HKCR + value + "\\DefaultIcon"))
+                    .orElseGet(() -> registry.getStringValue(REGISTRY_HKCR + "." + ext)
+                        .map(value -> registry.getStringValue(REGISTRY_HKCR + value + "\\DefaultIcon"))
+                        .orElseGet(() -> registry.getStringValue(REGISTRY_HKCR + "." + ext, "PerceivedType")
+                            .flatMap(value -> registry.getStringValue(REGISTRY_HKCR_SYSTEM_FILE_ASSOCIATIONS + value + "\\DefaultIcon"))
                         ))
                     .flatMap(systemFilePath -> createIconFromSystemFile(systemFilePath, size))
                     .orElse(null);

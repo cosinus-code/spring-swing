@@ -29,6 +29,7 @@ import org.cosinus.swing.resource.ClasspathResourceResolver;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.cosinus.swing.ui.listener.UIChangeController;
 import org.cosinus.swing.ui.listener.UIThemeProvider;
+import org.cosinus.swing.window.registry.Registry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -72,8 +73,9 @@ public class SpringSwingImageAutoConfiguration {
     @Bean
     @ConditionalOnWindows
     public IconProvider windowsIconProvider(final ImageHandler imageHandler,
-                                            final IconNameProvider iconNameProvider) {
-        return new WindowsIconProvider(imageHandler, iconNameProvider);
+                                            final IconNameProvider iconNameProvider,
+                                            final Registry registry) {
+        return new WindowsIconProvider(imageHandler, iconNameProvider, registry);
     }
 
     @Bean

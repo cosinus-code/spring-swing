@@ -18,10 +18,9 @@
 package org.cosinus.swing.ui.listener;
 
 import org.cosinus.swing.ui.ApplicationUIHandler;
+import org.cosinus.swing.window.registry.Registry;
 
 import java.util.Optional;
-
-import static org.cosinus.swing.util.WindowsUtils.getRegistryBooleanValue;
 
 public class WindowsUIThemeProvider implements UIThemeProvider {
 
@@ -31,8 +30,12 @@ public class WindowsUIThemeProvider implements UIThemeProvider {
 
     private final ApplicationUIHandler uiHandler;
 
-    public WindowsUIThemeProvider(final ApplicationUIHandler uiHandler) {
+    private final Registry registry;
+
+    public WindowsUIThemeProvider(final ApplicationUIHandler uiHandler,
+                                  final Registry registry) {
         this.uiHandler = uiHandler;
+        this.registry = registry;
     }
 
     @Override
@@ -57,6 +60,6 @@ public class WindowsUIThemeProvider implements UIThemeProvider {
 
     @Override
     public boolean isDarkOsTheme() {
-        return !getRegistryBooleanValue(PERSONALIZE_REGISTRY, APPS_USE_LIGHT_THEME);
+        return !registry.getBooleanValue(PERSONALIZE_REGISTRY, APPS_USE_LIGHT_THEME);
     }
 }

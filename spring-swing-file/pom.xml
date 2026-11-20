@@ -41,5 +41,10 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.cosinuscode.swing</groupId>
+            <artifactId>spring-swing-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

@@ -62,6 +62,7 @@
         <jdatepicker.version>2.0.1</jdatepicker.version>
         <commons-imaging.version>1.0.0-alpha6</commons-imaging.version>
         <oshi.version>7.3.1</oshi.version>
+        <jna-platform-jpms.version>5.19.1</jna-platform-jpms.version>
         <commons-exec.version>1.6.0</commons-exec.version>
         <commons-configuration2.version>2.15.1</commons-configuration2.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
@@ -175,6 +176,11 @@
                 <groupId>com.github.oshi</groupId>
                 <artifactId>oshi-core</artifactId>
                 <version>${oshi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.java.dev.jna</groupId>
+                <artifactId>jna-platform-jpms</artifactId>
+                <version>${jna-platform-jpms.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>

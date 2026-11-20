@@ -48,6 +48,7 @@ import static org.junit.Assert.assertEquals;
  * <p>
  * The text editor is created in the spring swing context, which injects its ui handler,
  * and its components are initialized as when it is added to a form.
+ * The font size keys are optional, so they are enabled with {@link TextEditor#initFontSizeKeys()}.
  */
 @RunWith(SpringRunner.class)
 @SpringSwingBootTest(classes = TestSwingInjectApplication.class)
@@ -71,7 +72,22 @@ public class TextEditorFontSizeTest {
         textEditor = new TextEditor();
         textEditor.setFont(textEditor.getFont().deriveFont(12f));
         textEditor.initComponents();
+        textEditor.initFontSizeKeys();
         initialSize = textEditor.getFontSize();
+    }
+
+    /**
+     * Without {@link TextEditor#initFontSizeKeys()}, the keys don't change the font size.
+     */
+    @Test
+    public void testFontSizeKeysAreOptional() {
+        TextEditor editorWithoutFontSizeKeys = new TextEditor();
+        editorWithoutFontSizeKeys.setFont(editorWithoutFontSizeKeys.getFont().deriveFont(12f));
+        editorWithoutFontSizeKeys.initComponents();
+
+        press(editorWithoutFontSizeKeys, VK_EQUALS, modifier);
+        press(editorWithoutFontSizeKeys, VK_MINUS, modifier);
+        assertEquals(12, editorWithoutFontSizeKeys.getFontSize(), 0);
     }
 
     @Test
@@ -141,9 +157,13 @@ public class TextEditorFontSizeTest {
      * Run the action bound to a key in the text editor, as when it is pressed with the focus in the text editor.
      */
     private void press(int keyCode, int modifiers) {
-        ActionListener action = textEditor.getActionForKeyStroke(KeyStroke.getKeyStroke(keyCode, modifiers));
+        press(textEditor, keyCode, modifiers);
+    }
+
+    private void press(TextEditor editor, int keyCode, int modifiers) {
+        ActionListener action = editor.getActionForKeyStroke(KeyStroke.getKeyStroke(keyCode, modifiers));
         if (action != null) {
-            action.actionPerformed(new ActionEvent(textEditor, ACTION_PERFORMED, null));
+            action.actionPerformed(new ActionEvent(editor, ACTION_PERFORMED, null));
         }
     }
 }

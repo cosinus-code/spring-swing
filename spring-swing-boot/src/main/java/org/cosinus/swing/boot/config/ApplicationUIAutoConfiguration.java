@@ -27,6 +27,7 @@ import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.cosinus.swing.ui.UIProperties;
 import org.cosinus.swing.ui.dark.DarkLookAndFeel;
 import org.cosinus.swing.ui.listener.*;
+import org.cosinus.swing.window.registry.Registry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -116,8 +117,9 @@ public class ApplicationUIAutoConfiguration {
 
     @Bean
     @ConditionalOnWindows
-    public UIThemeProvider windowsThemeProvider(final ApplicationUIHandler uiHandler) {
-        return new WindowsUIThemeProvider(uiHandler);
+    public UIThemeProvider windowsThemeProvider(final ApplicationUIHandler uiHandler,
+                                                final Registry registry) {
+        return new WindowsUIThemeProvider(uiHandler, registry);
     }
 
     @Bean

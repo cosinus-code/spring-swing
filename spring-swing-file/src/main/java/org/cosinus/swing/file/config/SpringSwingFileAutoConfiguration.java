@@ -32,8 +32,12 @@ import org.cosinus.swing.file.linux.LinuxFileSystem;
 import org.cosinus.swing.file.mac.MacFileInfoProvider;
 import org.cosinus.swing.file.mac.MacFileSystem;
 import org.cosinus.swing.file.mimetype.MimeTypeResolver;
+import org.cosinus.swing.file.windows.WindowsFileAssociationJnaQuery;
+import org.cosinus.swing.file.windows.WindowsFileAssociationQuery;
+import org.cosinus.swing.file.windows.WindowsFileAssociations;
 import org.cosinus.swing.file.windows.WindowsFileSystem;
 import org.cosinus.swing.translate.Translator;
+import org.cosinus.swing.window.registry.Registry;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -73,8 +77,23 @@ public class SpringSwingFileAutoConfiguration {
 
     @Bean
     @ConditionalOnWindows
-    public FileSystem windowsFileSystem() {
-        return new WindowsFileSystem();
+    public WindowsFileAssociationQuery windowsFileAssociationQuery() {
+        return new WindowsFileAssociationJnaQuery();
+    }
+
+    @Bean
+    @ConditionalOnWindows
+    public WindowsFileAssociations windowsFileAssociations(final WindowsFileAssociationQuery fileAssociationQuery,
+                                                           final Registry registry) {
+        return new WindowsFileAssociations(fileAssociationQuery, registry);
+    }
+
+    @Bean
+    @ConditionalOnWindows
+    public FileSystem windowsFileSystem(final ProcessExecutor processExecutor,
+                                        final ObjectMapper objectMapper,
+                                        final WindowsFileAssociations fileAssociations) {
+        return new WindowsFileSystem(processExecutor, objectMapper, fileAssociations);
     }
 
     @Bean

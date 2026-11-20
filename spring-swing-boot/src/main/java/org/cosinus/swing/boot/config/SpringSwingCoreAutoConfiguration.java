@@ -35,6 +35,8 @@ import org.cosinus.swing.resource.ResourceResolver;
 import org.cosinus.swing.translate.MessageSourceTranslator;
 import org.cosinus.swing.translate.Translator;
 import org.cosinus.swing.ui.ApplicationUIHandler;
+import org.cosinus.swing.window.registry.JnaRegistry;
+import org.cosinus.swing.window.registry.Registry;
 import org.cosinus.swing.worker.WorkerProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -117,6 +119,12 @@ public class SpringSwingCoreAutoConfiguration {
     @ConditionalOnWindows
     public ProcessExecutor windowsProcessExecutor() {
         return new WindowsProcessExecutor();
+    }
+
+    @Bean
+    @ConditionalOnWindows
+    public Registry windowsRegistry() {
+        return new JnaRegistry();
     }
 
     @Bean
