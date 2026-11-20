@@ -26,6 +26,7 @@ import java.util.function.BiFunction;
 import static java.util.Arrays.stream;
 
 public enum UILayout {
+    CENTERED((target, rows) -> new BorderLayout(3, 3)),
     VERTICAL_FLOW((target, rows) -> new GridLayout(rows * 2, 1, 3, 3)),
     SPRING_GRID((target, rows) -> new SpringGridLayout(target, rows, 2, 5, 5, 5, 5));
 
@@ -42,7 +43,7 @@ public enum UILayout {
     @JsonCreator
     public static UILayout fromValue(String value) {
         return stream(values())
-            .filter(type -> type.toString().equals(value))
+            .filter(type -> type.name().equalsIgnoreCase(value))
             .findFirst()
             .orElse(null);
     }

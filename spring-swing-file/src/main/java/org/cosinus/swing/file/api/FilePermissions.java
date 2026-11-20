@@ -64,6 +64,18 @@ public class FilePermissions implements Permissions {
 
     private String numberView;
 
+    private boolean shared;
+
+    private String shareName;
+
+    private String shareComment;
+
+    private boolean allowOthersToEdit;
+
+    private boolean guestAccess;
+
+    private String shareChecksum;
+
     public void setOwnerRead(boolean ownerRead) {
         this.ownerRead = ownerRead;
         updateViews();
@@ -168,5 +180,38 @@ public class FilePermissions implements Permissions {
 
     private int numberFormat(boolean read, boolean write, boolean execute) {
         return (read ? 4 : 0) + (write ? 2 : 0) + (execute ? 1 : 0);
+    }
+
+    public void setShared(boolean shared) {
+        this.shared = shared;
+        updateShareChecksum();
+    }
+
+    public void setShareName(String shareName) {
+        this.shareName = shareName;
+        updateShareChecksum();
+    }
+
+    public void setShareComment(String shareComment) {
+        this.shareComment = shareComment;
+        updateShareChecksum();
+    }
+
+    public void setAllowOthersToEdit(boolean allowOthersToEdit) {
+        this.allowOthersToEdit = allowOthersToEdit;
+        updateShareChecksum();
+    }
+
+    public void setGuestAccess(boolean guestAccess) {
+        this.guestAccess = guestAccess;
+        updateShareChecksum();
+    }
+
+    private void updateShareChecksum() {
+        this.shareChecksum = (shared ? "1" : "0") +
+            (allowOthersToEdit ? "1" : "0") +
+            (guestAccess ? "1" : "0") + "|" +
+            (shareName != null ? shareName : "") + "|" +
+            (shareComment != null ? shareComment : "");
     }
 }

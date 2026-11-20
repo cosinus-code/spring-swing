@@ -65,5 +65,7 @@ public interface FileSystem {
 
     void setPermissions(File file, FilePermissions permissions);
 
+    void setUserShare(File file, FilePermissions permissions);
+
     void setOwnerForFile(File file, String ownerName, String groupName);
 }

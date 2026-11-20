@@ -48,7 +48,8 @@ public enum ControlType {
     COMBOBOX(new ComboboxControlProvider()),
     LIST(new ListControlProvider()),
     CHECKBOX(new CheckboxControlProvider()),
-    LABEL(new LabelControlProvider());
+    LABEL(new LabelControlProvider()),
+    TAB(new TabControlProvider());
 
 
     private final ControlProvider controlProvider;

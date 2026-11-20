@@ -18,6 +18,7 @@ package org.cosinus.swing.file.linux;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.cosinus.swing.error.ErrorHandler;
 import org.cosinus.swing.error.JsonConvertException;
@@ -35,6 +36,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
@@ -52,6 +55,15 @@ import static org.cosinus.swing.exec.Command.commands;
 import static org.cosinus.swing.exec.Command.of;
 import static org.cosinus.swing.file.linux.MtpFileSystemRoot.MTP_PROTOCOL;
 import static org.cosinus.swing.file.linux.MtpFileSystemRoot.MTP_PROTOCOL_MARK;
+import static org.cosinus.swing.file.linux.UserShare.ACL_EVERYONE_FULL;
+import static org.cosinus.swing.file.linux.UserShare.ACL_EVERYONE_READ;
+import static org.cosinus.swing.file.linux.UserShare.GUEST_OK_NO;
+import static org.cosinus.swing.file.linux.UserShare.GUEST_OK_YES;
+import static org.cosinus.swing.file.linux.UserShare.NET_COMMAND;
+import static org.cosinus.swing.file.linux.UserShare.USERSHARE_ADD;
+import static org.cosinus.swing.file.linux.UserShare.USERSHARE_COMMAND;
+import static org.cosinus.swing.file.linux.UserShare.USERSHARE_DELETE;
+import static org.cosinus.swing.file.linux.UserShare.USERSHARE_INFO;
 import static org.cosinus.swing.icon.IconSize.X32;
 
 /**
@@ -64,9 +76,22 @@ public class LinuxFileSystem implements FileSystem {
 
     private static final Set<String> IGNORED_FILESYSTEMS = Set.of("swap", "vfat");
 
+    /**
+     * Splits the "net usershare info" output right before every "[name]" header line.
+     */
+    private static final Pattern USER_SHARE_SECTION_SPLITTER = Pattern.compile("(?m)(?=^\\h*\\[[^\\]\\n]+]\\h*$)");
+
+    /**
+     * Matches a "[name]" header line of the "net usershare info" output and captures the share name.
+     */
+    private static final Pattern USER_SHARE_HEADER = Pattern.compile("^\\s*\\[([^\\]\\n]+)]\\s*$");
+
+    private static final String LINE_SEPARATOR_REGEX = "\\R";
+    private static final String PROPERTY_SEPARATOR = "=";
+
     @SuppressWarnings("SpellCheckingInspection")
     private static final Set<String> POSIX_COMPLIANT_FILESYSTEMS = Set.of(
-        "ext4", "ext3", "ext2", "xfs", "btrfs", "jfs", "reiserfs", "zfs", "f2fs", "ufs", "ffs");
+        "ext4", "ext3", "ext2", "xfs", "btrfs", "jfs", "reiserfs", "zfs", "f2fs", "ufs", "ffs", "fuseblk");
 
     private final ProcessExecutor processExecutor;
 
@@ -317,6 +342,7 @@ public class LinuxFileSystem implements FileSystem {
 
     @Override
     public FilePermissions getFilePermissions(final File file) {
+        Optional<UserShare> userShare = findUserShare(file);
         return processExecutor.executeAndGetOutput("ls", "-ld", file.getAbsolutePath())
             .map(ls -> ls.split(" "))
             .filter(parts -> parts.length > 0)
@@ -340,9 +366,84 @@ public class LinuxFileSystem implements FileSystem {
                 .editable(getFileSystemTypeForFile(file)
                     .map(POSIX_COMPLIANT_FILESYSTEMS::contains)
                     .orElse(false))
+                .shared(userShare.isPresent())
+                .shareName(userShare.map(UserShare::name).orElse(file.getName()))
+                .shareComment(userShare.map(UserShare::comment).orElse(null))
+                .allowOthersToEdit(userShare.map(UserShare::allowOthersToEdit).orElse(false))
+                .guestAccess(userShare.map(UserShare::guestAccess).orElse(false))
                 .build()
                 .updateNumberViews())
             .orElse(null);
+    }
+
+    /**
+     * Find the Samba user share (as created by "net usershare add") for the given directory.
+     *
+     * @param file the file to check
+     * @return the user share of the given directory, or {@link Optional#empty()} if it is not shared
+     */
+    private Optional<UserShare> findUserShare(final File file) {
+        if (!file.isDirectory()) {
+            return Optional.empty();
+        }
+        try {
+            Path filePath = file.toPath().toAbsolutePath().normalize();
+            return processExecutor.executeAndGetOutput(NET_COMMAND, USERSHARE_COMMAND, USERSHARE_INFO)
+                .stream()
+                .flatMap(output -> parseUserShares(output).stream())
+                .filter(share -> share.path() != null)
+                .filter(share -> Path.of(share.path()).toAbsolutePath().normalize().equals(filePath))
+                .findFirst();
+        } catch (ProcessExecutionException ex) {
+            log.debug("Cannot read user shares", ex);
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Parse the output of "net usershare info" into user shares.
+     * <p>
+     * The output is split into sections, each one starting with a "[name]" header line,
+     * and every section is translated into a {@link UserShare}.
+     *
+     * @param output the "net usershare info" output
+     * @return the user shares
+     */
+    static List<UserShare> parseUserShares(final String output) {
+        return USER_SHARE_SECTION_SPLITTER.splitAsStream(output)
+            .map(LinuxFileSystem::parseUserShare)
+            .flatMap(Optional::stream)
+            .toList();
+    }
+
+    /**
+     * Parse a section of the "net usershare info" output into a user share.
+     *
+     * @param section the section text, starting with the "[name]" header line
+     *                followed by the "key = value" property lines
+     * @return the user share, or {@link Optional#empty()} if the section doesn't start with a header line
+     */
+    private static Optional<UserShare> parseUserShare(final String section) {
+        String[] lines = section.split(LINE_SEPARATOR_REGEX);
+        if (lines.length == 0) {
+            return Optional.empty();
+        }
+        Matcher header = USER_SHARE_HEADER.matcher(lines[0]);
+        if (!header.matches()) {
+            return Optional.empty();
+        }
+
+        String name = header.group(1).trim();
+        Map<String, String> properties = stream(lines)
+            .skip(1)
+            .map(String::trim)
+            .filter(line -> line.contains(PROPERTY_SEPARATOR))
+            .collect(toMap(
+                line -> substringBefore(line, PROPERTY_SEPARATOR).trim(),
+                line -> substringAfter(line, PROPERTY_SEPARATOR).trim(),
+                (first, second) -> second));
+
+        return Optional.of(UserShare.of(name, properties));
     }
 
     private Optional<String> getFileSystemTypeForFile(final File file) {
@@ -357,6 +458,64 @@ public class LinuxFileSystem implements FileSystem {
     @Override
     public void setPermissions(final File file, final FilePermissions permissions) {
         processExecutor.execute("chmod", permissions.getNumberView(), file.getAbsolutePath());
+    }
+
+    /**
+     * Create, update or delete the Samba user share of the given directory
+     * according to the sharing info in the given permissions.
+     *
+     * @param file        the directory to share
+     * @param permissions the permissions containing the sharing info
+     */
+    @Override
+    public void setUserShare(final File file, final FilePermissions permissions) {
+        if (!file.isDirectory()) {
+            return;
+        }
+        Optional<UserShare> currentShare = findUserShare(file);
+        if (!permissions.isShared()) {
+            currentShare.ifPresent(share ->
+                processExecutor.execute(NET_COMMAND, USERSHARE_COMMAND, USERSHARE_DELETE, share.name()));
+            return;
+        }
+
+        String shareName = ofNullable(permissions.getShareName())
+            .filter(StringUtils::isNotBlank)
+            .map(this::toShareName)
+            .or(() -> currentShare.map(UserShare::name))
+            .orElseGet(() -> toShareName(file.getName()));
+
+        UserShare newShare = new UserShare(
+            shareName,
+            file.getAbsolutePath(),
+            ofNullable(permissions.getShareComment())
+                .orElse(EMPTY),
+            permissions.isAllowOthersToEdit(),
+            permissions.isGuestAccess());
+
+        if (currentShare.filter(newShare::hasSameSettings).isPresent()) {
+            return;
+        }
+
+        currentShare
+            .filter(share -> !shareName.equals(share.name()))
+            .ifPresent(share -> processExecutor.execute(NET_COMMAND, USERSHARE_COMMAND, USERSHARE_DELETE, share.name()));
+
+        processExecutor.execute(NET_COMMAND, USERSHARE_COMMAND, USERSHARE_ADD,
+            newShare.name(),
+            newShare.path(),
+            newShare.comment(),
+            newShare.allowOthersToEdit() ? ACL_EVERYONE_FULL : ACL_EVERYONE_READ,
+            newShare.guestAccess() ? GUEST_OK_YES : GUEST_OK_NO);
+    }
+
+    /**
+     * Convert a folder name to a valid Samba share name,
+     * replacing the characters not allowed by "net usershare".
+     */
+    private String toShareName(final String folderName) {
+        String shareName = folderName.replaceAll("[%<>*?|/\\\\+=;:\",]", "_").trim();
+        return isNotBlank(shareName) ? shareName : "share";
     }
 
     @Override

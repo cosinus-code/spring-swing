@@ -16,9 +16,14 @@
  */
 package org.cosinus.swing.ui;
 
-import org.cosinus.swing.form.control.*;
+import org.cosinus.swing.form.TabbedPane;
 import org.cosinus.swing.form.control.Button;
+import org.cosinus.swing.form.control.ComboBox;
+import org.cosinus.swing.form.control.Control;
+import org.cosinus.swing.form.control.ControlType;
+import org.cosinus.swing.form.control.IconButton;
 import org.cosinus.swing.form.control.Label;
+import org.cosinus.swing.form.control.MultipleValuesControl;
 import org.cosinus.swing.form.control.provider.ControlProvider;
 import org.cosinus.swing.translate.Translator;
 
@@ -42,7 +47,10 @@ public class UIController {
 
     public UIStructure createUiStructure(String uiDescriptorName) {
         UIDescriptor uiDescriptor = uiDescriptorProvider.getUIDescriptor(uiDescriptorName);
+        return createUiStructure(uiDescriptor);
+    }
 
+    public UIStructure createUiStructure(UIDescriptor uiDescriptor) {
         UIStructure uiStructure = new UIStructure(uiDescriptor);
         uiStructure.initComponents();
 
@@ -58,30 +66,7 @@ public class UIController {
         });
 
         uiDescriptor.getFields()
-            .forEach(field -> ofNullable(createControl(field))
-                .ifPresent(control -> {
-                    Label label = ofNullable(field.getLabel())
-                        .map(translator::translate)
-                        .map(control::createAssociatedLabel)
-                        .orElse(null);
-                    if (field.isDisabled()) {
-                        control.setControlEnabled(false);
-                    }
-                    if (field.isEditable() && control instanceof ComboBox<?> comboBox) {
-                        comboBox.setEditable(true);
-                    }
-                    ofNullable(field.getAction())
-                        .ifPresent(action -> uiStructure.addActionComponent(action, control));
-                    if (field.isDoubleClickAction()) {
-                        uiStructure.addDoubleClickActionComponents(control);
-                    }
-                    if (control instanceof Component component) {
-                        if (field.isFocus()) {
-                            uiStructure.setFocusComponent(component);
-                        }
-                    }
-                    uiStructure.addControl(field.getId(), control, label, field);
-                }));
+            .forEach(field -> addField(uiStructure, field));
         uiDescriptor.getButtons()
             .forEach(button -> uiStructure.addButton(button.getId(), createButton(button)));
         ofNullable(uiDescriptor.getDefaultButton())
@@ -89,6 +74,47 @@ public class UIController {
 
         uiStructure.pack();
         return uiStructure;
+    }
+
+    private void addField(final UIStructure uiStructure, final UIField field) {
+        ofNullable(createControl(field))
+            .ifPresent(control -> addControl(uiStructure, field, control));
+    }
+
+    private void addControl(final UIStructure uiStructure, final UIField field, final Control<?> control) {
+        Label label = createLabel(field, control);
+        if (field.isDisabled()) {
+            control.setControlEnabled(false);
+        }
+        if (field.isEditable() && control instanceof ComboBox<?> comboBox) {
+            comboBox.setEditable(true);
+        }
+        ofNullable(field.getAction())
+            .ifPresent(action -> uiStructure.addActionComponent(action, control));
+        if (field.isDoubleClickAction()) {
+            uiStructure.addDoubleClickActionComponents(control);
+        }
+        if (control instanceof Component component) {
+            if (field.isFocus()) {
+                uiStructure.setFocusComponent(component);
+            }
+        }
+        if (control instanceof TabbedPane tabbedPane) {
+            field.getDescriptors().forEach((title, descriptor) ->
+                ofNullable(descriptor)
+                    .map(this::createUiStructure)
+                    .ifPresent(structure -> tabbedPane.add(translator.translate(title), structure)));
+            tabbedPane.setTabAreaAlignment(field.getAlign());
+        }
+
+        uiStructure.addControl(field.getId(), control, label, field);
+    }
+
+    private Label createLabel(final UIField field, final Control<?> control) {
+        return ofNullable(field.getLabel())
+            .map(translator::translate)
+            .map(control::createAssociatedLabel)
+            .orElse(null);
     }
 
     public void fillUIStructure(final UIStructure uiStructure, final UIModel model) {

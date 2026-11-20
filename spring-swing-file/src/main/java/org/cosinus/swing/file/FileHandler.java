@@ -211,6 +211,10 @@ public class FileHandler {
         fileSystem.setPermissions(file, permissions);
     }
 
+    public void setUserShare(final File file, final FilePermissions permissions) {
+        fileSystem.setUserShare(file, permissions);
+    }
+
     public void setOwnerForFile(final File file, final String ownerName, final String groupName) {
         fileSystem.setOwnerForFile(file, ownerName, groupName);
     }

@@ -92,4 +92,9 @@ public class WindowsFileSystem implements FileSystem {
     public void setPermissions(File file, FilePermissions permissions) {
 
     }
+
+    @Override
+    public void setUserShare(File file, FilePermissions permissions) {
+
+    }
 }

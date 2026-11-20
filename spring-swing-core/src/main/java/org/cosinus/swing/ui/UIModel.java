@@ -20,6 +20,8 @@ import javax.swing.*;
 import java.io.File;
 import java.util.Set;
 
+import static java.util.Optional.ofNullable;
+
 public interface UIModel {
 
     Set<String> keys();
@@ -41,5 +43,15 @@ public interface UIModel {
 
     default boolean isReadonly(String key) {
         return false;
+    }
+
+    default String stringValue(Object value) {
+        return ofNullable(value)
+            .map(Object::toString)
+            .orElse(null);
+    }
+
+    default boolean booleanValue(Object value) {
+        return value instanceof Boolean booleanValue && booleanValue;
     }
 }

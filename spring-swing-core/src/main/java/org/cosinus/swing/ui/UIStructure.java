@@ -20,6 +20,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.cosinus.swing.error.SpringSwingException;
 import org.cosinus.swing.form.Panel;
+import org.cosinus.swing.form.TabbedPane;
 import org.cosinus.swing.form.control.*;
 import org.cosinus.swing.form.control.Button;
 import org.cosinus.swing.form.control.Label;
@@ -30,8 +31,10 @@ import java.awt.*;
 import java.util.*;
 
 import static java.awt.BorderLayout.*;
+import static java.util.Arrays.stream;
 import static java.util.Collections.emptySet;
 import static java.util.Optional.ofNullable;
+import static javax.swing.SwingConstants.BOTTOM;
 import static org.cosinus.swing.border.Borders.emptyBorder;
 import static org.cosinus.swing.ui.UILayout.SPRING_GRID;
 import static org.cosinus.swing.ui.UILayout.VERTICAL_FLOW;
@@ -47,6 +50,8 @@ public class UIStructure extends Panel {
     private final Map<String, Control<?>> controlsMap;
 
     private final Map<String, Button> buttonsMap;
+
+    private final Map<String, TabbedPane> tabbedPanesMap;
 
     @Getter
     private final Map<String, Set<Control<?>>> actionControls;
@@ -72,6 +77,7 @@ public class UIStructure extends Panel {
         this.controlsMap = new HashMap<>();
         this.buttonsMap = new HashMap<>();
         this.actionControls = new HashMap<>();
+        this.tabbedPanesMap = new HashMap<>();
     }
 
     @Override
@@ -125,7 +131,7 @@ public class UIStructure extends Panel {
     public void addControl(String id, Control<?> control, Label label, UIField field) {
         if (label != null) {
             if (uiDescriptor.getLayout() == VERTICAL_FLOW) {
-                label.setVerticalAlignment(SwingConstants.BOTTOM);
+                label.setVerticalAlignment(BOTTOM);
             }
             controlsPanel.add(label);
         }
@@ -137,16 +143,17 @@ public class UIStructure extends Panel {
         } else {
             controlsPanel.add(control.getComponent());
         }
+
+        if (control instanceof TabbedPane tabbedPane) {
+            tabbedPanesMap.put(id, tabbedPane);
+        }
+
         controlsMap.put(id, control);
     }
 
     public void addButton(String id, Button button) {
         buttonsPanel.add(button);
         buttonsMap.put(id, button);
-    }
-
-    public Optional<Control<?>> findControl(String id) {
-        return ofNullable(controlsMap.get(id));
     }
 
     public Optional<Button> findButton(String id) {
@@ -172,8 +179,21 @@ public class UIStructure extends Panel {
     }
 
     public Control<?> getControl(String id) {
-        return ofNullable(controlsMap.get(id))
+        return findControl(id)
             .orElseThrow(() -> new SpringSwingException("Cannot find control with id: " + id));
+    }
+
+    private Optional<Control<?>> findControl(String id) {
+        Optional<Control<?>> control = ofNullable(controlsMap.get(id));
+        return control
+            .or(() -> tabbedPanesMap.values()
+                .stream()
+                .flatMap(tabbedPane -> stream(tabbedPane.getComponents()))
+                .filter(component -> component instanceof UIStructure)
+                .map(component -> (UIStructure) component)
+                .map(structure -> structure.findControl(id))
+                .flatMap(Optional::stream)
+                .findFirst());
     }
 
     public void addActionComponent(String action, Control<?> control) {

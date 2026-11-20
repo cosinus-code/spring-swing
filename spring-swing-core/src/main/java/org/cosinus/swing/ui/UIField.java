@@ -20,6 +20,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.cosinus.swing.form.control.ControlType;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 @Setter
 @Getter
 public class UIField {
@@ -37,6 +40,8 @@ public class UIField {
     private int height;
 
     private boolean disabled;
+
+    private Map<String, UIDescriptor> descriptors = new LinkedHashMap<>();
 
     /**
      * True to allow a custom value to be typed, besides choosing one of the values (e.g. for a combobox).
