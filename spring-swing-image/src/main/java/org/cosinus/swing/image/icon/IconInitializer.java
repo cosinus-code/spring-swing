@@ -19,6 +19,8 @@ package org.cosinus.swing.image.icon;
 
 import org.cosinus.swing.icon.IconHolder;
 import org.cosinus.swing.ui.listener.UIChangeListener;
+import org.cosinus.swing.worker.WorkerListener;
+import org.springframework.context.ApplicationEventPublisher;
 
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
@@ -27,8 +29,12 @@ public class IconInitializer implements UIChangeListener {
 
     private final IconHandler iconHandler;
 
-    public IconInitializer(final IconHandler iconHandler) {
+    private final ApplicationEventPublisher eventPublisher;
+
+    public IconInitializer(final IconHandler iconHandler,
+                           final ApplicationEventPublisher eventPublisher) {
         this.iconHandler = iconHandler;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -36,8 +42,19 @@ public class IconInitializer implements UIChangeListener {
         initializeIcons();
     }
 
+    /**
+     * Reset the icons and update the icon holders in background,
+     * then publish an {@link IconsResetEvent} for the icons which are not held by an icon holder.
+     */
     public void initializeIcons() {
-        new UpdateIconsWorker().start();
+        new UpdateIconsWorker()
+            .registerListener(new WorkerListener<>() {
+                @Override
+                public void workerFinished(IconInitializerModel workerModel) {
+                    eventPublisher.publishEvent(new IconsResetEvent(IconInitializer.this));
+                }
+            })
+            .start();
     }
 
     public void updateIcon(final IconHolder... iconHolders) {

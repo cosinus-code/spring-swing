@@ -35,6 +35,7 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cache.interceptor.KeyGenerator;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 
 /**
@@ -149,7 +150,8 @@ public class SpringSwingImageAutoConfiguration {
     }
 
     @Bean
-    public IconInitializer iconInitializer(final IconHandler iconHandler) {
-        return new IconInitializer(iconHandler);
+    public IconInitializer iconInitializer(final IconHandler iconHandler,
+                                           final ApplicationEventPublisher eventPublisher) {
+        return new IconInitializer(iconHandler, eventPublisher);
     }
 }
