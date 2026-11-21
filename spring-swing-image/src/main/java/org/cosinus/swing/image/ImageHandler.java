@@ -20,10 +20,14 @@ package org.cosinus.swing.image;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.MetadataException;
 import com.drew.metadata.exif.ExifIFD0Directory;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.cosinus.swing.file.FileHandler;
 import org.cosinus.swing.form.Canvas;
 import org.cosinus.swing.form.SquareCanvas;
+import org.cosinus.swing.image.video.MatroskaCoverReader;
+import org.cosinus.swing.image.video.Mp4CoverReader;
+import org.cosinus.swing.image.video.VideoCoverReader;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 
@@ -47,9 +51,12 @@ import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.channels.FileChannel;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static com.drew.imaging.ImageMetadataReader.readMetadata;
 import static com.drew.metadata.exif.ExifDirectoryBase.TAG_ORIENTATION;
@@ -64,11 +71,15 @@ import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
+import static java.nio.file.StandardOpenOption.READ;
+import static java.util.Locale.ROOT;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static javax.imageio.ImageIO.createImageInputStream;
 import static javax.imageio.ImageIO.getImageReaders;
 import static javax.imageio.ImageIO.read;
+import static lombok.AccessLevel.PRIVATE;
+import static org.apache.commons.io.FilenameUtils.getBaseName;
 import static org.apache.commons.io.FilenameUtils.getExtension;
 import static org.apache.commons.io.IOUtils.toByteArray;
 import static org.cosinus.swing.image.ImageRotation.NO_ROTATION;
@@ -89,7 +100,12 @@ public class ImageHandler {
 
     public static final ImageFilter DISABLED_FILTER = new javax.swing.GrayFilter(true, 50);
 
+    private static final String SIDECAR_THUMBNAIL_EXTENSION = "THM";
+
     private final FileHandler fileHandler;
+
+    @Getter(value = PRIVATE, lazy = true)
+    private final List<VideoCoverReader> videoCoverReaders = List.of(new Mp4CoverReader(), new MatroskaCoverReader());
 
     public ImageHandler(final FileHandler fileHandler) {
         this.fileHandler = fileHandler;
@@ -112,21 +128,24 @@ public class ImageHandler {
         return createThumbnail(file, size);
     }
 
-    @CachePut(SPRING_SWING_IMAGE_THUMBNAIL_CACHE_NAME)
+    /**
+     * Create the full quality thumbnail and put it in cache.
+     * <p>
+     * An empty result is not cached, to keep the quick thumbnail already cached for a file
+     * which cannot be decoded, like the embedded cover of a video.
+     */
+    @CachePut(value = SPRING_SWING_IMAGE_THUMBNAIL_CACHE_NAME, unless = "#result == null")
     public Optional<Image> cacheThumbnail(File file, int size) throws IOException {
         return createThumbnail(file, size);
     }
 
     @CachePut(SPRING_SWING_IMAGE_THUMBNAIL_CACHE_NAME)
     public Optional<Image> cacheQuickThumbnail(File file, int size) throws IOException {
-        return createEmbeddedThumbnail(file, size)
-            .or(() -> {
-                try {
-                    return createQuickThumbnail(file, size);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
+        // no Optional.or here: its supplier cannot throw the IOException the callers handle
+        Optional<Image> embeddedThumbnail = createEmbeddedThumbnail(file, size);
+        return embeddedThumbnail.isPresent() ?
+            embeddedThumbnail :
+            createQuickThumbnail(file, size);
     }
 
     /**
@@ -172,6 +191,67 @@ public class ImageHandler {
                 reader.dispose();
             }
         }
+    }
+
+    /**
+     * Create a thumbnail from the thumbnail file saved by a camera next to a video,
+     * like the GoPro "GH014811.THM" for "GH014811.MP4".
+     * <p>
+     * The thumbnail file is a JPEG image with the same name as the video and the "THM" extension.
+     * Canon and Sony cameras save such files too.
+     *
+     * @param file the video file
+     * @param size the thumbnail size
+     * @return the thumbnail scaled to the size, or empty if there is no readable thumbnail file
+     */
+    public Optional<Image> createSidecarThumbnail(File file, int size) {
+        if (!file.isFile() || SIDECAR_THUMBNAIL_EXTENSION.equalsIgnoreCase(getExtension(file.getName()))) {
+            return empty();
+        }
+        String baseName = getBaseName(file.getName());
+        return Stream.of(SIDECAR_THUMBNAIL_EXTENSION, SIDECAR_THUMBNAIL_EXTENSION.toLowerCase(ROOT))
+            .map(extension -> new File(file.getParentFile(), baseName + "." + extension))
+            .filter(File::isFile)
+            .findFirst()
+            .flatMap(thumbnailFile -> {
+                try {
+                    return ofNullable(read(thumbnailFile));
+                } catch (IOException | RuntimeException ex) {
+                    log.debug("Cannot read the thumbnail file: {}", thumbnailFile, ex);
+                    return empty();
+                }
+            })
+            .map(thumbnail -> scaleImage(thumbnail, size));
+    }
+
+    /**
+     * Create a thumbnail from the cover image embedded in a video file.
+     * <p>
+     * Only the container structure is read, without decoding the video.
+     * Supported are the cover art of MP4, M4V, MOV and 3GP videos and the cover attachment of MKV and WebM videos.
+     * Most camera and phone videos have no embedded cover.
+     *
+     * @param file the video file
+     * @param size the thumbnail size
+     * @return the cover scaled to the size, or empty if the file is not a supported video or has no cover
+     */
+    public Optional<Image> createEmbeddedVideoThumbnail(File file, int size) {
+        if (!file.isFile()) {
+            return empty();
+        }
+        try (FileChannel channel = FileChannel.open(file.toPath(), READ)) {
+            for (VideoCoverReader videoCoverReader : getVideoCoverReaders()) {
+                if (videoCoverReader.supports(channel)) {
+                    return videoCoverReader.readCover(channel)
+                        .map(this::getImage)
+                        .map(cover -> scaleImage(cover, size));
+                }
+            }
+        } catch (IOException | RuntimeException ex) {
+            // a corrupted video or an unsupported cover image format
+            log.debug("Cannot read the embedded cover of file: {}", file, ex);
+        }
+        return empty();
     }
 
     /**
@@ -653,5 +733,32 @@ public class ImageHandler {
      */
     public BufferedImage createTransparentImage(int width, int height) {
         return new BufferedImage(width, height, TYPE_INT_ARGB);
+    }
+
+    /**
+     * Create an image filled with a color.
+     * <p>
+     * The image is RGB for an opaque color, so it can be saved as JPEG too,
+     * and ARGB for a translucent color, keeping the color alpha in every pixel.
+     *
+     * @param width  the image width
+     * @param height the image height
+     * @param color  the fill color
+     * @return the color filled image
+     * @throws IllegalArgumentException if width or height is not positive
+     */
+    public BufferedImage createColorFilledImage(int width, int height, Color color) {
+        BufferedImage image = new BufferedImage(width, height,
+            color.getAlpha() == 255 ? TYPE_INT_RGB : TYPE_INT_ARGB);
+        Graphics2D graphics = image.createGraphics();
+        try {
+            // replace the pixels instead of blending the color over them
+            graphics.setComposite(AlphaComposite.Src);
+            graphics.setColor(color);
+            graphics.fillRect(0, 0, width, height);
+        } finally {
+            graphics.dispose();
+        }
+        return image;
     }
 }
