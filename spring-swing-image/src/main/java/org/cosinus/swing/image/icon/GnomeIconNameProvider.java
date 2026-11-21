@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static java.util.Optional.ofNullable;
 import static org.cosinus.swing.image.icon.IconProvider.*;

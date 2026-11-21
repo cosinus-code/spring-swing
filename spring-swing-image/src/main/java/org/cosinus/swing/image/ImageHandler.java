@@ -17,6 +17,10 @@
 
 package org.cosinus.swing.image;
 
+import com.drew.imaging.ImageProcessingException;
+import com.drew.metadata.MetadataException;
+import com.drew.metadata.exif.ExifIFD0Directory;
+import lombok.extern.slf4j.Slf4j;
 import org.cosinus.swing.file.FileHandler;
 import org.cosinus.swing.form.Canvas;
 import org.cosinus.swing.form.SquareCanvas;
@@ -47,6 +51,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Optional;
 
+import static com.drew.imaging.ImageMetadataReader.readMetadata;
+import static com.drew.metadata.exif.ExifDirectoryBase.TAG_ORIENTATION;
 import static java.awt.Image.SCALE_SMOOTH;
 import static java.awt.RenderingHints.KEY_ALPHA_INTERPOLATION;
 import static java.awt.RenderingHints.KEY_ANTIALIASING;
@@ -65,11 +71,14 @@ import static javax.imageio.ImageIO.getImageReaders;
 import static javax.imageio.ImageIO.read;
 import static org.apache.commons.io.FilenameUtils.getExtension;
 import static org.apache.commons.io.IOUtils.toByteArray;
+import static org.cosinus.swing.image.ImageRotation.NO_ROTATION;
+import static org.cosinus.swing.image.ImageRotation.findImageRotation;
 import static org.cosinus.swing.image.ImageSettings.QUALITY;
 
 /**
  * Image handler
  */
+@Slf4j
 public class ImageHandler {
 
     public static final String SPRING_SWING_IMAGE_THUMBNAIL_CACHE_NAME = "spring.swing.image.thumbnails";
@@ -92,22 +101,97 @@ public class ImageHandler {
      * @param file the file to preview
      * @param size the size of the preview image
      * @return the preview image
-     * @throws IOException if an IO error occurs
      */
     @Cacheable(SPRING_SWING_IMAGE_THUMBNAIL_CACHE_NAME)
-    public Optional<Image> getThumbnail(File file, int size) {
+    public Optional<Image> getThumbnailFromCache(File file, int size) {
         return empty();
     }
 
-    /**
-     * Put in cache the preview icon of a file.
-     *
-     * @param file the file to preview
-     * @param size the size of the preview image
-     * @return the preview image
-     * @throws IOException if an IO error occurs
-     */
+    @Cacheable(SPRING_SWING_IMAGE_THUMBNAIL_CACHE_NAME)
+    public Optional<Image> getThumbnail(File file, int size) throws IOException {
+        return createThumbnail(file, size);
+    }
+
     @CachePut(SPRING_SWING_IMAGE_THUMBNAIL_CACHE_NAME)
+    public Optional<Image> cacheThumbnail(File file, int size) throws IOException {
+        return createThumbnail(file, size);
+    }
+
+    @CachePut(SPRING_SWING_IMAGE_THUMBNAIL_CACHE_NAME)
+    public Optional<Image> cacheQuickThumbnail(File file, int size) throws IOException {
+        return createEmbeddedThumbnail(file, size)
+            .or(() -> {
+                try {
+                    return createQuickThumbnail(file, size);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+    }
+
+    /**
+     * Create a thumbnail from the preview image embedded in the image file, like the EXIF thumbnail of a photo.
+     * <p>
+     * Only the metadata of the file is read, without decoding the image itself,
+     * so this is the quickest way to get a thumbnail.
+     * The embedded thumbnail is rotated according to the EXIF orientation of the image
+     * and scaled down to fit the size, the same as the thumbnails created from the image.
+     *
+     * @param file the image file
+     * @param size the minimum size of the thumbnail; an embedded thumbnail smaller than that is not used
+     * @return the embedded thumbnail, or empty if the file has no embedded thumbnail at least as big as the size
+     * @throws IOException if the file cannot be read
+     */
+    public Optional<Image> createEmbeddedThumbnail(File file, int size) throws IOException {
+        try (ImageInputStream input = createImageInputStream(file)) {
+            if (input == null) {
+                return empty();
+            }
+            Iterator<ImageReader> readers = getImageReaders(input);
+            if (!readers.hasNext()) {
+                return empty();
+            }
+            ImageReader reader = readers.next();
+            try {
+                // keep the metadata: the embedded thumbnail is part of it
+                reader.setInput(input, true, false);
+                if (!reader.readerSupportsThumbnails() ||
+                    !reader.hasThumbnails(0) ||
+                    max(reader.getThumbnailWidth(0, 0),
+                        reader.getThumbnailHeight(0, 0)) < size) {
+                    return empty();
+                }
+                BufferedImage thumbnail = getImageRotation(file)
+                    .apply(reader.readThumbnail(0, 0));
+                return ofNullable(scaleImage(thumbnail, size));
+            } catch (IOException | RuntimeException ex) {
+                // a corrupted or unsupported embedded thumbnail: the image itself might still be readable
+                log.debug("Cannot read the embedded thumbnail of file: {}", file, ex);
+                return empty();
+            } finally {
+                reader.dispose();
+            }
+        }
+    }
+
+    /**
+     * Get the rotation of an image from its EXIF orientation.
+     *
+     * @param file the image file
+     * @return the image rotation, or no rotation if the file has no EXIF orientation
+     */
+    private ImageRotation getImageRotation(File file) {
+        try {
+            ExifIFD0Directory exifInfo = readMetadata(file).getFirstDirectoryOfType(ExifIFD0Directory.class);
+            if (exifInfo != null && exifInfo.containsTag(TAG_ORIENTATION)) {
+                return findImageRotation(exifInfo.getInt(TAG_ORIENTATION)).orElse(NO_ROTATION);
+            }
+        } catch (ImageProcessingException | MetadataException | IOException ex) {
+            log.debug("Cannot read the EXIF orientation of file: {}", file, ex);
+        }
+        return NO_ROTATION;
+    }
+
     public Optional<Image> createThumbnail(File file, int size) throws IOException {
         if (file.exists() && fileHandler.isImage(file.toPath())) {
             try (InputStream input = new FileInputStream(file)) {
@@ -120,7 +204,6 @@ public class ImageHandler {
         }
     }
 
-    @CachePut(SPRING_SWING_IMAGE_THUMBNAIL_CACHE_NAME)
     public Optional<Image> createQuickThumbnail(File file, int size) throws IOException {
         try (ImageInputStream input = createImageInputStream(file)) {
             if (input != null) {
@@ -137,7 +220,7 @@ public class ImageHandler {
                     ImageReadParam param = reader.getDefaultReadParam();
                     param.setSourceSubsampling(scale, scale, 0, 0);
 
-                    return Optional.of(reader.read(0, param));
+                    return Optional.of(getImageRotation(file).apply(reader.read(0, param)));
                 }
             }
         }
@@ -556,5 +639,19 @@ public class ImageHandler {
             Arrays.equals(
                 imageBytes, 0, JPEG_SIGNATURE.length,
                 JPEG_SIGNATURE, 0, JPEG_SIGNATURE.length);
+    }
+
+    /**
+     * Create a fully transparent image.
+     * <p>
+     * The pixels of a new ARGB image are all zero, so the image is transparent without drawing anything.
+     *
+     * @param width  the image width
+     * @param height the image height
+     * @return the transparent ARGB image
+     * @throws IllegalArgumentException if width or height is not positive
+     */
+    public BufferedImage createTransparentImage(int width, int height) {
+        return new BufferedImage(width, height, TYPE_INT_ARGB);
     }
 }

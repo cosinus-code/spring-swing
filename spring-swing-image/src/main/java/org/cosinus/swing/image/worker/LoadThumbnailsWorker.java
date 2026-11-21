@@ -15,11 +15,12 @@
  *
  */
 
-package org.cosinus.swing.image;
+package org.cosinus.swing.image.worker;
 
 import lombok.extern.slf4j.Slf4j;
 import org.cosinus.stream.StreamSupplier;
 import org.cosinus.stream.consumer.StreamConsumer;
+import org.cosinus.swing.image.ImageHandler;
 import org.cosinus.swing.progress.ProgressModel;
 import org.cosinus.swing.worker.StreamWorker;
 import org.cosinus.swing.worker.WorkerModel;
@@ -27,8 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.io.IOException;
-
-import static org.cosinus.swing.context.ApplicationContextInjector.injectContext;
 
 @Slf4j
 public class LoadThumbnailsWorker extends StreamWorker<WorkerModel<File>, File, ProgressModel> {
@@ -40,29 +39,19 @@ public class LoadThumbnailsWorker extends StreamWorker<WorkerModel<File>, File, 
 
     private final int thumbnailSize;
 
-    private final boolean quickThumbnail;
-
     public LoadThumbnailsWorker(final int thumbnailSize,
                                 final WorkerModel<File> model,
-                                final StreamSupplier<File> streamSupplier,
-                                final boolean quickThumbnail) {
-        super(UPDATE_THUMBNAILS_ACTION_ID,
-            model,
-            streamSupplier,
-            new ProgressModel());
-        injectContext(this);
+                                final StreamSupplier<File> streamSupplier) {
+        super(UPDATE_THUMBNAILS_ACTION_ID, model, streamSupplier, new ProgressModel());
         this.thumbnailSize = thumbnailSize;
-        this.quickThumbnail = quickThumbnail;
     }
 
     @Override
     protected StreamConsumer<File> streamConsumer() {
         return file -> {
             try {
-                if (quickThumbnail) {
-                    imageHandler.createQuickThumbnail(file, thumbnailSize);
-                } else {
-                    imageHandler.createThumbnail(file, thumbnailSize);
+                if (imageHandler.getThumbnailFromCache(file, thumbnailSize).isEmpty()) {
+                    imageHandler.cacheQuickThumbnail(file, thumbnailSize);
                 }
             } catch (IOException e) {
                 log.error("Cannot create preview icon for file: {}", file);

@@ -18,13 +18,13 @@
 package org.cosinus.swing.image.icon;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.cosinus.swing.color.Colors;
 import org.cosinus.swing.icon.IconSize;
 import org.cosinus.swing.image.ImageHandler;
 import org.cosinus.swing.resource.ClasspathResourceResolver;
 import org.cosinus.swing.ui.ApplicationUIHandler;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 
 import javax.imageio.ImageIO;
@@ -38,7 +38,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
@@ -46,7 +45,9 @@ import static java.awt.BasicStroke.CAP_ROUND;
 import static java.awt.BasicStroke.JOIN_MITER;
 import static java.awt.Color.WHITE;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
-import static java.lang.Math.*;
+import static java.lang.Math.abs;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 import static java.util.Arrays.stream;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
@@ -60,10 +61,13 @@ import static org.cosinus.swing.image.ImageSettings.QUALITY;
  * Icons handler
  */
 @Slf4j
-public class IconHandler
-{
+public class IconHandler {
 
     private static final String SPRING_SWING_ICONS_CACHE_NAME = "spring.swing.icons";
+
+    private static final String SPRING_SWING_ICONS_CACHE_BY_FILE_GENERATOR = "fileExtensionKeyGenerator";
+
+    private static final String SPRING_SWING_ICONS_CACHE_BY_FILE_CONDITION = "#file.parent != null";
 
     public static final String[] IMAGE_EXTENSIONS = {".svg", ".png", ".jpg"};
 
@@ -82,11 +86,10 @@ public class IconHandler
     private final IconNameProvider iconNameProvider;
 
     public IconHandler(final ClasspathResourceResolver resourceResolver,
-        final IconProvider iconProvider,
-        final ApplicationUIHandler uiHandler,
-        final ImageHandler imageHandler,
-        final IconNameProvider iconNameProvider)
-    {
+                       final IconProvider iconProvider,
+                       final ApplicationUIHandler uiHandler,
+                       final ImageHandler imageHandler,
+                       final IconNameProvider iconNameProvider) {
         this.resourceResolver = resourceResolver;
         this.iconProvider = iconProvider;
         this.uiHandler = uiHandler;
@@ -106,8 +109,7 @@ public class IconHandler
      * @return the found icon, or {@link Optional#empty()}
      */
     @Cacheable(value = SPRING_SWING_ICONS_CACHE_NAME)
-    public Optional<Icon> findIconByName(String name, IconSize size, boolean rounded)
-    {
+    public Optional<Icon> findIconByName(String name, IconSize size, boolean rounded) {
         return ofNullable(name)
             .filter(s -> s.startsWith(SHAPE_ICON))
             .map(this::decodeShape)
@@ -134,16 +136,14 @@ public class IconHandler
     }
 
     @SuppressWarnings("HttpUrlsUsage")
-    protected boolean isUrl(String text)
-    {
+    protected boolean isUrl(String text) {
         return ofNullable(text)
             .map(url -> url.startsWith("http://")
                 || url.startsWith("https://"))
             .orElse(false);
     }
 
-    protected Optional<Icon> getRemoteIcon(String url)
-    {
+    protected Optional<Icon> getRemoteIcon(String url) {
         return isUrl(url) ?
             ofNullable(imageHandler.createImage(url))
                 .map(ImageIcon::new) :
@@ -160,17 +160,13 @@ public class IconHandler
      * @return the found icon, or {@link Optional#empty()}
      */
     @Cacheable(value = SPRING_SWING_ICONS_CACHE_NAME, key = "{':resource:', #resourceName}")
-    public Optional<Icon> findIconByResource(String resourceName)
-    {
+    public Optional<Icon> findIconByResource(String resourceName) {
         return resourceResolver.resolveImageAsBytes(resourceName)
             .map(bytes ->
             {
-                try (ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes))
-                {
+                try (ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes)) {
                     return ImageIO.read(inputStream);
-                }
-                catch (IOException e)
-                {
+                } catch (IOException e) {
                     log.error("Failed to read icon from resource: {}", resourceName, e);
                     return null;
                 }
@@ -178,38 +174,42 @@ public class IconHandler
             .map(ImageIcon::new);
     }
 
-    /**
-     * Find an icon by file.
-     * <p>
-     * If a cache configuration is defined in the application with the name {@value #SPRING_SWING_ICONS_CACHE_NAME},
-     * then the results are cached.
-     *
-     * @param file the file
-     * @param size the size of the icon to search for
-     * @return the found icon, or {@link Optional#empty()}
-     */
     @Cacheable(value = SPRING_SWING_ICONS_CACHE_NAME,
-        condition = "#file.parent != null",
-        keyGenerator = "fileExtensionKeyGenerator")
-    public Optional<Icon> findIconByFile(File file, IconSize size)
-    {
+        condition = SPRING_SWING_ICONS_CACHE_BY_FILE_CONDITION,
+        keyGenerator = SPRING_SWING_ICONS_CACHE_BY_FILE_GENERATOR)
+    public Optional<Icon> getIconByFileFromCache(File file, IconSize size) {
+        return empty();
+    }
+
+    @Cacheable(value = SPRING_SWING_ICONS_CACHE_NAME,
+        condition = SPRING_SWING_ICONS_CACHE_BY_FILE_CONDITION,
+        keyGenerator = SPRING_SWING_ICONS_CACHE_BY_FILE_GENERATOR)
+    public Optional<Icon> findIconByFile(File file, IconSize size) {
+        return createIconByFile(file, size);
+    }
+
+    @CachePut(value = SPRING_SWING_ICONS_CACHE_NAME,
+        condition = SPRING_SWING_ICONS_CACHE_BY_FILE_CONDITION,
+        keyGenerator = SPRING_SWING_ICONS_CACHE_BY_FILE_GENERATOR)
+    public Optional<Icon> cacheIconByFile(File file, IconSize size) {
+        return createIconByFile(file, size);
+    }
+
+    public Optional<Icon> createIconByFile(File file, IconSize size) {
         return iconProvider.findIconByFile(file, size)
             .or(() -> uiHandler.getDefaultFileIcon(file.isDirectory()))
             .map(icon -> scaleIcon(icon, size));
     }
 
-    public Icon getGrayFilteredIcon(Icon icon)
-    {
+    public Icon getGrayFilteredIcon(Icon icon) {
         return applyFilter(icon, GRAY_FILTER);
     }
 
-    public Icon getDisabledIcon(Icon icon)
-    {
+    public Icon getDisabledIcon(Icon icon) {
         return applyFilter(icon, DISABLED_FILTER);
     }
 
-    public Icon applyFilter(Icon iconToFilter, ImageFilter filter)
-    {
+    public Icon applyFilter(Icon iconToFilter, ImageFilter filter) {
         return ofNullable(iconToFilter)
             .map(imageHandler::iconToImage)
             .map(image -> imageHandler.applyFilter(image, filter))
@@ -218,20 +218,18 @@ public class IconHandler
             .orElse(iconToFilter);
     }
 
-    public Icon scaleIcon(Icon iconToResize, IconSize size)
-    {
+    public Icon scaleIcon(Icon iconToResize, IconSize size) {
         return ofNullable(iconToResize)
             .filter(icon -> icon.getIconWidth() != size.getSize() ||
                 icon.getIconHeight() != size.getSize())
             .map(imageHandler::iconToImage)
             .map(image -> imageHandler.scaleUpImage(image, size.getSize(), size.getSize()))
-            .<Icon> map(ImageIcon::new)
+            .<Icon>map(ImageIcon::new)
             .orElse(iconToResize);
     }
 
     @CacheEvict(value = SPRING_SWING_ICONS_CACHE_NAME, allEntries = true, beforeInvocation = true)
-    public void resetIcons()
-    {
+    public void resetIcons() {
         log.info("'{}' cache evicted due to icon theme changed.", SPRING_SWING_ICONS_CACHE_NAME);
         iconProvider.initialize();
     }
@@ -244,14 +242,12 @@ public class IconHandler
      * @return the preview image
      * @throws IOException if an IO error occurs
      */
-    public Optional<Icon> getThumbnail(File file, int size) throws IOException
-    {
-        return imageHandler.getThumbnail(file, size)
+    public Optional<Icon> getThumbnailFromCache(File file, int size) throws IOException {
+        return imageHandler.getThumbnailFromCache(file, size)
             .map(ImageIcon::new);
     }
 
-    public Icon toCircularIcon(Icon icon, IconSize iconSize)
-    {
+    public Icon toCircularIcon(Icon icon, IconSize iconSize) {
         Image image = imageHandler.iconToImage(icon);
         int size = iconSize.getSize();
 
@@ -273,8 +269,7 @@ public class IconHandler
         return new ImageIcon(output);
     }
 
-    protected Shape decodeShape(String encodedShape)
-    {
+    protected Shape decodeShape(String encodedShape) {
         String[] shapePieces = encodedShape.split(SHAPE_SEPARATOR);
         return Shape.builder()
             .backgroundColor(Colors.toColor(shapePieces[1]).orElse(null))
@@ -288,8 +283,7 @@ public class IconHandler
             .build();
     }
 
-    public Icon getIconByShape(Shape shape, IconSize iconSize, boolean rounded)
-    {
+    public Icon getIconByShape(Shape shape, IconSize iconSize, boolean rounded) {
         int size = iconSize.getSize();
         BufferedImage image = new BufferedImage(size, size, TYPE_INT_ARGB);
         Graphics2D g2d = image.createGraphics();
@@ -303,18 +297,14 @@ public class IconHandler
             .ifPresent(backgroundColor ->
             {
                 g2d.setColor(backgroundColor);
-                if (rounded)
-                {
+                if (rounded) {
                     g2d.fillRoundRect(0, 0, size, size, pad, pad);
-                }
-                else
-                {
+                } else {
                     g2d.fillRect(0, 0, size, size);
                 }
             });
 
-        if (!isEmpty(shape.getPoints()))
-        {
+        if (!isEmpty(shape.getPoints())) {
             g2d.setColor(shape.getDrawColor());
             g2d.setStroke(new BasicStroke(1, CAP_ROUND, JOIN_MITER));
 
@@ -352,8 +342,7 @@ public class IconHandler
                             g2d.drawLine(lastPoint.x, lastPoint.y, point.x, point.y);
                             storedPoint.set(point);
                         });
-                    if (storedPoint.get() == null)
-                    {
+                    if (storedPoint.get() == null) {
                         storedPoint.set(point);
                     }
                 });
@@ -362,5 +351,10 @@ public class IconHandler
         g2d.dispose();
 
         return new ImageIcon(image);
+    }
+
+    @Cacheable(value = SPRING_SWING_ICONS_CACHE_NAME, key = "'transparent-' + #size")
+    public Icon getTransparentIcon(IconSize size) {
+        return new ImageIcon(imageHandler.createTransparentImage(size.getSize(), size.getSize()));
     }
 }
