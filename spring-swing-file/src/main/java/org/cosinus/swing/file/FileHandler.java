@@ -190,6 +190,13 @@ public class FileHandler {
             .orElse(null);
     }
 
+    public File toFile(Path path, final String name, final boolean isParent) {
+        return ofNullable(path)
+            .map(Path::toFile)
+            .filter(File::exists)
+            .orElseGet(() -> createVirtualFile(path, name, isParent));
+    }
+
     public File createVirtualFile(final Path path, final String name, final boolean isParent) {
         String fileName = ofNullable(path)
             .map(Objects::toString)
