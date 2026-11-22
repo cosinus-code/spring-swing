@@ -38,6 +38,8 @@ import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 
+import static org.cosinus.swing.image.icon.IconHandler.SPRING_SWING_ICONS_CACHE_BY_FILE_GENERATOR;
+
 /**
  * Configuration related to images
  */
@@ -144,7 +146,7 @@ public class SpringSwingImageAutoConfiguration {
         return new ApplicationImageInitializer(iconInitializer, uiChangeController);
     }
 
-    @Bean("fileExtensionKeyGenerator")
+    @Bean(SPRING_SWING_ICONS_CACHE_BY_FILE_GENERATOR)
     public KeyGenerator keyGenerator() {
         return new FileExtensionKeyGenerator();
     }

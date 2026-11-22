@@ -63,11 +63,11 @@ import static org.cosinus.swing.image.ImageSettings.QUALITY;
 @Slf4j
 public class IconHandler {
 
-    private static final String SPRING_SWING_ICONS_CACHE_NAME = "spring.swing.icons";
+    public static final String SPRING_SWING_ICONS_CACHE_NAME = "spring.swing.icons";
 
-    private static final String SPRING_SWING_ICONS_CACHE_BY_FILE_GENERATOR = "fileExtensionKeyGenerator";
+    public static final String SPRING_SWING_ICONS_CACHE_BY_FILE_GENERATOR = "fileExtensionKeyGenerator";
 
-    private static final String SPRING_SWING_ICONS_CACHE_BY_FILE_CONDITION = "#file.parent != null";
+    public static final String SPRING_SWING_ICONS_CACHE_BY_FILE_CONDITION = "#file.parent != null";
 
     public static final String[] IMAGE_EXTENSIONS = {".svg", ".png", ".jpg"};
 
