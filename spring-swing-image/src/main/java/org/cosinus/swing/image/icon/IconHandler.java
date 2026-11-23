@@ -67,8 +67,6 @@ public class IconHandler {
 
     public static final String SPRING_SWING_ICONS_CACHE_BY_FILE_GENERATOR = "fileExtensionKeyGenerator";
 
-    public static final String SPRING_SWING_ICONS_CACHE_BY_FILE_CONDITION = "#file.parent != null";
-
     public static final String[] IMAGE_EXTENSIONS = {".svg", ".png", ".jpg"};
 
     public static final String SHAPE_ICON = "shape";
@@ -175,21 +173,18 @@ public class IconHandler {
     }
 
     @Cacheable(value = SPRING_SWING_ICONS_CACHE_NAME,
-        condition = SPRING_SWING_ICONS_CACHE_BY_FILE_CONDITION,
         keyGenerator = SPRING_SWING_ICONS_CACHE_BY_FILE_GENERATOR)
     public Optional<Icon> getIconByFileFromCache(File file, IconSize size) {
         return empty();
     }
 
     @Cacheable(value = SPRING_SWING_ICONS_CACHE_NAME,
-        condition = SPRING_SWING_ICONS_CACHE_BY_FILE_CONDITION,
         keyGenerator = SPRING_SWING_ICONS_CACHE_BY_FILE_GENERATOR)
     public Optional<Icon> findIconByFile(File file, IconSize size) {
         return createIconByFile(file, size);
     }
 
     @CachePut(value = SPRING_SWING_ICONS_CACHE_NAME,
-        condition = SPRING_SWING_ICONS_CACHE_BY_FILE_CONDITION,
         keyGenerator = SPRING_SWING_ICONS_CACHE_BY_FILE_GENERATOR)
     public Optional<Icon> cacheIconByFile(File file, IconSize size) {
         return createIconByFile(file, size);
