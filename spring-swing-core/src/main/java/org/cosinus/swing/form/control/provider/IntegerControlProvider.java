@@ -18,9 +18,9 @@
 package org.cosinus.swing.form.control.provider;
 
 import org.cosinus.swing.form.control.Control;
-import org.cosinus.swing.form.control.Spinner;
+import org.cosinus.swing.form.control.NumberFormattedTextField;
 
-import static java.util.Optional.ofNullable;
+import static java.text.NumberFormat.getNumberInstance;
 
 /**
  * Implementation of {@link ControlProvider}
@@ -29,12 +29,16 @@ import static java.util.Optional.ofNullable;
 public class IntegerControlProvider implements ControlProvider<Integer> {
 
     @Override
-    public Spinner<Integer> getControl() {
-        return new Spinner<>(0);
+    public NumberFormattedTextField<Integer> getControl() {
+        NumberFormattedTextField<Integer> control = new NumberFormattedTextField<>(getNumberInstance(), Integer.class);
+        control.setColumns(7);
+        return control;
     }
 
     @Override
-    public <T> Spinner<Integer> getControl(ControlDescriptor<T, Integer> descriptor) {
-        return new Spinner<>(ofNullable(descriptor.getRealValue()).orElse(0));
+    public <T> NumberFormattedTextField<Integer> getControl(ControlDescriptor<T, Integer> descriptor) {
+        NumberFormattedTextField<Integer> control = getControl();
+        control.setControlValue(descriptor.getRealValue());
+        return control;
     }
 }
