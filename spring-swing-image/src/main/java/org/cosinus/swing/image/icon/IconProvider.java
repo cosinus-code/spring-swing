@@ -106,6 +106,10 @@ public interface IconProvider {
 
     String ICON_VIEW_HIDDEN = "view-hidden";
     String ICON_VIEW_LEFT_PANE = "view-left-pane";
+    String ICON_VIEW_ADDRESS_BAR = "view-address-bar";
+    String ICON_ZOOM_IN = "zoom-in";
+    String ICON_ZOOM_OUT = "zoom-out";
+    String ICON_ZOOM_RESET = "zoom-original";
     String ICON_PERMISSIONS = "permissions";
     String ICON_SETTINGS = "settings";
     String ICON_HELP = "help";

@@ -61,6 +61,15 @@ public class KdeIconNameProvider implements IconNameProvider {
         iconNamesMap.put(ICON_VIEW_TREE, "view-list-tree");
 
         iconNamesMap.put(ICON_VIEW_LEFT_PANE, "sidebar-show-symbolic");
+        iconNamesMap.put(ICON_VIEW_ADDRESS_BAR, "location-symbolic");
+
+        iconNamesMap.put(ICON_ZOOM_IN, "zoom-in-symbolic");
+        iconNamesMap.put(ICON_ZOOM_OUT, "zoom-out-symbolic");
+        iconNamesMap.put(ICON_ZOOM_RESET, "zoom-original-symbolic");
+
+        iconNamesMap.put(ICON_CUT, "edit-cut-symbolic");
+        iconNamesMap.put(ICON_COPY, "edit-copy-symbolic");
+        iconNamesMap.put(ICON_PASTE, "edit-paste-symbolic");
         iconNamesMap.put(ICON_SETTINGS, "configure");
         iconNamesMap.put(ICON_PERMISSIONS, "unlock");
         iconNamesMap.put(ICON_HELP, "help-about");

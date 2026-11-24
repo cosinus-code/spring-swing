@@ -26,6 +26,8 @@ import org.cosinus.swing.translate.Translator;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +70,39 @@ public class Menu extends JMenu implements FormComponent, DuplicateMenuHolder, I
 
         if (duplicate) {
             duplicateMenu = new JMenu();
+            duplicateMenu.addMenuListener(new RefreshCheckBoxesListener());
+        }
+        addMenuListener(new RefreshCheckBoxesListener());
+    }
+
+    /**
+     * Show the current state of the toggle actions in the checkbox items.
+     */
+    public void refreshCheckBoxes() {
+        formComponents
+            .stream()
+            .filter(CheckBoxMenuItem.class::isInstance)
+            .map(CheckBoxMenuItem.class::cast)
+            .forEach(CheckBoxMenuItem::refreshSelected);
+    }
+
+    /**
+     * Refresh the checkbox items each time the menu is opened,
+     * since the state of their actions can change elsewhere (e.g. by keyboard shortcut).
+     */
+    private class RefreshCheckBoxesListener implements MenuListener {
+
+        @Override
+        public void menuSelected(MenuEvent e) {
+            refreshCheckBoxes();
+        }
+
+        @Override
+        public void menuDeselected(MenuEvent e) {
+        }
+
+        @Override
+        public void menuCanceled(MenuEvent e) {
         }
     }
 

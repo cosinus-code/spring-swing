@@ -18,6 +18,8 @@
 package org.cosinus.swing.menu;
 
 import lombok.Getter;
+import org.cosinus.swing.action.ActionController;
+import org.cosinus.swing.action.SwingAction;
 import org.cosinus.swing.form.FormComponent;
 import org.cosinus.swing.translate.Translator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,9 @@ public class MenuBar extends JMenuBar implements FormComponent {
 
     @Autowired
     protected Translator translator;
+
+    @Autowired
+    protected ActionController actionController;
 
     private BoxMenu boxMenu;
 
@@ -83,6 +88,14 @@ public class MenuBar extends JMenuBar implements FormComponent {
             menuMap.forEach((menuItemKey, menuItemModel) -> {
                 if (menuItemKey.startsWith(SEPARATOR)) {
                     menu.add(new JSeparator());
+                } else if (isToggleAction(menuItemKey)) {
+                    CheckBoxMenuItem checkBoxMenuItem = new CheckBoxMenuItem(actionListener,
+                        menuItemKey,
+                        false,
+                        KeyStroke.getKeyStroke(menuItemModel.getShortcut()),
+                        withBoxMenu);
+                    checkBoxMenuItem.refreshSelected();
+                    addMenuItem(menu, menuItemKey, menuItemModel, checkBoxMenuItem);
                 } else {
                     MenuItem menuItem = new MenuItem(actionListener,
                         menuItemKey,
@@ -91,16 +104,26 @@ public class MenuBar extends JMenuBar implements FormComponent {
                     if (menuItemModel.getIcon() != null && menuItem.getIconName() == null) {
                         menuItem.setIconName(menuItemModel.getIcon());
                     }
-                    if (!isMac() || !menuItemModel.isHideOnMac()) {
-                        menu.add(menuItem);
-                    }
-                    menuComponentsMap.putIfAbsent(menuItemKey, menuItem);
+                    addMenuItem(menu, menuItemKey, menuItemModel, menuItem);
                 }
             });
             if (!menu.isEmpty()) {
                 add(menu);
             }
         });
+    }
+
+    private boolean isToggleAction(String actionKey) {
+        return actionController.findAction(actionKey)
+            .flatMap(SwingAction::getSelectedState)
+            .isPresent();
+    }
+
+    private void addMenuItem(Menu menu, String menuItemKey, MenuItemModel menuItemModel, JMenuItem menuItem) {
+        if (!isMac() || !menuItemModel.isHideOnMac()) {
+            menu.add(menuItem);
+        }
+        menuComponentsMap.putIfAbsent(menuItemKey, menuItem);
     }
 
     public AbstractButton getMenuComponent(String menuKey) {

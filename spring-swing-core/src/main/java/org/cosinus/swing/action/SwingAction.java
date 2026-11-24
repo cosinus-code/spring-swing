@@ -51,4 +51,15 @@ public interface SwingAction {
     default Optional<KeyStroke> getKeyStroke() {
         return Optional.empty();
     }
+
+    /**
+     * Get the selected state of a toggle action (e.g. show/hide something).
+     * <p>
+     * The menu shows a toggle action as a checkbox, checked when the state is selected.
+     *
+     * @return the selected state, or {@link Optional#empty()} for an action which is not a toggle
+     */
+    default Optional<Boolean> getSelectedState() {
+        return Optional.empty();
+    }
 }

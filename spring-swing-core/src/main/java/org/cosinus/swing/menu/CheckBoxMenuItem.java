@@ -32,8 +32,12 @@ import static org.cosinus.swing.context.ApplicationContextInjector.injectContext
 
 /**
  * Checkbox menu model
+ * <p>
+ * For a toggle action (see {@link SwingAction#getSelectedState()}),
+ * {@link #refreshSelected()} shows the current state of the action.
  */
-public class CheckBoxMenuItem extends JCheckBoxMenuItem implements FormComponent, ActionProducer, IconHolder {
+public class CheckBoxMenuItem extends JCheckBoxMenuItem
+    implements FormComponent, ActionProducer, DuplicateMenuHolder, IconHolder {
 
     @Autowired
     protected Translator translator;
@@ -41,7 +45,7 @@ public class CheckBoxMenuItem extends JCheckBoxMenuItem implements FormComponent
     @Autowired
     protected ActionController actionController;
 
-    private final JCheckBoxMenuItem altMenuItem;
+    private final CheckBoxMenuItem altMenuItem;
 
     private final String key;
 
@@ -68,6 +72,14 @@ public class CheckBoxMenuItem extends JCheckBoxMenuItem implements FormComponent
                             String key,
                             boolean selected,
                             KeyStroke keyStroke) {
+        this(action, key, selected, keyStroke, false);
+    }
+
+    public CheckBoxMenuItem(ActionListener action,
+                            String key,
+                            boolean selected,
+                            KeyStroke keyStroke,
+                            boolean duplicate) {
         super();
         injectContext(this);
 
@@ -77,9 +89,9 @@ public class CheckBoxMenuItem extends JCheckBoxMenuItem implements FormComponent
         super.setAccelerator(keyStroke);
         super.setSelected(selected);
 
-        altMenuItem = new JCheckBoxMenuItem();
-        altMenuItem.addActionListener(action);
-        altMenuItem.setAccelerator(keyStroke);
+        altMenuItem = duplicate ?
+            new CheckBoxMenuItem(action, key, selected, keyStroke, false) :
+            null;
 
         this.iconName = actionController.findAction(key)
             .map(SwingAction::getIconName)
@@ -87,8 +99,29 @@ public class CheckBoxMenuItem extends JCheckBoxMenuItem implements FormComponent
     }
 
     public void setText(String text) {
-        altMenuItem.setText(text);
+        if (altMenuItem != null) {
+            altMenuItem.setText(text);
+        }
         super.setText(text);
+    }
+
+    /**
+     * Show the current state of the action, if it is a toggle action.
+     */
+    public void refreshSelected() {
+        actionController.findAction(key)
+            .flatMap(SwingAction::getSelectedState)
+            .ifPresent(selected -> {
+                setSelected(selected);
+                if (altMenuItem != null) {
+                    altMenuItem.setSelected(selected);
+                }
+            });
+    }
+
+    @Override
+    public JMenuItem getDuplicateMenu() {
+        return altMenuItem;
     }
 
     public String getActionKey() {

@@ -60,6 +60,15 @@ public class GnomeIconNameProvider implements IconNameProvider {
         iconNamesMap.put(ICON_VIEW_TREE, "view-list-tree");
 
         iconNamesMap.put(ICON_VIEW_LEFT_PANE, "sidebar-show-symbolic");
+        iconNamesMap.put(ICON_VIEW_ADDRESS_BAR, "location-symbolic");
+
+        iconNamesMap.put(ICON_ZOOM_IN, "zoom-in-symbolic");
+        iconNamesMap.put(ICON_ZOOM_OUT, "zoom-out-symbolic");
+        iconNamesMap.put(ICON_ZOOM_RESET, "zoom-original-symbolic");
+
+        iconNamesMap.put(ICON_CUT, "edit-cut-symbolic");
+        iconNamesMap.put(ICON_COPY, "edit-copy-symbolic");
+        iconNamesMap.put(ICON_PASTE, "edit-paste-symbolic");
         iconNamesMap.put(ICON_PERMISSIONS, "changes-allow");
         iconNamesMap.put(ICON_DELETE, "edit-delete");
         iconNamesMap.put(ICON_EXECUTE, "system-run");
@@ -70,6 +79,8 @@ public class GnomeIconNameProvider implements IconNameProvider {
         iconNamesMap.put(ICON_COPY_ACTION, "edit-copy");
         iconNamesMap.put(ICON_MOVE_ACTION, "edit-move");
         iconNamesMap.put(ICON_LINK_ACTION, "edit-link");
+
+        iconNamesMap.put(ICON_REFRESH, "reload");
     }
 
     @Override
