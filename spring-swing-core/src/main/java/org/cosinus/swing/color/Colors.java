@@ -24,6 +24,7 @@ import java.util.Optional;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
+import static java.lang.Math.round;
 
 /**
  * Handler for colors
@@ -119,6 +120,29 @@ public final class Colors {
             255 - color.getGreen(),
             255 - color.getBlue()
         );
+    }
+
+    public static boolean isDarkColor(Color color) {
+        return (color.getRed() * 299 + color.getGreen() * 587 + color.getBlue() * 114) / 1000 < 128;
+    }
+
+    public static float tintAlphaOfColor(Color color) {
+        return isDarkColor(color) ? 0.35f : 0.25f;
+    }
+
+    public static Color blendColor(Color color, Color tint, float alpha) {
+        return new Color(
+            round(color.getRed() * (1 - alpha) + tint.getRed() * alpha),
+            round(color.getGreen() * (1 - alpha) + tint.getGreen() * alpha),
+            round(color.getBlue() * (1 - alpha) + tint.getBlue() * alpha));
+    }
+
+    public static Color blendColorWithTintAlpha(Color color, Color tint) {
+        return blendColor(color, tint, tintAlphaOfColor(color));
+    }
+
+    public static Color blendColorWithBiTintAlpha(Color color, Color tint) {
+        return blendColor(color, tint, 2 * tintAlphaOfColor(color));
     }
 
     private Colors() {

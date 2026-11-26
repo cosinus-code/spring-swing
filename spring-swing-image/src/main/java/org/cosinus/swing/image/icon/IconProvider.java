@@ -35,6 +35,7 @@ public interface IconProvider {
     String ICON_BACK = "go-previous";
     String ICON_NEXT = "go-next";
     String ICON_UP = "go-up";
+    String ICON_DOWN = "go-down";
     String ICON_REFRESH = "refresh";
     String ICON_EDIT = "edit";
     String ICON_STOP = "stop";
@@ -110,6 +111,8 @@ public interface IconProvider {
     String ICON_ZOOM_IN = "zoom-in";
     String ICON_ZOOM_OUT = "zoom-out";
     String ICON_ZOOM_RESET = "zoom-original";
+    String ICON_COMPARE = "compare";
+    String ICON_SWAP = "swap";
     String ICON_PERMISSIONS = "permissions";
     String ICON_SETTINGS = "settings";
     String ICON_HELP = "help";

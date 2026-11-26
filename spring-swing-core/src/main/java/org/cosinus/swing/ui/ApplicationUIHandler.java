@@ -49,6 +49,7 @@ import static java.awt.Font.PLAIN;
 import static java.awt.Toolkit.getDefaultToolkit;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.META_DOWN_MASK;
+import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_BACK_SPACE;
 import static java.awt.event.KeyEvent.VK_DELETE;
 import static java.awt.event.KeyEvent.VK_ENTER;
@@ -300,6 +301,10 @@ public class ApplicationUIHandler {
         return IS_OS_MAC ?
             META_DOWN_MASK :
             getDefaultToolkit().getMenuShortcutKeyMaskEx();
+    }
+
+    public int getControlShiftDownKeyMask() {
+        return getControlDownKeyMask() | SHIFT_DOWN_MASK;
     }
 
     /**
