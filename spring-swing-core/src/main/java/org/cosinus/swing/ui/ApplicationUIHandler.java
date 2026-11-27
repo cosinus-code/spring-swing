@@ -385,6 +385,11 @@ public class ApplicationUIHandler {
             .orElse(null);
     }
 
+    public Color getColor(SystemColor systemColor, Color fallbackColor) {
+        return ofNullable(getColor(systemColor))
+            .orElse(fallbackColor);
+    }
+
     public Color getControlColor() {
         return getColor(CONTROL);
     }

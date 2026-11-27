@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.awt.*;
 import java.util.Optional;
 
+import static java.awt.Color.gray;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.lang.Math.round;
@@ -130,19 +131,31 @@ public final class Colors {
         return isDarkColor(color) ? 0.35f : 0.25f;
     }
 
-    public static Color blendColor(Color color, Color tint, float alpha) {
+    public static Color blendColor(Color color, Color tintColor, float alpha) {
         return new Color(
-            round(color.getRed() * (1 - alpha) + tint.getRed() * alpha),
-            round(color.getGreen() * (1 - alpha) + tint.getGreen() * alpha),
-            round(color.getBlue() * (1 - alpha) + tint.getBlue() * alpha));
+            round(color.getRed() * (1 - alpha) + tintColor.getRed() * alpha),
+            round(color.getGreen() * (1 - alpha) + tintColor.getGreen() * alpha),
+            round(color.getBlue() * (1 - alpha) + tintColor.getBlue() * alpha));
     }
 
-    public static Color blendColorWithTintAlpha(Color color, Color tint) {
-        return blendColor(color, tint, tintAlphaOfColor(color));
+    public static Color blendColorWithTintAlpha(Color color, Color tintColor) {
+        return blendColor(color, tintColor, 1);
     }
 
-    public static Color blendColorWithBiTintAlpha(Color color, Color tint) {
-        return blendColor(color, tint, 2 * tintAlphaOfColor(color));
+    public static Color blendColorWithBiTintAlpha(Color color, Color tintColor) {
+        return blendColor(color, tintColor, 2);
+    }
+
+    public static Color blendColorWithTintAlpha(Color color, Color tintColor, float tintFactor) {
+        return blendColor(color, tintColor, tintFactor * tintAlphaOfColor(color));
+    }
+
+    public static Color grayColor(Color color) {
+        return grayColor(color, 1);
+    }
+
+    public static Color grayColor(Color color, float grayFactor) {
+        return blendColor(color, gray, grayFactor * tintAlphaOfColor(color));
     }
 
     private Colors() {
