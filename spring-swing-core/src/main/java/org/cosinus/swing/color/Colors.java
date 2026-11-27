@@ -23,6 +23,7 @@ import java.awt.*;
 import java.util.Optional;
 
 import static java.awt.Color.gray;
+import static java.awt.Color.lightGray;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.lang.Math.round;
@@ -150,12 +151,20 @@ public final class Colors {
         return blendColor(color, tintColor, tintFactor * tintAlphaOfColor(color));
     }
 
-    public static Color grayColor(Color color) {
-        return grayColor(color, 1);
+    public static Color grayedColor(Color color) {
+        return grayedColor(color, 1);
     }
 
-    public static Color grayColor(Color color, float grayFactor) {
+    public static Color grayedColor(Color color, float grayFactor) {
         return blendColor(color, gray, grayFactor * tintAlphaOfColor(color));
+    }
+
+    public static Color lightGrayedColor(Color color) {
+        return lightGrayedColor(color, 1);
+    }
+
+    public static Color lightGrayedColor(Color color, float grayFactor) {
+        return blendColor(color, lightGray, grayFactor * tintAlphaOfColor(color));
     }
 
     private Colors() {
